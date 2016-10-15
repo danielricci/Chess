@@ -1,3 +1,4 @@
+package game;
 /**
 * Daniel Ricci <thedanny09@gmail.com>
 *
@@ -22,7 +23,7 @@
 * IN THE SOFTWARE.
 */
 
-import game.WindowManager;
+import game.views.WindowManager;
 
 public final class Main {
 	public static void main(String[] argv) {

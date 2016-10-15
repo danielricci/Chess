@@ -31,7 +31,6 @@ import java.util.Map;
 import java.util.Observer;
 import java.util.Vector;
 
-import game.content.PlayerPiece;
 import game.controllers.TileController;
 import game.models.PlayerModel.Team.Orientation;
 

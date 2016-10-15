@@ -22,14 +22,11 @@
 * IN THE SOFTWARE.
 */
 
-package game.content;
+package game.models;
 
 import java.awt.Image;
 
 import javax.swing.ImageIcon;
-
-import game.models.PlayerModel;
-import game.models.TileModel;
 
 public class PlayerPiece {
 	

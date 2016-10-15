@@ -30,8 +30,8 @@ import java.util.Vector;
 
 import javax.swing.JPanel;
 
-import game.IDestructable;
 import game.controllers.BaseController;
+import game.interfaces.IDestructable;
 import game.models.GameModel;
 
 public abstract class BaseView extends JPanel implements IDestructable, Observer {

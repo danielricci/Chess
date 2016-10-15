@@ -24,7 +24,7 @@
 
 package game.controllers;
 
-import game.IDestructable;
+import game.interfaces.IDestructable;
 
 public abstract class BaseController implements IDestructable  {
 	@Override public abstract void destroy();

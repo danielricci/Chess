@@ -22,7 +22,7 @@
 * IN THE SOFTWARE.
 */
 
-package game;
+package game.views;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -44,8 +44,6 @@ import javax.swing.KeyStroke;
 import game.controllers.BoardGameController;
 import game.controllers.ControllerFactory;
 import game.models.GameModel.Operation;
-import game.views.BaseView;
-import game.views.ViewFactory;
 import game.views.ViewFactory.ViewType;
 
 @SuppressWarnings("serial")

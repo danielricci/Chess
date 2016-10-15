@@ -35,11 +35,11 @@ import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.MatteBorder;
 
+import engine.EngineHelper;
 import game.controllers.BoardGameController;
 import game.controllers.ControllerFactory;
 import game.controllers.PlayerController;
 import game.controllers.TileController;
-import game.external.EngineHelper;
 import game.models.GameModel;
 import game.models.PlayerModel;
 import game.models.TileModel;

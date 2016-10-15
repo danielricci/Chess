@@ -26,7 +26,7 @@ package game.controllers;
 
 import java.util.Vector;
 
-import game.IDestructable;
+import game.interfaces.IDestructable;
 
 public class ControllerFactory implements IDestructable {
 

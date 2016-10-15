@@ -26,7 +26,7 @@ package game.views;
 
 import java.util.Vector;
 
-import game.IDestructable;
+import game.interfaces.IDestructable;
 
 public class ViewFactory implements IDestructable {
 
