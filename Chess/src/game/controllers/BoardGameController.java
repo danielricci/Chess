@@ -22,7 +22,7 @@
 * IN THE SOFTWARE.
 */
 
-package game.controllers.factory;
+package game.controllers;
 
 import java.util.Observer;
 import java.util.Vector;

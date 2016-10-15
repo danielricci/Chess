@@ -31,7 +31,7 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Queue;
 
-import game.controllers.factory.BaseController;
+import game.controllers.BaseController;
 
 public class GameModel extends Observable
 {

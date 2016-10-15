@@ -22,7 +22,7 @@
 * IN THE SOFTWARE.
 */
 
-package game.views.factory;
+package game.views;
 
 import java.util.Vector;
 

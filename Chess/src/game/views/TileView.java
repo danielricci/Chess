@@ -22,7 +22,7 @@
 * IN THE SOFTWARE.
 */
 
-package game.views.factory;
+package game.views;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -34,7 +34,7 @@ import java.util.Observable;
 
 import javax.swing.JLabel;
 
-import game.controllers.factory.TileController;
+import game.controllers.TileController;
 import game.models.GameModel;
 import game.models.GameModel.Operation;
 import game.models.PlayerModel;

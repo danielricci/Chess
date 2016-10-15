@@ -22,39 +22,49 @@
 * IN THE SOFTWARE.
 */
 
-package game.views.factory;
+package game.controllers;
 
-import java.awt.BorderLayout;
-import java.util.Observable;
+import java.util.Vector;
 
-import game.models.GameModel;
-import game.views.factory.ViewFactory.ViewType;
+import game.IDestructable;
 
-@SuppressWarnings("serial")
-public final class MainWindowView extends BaseView {
-	@Override public void render() {
-		setLayout(new BorderLayout());
-		BaseView boardGameView = ViewFactory.instance().getView(ViewType.BoardGameView);
-		boardGameView.render();
-		add(boardGameView);
+public class ControllerFactory implements IDestructable {
+
+	private final Vector<BaseController> _controllers = new Vector<>(); 
+	private static ControllerFactory _instance;
+	
+	private ControllerFactory() {
 	}
-
-	@Override protected void registerListeners() {		
+	
+	public synchronized static ControllerFactory instance() {
+		if(_instance == null) {
+			_instance = new ControllerFactory();
+		}	
+		return _instance;
 	}
-
-	@Override
-	public void refresh(GameModel model) {
-		// TODO Auto-generated method stub
+	
+	public <T extends BaseController> T getController(Class<T> controllerClass) {
 		
-	}
+		for(BaseController item : _controllers) {
+			if(item.getClass() == controllerClass) {
+				return (T)item;
+			}
+		}
 
-	@Override
-	public void update(Observable o, Object arg) {
-		// TODO Auto-generated method stub
+		try {
+	        _controllers.add(controllerClass.getConstructor().newInstance());	        
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
+		
+		return (T)_controllers.lastElement();
 	}
 
 	@Override public void destroy() {
-		removeAll();
-	}
+		for(BaseController controller : _controllers) {
+			controller.destroy();
+		}
+		_instance = null;
+	}	
 }

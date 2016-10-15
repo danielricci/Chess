@@ -41,12 +41,12 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
-import game.controllers.factory.BoardGameController;
-import game.controllers.factory.ControllerFactory;
+import game.controllers.BoardGameController;
+import game.controllers.ControllerFactory;
 import game.models.GameModel.Operation;
-import game.views.factory.BaseView;
-import game.views.factory.ViewFactory;
-import game.views.factory.ViewFactory.ViewType;
+import game.views.BaseView;
+import game.views.ViewFactory;
+import game.views.ViewFactory.ViewType;
 
 @SuppressWarnings("serial")
 public final class WindowManager extends JFrame {

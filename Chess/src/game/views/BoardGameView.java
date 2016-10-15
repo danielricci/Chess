@@ -22,7 +22,7 @@
 * IN THE SOFTWARE.
 */
 
-package game.views.factory;
+package game.views;
 
 import java.awt.Color;
 import java.awt.GridBagConstraints;
@@ -35,10 +35,10 @@ import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.MatteBorder;
 
-import game.controllers.factory.BoardGameController;
-import game.controllers.factory.ControllerFactory;
-import game.controllers.factory.PlayerController;
-import game.controllers.factory.TileController;
+import game.controllers.BoardGameController;
+import game.controllers.ControllerFactory;
+import game.controllers.PlayerController;
+import game.controllers.TileController;
 import game.external.EngineHelper;
 import game.models.GameModel;
 import game.models.PlayerModel;

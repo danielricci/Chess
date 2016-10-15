@@ -32,7 +32,7 @@ import java.util.Observer;
 import java.util.Vector;
 
 import game.content.PlayerPiece;
-import game.controllers.factory.TileController;
+import game.controllers.TileController;
 import game.models.PlayerModel.Team.Orientation;
 
 public final class PlayerModel extends GameModel {

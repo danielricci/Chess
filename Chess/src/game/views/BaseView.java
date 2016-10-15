@@ -22,7 +22,7 @@
 * IN THE SOFTWARE.
 */
 
-package game.views.factory;
+package game.views;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -31,7 +31,7 @@ import java.util.Vector;
 import javax.swing.JPanel;
 
 import game.IDestructable;
-import game.controllers.factory.BaseController;
+import game.controllers.BaseController;
 import game.models.GameModel;
 
 public abstract class BaseView extends JPanel implements IDestructable, Observer {
