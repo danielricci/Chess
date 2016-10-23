@@ -152,7 +152,7 @@ public final class WindowManager extends JFrame {
         tileOwners.addItemListener(new ItemListener() {
 			@Override public void itemStateChanged(ItemEvent e) {
 				JCheckBoxMenuItem item = (JCheckBoxMenuItem)e.getItem();
-				BoardGameController boardGameController = ControllerFactory.instance().getController(BoardGameController.class);
+				BoardGameController boardGameController = ControllerFactory.instance().get(BoardGameController.class);
 				boardGameController.debuggerSelection(Operation.Debugger_PlayerTiles, item.isSelected());
 			}
 		});
@@ -162,7 +162,7 @@ public final class WindowManager extends JFrame {
         tileCoordinates.addItemListener(new ItemListener() {
   			@Override public void itemStateChanged(ItemEvent e) {
   				JCheckBoxMenuItem item = (JCheckBoxMenuItem)e.getItem();
-  				BoardGameController boardGameController = ControllerFactory.instance().getController(BoardGameController.class);
+  				BoardGameController boardGameController = ControllerFactory.instance().get(BoardGameController.class);
   				boardGameController.debuggerSelection(Operation.Debugger_TileCoordinates, item.isSelected());
   			}
   		});
@@ -172,7 +172,7 @@ public final class WindowManager extends JFrame {
         kingTiles.addItemListener(new ItemListener() {
   			@Override public void itemStateChanged(ItemEvent e) {
   				JCheckBoxMenuItem item = (JCheckBoxMenuItem)e.getItem();
-  				BoardGameController boardGameController = ControllerFactory.instance().getController(BoardGameController.class);
+  				BoardGameController boardGameController = ControllerFactory.instance().get(BoardGameController.class);
   				boardGameController.debuggerSelection(Operation.Debugger_KingTiles, item.isSelected());
   			}
   		});

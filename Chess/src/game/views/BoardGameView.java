@@ -51,13 +51,14 @@ public final class BoardGameView extends BaseView {
 	private final JPanel _gamePanel = new JPanel(new GridBagLayout());	
 	
 	public BoardGameView() {
-		PlayerController controller = ControllerFactory.instance().getController(PlayerController.class);
-		controller.populatePlayers(this);
+		ControllerFactory.instance().get(PlayerController.class).populatePlayers(this);
 	}
 
 	@Override public void update(Observable obs, Object arg) {
 		
-		BoardGameController boardGameController = ControllerFactory.instance().getController(BoardGameController.class);
+		super.update(obs, arg);
+		
+		BoardGameController boardGameController = ControllerFactory.instance().get(BoardGameController.class);
 		TileModel tileModel = (TileModel)obs;
 		
 		for(GameModel.Operation operation : tileModel.getOperations()) {
@@ -85,7 +86,11 @@ public final class BoardGameView extends BaseView {
 	
 	@Override public void render() {
 	
-		_gamePanel.setBackground(Color.BLACK);
+		super.render();
+
+		Color firstColor = new Color(209, 139, 71);		
+		Color secondColor = new Color(255, 205, 158);
+		
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -93,41 +98,34 @@ public final class BoardGameView extends BaseView {
 		gbc.weightx = 1.0;
 		gbc.weighty = 1.0;
 		
-		PlayerController playerController = ControllerFactory.instance().getController(PlayerController.class);
-		BoardGameController boardGameController = ControllerFactory.instance().getController(BoardGameController.class);
+		PlayerController playerController = ControllerFactory.instance().get(PlayerController.class);
+		BoardGameController boardGameController = ControllerFactory.instance().get(BoardGameController.class);
 
-		int boardDimensions = boardGameController.getBoardDimensions();
-		
+		int boardDimensions = boardGameController.getBoardDimensions();		
 		Vector<Vector<TileModel>> tiles = new Vector<>();
+
+		int colorOffset = 0;
 		for (int row = 0; row < boardDimensions; ++row) {
 			
 			PlayerModel player = null;
-			if(EngineHelper.isBetweenOrEqual(row, 0, 4)) {
+			if(EngineHelper.isBetweenOrEqual(row, 0, 1)) {
 				player = playerController.getPlayer(0);
-			} else if(EngineHelper.isBetweenOrEqual(row, 7, 11)) {
+			} else if(EngineHelper.isBetweenOrEqual(row, boardDimensions - 1, boardDimensions)) {
 				player = playerController.getPlayer(1);
 			}
 			
 			Vector<TileModel> tilesRow = new Vector<>();
-			for (int col = 0, colorOffset = (row % 2 == 0 ? 0 : 1); col < boardDimensions; ++col) {
-				
-				// determine if we should render our game tile for this cell
-				boolean shouldRender = (col + colorOffset) % 2 == 0 ? false : true;
-				if(!shouldRender) {
-					continue;
-				}
-				
+			for (int col = 0;  col < boardDimensions; ++col) {
+
 				// Set our grid-bad-constraints and create the game tile
 				gbc.gridx = col;
 				gbc.gridy = row;
 				
 				// Create the tile and populate its contents
-				TileView view = new TileView();
-				TileModel tile = boardGameController.populateTile(player, row == 0 || row == boardDimensions - 1, view, this);
 				
-				// Set the border of the tile
-				Border border = new MatteBorder(1, 1, 1, 1, Color.BLACK);
-				view.setBorder(border);
+				colorOffset = (++colorOffset % 2 == 0 ? 0 : 1);
+				TileView view = new TileView(colorOffset == 0 ? firstColor : secondColor);
+				TileModel tile = boardGameController.populateTile(player, row == 0 || row == boardDimensions - 1, view, this);
 				
 				// Set the controller of the tile and render it
 				view.setController(new TileController(tile));
@@ -137,6 +135,9 @@ public final class BoardGameView extends BaseView {
 				_gamePanel.add(view, gbc);			
 				tilesRow.add(tile);
 			}
+			
+			// Ensures that the next row starts with an offset of the previous rows color
+			colorOffset = (++colorOffset % 2 == 0 ? 0 : 1);
 
 			if(!tiles.isEmpty()) {
 				// Get the last row that has been rendered and link them together by 
@@ -185,12 +186,6 @@ public final class BoardGameView extends BaseView {
 		}
 		
 		add(_gamePanel);
-	}
-
-	@Override protected void registerListeners() {
-	}
-
-	@Override public void refresh(GameModel model) {
 	}
 
 	@Override public void destroy() {

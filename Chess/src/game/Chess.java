@@ -25,7 +25,7 @@ package game;
 
 import game.views.WindowManager;
 
-public final class Main {
+public final class Chess {
 	public static void main(String[] argv) {
         try {
         	WindowManager.getInstance().setVisible(true);

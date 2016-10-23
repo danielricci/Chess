@@ -62,7 +62,7 @@ public abstract class BaseView extends JPanel implements IDestructable, Observer
 		return (T) myController;
 	}
 	
-	public final <T extends BaseController> void setController(T controller) {
+	protected final <T extends BaseController> void setController(T controller) {
 		assert controller != null : "Cannot add null controller into baseview";
 		if(!controllerExists(controller)) {
 			_controllers.add(controller);
@@ -83,10 +83,12 @@ public abstract class BaseView extends JPanel implements IDestructable, Observer
 		return found;
 	}
 	
-	protected abstract void registerListeners();
-	public abstract void render();
-	public abstract void refresh(GameModel model);
-	@Override public abstract void update(Observable o, Object arg); 
+	protected void registerListeners(){
+	}
+	
+	public void render(){}
+	public void refresh(GameModel model){}
+	@Override public void update(Observable o, Object arg){} 
 	
 	@Override public void destroy() {
 		_controllers.clear();

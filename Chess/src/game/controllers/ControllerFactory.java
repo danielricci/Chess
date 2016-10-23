@@ -43,7 +43,7 @@ public class ControllerFactory implements IDestructable {
 		return _instance;
 	}
 	
-	public <T extends BaseController> T getController(Class<T> controllerClass) {
+	public <T extends BaseController> T get(Class<T> controllerClass) {
 		
 		for(BaseController item : _controllers) {
 			if(item.getClass() == controllerClass) {

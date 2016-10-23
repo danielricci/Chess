@@ -43,7 +43,8 @@ import game.models.TileModel.Selection;
 
 public class TileView extends BaseView {
 
-	private static final Color _defaultColor = Color.LIGHT_GRAY;
+	private final Color _defaultColor;
+	
 	private static final Color _selectedColor = Color.DARK_GRAY;
 	private static final Color _guideColor = Color.BLUE;
 	private static final Color _captureColor = Color.GREEN;
@@ -52,6 +53,13 @@ public class TileView extends BaseView {
 	private final JLabel _tileCoordinatesLabel = new JLabel();
 	
 	private Image _image;
+	
+	
+	public TileView(Color background)
+	{
+		super();
+		_defaultColor = background;
+	}
 	
 	private void debugger_playerColorVisibility(TileModel tile, Operation operation) {
 		TileController controller = getController(TileController.class);
@@ -98,6 +106,8 @@ public class TileView extends BaseView {
     }
     
 	@Override public void update(Observable obs, Object arg) {
+		
+		super.update(obs, arg);
 		
 		TileModel tileModel = (TileModel)obs;
 		TileController tileController = getController(TileController.class);
@@ -149,10 +159,13 @@ public class TileView extends BaseView {
 	}
 	
 	@Override public void render() {
+		
+		super.render();
+		
 		// Set the coordinates of this tile
 		TileController controller = getController(TileController.class);
 		_tileCoordinatesLabel.setText(Integer.toString(controller.getTileCoordinate()));
-		_tileCoordinatesLabel.setVisible(false);
+		_tileCoordinatesLabel.setVisible(true);
 		add(_tileCoordinatesLabel);
 		
 		// Set the image of this tile
@@ -163,6 +176,8 @@ public class TileView extends BaseView {
 	}
 	
 	@Override public void refresh(GameModel gameModel) {
+		
+		super.refresh(gameModel);
 		
 		TileModel model = (TileModel)gameModel;
 		PlayerModel player = model.getPlayer();

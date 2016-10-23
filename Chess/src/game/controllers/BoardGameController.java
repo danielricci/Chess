@@ -37,7 +37,7 @@ import game.views.WindowManager;
 public class BoardGameController extends BaseController {
 
 	private final Vector<TileModel> _tiles = new Vector<>();		
-	private static final int _rows = 12;
+	private static final int _rows = 8;
 	
 	private TileModel _previouslySelectedTile;
 	
@@ -76,7 +76,7 @@ public class BoardGameController extends BaseController {
 
 	public void processTileMove(TileModel captureTile) {
 
-		PlayerController controller = ControllerFactory.instance().getController(PlayerController.class);
+		PlayerController controller = ControllerFactory.instance().get(PlayerController.class);
 		boolean tileCaptured = false;
 		
 		for(TileModel model : _previouslySelectedTile.getAllNeighbors()) {
@@ -127,7 +127,7 @@ public class BoardGameController extends BaseController {
 	}
 
 	private boolean isGameOver() {
-		PlayerController controller = ControllerFactory.instance().getController(PlayerController.class);
+		PlayerController controller = ControllerFactory.instance().get(PlayerController.class);
 		Vector<PlayerModel> players = controller.getPlayers();
 		
 		return 
