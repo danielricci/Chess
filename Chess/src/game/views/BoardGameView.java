@@ -188,6 +188,7 @@ public final class BoardGameView extends BaseView {
 		add(_gamePanel);
 	}
 
+
 	@Override public void destroy() {
 		_gamePanel.removeAll();
 	}
