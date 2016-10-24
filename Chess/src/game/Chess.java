@@ -28,7 +28,7 @@ import game.views.WindowManager;
 public final class Chess {
 	public static void main(String[] argv) {
         try {
-        	WindowManager.getInstance().setVisible(true);
+        	WindowManager.Instance().setVisible(true);
         } catch (Exception exception) {
         	System.out.println(exception.getStackTrace());
         }

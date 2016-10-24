@@ -102,9 +102,8 @@ public class BoardGameController extends BaseController {
 		
 		if(!(tileCaptured && controller.canContinueChain(captureTile))) {
 			controller.moveFinished();
-
 			if(isGameOver()) {
-				WindowManager.getInstance().showGameOverDialog();
+				System.out.println("Game over");
 			}
 		}
 		else{

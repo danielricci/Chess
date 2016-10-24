@@ -46,37 +46,49 @@ import game.controllers.ControllerFactory;
 import game.models.GameModel.Operation;
 import game.views.ViewFactory.ViewType;
 
-@SuppressWarnings("serial")
 public final class WindowManager extends JFrame {
+
+	/**
+	 * The singleton instance 
+	 */
+	private static WindowManager _instance;
 	
-	private static WindowManager _instance;	
-	private boolean _isPlaying;
-	
+	/**
+	 * Constructor 
+	 */
 	private WindowManager() {
-		super("Checkers");
+		super("Chess");
 		
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		Dimension _windowSize = new Dimension(800, 800);
-		setSize(_windowSize);
+		// The dimensions of the window is hard-coded by default
+		Dimension windowSize = new Dimension(800, 800);
+		setSize(windowSize);
 		setResizable(false);
-				
-		// Set the location of the window to be in middle of the screen
+		
+		final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		setLocation(
-			screenSize.width / 2 - _windowSize.width / 2,
-			screenSize.height / 2 - _windowSize.height / 2
+			screenSize.width / 2 - windowSize.width / 2,
+			screenSize.height / 2 - windowSize.height / 2
 		);
 
 		SetWindowedInstanceListeners();
 		SetWindowedInstanceMenu();
 	}
 	
-	public static WindowManager getInstance() {
+	/**
+	 * Gets the singleton reference to this class
+	 * 
+	 * @return The singleton reference to this class
+	 */
+	public static WindowManager Instance() {
 		if(_instance == null) {
 			_instance = new WindowManager();
 		}
 		return _instance;
 	}
 	
+	/**
+	 * Adds the standard set of window listeners to this window
+	 */
 	private void SetWindowedInstanceListeners() {
 		
 		// Needed to manually handle closing of the window
@@ -85,7 +97,7 @@ public final class WindowManager extends JFrame {
 		// Add a listener to whenever the window is closed
 		addWindowListener(new WindowAdapter() {
 			@Override public void windowClosing(WindowEvent event) {
-				int response= JOptionPane.showConfirmDialog(null, "Are you sure that you wish to exit the game?", "Exit Game", JOptionPane.YES_NO_OPTION);
+				int response= JOptionPane.showConfirmDialog(WindowManager.Instance(), "Are you sure that you wish to exit the game?", "Exit Game", JOptionPane.YES_NO_OPTION);
 				if(response == JOptionPane.YES_OPTION) {
 					dispose();
 				}
@@ -93,13 +105,24 @@ public final class WindowManager extends JFrame {
 		});
 	}
 	
+	/**
+	 * Populates the menu bar and all the sub-menu items
+	 */
 	private void SetWindowedInstanceMenu() {
-		JMenuBar menu = new JMenuBar();
+		
+		final JMenuBar menu = new JMenuBar();
 		PopulateFileMenu(menu);
 		//PopulateDebuggerMenu(menu);
-		setJMenuBar(menu);
+		PopulateHelpMenu(menu);
+		
+		setJMenuBar(menu);		
 	}
-	
+
+	/**
+	 * Adds the 'File' menu and its functionality to the specified menu bar
+	 * 
+	 * @param menu The menu bar to attach the functionality onto
+	 */
 	private void PopulateFileMenu(JMenuBar menu) {
 		
 		// Create the file menu 
@@ -107,17 +130,12 @@ public final class WindowManager extends JFrame {
         fileMenu.setMnemonic('F');
 			        
         // Set the event handler
-        JMenuItem fileMenuNew = new JMenuItem(new AbstractAction("New") {
-        	
+        JMenuItem fileMenuNew = new JMenuItem(new AbstractAction("New") {       	
 			@Override public void actionPerformed(ActionEvent event) {	
 	    		
-				if(_isPlaying) {
-					ControllerFactory.instance().destroy();
-					ViewFactory.instance().destroy();
-					getContentPane().removeAll();					
-
-				}
-				_isPlaying = true;
+				ControllerFactory.instance().destroy();
+				ViewFactory.instance().destroy();
+				getContentPane().removeAll();					
 				
 				BaseView mainWindowView = ViewFactory.instance().getView(ViewType.MainWindowView);
 				mainWindowView.render();
@@ -144,6 +162,11 @@ public final class WindowManager extends JFrame {
         menu.add(fileMenu);
 	}
 	
+	/**
+	 * Adds the 'Debugger' menu and its functionality to the specified menu bar
+	 * 
+	 * @param menu The menu bar to attach the functionality onto
+	 */
 	private void PopulateDebuggerMenu(JMenuBar menu) {
 		JMenu debuggerMenu = new JMenu("Debugger");			       
 		
@@ -185,7 +208,30 @@ public final class WindowManager extends JFrame {
         menu.add(debuggerMenu);	
 	}
 
-	public void showGameOverDialog() {
-		JOptionPane.showMessageDialog(this, "Game Finished", "Game Finished", JOptionPane.INFORMATION_MESSAGE);
+	/**
+	 * Adds the 'Help' menu and its functionality to the specified menu bar
+	 * 
+	 * @param menu The menu bar to attach the functionality onto
+	 */
+	private void PopulateHelpMenu(JMenuBar menu)
+	{
+		JMenu help = new JMenu("Help");
+		help.setMnemonic('H');
+		
+		// Help -> About
+		JMenuItem aboutItem = new JMenuItem(new AbstractAction("About") {
+			@Override public void actionPerformed(ActionEvent event) {
+				JOptionPane.showMessageDialog(
+					WindowManager.Instance(),
+					"Chess\nVersion 1.0\n\nDaniel Ricci\nthedanny09@gmail.com\nhttps:/github.com/danielricci/Chess",
+					"About Chess",
+					JOptionPane.INFORMATION_MESSAGE
+				);
+			}
+		});
+
+		help.add(aboutItem);	
+		
+		menu.add(help);
 	}
 }
