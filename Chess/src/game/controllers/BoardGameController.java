@@ -27,12 +27,13 @@ package game.controllers;
 import java.util.Observer;
 import java.util.Vector;
 
+import engine.factories.ControllerFactory;
+import engine.managers.ViewManager;
 import game.models.GameModel.Operation;
 import game.models.PlayerModel;
 import game.models.PlayerPiece;
 import game.models.TileModel;
 import game.models.TileModel.Selection;
-import game.views.WindowManager;
 
 public class BoardGameController extends BaseController {
 

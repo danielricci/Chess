@@ -1,4 +1,7 @@
 package game;
+
+import engine.managers.ViewManager;
+
 /**
 * Daniel Ricci <thedanny09@gmail.com>
 *
@@ -23,12 +26,10 @@ package game;
 * IN THE SOFTWARE.
 */
 
-import game.views.WindowManager;
-
 public final class Chess {
-	public static void main(String[] argv) {
+	public static void main(String[] args) {
         try {
-        	WindowManager.Instance().setVisible(true);
+			ViewManager.Instance().setVisible(true);
         } catch (Exception exception) {
         	System.out.println(exception.getStackTrace());
         }

@@ -27,8 +27,9 @@ package game.views;
 import java.awt.BorderLayout;
 import java.util.Observable;
 
+import engine.factories.ViewFactory;
+import engine.factories.ViewFactory.ViewType;
 import game.models.GameModel;
-import game.views.ViewFactory.ViewType;
 
 @SuppressWarnings("serial")
 public final class MainWindowView extends BaseView {

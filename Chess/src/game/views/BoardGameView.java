@@ -32,12 +32,9 @@ import java.util.Vector;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
-import javax.swing.border.MatteBorder;
 
-import engine.EngineHelper;
+import engine.factories.ControllerFactory;
 import game.controllers.BoardGameController;
-import game.controllers.ControllerFactory;
 import game.controllers.PlayerController;
 import game.controllers.TileController;
 import game.models.GameModel;
@@ -108,9 +105,9 @@ public final class BoardGameView extends BaseView {
 		for (int row = 0; row < boardDimensions; ++row) {
 			
 			PlayerModel player = null;
-			if(EngineHelper.isBetweenOrEqual(row, 0, 1)) {
+			if(row == 0 || row == 1) {
 				player = playerController.getPlayer(0);
-			} else if(EngineHelper.isBetweenOrEqual(row, boardDimensions - 1, boardDimensions)) {
+			} else if(row == boardDimensions - 1 || row == boardDimensions) {
 				player = playerController.getPlayer(1);
 			}
 			

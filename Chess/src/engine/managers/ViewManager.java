@@ -22,7 +22,7 @@
 * IN THE SOFTWARE.
 */
 
-package game.views;
+package engine.managers;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -41,22 +41,24 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
+import engine.factories.ControllerFactory;
+import engine.factories.ViewFactory;
+import engine.factories.ViewFactory.ViewType;
 import game.controllers.BoardGameController;
-import game.controllers.ControllerFactory;
 import game.models.GameModel.Operation;
-import game.views.ViewFactory.ViewType;
+import game.views.BaseView;
 
-public final class WindowManager extends JFrame {
+public final class ViewManager extends JFrame {
 
 	/**
 	 * The singleton instance 
 	 */
-	private static WindowManager _instance;
+	private static ViewManager _instance;
 	
 	/**
 	 * Constructor 
 	 */
-	private WindowManager() {
+	private ViewManager() {
 		super("Chess");
 		
 		// The dimensions of the window is hard-coded by default
@@ -79,9 +81,9 @@ public final class WindowManager extends JFrame {
 	 * 
 	 * @return The singleton reference to this class
 	 */
-	public static WindowManager Instance() {
+	public static ViewManager Instance() {
 		if(_instance == null) {
-			_instance = new WindowManager();
+			_instance = new ViewManager();
 		}
 		return _instance;
 	}
@@ -97,7 +99,7 @@ public final class WindowManager extends JFrame {
 		// Add a listener to whenever the window is closed
 		addWindowListener(new WindowAdapter() {
 			@Override public void windowClosing(WindowEvent event) {
-				int response= JOptionPane.showConfirmDialog(WindowManager.Instance(), "Are you sure that you wish to exit the game?", "Exit Game", JOptionPane.YES_NO_OPTION);
+				int response= JOptionPane.showConfirmDialog(ViewManager.Instance(), "Are you sure that you wish to exit the game?", "Exit Game", JOptionPane.YES_NO_OPTION);
 				if(response == JOptionPane.YES_OPTION) {
 					dispose();
 				}
@@ -222,7 +224,7 @@ public final class WindowManager extends JFrame {
 		JMenuItem aboutItem = new JMenuItem(new AbstractAction("About") {
 			@Override public void actionPerformed(ActionEvent event) {
 				JOptionPane.showMessageDialog(
-					WindowManager.Instance(),
+					ViewManager.Instance(),
 					"Chess\nVersion 1.0\n\nDaniel Ricci\nthedanny09@gmail.com\nhttps:/github.com/danielricci/Chess",
 					"About Chess",
 					JOptionPane.INFORMATION_MESSAGE

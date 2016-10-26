@@ -22,10 +22,11 @@
 * IN THE SOFTWARE.
 */
 
-package game.controllers;
+package engine.factories;
 
 import java.util.Vector;
 
+import game.controllers.BaseController;
 import game.interfaces.IDestructable;
 
 public class ControllerFactory implements IDestructable {
