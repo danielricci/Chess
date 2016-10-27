@@ -33,6 +33,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -44,6 +45,7 @@ import javax.swing.KeyStroke;
 import engine.factories.ControllerFactory;
 import engine.factories.ViewFactory;
 import engine.factories.ViewFactory.ViewType;
+import engine.managers.ResourcesManager.Resources;
 import game.controllers.BoardGameController;
 import game.models.GameModel.Operation;
 import game.views.BaseView;
@@ -59,12 +61,13 @@ public final class ViewManager extends JFrame {
 	 * Constructor 
 	 */
 	private ViewManager() {
-		super("Chess");
+		super(ResourcesManager.Instance().Get(Resources.ChessTitle));
 		
 		// The dimensions of the window is hard-coded by default
 		Dimension windowSize = new Dimension(800, 800);
 		setSize(windowSize);
 		setResizable(false);
+		setIconImage(new ImageIcon("data/internal/chess-icon-16.png").getImage());
 		
 		final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		setLocation(

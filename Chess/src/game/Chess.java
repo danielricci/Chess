@@ -31,7 +31,7 @@ public final class Chess {
         try {
 			ViewManager.Instance().setVisible(true);
         } catch (Exception exception) {
-        	System.out.println(exception.getStackTrace());
+        	exception.printStackTrace();
         }
     }
 }

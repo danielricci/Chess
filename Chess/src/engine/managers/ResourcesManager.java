@@ -56,11 +56,9 @@ public final class ResourcesManager {
 	/**
 	 * Constructs an object of this class
 	 * 
-	 * @param locale The locale to use
 	 */
-	private ResourcesManager(Locale locale)
+	private ResourcesManager()
 	{
-		_locale = locale;
 	}
 	
 	/**
@@ -72,7 +70,7 @@ public final class ResourcesManager {
 	{
 		if(_instance == null)
 		{
-			_instance = new ResourcesManager(null);
+			_instance = new ResourcesManager();
 		}
 		
 		return _instance;
@@ -87,7 +85,7 @@ public final class ResourcesManager {
 	 */
 	public String Get(Resources resource)
 	{
-		ResourceBundle messages = ResourceBundle.getBundle("resources", _instance._locale);
+		ResourceBundle messages = ResourceBundle.getBundle("resources", _locale);
 		return messages.getString(resource.key);			
 	}
 }
