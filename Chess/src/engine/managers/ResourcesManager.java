@@ -28,29 +28,13 @@ public final class ResourcesManager {
 	 */
 	public enum Resources
 	{
-		/** Define the list of resources below */
-		ChessTitle("ChessTitle"),
-		FileMenu("FileMenu"),
-		ExitMenu("ExitMenu"),
-		HelpMenu("HelpMenu"),
-		AboutMenu("AboutMenu");
-	
-		/**-------------------------------------*/
-		
-		/**
-		 * The key of the resource
-		 */
-		public final String key;
-		
-		/**
-		 * Constructs an object of this class
-		 * 
-		 * @param key The key to use as a reference to the properties file
-		 */
-		private Resources(String key)
-		{
-			this.key = key;
-		}
+		ChessTitle,
+		ChessTitleDeveloper,
+		FileMenu,
+		ExitMenu,
+		HelpMenu,
+		AboutMenu,
+		NewGame;
 	}
 	
 	/**
@@ -66,7 +50,7 @@ public final class ResourcesManager {
 	 * 
 	 * @return The singleton instance
 	 */
-	public static ResourcesManager Instance()
+	private static ResourcesManager Instance()
 	{
 		if(_instance == null)
 		{
@@ -83,9 +67,9 @@ public final class ResourcesManager {
 	 * 
 	 * @return The value of the resource specified
 	 */
-	public String Get(Resources resource)
+	public static String Get(Resources resource)
 	{
-		ResourceBundle messages = ResourceBundle.getBundle("resources", _locale);
-		return messages.getString(resource.key);			
+		ResourceBundle messages = ResourceBundle.getBundle("resources", Instance()._locale);
+		return messages.getString(resource.toString().toLowerCase());			
 	}
 }

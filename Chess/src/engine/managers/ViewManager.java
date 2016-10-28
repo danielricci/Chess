@@ -27,14 +27,15 @@ package engine.managers;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -46,8 +47,6 @@ import engine.factories.ControllerFactory;
 import engine.factories.ViewFactory;
 import engine.factories.ViewFactory.ViewType;
 import engine.managers.ResourcesManager.Resources;
-import game.controllers.BoardGameController;
-import game.models.GameModel.Operation;
 import game.views.BaseView;
 
 public final class ViewManager extends JFrame {
@@ -58,10 +57,15 @@ public final class ViewManager extends JFrame {
 	private static ViewManager _instance;
 	
 	/**
+	 * Environment Arguments
+	 */
+	private Set<String> _environmentArgs = new HashSet<>();
+	
+	/**
 	 * Constructor 
 	 */
 	private ViewManager() {
-		super(ResourcesManager.Instance().Get(Resources.ChessTitle));
+		super(ResourcesManager.Get(Resources.ChessTitle));
 		
 		// The dimensions of the window is hard-coded by default
 		Dimension windowSize = new Dimension(800, 800);
@@ -74,9 +78,8 @@ public final class ViewManager extends JFrame {
 			screenSize.width / 2 - windowSize.width / 2,
 			screenSize.height / 2 - windowSize.height / 2
 		);
-
-		SetWindowedInstanceListeners();
-		SetWindowedInstanceMenu();
+		
+		SetListeners();
 	}
 	
 	/**
@@ -92,9 +95,21 @@ public final class ViewManager extends JFrame {
 	}
 	
 	/**
+	 * Sets the arguments for the singleton
+	 * 
+	 * @param args Environment arguments to add
+	 */
+	public void SetEnvironmentVariables(String[] args) {
+		for(String arg : args)
+		{
+			_environmentArgs.add(arg.toLowerCase());	
+		}
+	}
+	
+	/**
 	 * Adds the standard set of window listeners to this window
 	 */
-	private void SetWindowedInstanceListeners() {
+	private void SetListeners() {
 		
 		// Needed to manually handle closing of the window
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -108,6 +123,16 @@ public final class ViewManager extends JFrame {
 				}
 			}
 		});
+		
+		// Add a listener to the rendering visibility of this component
+		addComponentListener(new ComponentAdapter() {
+			@Override public void componentHidden(ComponentEvent e) {
+				setJMenuBar(null);
+			}
+			@Override public void componentShown(ComponentEvent e) {
+				SetWindowedInstanceMenu();
+			}
+		});
 	}
 	
 	/**
@@ -117,10 +142,18 @@ public final class ViewManager extends JFrame {
 		
 		final JMenuBar menu = new JMenuBar();
 		PopulateFileMenu(menu);
-		//PopulateDebuggerMenu(menu);
-		PopulateHelpMenu(menu);
 		
-		setJMenuBar(menu);		
+		if(_environmentArgs.contains("-developer"))
+		{
+			PopulateDeveloperMenu(menu);
+			setTitle(ResourcesManager.Get(Resources.ChessTitleDeveloper));
+		}
+		
+		PopulateHelpMenu(menu);
+		setJMenuBar(menu);
+		
+		menu.revalidate();
+		menu.repaint();
 	}
 
 	/**
@@ -135,7 +168,7 @@ public final class ViewManager extends JFrame {
         fileMenu.setMnemonic('F');
 			        
         // Set the event handler
-        JMenuItem fileMenuNew = new JMenuItem(new AbstractAction("New") {       	
+        JMenuItem fileMenuNew = new JMenuItem(new AbstractAction(ResourcesManager.Get(Resources.NewGame)) {       	
 			@Override public void actionPerformed(ActionEvent event) {	
 	    		
 				ControllerFactory.instance().destroy();
@@ -168,49 +201,36 @@ public final class ViewManager extends JFrame {
 	}
 	
 	/**
-	 * Adds the 'Debugger' menu and its functionality to the specified menu bar
+	 * Adds the 'Developer' menu and its functionality to the specified menu bar
 	 * 
 	 * @param menu The menu bar to attach the functionality onto
 	 */
-	private void PopulateDebuggerMenu(JMenuBar menu) {
-		JMenu debuggerMenu = new JMenu("Debugger");			       
-		
-		// Tile Owners Functionality 
-        JCheckBoxMenuItem tileOwners = new JCheckBoxMenuItem("Tile Owners");
-        tileOwners.addItemListener(new ItemListener() {
-			@Override public void itemStateChanged(ItemEvent e) {
-				JCheckBoxMenuItem item = (JCheckBoxMenuItem)e.getItem();
-				BoardGameController boardGameController = ControllerFactory.instance().get(BoardGameController.class);
-				boardGameController.debuggerSelection(Operation.Debugger_PlayerTiles, item.isSelected());
-			}
-		});
-
-        // Tile Coordinates Functionality
-        JCheckBoxMenuItem tileCoordinates = new JCheckBoxMenuItem("Tile Coordinates");
-        tileCoordinates.addItemListener(new ItemListener() {
-  			@Override public void itemStateChanged(ItemEvent e) {
-  				JCheckBoxMenuItem item = (JCheckBoxMenuItem)e.getItem();
-  				BoardGameController boardGameController = ControllerFactory.instance().get(BoardGameController.class);
-  				boardGameController.debuggerSelection(Operation.Debugger_TileCoordinates, item.isSelected());
-  			}
-  		});
-        
-        // King Tiles Functionality
-        JCheckBoxMenuItem kingTiles = new JCheckBoxMenuItem("King Tiles");
-        kingTiles.addItemListener(new ItemListener() {
-  			@Override public void itemStateChanged(ItemEvent e) {
-  				JCheckBoxMenuItem item = (JCheckBoxMenuItem)e.getItem();
-  				BoardGameController boardGameController = ControllerFactory.instance().get(BoardGameController.class);
-  				boardGameController.debuggerSelection(Operation.Debugger_KingTiles, item.isSelected());
-  			}
-  		});
-        
-        // Add options to the menu
-        debuggerMenu.add(tileOwners);
-        debuggerMenu.add(tileCoordinates);
-        debuggerMenu.add(kingTiles);
-        debuggerMenu.add(debuggerMenu);	
-        menu.add(debuggerMenu);	
+	private void PopulateDeveloperMenu(JMenuBar menu) {
+		// Create the file menu 
+		JMenu developerMenu = new JMenu("Developer");
+		developerMenu.setMnemonic('D');
+			        
+	    // Set the event handler
+	    // TODO - this needs to run a special new game
+	    // TODO - should we use a builder here?
+	    // TODO - we need to design how this will look
+	    JMenuItem developerMenuNew = new JMenuItem(new AbstractAction(ResourcesManager.Get(Resources.NewGame)) {       	
+			@Override public void actionPerformed(ActionEvent event) {	
+	    		
+				ControllerFactory.instance().destroy();
+				ViewFactory.instance().destroy();
+				getContentPane().removeAll();					
+				
+				BaseView mainWindowView = ViewFactory.instance().getView(ViewType.MainWindowView);
+				mainWindowView.render();
+				add(mainWindowView);
+				
+				validate();						
+			}	
+			
+	    });
+	      
+	    menu.add(developerMenu);
 	}
 
 	/**
