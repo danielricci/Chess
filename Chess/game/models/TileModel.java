@@ -22,7 +22,7 @@
 * IN THE SOFTWARE.
 */
 
-package game.models;
+package models;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,8 +31,8 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.Vector;
 
-import game.interfaces.IDestructable;
-import game.models.PlayerModel.Team.Orientation;
+import interfaces.IDestructable;
+import models.PlayerModel.Team.Orientation;
 
 /** 
  * A tile model represents a tile that knows about what it currently holds on itself

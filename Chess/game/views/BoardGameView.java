@@ -22,7 +22,7 @@
 * IN THE SOFTWARE.
 */
 
-package game.views;
+package views;
 
 import java.awt.Color;
 import java.awt.GridBagConstraints;
@@ -33,14 +33,14 @@ import java.util.Vector;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
-import engine.factories.ControllerFactory;
-import game.controllers.BoardGameController;
-import game.controllers.PlayerController;
-import game.controllers.TileController;
-import game.models.GameModel;
-import game.models.PlayerModel;
-import game.models.TileModel;
-import game.models.TileModel.NeighborPosition;
+import controllers.BoardGameController;
+import controllers.PlayerController;
+import controllers.TileController;
+import factories.ControllerFactory;
+import models.GameModel;
+import models.PlayerModel;
+import models.TileModel;
+import models.TileModel.NeighborPosition;
 
 @SuppressWarnings("serial")
 public final class BoardGameView extends BaseView {

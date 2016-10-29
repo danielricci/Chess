@@ -22,7 +22,7 @@
 * IN THE SOFTWARE.
 */
 
-package game.views;
+package views;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -34,12 +34,12 @@ import java.util.Observable;
 
 import javax.swing.JLabel;
 
-import game.controllers.TileController;
-import game.models.GameModel;
-import game.models.GameModel.Operation;
-import game.models.PlayerModel;
-import game.models.TileModel;
-import game.models.TileModel.Selection;
+import controllers.TileController;
+import models.GameModel;
+import models.PlayerModel;
+import models.TileModel;
+import models.GameModel.Operation;
+import models.TileModel.Selection;
 
 public class TileView extends BaseView {
 

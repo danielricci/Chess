@@ -22,7 +22,7 @@
 * IN THE SOFTWARE.
 */
 
-package game.models;
+package models;
 
 import java.awt.Image;
 

@@ -22,9 +22,9 @@
 * IN THE SOFTWARE.
 */
 
-package game.controllers;
+package controllers;
 
-import game.interfaces.IDestructable;
+import interfaces.IDestructable;
 
 public abstract class BaseController implements IDestructable  {
 	@Override public abstract void destroy();

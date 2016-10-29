@@ -22,14 +22,14 @@
 * IN THE SOFTWARE.
 */
 
-package engine.factories;
+package factories;
 
 import java.util.Vector;
 
-import game.interfaces.IDestructable;
-import game.views.BaseView;
-import game.views.BoardGameView;
-import game.views.MainWindowView;
+import interfaces.IDestructable;
+import views.BaseView;
+import views.BoardGameView;
+import views.MainWindowView;
 
 public class ViewFactory implements IDestructable {
 

@@ -1,4 +1,4 @@
-package engine.managers;
+package managers;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -69,7 +69,7 @@ public final class ResourcesManager {
 	 */
 	public static String Get(Resources resource)
 	{
-		ResourceBundle messages = ResourceBundle.getBundle("resources", Instance()._locale);
+		ResourceBundle messages = ResourceBundle.getBundle("internal.resources", Instance()._locale);
 		return messages.getString(resource.toString().toLowerCase());			
 	}
 }

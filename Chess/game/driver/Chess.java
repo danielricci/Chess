@@ -1,3 +1,6 @@
+package driver;
+import managers.ViewManager;
+
 /**
 * Daniel Ricci <thedanny09@gmail.com>
 *
@@ -22,21 +25,15 @@
 * IN THE SOFTWARE.
 */
 
-package game.models;
-
-public interface IPlayableTile {
-	
-	/**
-	 * Indicates if the title can be played on, which means we can go onto this tile
-	 * and do something with what's on it
-	 * @return boolean
-	 */
-	public boolean isPlayable();
-	
-	/**
-	 * Indicates if the tile is movable to, so you would take a component
-	 * and you would move that component to this implemented tile
-	 * @return boolean
-	 */
-	public boolean isMovableTo();	
+public final class Chess {
+	public static void main(String[] args) {
+		System.out.println("Starting Game");
+        try {
+        	ViewManager.Instance().SetEnvironmentVariables(args);
+			ViewManager.Instance().setVisible(true);
+        } catch (Exception exception) {
+        	exception.printStackTrace();
+        }
+        System.out.println("Ending Game");
+    }
 }

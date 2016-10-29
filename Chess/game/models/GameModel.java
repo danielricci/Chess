@@ -22,7 +22,7 @@
 * IN THE SOFTWARE.
 */
 
-package game.models;
+package models;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -31,7 +31,7 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Queue;
 
-import game.controllers.BaseController;
+import controllers.BaseController;
 
 public class GameModel extends Observable
 {

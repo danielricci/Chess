@@ -22,7 +22,7 @@
 * IN THE SOFTWARE.
 */
 
-package game.controllers;
+package controllers;
 
 import java.awt.Color;
 import java.awt.Image;
@@ -30,12 +30,12 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.Vector;
 
-import engine.factories.ControllerFactory;
-import game.models.GameModel.Operation;
-import game.models.PlayerModel;
-import game.models.TileModel;
-import game.models.TileModel.NeighborPosition;
-import game.models.TileModel.Selection;
+import factories.ControllerFactory;
+import models.PlayerModel;
+import models.TileModel;
+import models.GameModel.Operation;
+import models.TileModel.NeighborPosition;
+import models.TileModel.Selection;
 
 
 public class TileController extends BaseController {

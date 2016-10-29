@@ -22,7 +22,7 @@
 * IN THE SOFTWARE.
 */
 
-package game.models;
+package models;
 
 import java.awt.Color;
 import java.awt.Image;
@@ -31,8 +31,8 @@ import java.util.Map;
 import java.util.Observer;
 import java.util.Vector;
 
-import game.controllers.TileController;
-import game.models.PlayerModel.Team.Orientation;
+import controllers.TileController;
+import models.PlayerModel.Team.Orientation;
 
 public final class PlayerModel extends GameModel {
 

@@ -22,7 +22,7 @@
 * IN THE SOFTWARE.
 */
 
-package engine.managers;
+package managers;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -43,11 +43,11 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
-import engine.factories.ControllerFactory;
-import engine.factories.ViewFactory;
-import engine.factories.ViewFactory.ViewType;
-import engine.managers.ResourcesManager.Resources;
-import game.views.BaseView;
+import factories.ControllerFactory;
+import factories.ViewFactory;
+import factories.ViewFactory.ViewType;
+import managers.ResourcesManager.Resources;
+import views.BaseView;
 
 public final class ViewManager extends JFrame {
 
@@ -101,7 +101,7 @@ public final class ViewManager extends JFrame {
 	 */
 	public void SetEnvironmentVariables(String[] args) {
 		for(String arg : args)
-		{
+		{ 
 			_environmentArgs.add(arg.toLowerCase());	
 		}
 	}
@@ -230,6 +230,7 @@ public final class ViewManager extends JFrame {
 			
 	    });
 	      
+	    developerMenu.add(developerMenuNew);
 	    menu.add(developerMenu);
 	}
 

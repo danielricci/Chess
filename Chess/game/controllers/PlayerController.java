@@ -22,15 +22,15 @@
 * IN THE SOFTWARE.
 */
 
-package game.controllers;
+package controllers;
 
 import java.util.Collections;
 import java.util.Observer;
 import java.util.SortedSet;
 import java.util.Vector;
 
-import game.models.PlayerModel;
-import game.models.TileModel;
+import models.PlayerModel;
+import models.TileModel;
 
 public class PlayerController extends BaseController {
 

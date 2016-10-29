@@ -1,7 +1,3 @@
-package game;
-
-import engine.managers.ViewManager;
-
 /**
 * Daniel Ricci <thedanny09@gmail.com>
 *
@@ -26,16 +22,28 @@ import engine.managers.ViewManager;
 * IN THE SOFTWARE.
 */
 
-public final class Chess {
-	public static void main(String[] args) {
-		System.out.println("Starting Game");
-        try {
-        	ViewManager.Instance().SetEnvironmentVariables(args);
-			ViewManager.Instance().setVisible(true);
-        } catch (Exception exception) {
-        	exception.printStackTrace();
-        }
-        
-        System.out.println("Ending Game");
-    }
+package views;
+
+import java.awt.BorderLayout;
+import java.util.Observable;
+
+import factories.ViewFactory;
+import factories.ViewFactory.ViewType;
+import models.GameModel;
+
+@SuppressWarnings("serial")
+public final class MainWindowView extends BaseView {
+	@Override public void render() {
+		setLayout(new BorderLayout());
+		BaseView boardGameView = ViewFactory.instance().getView(ViewType.BoardGameView);
+		boardGameView.render();
+		add(boardGameView);
+	}
+
+	@Override protected void registerListeners() {		
+	}
+
+	@Override public void destroy() {
+		removeAll();
+	}
 }

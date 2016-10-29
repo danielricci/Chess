@@ -22,28 +22,21 @@
 * IN THE SOFTWARE.
 */
 
-package game.views;
+package models;
 
-import java.awt.BorderLayout;
-import java.util.Observable;
-
-import engine.factories.ViewFactory;
-import engine.factories.ViewFactory.ViewType;
-import game.models.GameModel;
-
-@SuppressWarnings("serial")
-public final class MainWindowView extends BaseView {
-	@Override public void render() {
-		setLayout(new BorderLayout());
-		BaseView boardGameView = ViewFactory.instance().getView(ViewType.BoardGameView);
-		boardGameView.render();
-		add(boardGameView);
-	}
-
-	@Override protected void registerListeners() {		
-	}
-
-	@Override public void destroy() {
-		removeAll();
-	}
+public interface IPlayableTile {
+	
+	/**
+	 * Indicates if the title can be played on, which means we can go onto this tile
+	 * and do something with what's on it
+	 * @return boolean
+	 */
+	public boolean isPlayable();
+	
+	/**
+	 * Indicates if the tile is movable to, so you would take a component
+	 * and you would move that component to this implemented tile
+	 * @return boolean
+	 */
+	public boolean isMovableTo();	
 }

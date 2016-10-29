@@ -22,18 +22,18 @@
 * IN THE SOFTWARE.
 */
 
-package game.controllers;
+package controllers;
 
 import java.util.Observer;
 import java.util.Vector;
 
-import engine.factories.ControllerFactory;
-import engine.managers.ViewManager;
-import game.models.GameModel.Operation;
-import game.models.PlayerModel;
-import game.models.PlayerPiece;
-import game.models.TileModel;
-import game.models.TileModel.Selection;
+import factories.ControllerFactory;
+import managers.ViewManager;
+import models.PlayerModel;
+import models.PlayerPiece;
+import models.TileModel;
+import models.GameModel.Operation;
+import models.TileModel.Selection;
 
 public class BoardGameController extends BaseController {
 
