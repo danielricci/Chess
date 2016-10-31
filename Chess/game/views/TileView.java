@@ -36,9 +36,8 @@ import javax.swing.JLabel;
 
 import controllers.TileController;
 import models.GameModel;
-import models.PlayerModel;
-import models.TileModel;
 import models.GameModel.Operation;
+import models.TileModel;
 import models.TileModel.Selection;
 
 public class TileView extends BaseView {
@@ -168,17 +167,20 @@ public class TileView extends BaseView {
 		_tileCoordinatesLabel.setVisible(true);
 		add(_tileCoordinatesLabel);
 		
-		// Set the image of this tile
-		_image = controller.getTileImage();
-		
 		setBackground(_defaultColor);
+		
+		/* 
+		 * TODO Enable this when it is time to run with real pieces
+		_image = controller.getTileImage();
 		repaint();
+		 */
 	}
 	
 	@Override public void refresh(GameModel gameModel) {
 		
 		super.refresh(gameModel);
 		
+		/* TODO Enable this when it is time to run with real pieces
 		TileModel model = (TileModel)gameModel;
 		PlayerModel player = model.getPlayer();
 
@@ -190,6 +192,7 @@ public class TileView extends BaseView {
 		}
 		
 		repaint();
+		*/
 	}
 
 	@Override public void destroy() {
