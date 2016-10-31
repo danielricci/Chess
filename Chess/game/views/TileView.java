@@ -37,6 +37,7 @@ import javax.swing.JLabel;
 import controllers.TileController;
 import models.GameModel;
 import models.GameModel.Operation;
+import models.PlayerModel;
 import models.TileModel;
 import models.TileModel.Selection;
 
