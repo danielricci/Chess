@@ -249,15 +249,11 @@ public final class ViewManager extends JFrame {
 			        
 	    JMenuItem windowMenuResetPosition = new JMenuItem(new AbstractAction(ResourcesManager.Get(Resources.ResetPosition)) {       	
 			@Override public void actionPerformed(ActionEvent event) {	
-	    		
-				ControllerFactory.instance().destroy();
-				ViewFactory.instance().destroy();
-				getContentPane().removeAll();					
-				
-				BaseView mainWindowView = ViewFactory.instance().getView(ViewType.MainWindowView);
-				mainWindowView.render();
-				add(mainWindowView);
-				
+				final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+				setLocation(
+					screenSize.width / 2 - getWidth() / 2,
+					screenSize.height / 2 - getHeight() / 2
+				);
 				validate();						
 			}	
 			
