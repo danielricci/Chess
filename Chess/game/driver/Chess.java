@@ -27,13 +27,11 @@ import managers.ViewManager;
 
 public final class Chess {
 	public static void main(String[] args) {
-		System.out.println("Starting Game");
         try {
         	ViewManager.Instance().SetEnvironmentVariables(args);
 			ViewManager.Instance().setVisible(true);
         } catch (Exception exception) {
         	exception.printStackTrace();
         }
-        System.out.println("Ending Game");
     }
 }

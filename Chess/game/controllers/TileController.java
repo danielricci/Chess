@@ -26,15 +26,17 @@ package controllers;
 
 import java.awt.Color;
 import java.awt.Image;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.Vector;
 
 import factories.ControllerFactory;
+import models.GameModel.Operation;
 import models.PlayerModel;
 import models.TileModel;
-import models.GameModel.Operation;
-import models.TileModel.NeighborPosition;
+import models.TileModel.NeighborXPosition;
+import models.TileModel.NeighborYPosition;
 import models.TileModel.Selection;
 
 
@@ -51,8 +53,8 @@ public class TileController extends BaseController {
 		return _tile;
 	}
 	
-	public void setNeighbors(NeighborPosition neighborPosition, TileModel... neighborTiles) {	
-		_tile.setNeighbors(neighborPosition, neighborTiles);
+	public void setNeighbors(NeighborYPosition neighborYPosition, Entry<NeighborXPosition, TileModel>... neighborTiles) {	
+		_tile.setNeighbors(neighborYPosition, neighborTiles);
 	}
 
 	public void processTileSelected() {
