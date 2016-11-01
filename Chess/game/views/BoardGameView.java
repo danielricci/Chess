@@ -27,6 +27,7 @@ package views;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Observable;
 import java.util.Vector;
 
@@ -40,7 +41,8 @@ import factories.ControllerFactory;
 import models.GameModel;
 import models.PlayerModel;
 import models.TileModel;
-import models.TileModel.NeighborPosition;
+import models.TileModel.NeighborXPosition;
+import models.TileModel.NeighborYPosition;
 
 @SuppressWarnings("serial")
 public final class BoardGameView extends BaseView {
@@ -101,7 +103,6 @@ public final class BoardGameView extends BaseView {
 		int boardDimensions = boardGameController.getBoardDimensions();		
 		Vector<Vector<TileModel>> tiles = new Vector<>();
 
-		int colorOffset = 0;
 		for (int row = 0; row < boardDimensions; ++row) {
 			
 			PlayerModel player = null;
@@ -111,16 +112,16 @@ public final class BoardGameView extends BaseView {
 				player = playerController.getPlayer(1);
 			}
 			
+			// TODO - we should not be doing this amount of work within a view!
+			// TODO - move this to the controller!
 			Vector<TileModel> tilesRow = new Vector<>();
-			for (int col = 0;  col < boardDimensions; ++col) {
+			for (int col = 0, colorOffset = row % 2;  col < boardDimensions; ++col, colorOffset = (++colorOffset % 2 == 0 ? 0 : 1)) {
 
 				// Set our grid-bad-constraints and create the game tile
 				gbc.gridx = col;
 				gbc.gridy = row;
 				
 				// Create the tile and populate its contents
-				
-				colorOffset = (++colorOffset % 2 == 0 ? 0 : 1);
 				TileView view = new TileView(colorOffset == 0 ? firstColor : secondColor);
 				TileModel tile = boardGameController.populateTile(player, row == 0 || row == boardDimensions - 1, view, this);
 				
@@ -133,51 +134,49 @@ public final class BoardGameView extends BaseView {
 				tilesRow.add(tile);
 			}
 			
-			// Ensures that the next row starts with an offset of the previous rows color
-			colorOffset = (++colorOffset % 2 == 0 ? 0 : 1);
+			// TODO - we should put this somewhere else?
+			// TODO - we need to remove the dependency of models, we should only really be calling controllers!
+			// Populate the row neighbors
+			for(int i = 0; i < tilesRow.size(); ++i)
+			{
+				TileModel tile = tilesRow.get(i);
+				tile.setNeighbors(
+					NeighborYPosition.NEUTRAL,
+					new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.LEFT, i - 1 < 0 ? null : tilesRow.get(i - 1)),
+					new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.NEUTRAL, tile),
+					new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.RIGHT, i + 1 == tilesRow.size() ? null : tilesRow.get(i + 1))
+				);
+			}
+		
 
-			if(!tiles.isEmpty()) {
+			// TODO - SET TOP AND BOTTOM HERE
+			// As long as we have one row in our buffer, try and connect it to what has currently
+			// been generated
+			if(tiles.size() > 0) {
+				
+				Vector<TileModel> previousRow = tiles.get(tiles.size() - 1);	
+				
 				// Get the last row that has been rendered and link them together by 
 				// reference each others top and bottom.  Once this block gets executed
 				// they will be able to reference each other as neighbors
-				Vector<TileModel> previous = tiles.get(tiles.size() - 1);
-				for(int index = 0, oddRow = index, evenRow = index + 1; 
+				/*for(int index = 0, oddRow = index, evenRow = index + 1; 
 					index < previous.size(); 
 					++index, oddRow = index - 1, evenRow = Math.min(index + 1, previous.size() - 1)) 
 				{
-					if(row % 2 == 0) {
-						
-						TileModel[] neighbors = new TileModel[] {
-							previous.get(index),
-							evenRow == index ? previous.get(index) : previous.get(evenRow)
-						};
+					TileModel[] neighbors = new TileModel[] {
+						previous.get(index),
+						oddRow == index ? previous.get(index) : previous.get(oddRow)
+					};
 					
-						tilesRow.get(index).setNeighbors(
-							NeighborPosition.TOP,
-							neighbors
-						);
-						
-						for(TileModel neighbor : neighbors) {
-							neighbor.setNeighbors(NeighborPosition.BOTTOM, tilesRow.get(index));
-						}
+					tilesRow.get(index).setNeighbors(
+						NeighborYPosition.TOP,
+						neighbors
+					);
+					
+					for(TileModel neighbor : neighbors) {
+						neighbor.setNeighbors(NeighborYPosition.BOTTOM, tilesRow.get(index));
 					}
-					else {
-						
-						TileModel[] neighbors = new TileModel[] {
-							previous.get(index),
-							oddRow == index ? previous.get(index) : previous.get(oddRow)
-						};
-						
-						tilesRow.get(index).setNeighbors(
-							NeighborPosition.TOP,
-							neighbors
-						);
-						
-						for(TileModel neighbor : neighbors) {
-							neighbor.setNeighbors(NeighborPosition.BOTTOM, tilesRow.get(index));
-						}
-					}
-				}
+				}*/
 			}
 			tiles.add(tilesRow);
 		}

@@ -26,12 +26,12 @@ package models;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Observer;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.Vector;
 
-import interfaces.IDestructable;
 import models.PlayerModel.Team.Orientation;
 
 /** 
@@ -46,7 +46,7 @@ public class TileModel extends GameModel implements IPlayableTile, Comparable<Ti
 	private static int IDENTIFIER;
 	private final int _identifier = ++IDENTIFIER;
     
-	private final Map<NeighborPosition, SortedSet<TileModel>> _neighbors = new HashMap<>();
+	private final Map<NeighborYPosition, Map<NeighborXPosition, TileModel>> _neighbors = new HashMap<>();
 		
 	private final boolean _isKingTile;
 	
@@ -57,25 +57,51 @@ public class TileModel extends GameModel implements IPlayableTile, Comparable<Ti
 		None;
 	}
 	
-	public enum NeighborPosition {
-		
+	public enum NeighborXPosition {
 		/**
 		 * Note: Make sure that agnostic values follow non-agnostic ones
 		 */
-		TOP				(1 << 0, false),
-		TOP_AGNOSTIC	(1 << 1, true),
-		BOTTOM			(1 << 2, false),
-		BOTTOM_AGNOSTIC	(1 << 3, true);
+		LEFT	(1 << 0, false),
+		LEFT_AGNOSTIC(1 << 1, true),
+		
+		RIGHT (1 << 2, false),
+		RIGHT_AGNOSTIC	(1 << 3, true),
+		
+		NEUTRAL(1 << 4, false),
+		NEUTRAL_AGNOSTIC(1 << 5, true);
 	
 		private final int _value;
 		private final boolean _agnostic;
 		
-		private NeighborPosition(int value, boolean agnostic ) {
+		private NeighborXPosition(int value, boolean agnostic) {
+			_value = value;
+			_agnostic = agnostic;
+		}
+	}
+	
+	public enum NeighborYPosition {
+		
+		/**
+		 * Note: Make sure that agnostic values follow non-agnostic ones
+		 */
+		TOP	(1 << 0, false),
+		TOP_AGNOSTIC(1 << 1, true),
+		
+		BOTTOM (1 << 2, false),
+		BOTTOM_AGNOSTIC	(1 << 3, true),
+		
+		NEUTRAL(1 << 4, false),
+		NEUTRAL_AGNOSTIC(1 << 5, true);
+	
+		private final int _value;
+		private final boolean _agnostic;
+		
+		private NeighborYPosition(int value, boolean agnostic) {
 			_value = value;
 			_agnostic = agnostic;
 		}
 		
-		protected static NeighborPosition flip(NeighborPosition pos) {
+		protected static NeighborYPosition flip(NeighborYPosition pos) {
 			switch(pos) {
 			case BOTTOM:
 				return TOP;
@@ -89,12 +115,12 @@ public class TileModel extends GameModel implements IPlayableTile, Comparable<Ti
 		/**
 		 * Normalizes a position by removing its agnostic value
 		 */
-		protected static NeighborPosition fromAgnostic(NeighborPosition position) {
+		protected static NeighborYPosition fromAgnostic(NeighborYPosition position) {
 			switch(position) {
 			case BOTTOM_AGNOSTIC:
 			case TOP_AGNOSTIC:
 				int val = position._value >> 1;
-				for(NeighborPosition pos : NeighborPosition.values()) {
+				for(NeighborYPosition pos : NeighborYPosition.values()) {
 					if(pos._value == val) {
 						return pos;
 					}
@@ -116,18 +142,18 @@ public class TileModel extends GameModel implements IPlayableTile, Comparable<Ti
 			return _agnostic;
 		}
 		
-		protected static NeighborPosition convertOrientation(Orientation orientation) {
+		protected static NeighborYPosition convertOrientation(Orientation orientation) {
 			return orientation == Orientation.UP 
-				? NeighborPosition.TOP 
-				: NeighborPosition.BOTTOM;
+				? NeighborYPosition.TOP 
+				: NeighborYPosition.BOTTOM;
 		}
 		
-		protected static NeighborPosition toAgnostic(NeighborPosition position) {
+		protected static NeighborYPosition toAgnostic(NeighborYPosition position) {
 			switch(position) {
 			case BOTTOM:
 			case TOP:
 				int val = position._value << 1;
-				for(NeighborPosition pos : NeighborPosition.values()) {
+				for(NeighborYPosition pos : NeighborYPosition.values()) {
 					if(pos._value == val) {
 						return pos;
 					}
@@ -150,23 +176,31 @@ public class TileModel extends GameModel implements IPlayableTile, Comparable<Ti
     public TileModel(PlayerModel player, boolean isKingTile, Observer... observers) {
 		super(observers);
 		
+		// Pre-populate the neighbors with the right placeholders
+		_neighbors.put(NeighborYPosition.BOTTOM, new HashMap<NeighborXPosition, TileModel>());
+		_neighbors.put(NeighborYPosition.NEUTRAL, new HashMap<NeighborXPosition, TileModel>());
+		_neighbors.put(NeighborYPosition.TOP, new HashMap<NeighborXPosition, TileModel>());
+		
 		_player = player;
 		_isKingTile = isKingTile;
-		System.out.println("Tile " + _identifier + " is " + (isKingTile ? " a king " : "not a king"));
+		//System.out.println("Tile " + _identifier + " is " + (isKingTile ? " a king " : "not a king"));
 		if(player != null) {
 			player.addTilePiece(this);
 		}
 		doneUpdating();
 	}
    
-	private SortedSet<TileModel> getNeighbors(NeighborPosition position) {
+	private SortedSet<TileModel> getNeighbors(NeighborYPosition position) {
 		
+		System.out.println("IMPLEMENT ME - getNeighbors(NeighborYPosition position))");
+		return null;
+		/*
 		if(position.isAgnostic()) {
-			position = NeighborPosition.fromAgnostic(position);
+			position = NeighborYPosition.fromAgnostic(position);
 		}
 		else if(_player.getPlayerOrientation() == Orientation.DOWN) {
 			// This is done to normalize the neighbor concept
-			position = NeighborPosition.flip(position);
+			position = NeighborYPosition.flip(position);
 		}
 		
 		SortedSet<TileModel> tiles = new TreeSet<>();
@@ -174,38 +208,47 @@ public class TileModel extends GameModel implements IPlayableTile, Comparable<Ti
 			tiles.addAll(_neighbors.get(position));
 		}
 		return tiles;
+		*/
 	}
 	public SortedSet<TileModel> getBackwardNeighbors() {
-		SortedSet<TileModel> neighbors = new TreeSet<>();
-		NeighborPosition neighborPosition = NeighborPosition.BOTTOM;
+		System.out.println("IMPLEMENT ME - getBackwardNeighbors()");
+		return null;
+		
+		/*SortedSet<TileModel> neighbors = new TreeSet<>();
+		NeighborYPosition neighborPosition = NeighborYPosition.BOTTOM;
 		
 		if(_player.getPlayerOrientation() == Orientation.DOWN)
 		{
-			neighborPosition = NeighborPosition.flip(neighborPosition);
+			neighborPosition = NeighborYPosition.flip(neighborPosition);
 		}
 		
 		if(_neighbors.containsKey(neighborPosition)) {
 			neighbors.addAll(_neighbors.get(neighborPosition));
 		}
 		
-		return neighbors;				
+		return neighbors;
+		*/				
 	}
 	
 	public SortedSet<TileModel> getForwardNeighbors() {
+		System.out.println("IMPLEMENT ME - getForwardNeighbors()");
+		return null;
 		
+		/*
 		SortedSet<TileModel> neighbors = new TreeSet<>();
 		
-		NeighborPosition neighborPosition = NeighborPosition.TOP;
+		NeighborYPosition neighborPosition = NeighborYPosition.TOP;
 		if(_player != null && _player.getPlayerOrientation() == Orientation.DOWN)
 		{
-			neighborPosition = NeighborPosition.flip(neighborPosition);
+			neighborPosition = NeighborYPosition.flip(neighborPosition);
 		}
 		
 		if(_neighbors.containsKey(neighborPosition)) {
 			neighbors.addAll(_neighbors.get(neighborPosition));
 		}
 		
-		return neighbors;		
+		return neighbors;
+		*/		
 	}
 	 
 	public void setSelected(Operation operation, Selection selection, boolean flushBuffer) {
@@ -219,18 +262,26 @@ public class TileModel extends GameModel implements IPlayableTile, Comparable<Ti
 	
 	public void setSelected(Operation operation, Selection selection) { setSelected(operation, selection, false); }
 		
-	public void setNeighbors(NeighborPosition neighborPosition, TileModel... neighborTiles) {	
 
-		SortedSet<TileModel> tiles = new TreeSet<>();
-		for(TileModel neighborTile : neighborTiles) {
-			tiles.add(neighborTile);
-		}
-		
-		if(_neighbors.containsKey(neighborPosition)) {
-			_neighbors.get(neighborPosition).addAll(tiles);
-		} 
-		else {
-			_neighbors.put(neighborPosition, tiles);	
+	/**
+	 * Sets the neighbors specified to this model
+	 * 
+	 * @param neighborYPosition The Y-Axis positioning of the neighbor, refer to documentation for this if need be
+	 * @param neighborTiles The neighboring tiles to add to this model
+	 * 
+	 */
+	@SafeVarargs
+	public final void setNeighbors(NeighborYPosition neighborYPosition, Entry<NeighborXPosition, TileModel>... neighborTiles) {	
+
+		// Set the reference to the mappings for the neighbors to this model
+		if(_neighbors.containsKey(neighborYPosition)) {
+			_neighbors.get(neighborYPosition).clear();
+
+			// Go through the passed in contents and add use it to populate the neighbors of this model
+			for (Entry<NeighborXPosition, TileModel> neighborTile : neighborTiles)
+			{
+				_neighbors.get(neighborYPosition).put(neighborTile.getKey(), neighborTile.getValue());
+			}
 		}
 	}
 	
@@ -288,9 +339,9 @@ public class TileModel extends GameModel implements IPlayableTile, Comparable<Ti
 	
 	public SortedSet<TileModel> getAllNeighbors() {
 		SortedSet<TileModel> allNeighbours = new TreeSet<>(
-			getNeighbors(NeighborPosition.TOP)
+			getNeighbors(NeighborYPosition.TOP)
 		);
-		allNeighbours.addAll(getNeighbors(NeighborPosition.BOTTOM));
+		allNeighbours.addAll(getNeighbors(NeighborYPosition.BOTTOM));
 		
 		return allNeighbours;
 	}
@@ -321,16 +372,16 @@ public class TileModel extends GameModel implements IPlayableTile, Comparable<Ti
 			return capturablePositions;
 		}
 		
-		NeighborPosition position = NeighborPosition.convertOrientation(_player.getPlayerOrientation());
+		NeighborYPosition position = NeighborYPosition.convertOrientation(_player.getPlayerOrientation());
 		populateCapturableTiles(capturer, capturablePositions, capturer.getForwardNeighbors(), position);
 		if(capturer.getPlayer().getPlayerPiece(capturer).getIsKinged()) {
-			populateCapturableTiles(capturer, capturablePositions, capturer.getBackwardNeighbors(), NeighborPosition.flip(position));
+			populateCapturableTiles(capturer, capturablePositions, capturer.getBackwardNeighbors(), NeighborYPosition.flip(position));
 		}
 		
 		return capturablePositions;
 	}
 	
-	private void populateCapturableTiles(TileModel capturer, Vector<TileModel> outCapturablePositions, SortedSet<TileModel> capturerNeighbors, NeighborPosition position) {
+	private void populateCapturableTiles(TileModel capturer, Vector<TileModel> outCapturablePositions, SortedSet<TileModel> capturerNeighbors, NeighborYPosition position) {
 		int index = -1;
 		if(capturerNeighbors.contains(this)) {
 			index = capturerNeighbors.headSet(this).size();
@@ -340,8 +391,8 @@ public class TileModel extends GameModel implements IPlayableTile, Comparable<Ti
 			return;
 		}
 			
-		position = NeighborPosition.flip(position);
-		position = NeighborPosition.toAgnostic(position);
+		position = NeighborYPosition.flip(position);
+		position = NeighborYPosition.toAgnostic(position);
 		
 		Object[] neighborObjects = getNeighbors(position).toArray();
 		if(neighborObjects.length > 1) {

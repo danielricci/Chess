@@ -183,6 +183,9 @@ public final class ViewManager extends JFrame {
 			}	
 			
         });
+        
+        // TODO - when we want to enable to actual game, we need to enable this
+        fileMenuNew.setEnabled(false);
 
         // Set the shortcut
         fileMenuNew.setAccelerator(KeyStroke.getKeyStroke('N', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
