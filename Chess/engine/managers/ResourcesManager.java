@@ -34,7 +34,8 @@ public final class ResourcesManager {
 		ExitMenu,
 		HelpMenu,
 		AboutMenu,
-		NewGame;
+		NewGame, 
+		ResetPosition;
 	}
 	
 	/**

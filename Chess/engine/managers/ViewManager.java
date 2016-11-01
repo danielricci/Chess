@@ -146,6 +146,7 @@ public final class ViewManager extends JFrame {
 		if(_environmentArgs.contains("-developer"))
 		{
 			PopulateDeveloperMenu(menu);
+			PopulateWindowMenu(menu);
 			setTitle(ResourcesManager.Get(Resources.ChessTitleDeveloper));
 		}
 		
@@ -206,7 +207,6 @@ public final class ViewManager extends JFrame {
 	 * @param menu The menu bar to attach the functionality onto
 	 */
 	private void PopulateDeveloperMenu(JMenuBar menu) {
-		// Create the file menu 
 		JMenu developerMenu = new JMenu("Developer");
 		developerMenu.setMnemonic('D');
 			        
@@ -232,6 +232,36 @@ public final class ViewManager extends JFrame {
 	      
 	    developerMenu.add(developerMenuNew);
 	    menu.add(developerMenu);
+	}
+	
+	/**
+	 * Adds the 'Developer' menu and its functionality to the specified menu bar
+	 * 
+	 * @param menu The menu bar to attach the functionality onto
+	 */
+	private void PopulateWindowMenu(JMenuBar menu) {
+
+		JMenu windowMenu = new JMenu("Window");
+		windowMenu.setMnemonic('W');
+			        
+	    JMenuItem windowMenuResetPosition = new JMenuItem(new AbstractAction(ResourcesManager.Get(Resources.ResetPosition)) {       	
+			@Override public void actionPerformed(ActionEvent event) {	
+	    		
+				ControllerFactory.instance().destroy();
+				ViewFactory.instance().destroy();
+				getContentPane().removeAll();					
+				
+				BaseView mainWindowView = ViewFactory.instance().getView(ViewType.MainWindowView);
+				mainWindowView.render();
+				add(mainWindowView);
+				
+				validate();						
+			}	
+			
+	    });
+	      
+	    windowMenu.add(windowMenuResetPosition);
+	    menu.add(windowMenu);
 	}
 
 	/**
