@@ -264,7 +264,7 @@ public final class ViewManager extends JFrame {
 				boardGameController.debuggerSelection(Operation.Debugger_HighlightNeighbors, item.isSelected());
 			}
 		});       	
-	    developerMenuHighlightNeighbors.setEnabled(false);  
+	    //developerMenuHighlightNeighbors.setEnabled(false);  
 	    
 	    
 	    developerMenu.add(developerMenuNew);

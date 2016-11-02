@@ -54,6 +54,23 @@ public class TileView extends BaseView {
 	private Image _image;
 	
 	
+	/* TODO - Implement Me
+	public abstract class BaseMouseListener implements ActionListener{
+
+		private boolean mouseEntered;
+		private boolean mouseExited;
+		private boolean mouseReleased;
+
+		protected abstract void doPerformAction(ActionEvent e);
+
+		@Override public final void actionPerformed(ActionEvent e){
+		    if(active){
+		        doPerformAction(e);
+		    }
+		}
+	}*/
+	
+	
 	public TileView(Color background)
 	{
 		super();
@@ -90,7 +107,25 @@ public class TileView extends BaseView {
 		updateSelectedCommand(color);
 		repaint();		
 	}
-
+	
+	private void highlightNeighbors(TileModel tile, Operation operation) {
+		boolean result = (boolean)tile.getCachedData(operation);
+		if(result)
+		{
+			addMouseListener(new MouseAdapter() {  		    		
+	    		@Override public void mouseEntered(MouseEvent e) {
+	    			System.out.print("Mouse entered");
+	    		}
+	    		@Override public void mouseExited(MouseEvent e) {
+	    			System.out.print("Mouse exited");
+	    		}
+			});	
+		}
+		else 
+		{			
+		}
+	}
+	
 	private void updateSelectedCommand(Color color) {
     	setBackground(color);
     }
@@ -142,7 +177,7 @@ public class TileView extends BaseView {
 				kingTileVisibility(tileModel, operation);
 				break;
 			case Debugger_HighlightNeighbors:
-				System.out.println("Implement me!!!!");
+				highlightNeighbors(tileModel, operation);
 				break;
 			case Refresh:
 				break;
