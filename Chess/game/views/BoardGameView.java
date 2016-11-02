@@ -79,6 +79,10 @@ public final class BoardGameView extends BaseView {
 			case Refresh:
 			case ShowGuides:
 				break;
+			case Debugger_HighlightNeighbors:
+				break;
+			default:
+				break;
 			}
 		}
 	};
@@ -148,39 +152,54 @@ public final class BoardGameView extends BaseView {
 				);
 			}
 		
-
-			// TODO - SET TOP AND BOTTOM HERE
 			// As long as we have one row in our buffer, try and connect it to what has currently
 			// been generated
-			if(tiles.size() > 0) {
+			// TODO - can we parallelize this?
+			if(tiles.size() > 1) {
+
+				// Grab the most recently populated two elements to populate their neighbors
+				Vector<TileModel> firstRow = tiles.get(tiles.size() - 2);
+				Vector<TileModel> secondRow = tiles.lastElement();
 				
-				Vector<TileModel> previousRow = tiles.get(tiles.size() - 1);	
+				// Attempts to get the row before the first row being selected
+				Vector<TileModel> previousFirstRow = tiles.size() > 2 ? tiles.get(tiles.indexOf(firstRow) - 1) : null;
 				
-				// Get the last row that has been rendered and link them together by 
-				// reference each others top and bottom.  Once this block gets executed
-				// they will be able to reference each other as neighbors
-				/*for(int index = 0, oddRow = index, evenRow = index + 1; 
-					index < previous.size(); 
-					++index, oddRow = index - 1, evenRow = Math.min(index + 1, previous.size() - 1)) 
-				{
-					TileModel[] neighbors = new TileModel[] {
-						previous.get(index),
-						oddRow == index ? previous.get(index) : previous.get(oddRow)
-					};
+				// Populate both rows neighbors
+				for(int i = 0; i < firstRow.size(); ++i) {
+					TileModel firstRowElement = firstRow.get(i);
+					TileModel secondRowElement = secondRow.get(i);
 					
-					tilesRow.get(index).setNeighbors(
-						NeighborYPosition.TOP,
-						neighbors
+					// Set the neighbors of the first rows top neighbors
+					firstRowElement.setNeighbors(NeighborYPosition.TOP, 
+						new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.LEFT, previousFirstRow != null && i > 0 ? previousFirstRow.get(i - 1) : null),
+						new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.NEUTRAL, previousFirstRow != null ? previousFirstRow.get(i) : null),
+						new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.RIGHT, previousFirstRow != null && i + 1 < firstRow.size() ? previousFirstRow.get(i + 1) : null)
 					);
 					
-					for(TileModel neighbor : neighbors) {
-						neighbor.setNeighbors(NeighborYPosition.BOTTOM, tilesRow.get(index));
-					}
-				}*/
+					// Set the neighbors of the first rows bottom neighbors
+					firstRowElement.setNeighbors(NeighborYPosition.BOTTOM, 
+						new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.LEFT, i > 0 ? secondRow.get(i - 1) : null),
+						new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.NEUTRAL, secondRowElement),
+						new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.RIGHT, i + 1 < firstRow.size() ? secondRow.get(i + 1) : null)
+					);
+					
+					// Set the neighbors of the second rows top neighbors
+					secondRowElement.setNeighbors(NeighborYPosition.TOP, 
+						new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.LEFT, i > 0 ? firstRow.get(i - 1) : null),
+						new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.NEUTRAL, firstRowElement),
+						new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.RIGHT, i + 1 < firstRow.size() ? firstRow.get(i + 1) : null)
+					);
+					
+					// The bottom neighbors of every second row is initially set to null because the neighbors are not yet known
+					secondRowElement.setNeighbors(NeighborYPosition.BOTTOM,
+						new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.LEFT, null),
+						new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.NEUTRAL, null),
+						new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.RIGHT, null)
+					);				
+				}
 			}
 			tiles.add(tilesRow);
 		}
-		
 		add(_gamePanel);
 	}
 

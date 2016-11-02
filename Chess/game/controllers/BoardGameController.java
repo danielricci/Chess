@@ -28,11 +28,10 @@ import java.util.Observer;
 import java.util.Vector;
 
 import factories.ControllerFactory;
-import managers.ViewManager;
+import models.GameModel.Operation;
 import models.PlayerModel;
 import models.PlayerPiece;
 import models.TileModel;
-import models.GameModel.Operation;
 import models.TileModel.Selection;
 
 public class BoardGameController extends BaseController {

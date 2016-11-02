@@ -37,7 +37,6 @@ import javax.swing.JLabel;
 import controllers.TileController;
 import models.GameModel;
 import models.GameModel.Operation;
-import models.PlayerModel;
 import models.TileModel;
 import models.TileModel.Selection;
 
@@ -141,6 +140,9 @@ public class TileView extends BaseView {
 				break;
 			case Debugger_KingTiles:
 				kingTileVisibility(tileModel, operation);
+				break;
+			case Debugger_HighlightNeighbors:
+				System.out.println("Implement me!!!!");
 				break;
 			case Refresh:
 				break;

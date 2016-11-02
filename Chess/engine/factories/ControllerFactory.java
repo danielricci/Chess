@@ -62,6 +62,10 @@ public class ControllerFactory implements IDestructable {
 		return (T)_controllers.lastElement();
 	}
 
+	public boolean isActive() {
+		return _controllers.size() > 0;
+	}
+	
 	@Override public void destroy() {
 		for(BaseController controller : _controllers) {
 			controller.destroy();

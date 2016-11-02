@@ -35,7 +35,8 @@ public final class ResourcesManager {
 		HelpMenu,
 		AboutMenu,
 		NewGame, 
-		ResetPosition;
+		ResetPosition,
+		HighlightNeighbors;
 	}
 	
 	/**

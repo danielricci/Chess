@@ -24,11 +24,14 @@
 
 package managers;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.HashSet;
@@ -36,17 +39,22 @@ import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 
+import controllers.BoardGameController;
 import factories.ControllerFactory;
 import factories.ViewFactory;
 import factories.ViewFactory.ViewType;
 import managers.ResourcesManager.Resources;
+import models.GameModel.Operation;
 import views.BaseView;
 
 public final class ViewManager extends JFrame {
@@ -212,7 +220,23 @@ public final class ViewManager extends JFrame {
 	private void PopulateDeveloperMenu(JMenuBar menu) {
 		JMenu developerMenu = new JMenu("Developer");
 		developerMenu.setMnemonic('D');
-			        
+		developerMenu.addMenuListener(new MenuListener() {
+			@Override public void menuSelected(MenuEvent arg0) {
+				for(Component component : developerMenu.getMenuComponents()) {
+					if(component instanceof JMenuItem)
+					{
+						// TODO - Custom control for IsVisible, IsEnabled, OnSelected
+						JMenuItem item = (JMenuItem)component;
+					}
+				}
+			}
+
+			@Override public void menuCanceled(MenuEvent e) {
+			}
+
+			@Override public void menuDeselected(MenuEvent e) {
+			}			
+		});
 	    // Set the event handler
 	    // TODO - this needs to run a special new game
 	    // TODO - should we use a builder here?
@@ -230,10 +254,23 @@ public final class ViewManager extends JFrame {
 				
 				validate();						
 			}	
-			
 	    });
-	      
+	    
+	    JCheckBoxMenuItem developerMenuHighlightNeighbors = new JCheckBoxMenuItem(ResourcesManager.Get(Resources.HighlightNeighbors));
+	    developerMenuHighlightNeighbors.addItemListener(new ItemListener() {
+			@Override public void itemStateChanged(ItemEvent e) {
+				JCheckBoxMenuItem item = (JCheckBoxMenuItem)e.getItem();
+				BoardGameController boardGameController = ControllerFactory.instance().get(BoardGameController.class);
+				boardGameController.debuggerSelection(Operation.Debugger_HighlightNeighbors, item.isSelected());
+			}
+		});       	
+	    developerMenuHighlightNeighbors.setEnabled(false);  
+	    
+	    
 	    developerMenu.add(developerMenuNew);
+	    developerMenu.addSeparator();
+	    developerMenu.add(developerMenuHighlightNeighbors);
+	    
 	    menu.add(developerMenu);
 	}
 	
