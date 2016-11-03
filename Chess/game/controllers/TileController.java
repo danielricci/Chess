@@ -26,6 +26,7 @@ package controllers;
 
 import java.awt.Color;
 import java.awt.Image;
+import java.util.Collection;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
@@ -51,6 +52,13 @@ public class TileController extends BaseController {
 	
 	public TileModel tileSelected() {
 		return _tile;
+	}
+	
+    // TODO - can we get this to render by making calls to each individual model
+    // and getting it to render through debug mode
+	public Collection<TileModel> getAllNeighbors()
+	{
+		return _tile.getAllNeighbors();
 	}
 	
 	public void setNeighbors(NeighborYPosition neighborYPosition, Entry<NeighborXPosition, TileModel>... neighborTiles) {	
@@ -215,5 +223,11 @@ public class TileController extends BaseController {
 
 	@Override public void destroy() {
 		_tile = null;		
+	}
+
+	public void setNeighborsSelected(boolean selected) {
+		for(TileModel model : getAllNeighbors()) {
+			model.setSelected(selected ? Operation.ShowGuides : Operation.HideGuides, Selection.None);
+		}
 	}
 }

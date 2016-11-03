@@ -30,6 +30,9 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Observable;
 
 import javax.swing.JLabel;
@@ -48,10 +51,11 @@ public class TileView extends BaseView {
 	private static final Color _guideColor = Color.BLUE;
 	private static final Color _captureColor = Color.GREEN;
 	private static final Color _kingTileColor = Color.CYAN;
-		
-	private final JLabel _tileCoordinatesLabel = new JLabel();
 	
+	private final JLabel _tileCoordinatesLabel = new JLabel();
 	private Image _image;
+	
+	private Map<Operation, MouseListener> _operationHandlers = new HashMap<>();
 	
 	
 	/* TODO - Implement Me
@@ -109,20 +113,28 @@ public class TileView extends BaseView {
 	}
 	
 	private void highlightNeighbors(TileModel tile, Operation operation) {
+		
 		boolean result = (boolean)tile.getCachedData(operation);
-		if(result)
+		if(!result)
 		{
-			addMouseListener(new MouseAdapter() {  		    		
+			removeMouseListener(_operationHandlers.get(operation));
+			_operationHandlers.remove(operation);
+		}
+		else
+		{
+			MouseListener ml = new MouseAdapter() {  		    		
 	    		@Override public void mouseEntered(MouseEvent e) {
-	    			System.out.print("Mouse entered");
+	    			TileController controller = getController(TileController.class);
+	    			controller.setNeighborsSelected(true);    					    			
 	    		}
 	    		@Override public void mouseExited(MouseEvent e) {
-	    			System.out.print("Mouse exited");
+	    			TileController controller = getController(TileController.class);
+	    			controller.setNeighborsSelected(false);
 	    		}
-			});	
-		}
-		else 
-		{			
+			};
+    		
+			addMouseListener(ml);
+			_operationHandlers.put(operation, ml);
 		}
 	}
 	

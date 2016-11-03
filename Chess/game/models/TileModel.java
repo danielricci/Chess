@@ -117,21 +117,18 @@ public class TileModel extends GameModel implements IPlayableTile, Comparable<Ti
 		 */
 		protected static NeighborYPosition fromAgnostic(NeighborYPosition position) {
 			switch(position) {
-			case BOTTOM_AGNOSTIC:
-			case TOP_AGNOSTIC:
-				int val = position._value >> 1;
-				for(NeighborYPosition pos : NeighborYPosition.values()) {
-					if(pos._value == val) {
-						return pos;
-					}
-				}			
-				break;
-			case BOTTOM:
-				break;
-			case TOP:
-				break;
-			default:
-				break;
+				case BOTTOM_AGNOSTIC:
+				case TOP_AGNOSTIC:
+				case NEUTRAL_AGNOSTIC:
+				{
+					int val = position._value >> 1;
+					for(NeighborYPosition pos : NeighborYPosition.values()) {
+						if(pos._value == val) {
+							return pos;
+						}
+					}			
+					break;
+				}
 			}
 			System.out.println("Error with fromAgnostic");
 			System.out.println(java.util.Arrays.toString((new Throwable()).getStackTrace()));
@@ -189,27 +186,28 @@ public class TileModel extends GameModel implements IPlayableTile, Comparable<Ti
 		}
 		doneUpdating();
 	}
-   
+    
 	private SortedSet<TileModel> getNeighbors(NeighborYPosition position) {
 		
-		System.out.println("IMPLEMENT ME - getNeighbors(NeighborYPosition position))");
-		return null;
-		/*
 		if(position.isAgnostic()) {
 			position = NeighborYPosition.fromAgnostic(position);
 		}
-		else if(_player.getPlayerOrientation() == Orientation.DOWN) {
+		else if(_player != null && _player.getPlayerOrientation() == Orientation.DOWN) {
 			// This is done to normalize the neighbor concept
 			position = NeighborYPosition.flip(position);
 		}
 		
 		SortedSet<TileModel> tiles = new TreeSet<>();
 		if(_neighbors.containsKey(position)) {
-			tiles.addAll(_neighbors.get(position));
+			for(TileModel tileModel : _neighbors.get(position).values()) {
+				if(tileModel != null) {
+					tiles.add(tileModel);
+				}
+			}
 		}
 		return tiles;
-		*/
 	}
+	
 	public SortedSet<TileModel> getBackwardNeighbors() {
 		System.out.println("IMPLEMENT ME - getBackwardNeighbors()");
 		return null;
@@ -260,7 +258,9 @@ public class TileModel extends GameModel implements IPlayableTile, Comparable<Ti
 		doneUpdating();
 	}
 	
-	public void setSelected(Operation operation, Selection selection) { setSelected(operation, selection, false); }
+	public void setSelected(Operation operation, Selection selection) { 
+		setSelected(operation, selection, false); 
+	}
 		
 
 	/**
@@ -341,8 +341,9 @@ public class TileModel extends GameModel implements IPlayableTile, Comparable<Ti
 		SortedSet<TileModel> allNeighbours = new TreeSet<>(
 			getNeighbors(NeighborYPosition.TOP)
 		);
+		allNeighbours.addAll(getNeighbors(NeighborYPosition.NEUTRAL));
 		allNeighbours.addAll(getNeighbors(NeighborYPosition.BOTTOM));
-		
+
 		return allNeighbours;
 	}
 	
