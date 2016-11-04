@@ -28,6 +28,7 @@ import java.awt.Color;
 import java.awt.Image;
 import java.util.Collection;
 import java.util.Map.Entry;
+import java.util.Observer;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.Vector;
@@ -39,18 +40,22 @@ import models.TileModel;
 import models.TileModel.NeighborXPosition;
 import models.TileModel.NeighborYPosition;
 import models.TileModel.Selection;
+import views.TileView;
 
 
 public class TileController extends BaseController {
 	
 	private TileModel _tile;
 	
-	public TileController(TileModel tile) {
-		_tile = tile;
-		_tile.setController(this);
+	public TileController(Color tileViewColor, PlayerModel player, boolean isKingTile, Observer... observers) {
+		_tile = new TileModel(player, isKingTile, observers);
+		
+		TileView tileView = new TileView(this);
+		tileView.setBackground(tileViewColor);
+		tileView.render();
 	}
 	
-	public TileModel tileSelected() {
+	public TileModel getTile() {
 		return _tile;
 	}
 	

@@ -44,6 +44,24 @@ public class ControllerFactory implements IDestructable {
 		return _instance;
 	}
 	
+	/**
+	 * Create an instance of the specified class and return it without recording its reference
+	 * 
+	 * @param controllerClass The controller to create
+	 * @param args The arguments to pass in to the constructor
+	 * @return The class itself
+	 */
+	public <T extends BaseController> T getUnique(Class<T> controllerClass, Object... args) {
+		try {
+	        return controllerClass.getConstructor().newInstance(args);	        
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	
+	
 	public <T extends BaseController> T get(Class<T> controllerClass) {
 		
 		for(BaseController item : _controllers) {
@@ -58,10 +76,9 @@ public class ControllerFactory implements IDestructable {
 			e.printStackTrace();
 		}
 		
-		
 		return (T)_controllers.lastElement();
 	}
-
+	
 	public boolean isActive() {
 		return _controllers.size() > 0;
 	}

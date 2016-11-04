@@ -25,11 +25,9 @@
 package views;
 
 import java.awt.BorderLayout;
-import java.util.Observable;
 
 import factories.ViewFactory;
 import factories.ViewFactory.ViewType;
-import models.GameModel;
 
 @SuppressWarnings("serial")
 public final class MainWindowView extends BaseView {
@@ -38,9 +36,6 @@ public final class MainWindowView extends BaseView {
 		BaseView boardGameView = ViewFactory.instance().getView(ViewType.BoardGameView);
 		boardGameView.render();
 		add(boardGameView);
-	}
-
-	@Override protected void registerListeners() {		
 	}
 
 	@Override public void destroy() {

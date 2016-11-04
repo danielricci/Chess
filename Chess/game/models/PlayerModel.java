@@ -31,7 +31,6 @@ import java.util.Map;
 import java.util.Observer;
 import java.util.Vector;
 
-import controllers.TileController;
 import models.PlayerModel.Team.Orientation;
 
 public final class PlayerModel extends GameModel {
@@ -76,11 +75,13 @@ public final class PlayerModel extends GameModel {
 	}
 	
 	public boolean hasCaptures() {
-		for(TileModel tile :_pieces.keySet()) {
+		// TODO - get rid of this crap where the model calls the controller!
+		/*for(TileModel tile :_pieces.keySet()) {
 			if(tile.getPlayer() != null && tile.<TileController>getController().hasCapturePosition()) {
 				return true;
 			}
 		}
+		*/
 		return false;
 	}
 	

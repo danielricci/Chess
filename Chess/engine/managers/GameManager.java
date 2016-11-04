@@ -52,17 +52,15 @@ import javax.swing.event.MenuListener;
 import controllers.BoardGameController;
 import factories.ControllerFactory;
 import factories.ViewFactory;
-import factories.ViewFactory.ViewType;
 import managers.ResourcesManager.Resources;
 import models.GameModel.Operation;
-import views.BaseView;
 
-public final class ViewManager extends JFrame {
+public final class GameManager extends JFrame {
 
 	/**
 	 * The singleton instance 
 	 */
-	private static ViewManager _instance;
+	private static GameManager _instance;
 	
 	/**
 	 * Environment Arguments
@@ -72,7 +70,7 @@ public final class ViewManager extends JFrame {
 	/**
 	 * Constructor 
 	 */
-	private ViewManager() {
+	private GameManager() {
 		super(ResourcesManager.Get(Resources.ChessTitle));
 		
 		// The dimensions of the window is hard-coded by default
@@ -95,9 +93,9 @@ public final class ViewManager extends JFrame {
 	 * 
 	 * @return The singleton reference to this class
 	 */
-	public static ViewManager Instance() {
+	public static GameManager Instance() {
 		if(_instance == null) {
-			_instance = new ViewManager();
+			_instance = new GameManager();
 		}
 		return _instance;
 	}
@@ -125,7 +123,7 @@ public final class ViewManager extends JFrame {
 		// Add a listener to whenever the window is closed
 		addWindowListener(new WindowAdapter() {
 			@Override public void windowClosing(WindowEvent event) {
-				int response= JOptionPane.showConfirmDialog(ViewManager.Instance(), "Are you sure that you wish to exit the game?", "Exit Game", JOptionPane.YES_NO_OPTION);
+				int response= JOptionPane.showConfirmDialog(GameManager.Instance(), "Are you sure that you wish to exit the game?", "Exit Game", JOptionPane.YES_NO_OPTION);
 				if(response == JOptionPane.YES_OPTION) {
 					dispose();
 				}
@@ -184,11 +182,12 @@ public final class ViewManager extends JFrame {
 				ViewFactory.instance().destroy();
 				getContentPane().removeAll();					
 				
-				BaseView mainWindowView = ViewFactory.instance().getView(ViewType.MainWindowView);
-				mainWindowView.render();
-				add(mainWindowView);
+				//BaseView mainWindowView = ViewFactory.instance().getView(ViewType.MainWindowView);
+				//mainWindowView.render();
+				//add(mainWindowView);
 				
-				validate();						
+				validate();
+				System.out.println("Game loaded");
 			}	
 			
         });
@@ -237,21 +236,19 @@ public final class ViewManager extends JFrame {
 			@Override public void menuDeselected(MenuEvent e) {
 			}			
 		});
-	    // Set the event handler
-	    // TODO - this needs to run a special new game
-	    // TODO - should we use a builder here?
-	    // TODO - we need to design how this will look
-	    JMenuItem developerMenuNew = new JMenuItem(new AbstractAction(ResourcesManager.Get(Resources.NewGame)) {       	
+	    
+		JMenuItem developerMenuNew = new JMenuItem(new AbstractAction(ResourcesManager.Get(Resources.NewGame)) {       	
 			@Override public void actionPerformed(ActionEvent event) {	
 	    		
 				ControllerFactory.instance().destroy();
 				ViewFactory.instance().destroy();
 				getContentPane().removeAll();					
 				
-				BaseView mainWindowView = ViewFactory.instance().getView(ViewType.MainWindowView);
-				mainWindowView.render();
-				add(mainWindowView);
+				//BaseView mainWindowView = ViewFactory.instance().getView(ViewType.MainWindowView);
+				//mainWindowView.render();
+				//add(mainWindowView);
 				
+				System.out.println("Game loaded");
 				validate();						
 			}	
 	    });
@@ -314,7 +311,7 @@ public final class ViewManager extends JFrame {
 		JMenuItem aboutItem = new JMenuItem(new AbstractAction("About") {
 			@Override public void actionPerformed(ActionEvent event) {
 				JOptionPane.showMessageDialog(
-					ViewManager.Instance(),
+					GameManager.Instance(),
 					"Chess\nVersion 1.0\n\nDaniel Ricci\nthedanny09@gmail.com\nhttps:/github.com/danielricci/Chess",
 					"About Chess",
 					JOptionPane.INFORMATION_MESSAGE

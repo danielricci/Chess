@@ -173,14 +173,13 @@ public class TileModel extends GameModel implements IPlayableTile, Comparable<Ti
     public TileModel(PlayerModel player, boolean isKingTile, Observer... observers) {
 		super(observers);
 		
-		// Pre-populate the neighbors with the right placeholders
 		_neighbors.put(NeighborYPosition.BOTTOM, new HashMap<NeighborXPosition, TileModel>());
 		_neighbors.put(NeighborYPosition.NEUTRAL, new HashMap<NeighborXPosition, TileModel>());
 		_neighbors.put(NeighborYPosition.TOP, new HashMap<NeighborXPosition, TileModel>());
 		
 		_player = player;
 		_isKingTile = isKingTile;
-		//System.out.println("Tile " + _identifier + " is " + (isKingTile ? " a king " : "not a king"));
+
 		if(player != null) {
 			player.addTilePiece(this);
 		}

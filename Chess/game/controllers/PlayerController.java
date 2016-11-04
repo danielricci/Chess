@@ -26,11 +26,9 @@ package controllers;
 
 import java.util.Collections;
 import java.util.Observer;
-import java.util.SortedSet;
 import java.util.Vector;
 
 import models.PlayerModel;
-import models.TileModel;
 
 public class PlayerController extends BaseController {
 
@@ -65,26 +63,6 @@ public class PlayerController extends BaseController {
 		return null;
 	}
 	
-	public boolean canContinueChain(TileModel tile) {
-		if(tile.getPlayer() == null || tile.getPlayer() != getCurrentPlayer()) {
-			System.out.println("Warning: Trying to call canContinuePlaying on a tile that is either null or doesnt belong to the player currently playing!");
-			return false;
-		}
-		
-		SortedSet<TileModel> neighbors = tile.getForwardNeighbors();
-		if(tile.getPlayer().getPlayerPiece(tile).getIsKinged()) {
-			neighbors.addAll(tile.getBackwardNeighbors());
-		}
-		
-		for(TileModel neighbor : neighbors) {
-			if(neighbor.getCapturableNeighbors(tile).size() > 0) {
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
 	public void moveFinished() {
 		_players.add(_players.firstElement());
 		_players.removeElement(_players.firstElement());
@@ -100,8 +78,7 @@ public class PlayerController extends BaseController {
 		}
 	}
 
-	@Override
-	public void destroy() {
+	@Override public void destroy() {
 		_players.clear();
 		PlayerModel.TEAM_INDEX = 0;
 		_playerSelected = false;

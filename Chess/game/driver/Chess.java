@@ -1,5 +1,5 @@
 package driver;
-import managers.ViewManager;
+import managers.GameManager;
 
 /**
 * Daniel Ricci <thedanny09@gmail.com>
@@ -28,8 +28,8 @@ import managers.ViewManager;
 public final class Chess {
 	public static void main(String[] args) {
         try {
-        	ViewManager.Instance().SetEnvironmentVariables(args);
-			ViewManager.Instance().setVisible(true);
+        	GameManager.Instance().SetEnvironmentVariables(args);
+			GameManager.Instance().setVisible(true);
         } catch (Exception exception) {
         	exception.printStackTrace();
         }

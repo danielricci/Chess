@@ -24,6 +24,7 @@
 
 package controllers;
 
+import java.awt.Color;
 import java.util.Observer;
 import java.util.Vector;
 
@@ -33,19 +34,44 @@ import models.PlayerModel;
 import models.PlayerPiece;
 import models.TileModel;
 import models.TileModel.Selection;
+import views.BoardGameView;
+import views.IView;
 
 public class BoardGameController extends BaseController {
 
-	private final Vector<TileModel> _tiles = new Vector<>();		
-	private static final int _rows = 8;
+	public static final int Rows = 8;
 	
+	private final Vector<TileModel> _tiles = new Vector<>();		
 	private TileModel _previouslySelectedTile;
 	
-  	public TileModel populateTile(PlayerModel player, boolean isKingTile, Observer... observers) {		
-		TileModel model = new TileModel(player, isKingTile, observers);
-		_tiles.addElement(model);
+	public BoardGameController() {
+		PlayerController playerController = ControllerFactory.instance().get(PlayerController.class);
+		IView view = new BoardGameView(this, playerController);
+		playerController.populatePlayers(view);
+		view.render();
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+  	public void createTile(Color tileViewColor, PlayerModel player, boolean isKingTile, Observer... observers) {		
+
+  		// TODO - can we get rid of this disgusting crap
+		TileController tileController = ControllerFactory.instance().getUnique(
+			TileController.class, 
+			player, 
+			isKingTile,
+			observers
+		);
 		
-		return model;
+		_tiles.addElement(tileController.getTile());
 	}
 
   	public void debuggerSelection(Operation operation, boolean selected) {
@@ -69,10 +95,6 @@ public class BoardGameController extends BaseController {
 			_previouslySelectedTile = tile;	
 		}
   	} 	
-
-	public int getBoardDimensions() {
-		return _rows;
-	}
 
 	public void processTileMove(TileModel captureTile) {
 
@@ -100,7 +122,7 @@ public class BoardGameController extends BaseController {
 		_previouslySelectedTile.swapWith(captureTile);
 		_previouslySelectedTile = null;
 		
-		if(!(tileCaptured && controller.canContinueChain(captureTile))) {
+		if(!tileCaptured) {
 			controller.moveFinished();
 			if(isGameOver()) {
 				System.out.println("Game over");
@@ -160,6 +182,9 @@ public class BoardGameController extends BaseController {
 	}
 	
 	private boolean isGameOverNoMoreMoves(Vector<PlayerModel> players) {
+		
+		// TODO - implement this crap nicer than how it is done here!
+		/*
 		for(PlayerModel player : players) {
 			Vector<TileModel> ownedTiles = player.getPlayerOwnedTiles();
 			for(TileModel ownedTile : ownedTiles) {
@@ -168,9 +193,9 @@ public class BoardGameController extends BaseController {
 				}
 			}
 		}
-
 		System.out.println("GAME OVER: Player has no more moves to make");
-		return true;
+		*/
+		return false;
 	}
 
 	@Override public void destroy() {

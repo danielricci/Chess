@@ -34,9 +34,9 @@ import java.util.Vector;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
+import controllers.BaseController;
 import controllers.BoardGameController;
 import controllers.PlayerController;
-import controllers.TileController;
 import factories.ControllerFactory;
 import models.GameModel;
 import models.PlayerModel;
@@ -44,15 +44,17 @@ import models.TileModel;
 import models.TileModel.NeighborXPosition;
 import models.TileModel.NeighborYPosition;
 
-@SuppressWarnings("serial")
-public final class BoardGameView extends BaseView {
+public class BoardGameView extends BaseView {
 	
 	private final JPanel _gamePanel = new JPanel(new GridBagLayout());	
+	private final Color _firstColor = new Color(209, 139, 71);		
+	private final Color _secondColor = new Color(255, 205, 158);
 	
-	public BoardGameView() {
-		ControllerFactory.instance().get(PlayerController.class).populatePlayers(this);
+	public BoardGameView(BaseController... controllers) {
+		super(controllers);
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 	}
-
+	
 	@Override public void update(Observable obs, Object arg) {
 		
 		super.update(obs, arg);
@@ -71,40 +73,24 @@ public final class BoardGameView extends BaseView {
 			case PlayerPieceMoveAccepted:
 				boardGameController.processTileMove(tileModel);
 				break;
-			case Debugger_KingTiles:
-			case Debugger_PlayerTiles:
-			case Debugger_TileCoordinates:
-			case EmptyTileSelected:
-			case HideGuides:
-			case Refresh:
-			case ShowGuides:
-				break;
-			case Debugger_HighlightNeighbors:
-				break;
-			default:
-				break;
 			}
 		}
 	};
 	
 	@Override public void render() {
-	
+
 		super.render();
-
-		Color firstColor = new Color(209, 139, 71);		
-		Color secondColor = new Color(255, 205, 158);
 		
-		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
+		// Set the constraints of this
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.weightx = 1.0;
 		gbc.weighty = 1.0;
 		
-		PlayerController playerController = ControllerFactory.instance().get(PlayerController.class);
-		BoardGameController boardGameController = ControllerFactory.instance().get(BoardGameController.class);
+		PlayerController playerController = getController(PlayerController.class);
+		BoardGameController boardGameController = getController(BoardGameController.class);
 
-		int boardDimensions = boardGameController.getBoardDimensions();		
+		int boardDimensions = BoardGameController.Rows;		
 		Vector<Vector<TileModel>> tiles = new Vector<>();
 
 		for (int row = 0; row < boardDimensions; ++row) {
@@ -116,8 +102,6 @@ public final class BoardGameView extends BaseView {
 				player = playerController.getPlayer(1);
 			}
 			
-			// TODO - we should not be doing this amount of work within a view!
-			// TODO - move this to the controller!
 			Vector<TileModel> tilesRow = new Vector<>();
 			for (int col = 0, colorOffset = row % 2;  col < boardDimensions; ++col, colorOffset = (++colorOffset % 2 == 0 ? 0 : 1)) {
 
@@ -125,21 +109,18 @@ public final class BoardGameView extends BaseView {
 				gbc.gridx = col;
 				gbc.gridy = row;
 				
-				// Create the tile and populate its contents
-				TileView view = new TileView(colorOffset == 0 ? firstColor : secondColor);
-				TileModel tile = boardGameController.populateTile(player, row == 0 || row == boardDimensions - 1, view, this);
-				
-				// Set the controller of the tile and render it
-				view.setController(new TileController(tile));
-				view.render();
+				boardGameController.createTile(
+					colorOffset == 0 ? _firstColor : _secondColor,
+					player, 
+					row == 0 || row == boardDimensions - 1, 
+					this
+				);
 				
 				// Add our components to our view
-				_gamePanel.add(view, gbc);			
-				tilesRow.add(tile);
+				//_gamePanel.add(view, gbc);			
+				//tilesRow.add(tile);
 			}
 			
-			// TODO - we should put this somewhere else?
-			// TODO - we need to remove the dependency of models, we should only really be calling controllers!
 			// Populate the row neighbors
 			for(int i = 0; i < tilesRow.size(); ++i)
 			{
@@ -151,6 +132,7 @@ public final class BoardGameView extends BaseView {
 					new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.RIGHT, i + 1 == tilesRow.size() ? null : tilesRow.get(i + 1))
 				);
 			}
+			tiles.add(tilesRow);
 		
 			// As long as we have one row in our buffer, try and connect it to what has currently
 			// been generated
@@ -161,21 +143,11 @@ public final class BoardGameView extends BaseView {
 				Vector<TileModel> firstRow = tiles.get(tiles.size() - 2);
 				Vector<TileModel> secondRow = tiles.lastElement();
 				
-				// Attempts to get the row before the first row being selected
-				Vector<TileModel> previousFirstRow = tiles.size() > 2 ? tiles.get(tiles.indexOf(firstRow) - 1) : null;
-				
 				// Populate both rows neighbors
 				for(int i = 0; i < firstRow.size(); ++i) {
 					TileModel firstRowElement = firstRow.get(i);
 					TileModel secondRowElement = secondRow.get(i);
-					
-					// Set the neighbors of the first rows top neighbors
-					firstRowElement.setNeighbors(NeighborYPosition.TOP, 
-						new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.LEFT, previousFirstRow != null && i > 0 ? previousFirstRow.get(i - 1) : null),
-						new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.NEUTRAL, previousFirstRow != null ? previousFirstRow.get(i) : null),
-						new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.RIGHT, previousFirstRow != null && i + 1 < firstRow.size() ? previousFirstRow.get(i + 1) : null)
-					);
-					
+				
 					// Set the neighbors of the first rows bottom neighbors
 					firstRowElement.setNeighbors(NeighborYPosition.BOTTOM, 
 						new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.LEFT, i > 0 ? secondRow.get(i - 1) : null),
@@ -188,21 +160,12 @@ public final class BoardGameView extends BaseView {
 						new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.LEFT, i > 0 ? firstRow.get(i - 1) : null),
 						new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.NEUTRAL, firstRowElement),
 						new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.RIGHT, i + 1 < firstRow.size() ? firstRow.get(i + 1) : null)
-					);
-					
-					// The bottom neighbors of every second row is initially set to null because the neighbors are not yet known
-					secondRowElement.setNeighbors(NeighborYPosition.BOTTOM,
-						new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.LEFT, null),
-						new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.NEUTRAL, null),
-						new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.RIGHT, null)
-					);				
+					);					
 				}
 			}
-			tiles.add(tilesRow);
 		}
 		add(_gamePanel);
 	}
-
 
 	@Override public void destroy() {
 		_gamePanel.removeAll();

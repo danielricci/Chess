@@ -37,6 +37,7 @@ import java.util.Observable;
 
 import javax.swing.JLabel;
 
+import controllers.BaseController;
 import controllers.TileController;
 import models.GameModel;
 import models.GameModel.Operation;
@@ -45,40 +46,19 @@ import models.TileModel.Selection;
 
 public class TileView extends BaseView {
 
-	private final Color _defaultColor;
+	private Color _backgroundColor;
 	
 	private static final Color _selectedColor = Color.DARK_GRAY;
 	private static final Color _guideColor = Color.BLUE;
 	private static final Color _captureColor = Color.GREEN;
-	private static final Color _kingTileColor = Color.CYAN;
 	
 	private final JLabel _tileCoordinatesLabel = new JLabel();
 	private Image _image;
 	
 	private Map<Operation, MouseListener> _operationHandlers = new HashMap<>();
 	
-	
-	/* TODO - Implement Me
-	public abstract class BaseMouseListener implements ActionListener{
-
-		private boolean mouseEntered;
-		private boolean mouseExited;
-		private boolean mouseReleased;
-
-		protected abstract void doPerformAction(ActionEvent e);
-
-		@Override public final void actionPerformed(ActionEvent e){
-		    if(active){
-		        doPerformAction(e);
-		    }
-		}
-	}*/
-	
-	
-	public TileView(Color background)
-	{
-		super();
-		_defaultColor = background;
+	public TileView(BaseController controller) {
+		super(controller);	
 	}
 	
 	private void debugger_playerColorVisibility(TileModel tile, Operation operation) {
@@ -87,7 +67,7 @@ public class TileView extends BaseView {
 
 		boolean isSelected = (boolean)tile.getCachedData(operation);
 		if(!isSelected || color == null) {
-			color = _defaultColor;
+			color = _backgroundColor;
 		}
 		
 		updateSelectedCommand(color);
@@ -98,13 +78,18 @@ public class TileView extends BaseView {
 		_tileCoordinatesLabel.setVisible(isVisible);
     }
 	
+	@Override public void setBackground(Color backgroundColor) {
+		super.setBackground(backgroundColor);
+		_backgroundColor = backgroundColor;
+	}
+	
 	private void kingTileVisibility(TileModel tile, Operation operation) {
 		
-		Color color = _defaultColor;
+		Color color = _backgroundColor;
 		if(tile.getIsKingTile()) {
 			boolean isVisible = (boolean)tile.getCachedData(operation);
 			if(isVisible) {
-				color = _kingTileColor;
+				color = _guideColor;
 			}			
 		}
 		
@@ -142,7 +127,7 @@ public class TileView extends BaseView {
     	setBackground(color);
     }
 	
-    @Override protected void registerListeners() {
+    @Override public void registerListeners() {
     	addMouseListener(new MouseAdapter() {  		    		
     		@Override public void mouseReleased(MouseEvent e) {
     			TileController controller = getController(TileController.class);
@@ -167,14 +152,14 @@ public class TileView extends BaseView {
 				tileController.tileGuidesCommand(Operation.ShowGuides);
 				break;
 			case PlayerPieceMoveCancel:
-				updateSelectedCommand(_defaultColor);
+				updateSelectedCommand(_backgroundColor);
 				tileController.tileGuidesCommand(Operation.HideGuides); 
 				break;
 			case PlayerPieceMoveAccepted:
-				updateSelectedCommand(_defaultColor);
+				updateSelectedCommand(_backgroundColor);
 				break;
 			case HideGuides:
-				updateSelectedCommand(_defaultColor);
+				updateSelectedCommand(_backgroundColor);
 				break;
 			case ShowGuides:
 				updateSelectedCommand(tileModel.getSelectionType() == Selection.CaptureSelected ? _captureColor : _guideColor);
@@ -217,7 +202,7 @@ public class TileView extends BaseView {
 		_tileCoordinatesLabel.setVisible(true);
 		add(_tileCoordinatesLabel);
 		
-		setBackground(_defaultColor);
+		setBackground(_backgroundColor);
 		
 		/* 
 		 * TODO Enable this when it is time to run with real pieces

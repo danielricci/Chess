@@ -25,24 +25,22 @@
 package views;
 
 import java.util.Observable;
-import java.util.Observer;
 import java.util.Vector;
 
 import javax.swing.JPanel;
 
 import controllers.BaseController;
-import interfaces.IDestructable;
 import models.GameModel;
 
-public abstract class BaseView extends JPanel implements IDestructable, Observer {
+public abstract class BaseView extends JPanel implements IView {
 
 	private final Vector<BaseController> _controllers = new Vector<>();
 	
-	protected BaseView(){
+	public BaseView(){
 		registerListeners();
 	}
 	
-	protected BaseView(BaseController... controllers) {			
+	public BaseView(BaseController... controllers) {			
 		this();
 		for(BaseController controller : controllers) {
 			if(!controllerExists(controller)) {
@@ -83,12 +81,17 @@ public abstract class BaseView extends JPanel implements IDestructable, Observer
 		return found;
 	}
 	
-	protected void registerListeners(){
+	@Override public void registerListeners(){
 	}
 	
-	public void render(){}
-	public void refresh(GameModel model){}
-	@Override public void update(Observable o, Object arg){} 
+	@Override public void render(){
+	}
+	
+	@Override public void refresh(GameModel model){
+	}
+	
+	@Override public void update(Observable o, Object arg){
+	} 
 	
 	@Override public void destroy() {
 		_controllers.clear();

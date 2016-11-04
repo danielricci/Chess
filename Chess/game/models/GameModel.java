@@ -31,13 +31,10 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Queue;
 
-import controllers.BaseController;
-
 public class GameModel extends Observable
 {
 	private final Queue<Operation> _operations = new LinkedList<>();
 	private final Map<Operation, Object> _debugger = new HashMap<>();
-	private BaseController _controller = null;
 	
 	// NOTE: We need these operations to be reduced, for example show guides and hide guides and player piece commands are pretty
 	// much the same thing, we need a separation of concerns
@@ -74,15 +71,7 @@ public class GameModel extends Observable
 	public final Queue<Operation> getOperations() {
 		return _operations;
 	}
-	
-	public final void setController(BaseController controller) {
-		_controller = controller;
-	}
-	
-	public final <T extends BaseController> T getController() {
-		return (T)_controller;
-	}
-	
+		
 	protected final void doneUpdating() {
 		setChanged();
 		if(_operations.isEmpty()) {
