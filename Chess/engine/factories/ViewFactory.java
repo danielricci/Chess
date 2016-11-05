@@ -26,7 +26,7 @@ package factories;
 
 import java.util.Vector;
 
-import interfaces.IDestructable;
+import api.IDestructable;
 import views.BaseView;
 import views.BoardGameView;
 import views.MainWindowView;
@@ -51,9 +51,9 @@ public class ViewFactory implements IDestructable {
 		return _instance;
 	}
 	
-	@Override public void destroy() {
+	@Override public void dispose() {
 		for(BaseView view : _views) {
-			view.destroy();
+			view.dispose();
 		}
 		_instance = null;
 	}

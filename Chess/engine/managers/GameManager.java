@@ -50,6 +50,7 @@ import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
 import controllers.BoardGameController;
+import controllers.MainWindowController;
 import factories.ControllerFactory;
 import factories.ViewFactory;
 import managers.ResourcesManager.Resources;
@@ -178,8 +179,8 @@ public final class GameManager extends JFrame {
         JMenuItem fileMenuNew = new JMenuItem(new AbstractAction(ResourcesManager.Get(Resources.NewGame)) {       	
 			@Override public void actionPerformed(ActionEvent event) {	
 	    		
-				ControllerFactory.instance().destroy();
-				ViewFactory.instance().destroy();
+				ControllerFactory.instance().dispose();
+				ViewFactory.instance().dispose();
 				getContentPane().removeAll();					
 				
 				//BaseView mainWindowView = ViewFactory.instance().getView(ViewType.MainWindowView);
@@ -240,14 +241,15 @@ public final class GameManager extends JFrame {
 		JMenuItem developerMenuNew = new JMenuItem(new AbstractAction(ResourcesManager.Get(Resources.NewGame)) {       	
 			@Override public void actionPerformed(ActionEvent event) {	
 	    		
-				ControllerFactory.instance().destroy();
-				ViewFactory.instance().destroy();
+				ControllerFactory.instance().dispose();
+				ViewFactory.instance().dispose();
 				getContentPane().removeAll();					
+
 				
-				//BaseView mainWindowView = ViewFactory.instance().getView(ViewType.MainWindowView);
-				//mainWindowView.render();
-				//add(mainWindowView);
 				
+				
+				MainWindowController controller = ControllerFactory.instance().get(MainWindowController.class);
+				controller.attachTo(_instance);
 				System.out.println("Game loaded");
 				validate();						
 			}	

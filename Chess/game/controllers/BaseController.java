@@ -24,8 +24,79 @@
 
 package controllers;
 
-import interfaces.IDestructable;
+import java.awt.Component;
+import java.util.Vector;
 
-public abstract class BaseController implements IDestructable  {
-	@Override public abstract void destroy();
+import api.IController;
+import views.BaseView;
+
+public abstract class BaseController implements IController  {
+	
+	private final Vector<BaseView> _views = new Vector<>();
+	
+	public BaseController() {	
+	}
+	
+	/* TODO - if we want this to work we need to change "getView" to getUnique like
+	          we did in controllers factory
+	public <T extends BaseView> BaseController(Class<T>... views) {
+		this();
+		for(Class<T> view : views) {
+			_views.add(ViewFactory.instance().getView(viewType))			
+		}
+	}
+	*/
+	public BaseController(BaseView... views) {
+		this();
+		for(BaseView view : views) {
+			if(!viewExists(view)) {
+				_views.add(view);
+			}			
+		}
+	}
+
+	protected final <T extends BaseView> T getView(Class<T> viewClass) {	
+		BaseView baseView = null;
+		for(BaseView view : _views) {
+			if(view.getClass() == viewClass) {
+				baseView = view;
+				break;
+			}
+		}
+		return (T) baseView;
+	}
+	
+	protected final <T extends BaseView> void setView(T view) {
+		assert view != null : "Cannot add null view into basecontroller";
+		if(!viewExists(view)) {
+			_views.add(view);
+		}
+	}
+	
+	private boolean viewExists(BaseView view) {
+		assert view != null : "Cannot pass a null view";
+		boolean found = false;
+		
+		for(BaseView baseView : _views) {
+			if(baseView.getClass() == view.getClass()) {
+				found = true;
+				break;
+			}
+		}
+		
+		return found;
+	}
+	
+	public final void attachTo(Component component) {
+		for(BaseView view : _views) {
+			component.addadd(view);
+		}
+	}
+	
+	@Override public void dispose() {
+		for(BaseView view : _views) {
+			view.dispose();
+		}
+		_views.clear();
+	}
 }

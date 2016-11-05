@@ -29,6 +29,7 @@ import java.util.Vector;
 
 import javax.swing.JPanel;
 
+import api.IView;
 import controllers.BaseController;
 import models.GameModel;
 
@@ -37,7 +38,7 @@ public abstract class BaseView extends JPanel implements IView {
 	private final Vector<BaseController> _controllers = new Vector<>();
 	
 	public BaseView(){
-		registerListeners();
+		register();
 	}
 	
 	public BaseView(BaseController... controllers) {			
@@ -81,7 +82,7 @@ public abstract class BaseView extends JPanel implements IView {
 		return found;
 	}
 	
-	@Override public void registerListeners(){
+	@Override public void register(){
 	}
 	
 	@Override public void render(){
@@ -93,8 +94,8 @@ public abstract class BaseView extends JPanel implements IView {
 	@Override public void update(Observable o, Object arg){
 	} 
 	
-	@Override public void destroy() {
-		_controllers.clear();
+	@Override public void dispose() {
 		removeAll();
+		_controllers.clear();
 	}
 }

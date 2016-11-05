@@ -78,7 +78,7 @@ public class PlayerController extends BaseController {
 		}
 	}
 
-	@Override public void destroy() {
+	@Override public void dispose() {
 		_players.clear();
 		PlayerModel.TEAM_INDEX = 0;
 		_playerSelected = false;

@@ -226,7 +226,7 @@ public class TileController extends BaseController {
 		return color;
 	}
 
-	@Override public void destroy() {
+	@Override public void dispose() {
 		_tile = null;		
 	}
 

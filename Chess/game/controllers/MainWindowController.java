@@ -22,28 +22,17 @@
 * IN THE SOFTWARE.
 */
 
-package views;
+package controllers;
 
-import java.awt.BorderLayout;
+import views.BaseView;
+import views.MainWindowView;
 
-import controllers.BaseController;
-import factories.ViewFactory;
-import factories.ViewFactory.ViewType;
-
-public class MainWindowView extends BaseView {
-
-	public MainWindowView(BaseController... controllers) {
-		super(controllers);
-		setLayout(new BorderLayout());
-	}
-	
-	@Override public void render() {
-		BaseView boardGameView = ViewFactory.instance().getView(ViewType.BoardGameView);
-		boardGameView.render();
-		add(boardGameView);
+public class MainWindowController extends BaseController {
+	public MainWindowController() {
+		BaseView view = new MainWindowView(this);
+		setView(view);
+		view.render();
 	}
 
-	@Override public void dispose() {
-		removeAll();
-	}
+
 }

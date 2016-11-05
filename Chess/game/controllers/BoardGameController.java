@@ -28,6 +28,7 @@ import java.awt.Color;
 import java.util.Observer;
 import java.util.Vector;
 
+import api.IView;
 import factories.ControllerFactory;
 import models.GameModel.Operation;
 import models.PlayerModel;
@@ -35,7 +36,6 @@ import models.PlayerPiece;
 import models.TileModel;
 import models.TileModel.Selection;
 import views.BoardGameView;
-import views.IView;
 
 public class BoardGameController extends BaseController {
 
@@ -198,7 +198,7 @@ public class BoardGameController extends BaseController {
 		return false;
 	}
 
-	@Override public void destroy() {
+	@Override public void dispose() {
 		_tiles.clear();
 	}
 }

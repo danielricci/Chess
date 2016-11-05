@@ -127,7 +127,7 @@ public class TileView extends BaseView {
     	setBackground(color);
     }
 	
-    @Override public void registerListeners() {
+    @Override public void register() {
     	addMouseListener(new MouseAdapter() {  		    		
     		@Override public void mouseReleased(MouseEvent e) {
     			TileController controller = getController(TileController.class);
@@ -230,7 +230,7 @@ public class TileView extends BaseView {
 		*/
 	}
 
-	@Override public void destroy() {
+	@Override public void dispose() {
 		removeAll();
 	}
 }

@@ -26,8 +26,8 @@ package factories;
 
 import java.util.Vector;
 
+import api.IDestructable;
 import controllers.BaseController;
-import interfaces.IDestructable;
 
 public class ControllerFactory implements IDestructable {
 
@@ -83,9 +83,9 @@ public class ControllerFactory implements IDestructable {
 		return _controllers.size() > 0;
 	}
 	
-	@Override public void destroy() {
+	@Override public void dispose() {
 		for(BaseController controller : _controllers) {
-			controller.destroy();
+			controller.dispose();
 		}
 		_instance = null;
 	}	
