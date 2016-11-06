@@ -33,6 +33,4 @@ public class MainWindowController extends BaseController {
 		setView(view);
 		view.render();
 	}
-
-
 }

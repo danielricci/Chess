@@ -24,79 +24,73 @@
 
 package controllers;
 
-import java.awt.Component;
-import java.util.Vector;
+import javax.swing.JFrame;
 
 import api.IController;
 import views.BaseView;
 
+/**
+ * This class holds base controller implementation functionality for all controllers
+ * 
+ * @author Daniel Ricci <thedanny09@gmail.com>
+ */
 public abstract class BaseController implements IController  {
 	
-	private final Vector<BaseView> _views = new Vector<>();
+	/**
+	 * The view assigned to the controller
+	 */
+	private BaseView _view;
 	
-	public BaseController() {	
+	/**
+	 * Constructs a BaseController instance
+	 */
+	public BaseController() {
 	}
 	
-	/* TODO - if we want this to work we need to change "getView" to getUnique like
-	          we did in controllers factory
-	public <T extends BaseView> BaseController(Class<T>... views) {
-		this();
-		for(Class<T> view : views) {
-			_views.add(ViewFactory.instance().getView(viewType))			
-		}
+	/**
+	 * Constructs a BaseController with a specified view
+	 * 
+	 * @param view The view to attach to this controller
+	 */
+	public BaseController(BaseView view) {
+		setView(view);
 	}
-	*/
-	public BaseController(BaseView... views) {
-		this();
-		for(BaseView view : views) {
-			if(!viewExists(view)) {
-				_views.add(view);
-			}			
-		}
-	}
-
+	
+	/**
+	 * Gets the view
+	 * 
+	 * @param viewClass The casting class
+	 * @return The view
+	 */
 	protected final <T extends BaseView> T getView(Class<T> viewClass) {	
-		BaseView baseView = null;
-		for(BaseView view : _views) {
-			if(view.getClass() == viewClass) {
-				baseView = view;
-				break;
-			}
-		}
-		return (T) baseView;
+		return (T)_view;
 	}
 	
+	/**
+	 * Sets the view
+	 * 
+	 * @param view
+	 */
 	protected final <T extends BaseView> void setView(T view) {
-		assert view != null : "Cannot add null view into basecontroller";
-		if(!viewExists(view)) {
-			_views.add(view);
+		_view = view;
+	}
+	
+	/**
+	 * Attaches the specified JFrame instance to the currently set view
+	 *  
+	 * @param root The root JFrame of the application
+	 */
+	public final void attachTo(JFrame root) {
+		if(_view != null) {
+			root.add(_view);			
 		}
 	}
 	
-	private boolean viewExists(BaseView view) {
-		assert view != null : "Cannot pass a null view";
-		boolean found = false;
-		
-		for(BaseView baseView : _views) {
-			if(baseView.getClass() == view.getClass()) {
-				found = true;
-				break;
-			}
-		}
-		
-		return found;
-	}
-	
-	public final void attachTo(Component component) {
-		for(BaseView view : _views) {
-			component.addadd(view);
-		}
-	}
-	
+	/**
+	 * Disposes the currently set view
+	 */
 	@Override public void dispose() {
-		for(BaseView view : _views) {
-			view.dispose();
-		}
-		_views.clear();
+		_view.dispose();
+		_view = null;
 	}
 }

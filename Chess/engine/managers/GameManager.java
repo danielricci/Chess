@@ -241,13 +241,14 @@ public final class GameManager extends JFrame {
 		JMenuItem developerMenuNew = new JMenuItem(new AbstractAction(ResourcesManager.Get(Resources.NewGame)) {       	
 			@Override public void actionPerformed(ActionEvent event) {	
 	    		
+				// Ensures everything is cleaned up before
+				// starting the game
 				ControllerFactory.instance().dispose();
 				ViewFactory.instance().dispose();
 				getContentPane().removeAll();					
 
 				
-				
-				
+
 				MainWindowController controller = ControllerFactory.instance().get(MainWindowController.class);
 				controller.attachTo(_instance);
 				System.out.println("Game loaded");
