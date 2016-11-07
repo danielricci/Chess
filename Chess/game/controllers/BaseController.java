@@ -24,10 +24,8 @@
 
 package controllers;
 
-import javax.swing.JFrame;
-
 import api.IController;
-import views.BaseView;
+import api.IView;
 
 /**
  * This class holds base controller implementation functionality for all controllers
@@ -39,21 +37,20 @@ public abstract class BaseController implements IController  {
 	/**
 	 * The view assigned to the controller
 	 */
-	private BaseView _view;
-	
+	private IView _view;
+
 	/**
-	 * Constructs a BaseController instance
-	 */
-	public BaseController() {
-	}
-	
-	/**
-	 * Constructs a BaseController with a specified view
+	 * Constructs a new controller with an associated owner and its corresponding view
 	 * 
-	 * @param view The view to attach to this controller
+	 * @param view The view to construct
 	 */
-	public BaseController(BaseView view) {
-		setView(view);
+	public <T extends IView> BaseController(Class<T> view) {
+		try {
+			setView(view.getConstructor().newInstance(this));
+		}
+		catch(Exception exception) {
+			 exception.printStackTrace();
+		}		
 	}
 	
 	/**
@@ -62,7 +59,7 @@ public abstract class BaseController implements IController  {
 	 * @param viewClass The casting class
 	 * @return The view
 	 */
-	protected final <T extends BaseView> T getView(Class<T> viewClass) {	
+	protected final <T extends IView> T getView(Class<T> viewClass) {	
 		return (T)_view;
 	}
 	
@@ -71,21 +68,10 @@ public abstract class BaseController implements IController  {
 	 * 
 	 * @param view
 	 */
-	protected final <T extends BaseView> void setView(T view) {
+	protected <T extends IView> void setView(T view) {
 		_view = view;
 	}
-	
-	/**
-	 * Attaches the specified JFrame instance to the currently set view
-	 *  
-	 * @param root The root JFrame of the application
-	 */
-	public final void attachTo(JFrame root) {
-		if(_view != null) {
-			root.add(_view);			
-		}
-	}
-	
+		
 	/**
 	 * Disposes the currently set view
 	 */

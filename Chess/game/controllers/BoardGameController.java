@@ -32,7 +32,6 @@ import api.IView;
 import factories.ControllerFactory;
 import models.GameModel.Operation;
 import models.PlayerModel;
-import models.PlayerPiece;
 import models.TileModel;
 import models.TileModel.Selection;
 import views.BoardGameView;
@@ -46,21 +45,14 @@ public class BoardGameController extends BaseController {
 	
 	public BoardGameController() {
 		PlayerController playerController = ControllerFactory.instance().get(PlayerController.class);
+		
+		
 		IView view = new BoardGameView(this, playerController);
 		playerController.populatePlayers(view);
 		view.render();
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+		
   	public void createTile(Color tileViewColor, PlayerModel player, boolean isKingTile, Observer... observers) {		
 
   		// TODO - can we get rid of this disgusting crap
@@ -124,9 +116,6 @@ public class BoardGameController extends BaseController {
 		
 		if(!tileCaptured) {
 			controller.moveFinished();
-			if(isGameOver()) {
-				System.out.println("Game over");
-			}
 		}
 		else{
 			System.out.println("Player can still continue playing.");
@@ -147,57 +136,7 @@ public class BoardGameController extends BaseController {
 		_previouslySelectedTile = null;
 	}
 
-	private boolean isGameOver() {
-		PlayerController controller = ControllerFactory.instance().get(PlayerController.class);
-		Vector<PlayerModel> players = controller.getPlayers();
-		
-		return 
-			isGameOverOneKingRemains(players) || 
-			isGameOverPlayerHasNoPieces(players) ||
-			isGameOverNoMoreMoves(players);	
-	}
-	
-	private boolean isGameOverOneKingRemains(Vector<PlayerModel> players) {
-		
-		for(PlayerModel player : players) {
-			Vector<PlayerPiece> playerPieces = player.getPlayerPieces();
-			if(!(playerPieces.size() == 1 && playerPieces.firstElement().getIsKinged())) {
-				return false;
-			}
-		}
-		
-		System.out.println("DRAW: Both players have only one king remaining");
-		return true;	
-	}
-	
-	private boolean isGameOverPlayerHasNoPieces(Vector<PlayerModel> players) {
-		for(PlayerModel player : players) {
-			Vector<PlayerPiece> playerPieces = player.getPlayerPieces();
-			if(playerPieces.isEmpty()) {
-				System.out.println("GAME OVER: Player has no more pieces left");
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	private boolean isGameOverNoMoreMoves(Vector<PlayerModel> players) {
-		
-		// TODO - implement this crap nicer than how it is done here!
-		/*
-		for(PlayerModel player : players) {
-			Vector<TileModel> ownedTiles = player.getPlayerOwnedTiles();
-			for(TileModel ownedTile : ownedTiles) {
-				if(ownedTile.<TileController>getController().hasMoves()) {
-					return false;
-				}
-			}
-		}
-		System.out.println("GAME OVER: Player has no more moves to make");
-		*/
-		return false;
-	}
-
+	// TODO - Should Models be disposed as well?
 	@Override public void dispose() {
 		_tiles.clear();
 	}

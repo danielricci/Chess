@@ -24,13 +24,12 @@
 
 package controllers;
 
-import views.BaseView;
 import views.MainWindowView;
 
 public class MainWindowController extends BaseController {
-	public MainWindowController() {
-		BaseView view = new MainWindowView(this);
-		setView(view);
-		view.render();
+	protected MainWindowController() {
+		super(MainWindowView.class);
+		// TODO - who renders the view when someone calls the controller like this?
+		// TODO - how do we take the view that was just created and "add it" to something?
 	}
 }
