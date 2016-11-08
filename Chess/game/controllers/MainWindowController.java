@@ -27,9 +27,7 @@ package controllers;
 import views.MainWindowView;
 
 public class MainWindowController extends BaseController {
-	protected MainWindowController() {
-		super(MainWindowView.class);
-		// TODO - who renders the view when someone calls the controller like this?
-		// TODO - how do we take the view that was just created and "add it" to something?
+	public MainWindowController(MainWindowView view) {
+		super(view);
 	}
 }

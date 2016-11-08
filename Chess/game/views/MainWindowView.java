@@ -27,14 +27,23 @@ package views;
 import java.awt.BorderLayout;
 
 import controllers.BaseController;
+import factories.ControllerFactory;
 import factories.ViewFactory;
 import factories.ViewFactory.ViewType;
 
 public class MainWindowView extends BaseView {
 
+	public MainWindowView() {
+		super();
+	}
+	
 	public MainWindowView(BaseController... controllers) {
 		super(controllers);
 		setLayout(new BorderLayout());
+	}
+	
+	public <T extends BaseController> MainWindowView(Class<T> controller) {
+		setController(ControllerFactory.instance().getUnique(controller, this));
 	}
 	
 	@Override public void render() {

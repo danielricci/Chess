@@ -55,6 +55,8 @@ import factories.ControllerFactory;
 import factories.ViewFactory;
 import managers.ResourcesManager.Resources;
 import models.GameModel.Operation;
+import views.BaseView;
+import views.MainWindowView;
 
 public final class GameManager extends JFrame {
 
@@ -246,12 +248,11 @@ public final class GameManager extends JFrame {
 				ControllerFactory.instance().dispose();
 				ViewFactory.instance().dispose();
 				getContentPane().removeAll();					
-
 				
-
-				MainWindowController controller = ControllerFactory.instance().get(MainWindowController.class);
-				controller.attachTo(_instance);
-				System.out.println("Game loaded");
+				BaseView view = ViewFactory.instance().getUnique(MainWindowView.class, MainWindowController.class);
+				view.render();
+				
+				add(view);
 				validate();						
 			}	
 	    });

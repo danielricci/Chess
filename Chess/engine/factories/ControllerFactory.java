@@ -52,16 +52,31 @@ public class ControllerFactory implements IDestructable {
 	 * @return The class itself
 	 */
 	public <T extends BaseController> T getUnique(Class<T> controllerClass, Object... args) {
-		try {
-	        return controllerClass.getConstructor().newInstance(args);	        
-		} catch (Exception e) {
-			e.printStackTrace();
+		T controller = null;
+		if(args.length == 0) {
+			try {
+				controllerClass.getConstructor().newInstance();				
+			}
+			catch(Exception exception) {
+				exception.printStackTrace();
+			}
+		}
+		else {
+			Class<?>[] argsClass = new Class<?>[args.length];
+			for(int i = 0; i < args.length; ++i) {
+				argsClass[i] = args[i].getClass();
+			}
+			
+			try {			
+				controller = controllerClass.getConstructor(argsClass).newInstance(args);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		
-		return null;
+		return controller;
 	}
-	
-	
+
 	public <T extends BaseController> T get(Class<T> controllerClass) {
 		
 		for(BaseController item : _controllers) {

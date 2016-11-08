@@ -87,6 +87,27 @@ public class ViewFactory implements IDestructable {
 		return view;
 	}
 	
+	
+	public <T extends BaseView> T getUnique(Class<T> viewClass, Object... args) {
+		// TODO - this only works for concrete classes, we need to do the following
+		// TODO - check to see if we have a concrete implementation, if we do then use that, if not then we use a parent
+		T view = null;
+		
+		Class<?>[] argsClass = new Class<?>[args.length];
+		for(int i = 0; i < args.length; ++i) {
+			argsClass[i] = args[i].getClass();
+		}
+		
+		try {			
+			view = viewClass.getConstructor(argsClass).newInstance(args);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return view;
+	}
+	
+	
 	private <T extends BaseView> BaseView getView(Class<T> viewClass) {
 		for(BaseView view : _views) {
 			if(view.getClass() == viewClass) {

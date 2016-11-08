@@ -34,24 +34,23 @@ import models.GameModel.Operation;
 import models.PlayerModel;
 import models.TileModel;
 import models.TileModel.Selection;
-import views.BoardGameView;
 
 public class BoardGameController extends BaseController {
 
-	public static final int Rows = 8;
-	
+	private final int _rows = 8;
 	private final Vector<TileModel> _tiles = new Vector<>();		
 	private TileModel _previouslySelectedTile;
 	
-	public BoardGameController() {
+	public BoardGameController(IView view) {
+		super(view);
+		
 		PlayerController playerController = ControllerFactory.instance().get(PlayerController.class);
-		
-		
-		IView view = new BoardGameView(this, playerController);
 		playerController.populatePlayers(view);
-		view.render();
 	}
 	
+	public int GetDimensions() { 
+		return _rows; 
+	}
 		
   	public void createTile(Color tileViewColor, PlayerModel player, boolean isKingTile, Observer... observers) {		
 

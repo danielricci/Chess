@@ -38,12 +38,13 @@ public abstract class BaseController implements IController  {
 	 * The view assigned to the controller
 	 */
 	private IView _view;
-
+	
 	/**
 	 * Constructs a new controller with an associated owner and its corresponding view
 	 * 
 	 * @param view The view to construct
 	 */
+	/* NOT WORKING, GET THIS SHIT WORKING
 	public <T extends IView> BaseController(Class<T> view) {
 		try {
 			setView(view.getConstructor().newInstance(this));
@@ -51,6 +52,14 @@ public abstract class BaseController implements IController  {
 		catch(Exception exception) {
 			 exception.printStackTrace();
 		}		
+	}
+	*/
+	
+	public BaseController() {
+	}
+	
+	public BaseController(IView view) {
+		setView(view);
 	}
 	
 	/**

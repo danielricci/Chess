@@ -36,10 +36,8 @@ import javax.swing.JPanel;
 
 import controllers.BaseController;
 import controllers.BoardGameController;
-import controllers.PlayerController;
 import factories.ControllerFactory;
 import models.GameModel;
-import models.PlayerModel;
 import models.TileModel;
 import models.TileModel.NeighborXPosition;
 import models.TileModel.NeighborYPosition;
@@ -50,7 +48,11 @@ public class BoardGameView extends BaseView {
 	private final Color _firstColor = new Color(209, 139, 71);		
 	private final Color _secondColor = new Color(255, 205, 158);
 	
-	public BoardGameView(BaseController... controllers) {
+	public BoardGameView() {
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+	}
+
+	public BoardGameView(BaseController controllers) {
 		super(controllers);
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 	}
@@ -87,20 +89,22 @@ public class BoardGameView extends BaseView {
 		gbc.weightx = 1.0;
 		gbc.weighty = 1.0;
 		
-		PlayerController playerController = getController(PlayerController.class);
+		//PlayerController playerController = getController(PlayerController.class);
 		BoardGameController boardGameController = getController(BoardGameController.class);
-
-		int boardDimensions = BoardGameController.Rows;		
+		int boardDimensions = boardGameController.GetDimensions();
+		
 		Vector<Vector<TileModel>> tiles = new Vector<>();
-
+		
 		for (int row = 0; row < boardDimensions; ++row) {
 			
+			/*
 			PlayerModel player = null;
 			if(row == 0 || row == 1) {
 				player = playerController.getPlayer(0);
 			} else if(row == boardDimensions - 1 || row == boardDimensions) {
 				player = playerController.getPlayer(1);
 			}
+			*/
 			
 			Vector<TileModel> tilesRow = new Vector<>();
 			for (int col = 0, colorOffset = row % 2;  col < boardDimensions; ++col, colorOffset = (++colorOffset % 2 == 0 ? 0 : 1)) {
@@ -111,7 +115,7 @@ public class BoardGameView extends BaseView {
 				
 				boardGameController.createTile(
 					colorOffset == 0 ? _firstColor : _secondColor,
-					player, 
+					null, 
 					row == 0 || row == boardDimensions - 1, 
 					this
 				);
