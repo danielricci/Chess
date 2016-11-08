@@ -24,10 +24,15 @@
 
 package controllers;
 
+import views.BaseView;
 import views.MainWindowView;
 
 public class MainWindowController extends BaseController {
 	public MainWindowController(MainWindowView view) {
 		super(view);
+	}
+	
+	public <T extends BaseView> MainWindowController(Class<T> viewClass) {
+		super(viewClass, true);
 	}
 }

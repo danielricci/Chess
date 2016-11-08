@@ -49,12 +49,10 @@ import javax.swing.KeyStroke;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
-import controllers.BoardGameController;
 import controllers.MainWindowController;
 import factories.ControllerFactory;
 import factories.ViewFactory;
 import managers.ResourcesManager.Resources;
-import models.GameModel.Operation;
 import views.BaseView;
 import views.MainWindowView;
 
@@ -249,7 +247,7 @@ public final class GameManager extends JFrame {
 				ViewFactory.instance().dispose();
 				getContentPane().removeAll();					
 				
-				BaseView view = ViewFactory.instance().getUnique(MainWindowView.class, MainWindowController.class);
+				BaseView view = ViewFactory.instance().get(MainWindowView.class, true, MainWindowController.class);
 				view.render();
 				
 				add(view);
@@ -260,9 +258,9 @@ public final class GameManager extends JFrame {
 	    JCheckBoxMenuItem developerMenuHighlightNeighbors = new JCheckBoxMenuItem(ResourcesManager.Get(Resources.HighlightNeighbors));
 	    developerMenuHighlightNeighbors.addItemListener(new ItemListener() {
 			@Override public void itemStateChanged(ItemEvent e) {
-				JCheckBoxMenuItem item = (JCheckBoxMenuItem)e.getItem();
-				BoardGameController boardGameController = ControllerFactory.instance().get(BoardGameController.class);
-				boardGameController.debuggerSelection(Operation.Debugger_HighlightNeighbors, item.isSelected());
+				//JCheckBoxMenuItem item = (JCheckBoxMenuItem)e.getItem();
+				//BoardGameController boardGameController = ControllerFactory.instance().get(BoardGameController.class);
+				//boardGameController.debuggerSelection(Operation.Debugger_HighlightNeighbors, item.isSelected());
 			}
 		});       	
 	    //developerMenuHighlightNeighbors.setEnabled(false);  

@@ -43,59 +43,40 @@ public class ControllerFactory implements IDestructable {
 		}	
 		return _instance;
 	}
-	
-	/**
-	 * Create an instance of the specified class and return it without recording its reference
-	 * 
-	 * @param controllerClass The controller to create
-	 * @param args The arguments to pass in to the constructor
-	 * @return The class itself
-	 */
-	public <T extends BaseController> T getUnique(Class<T> controllerClass, Object... args) {
-		T controller = null;
-		if(args.length == 0) {
-			try {
-				controllerClass.getConstructor().newInstance();				
-			}
-			catch(Exception exception) {
-				exception.printStackTrace();
-			}
+
+	public <T extends BaseController> T get(Class<T> controllerClass, boolean unique, Object...args) {
+		
+		// Get the list of arguments together
+		Class<?>[] argsClass = new Class<?>[args.length];
+		for(int i = 0; i < args.length; ++i) {
+			argsClass[i] = args[i].getClass();
+		}
+		
+		// If its unique then we don't add it to our list of created items we just construct and
+		// return it
+		if(unique) {
+			try {			
+				return controllerClass.getConstructor(argsClass).newInstance(args);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}	
 		}
 		else {
-			Class<?>[] argsClass = new Class<?>[args.length];
-			for(int i = 0; i < args.length; ++i) {
-				argsClass[i] = args[i].getClass();
+			for(BaseController item : _controllers) {
+				if(item.getClass() == controllerClass) {
+					return (T)item;
+				}
 			}
-			
-			try {			
-				controller = controllerClass.getConstructor(argsClass).newInstance(args);
+
+			try {
+				_controllers.add(controllerClass.getConstructor(argsClass).newInstance(args));
+				return (T)_controllers.lastElement(); 
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 		
-		return controller;
-	}
-
-	public <T extends BaseController> T get(Class<T> controllerClass) {
-		
-		for(BaseController item : _controllers) {
-			if(item.getClass() == controllerClass) {
-				return (T)item;
-			}
-		}
-
-		try {
-	        _controllers.add(controllerClass.getConstructor().newInstance());	        
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return (T)_controllers.lastElement();
-	}
-	
-	public boolean isActive() {
-		return _controllers.size() > 0;
+		return null;
 	}
 	
 	@Override public void dispose() {

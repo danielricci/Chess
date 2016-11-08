@@ -26,6 +26,8 @@ package controllers;
 
 import api.IController;
 import api.IView;
+import factories.ViewFactory;
+import views.BaseView;
 
 /**
  * This class holds base controller implementation functionality for all controllers
@@ -37,47 +39,32 @@ public abstract class BaseController implements IController  {
 	/**
 	 * The view assigned to the controller
 	 */
-	private IView _view;
+	private BaseView _view;
 	
-	/**
-	 * Constructs a new controller with an associated owner and its corresponding view
-	 * 
-	 * @param view The view to construct
-	 */
-	/* NOT WORKING, GET THIS SHIT WORKING
-	public <T extends IView> BaseController(Class<T> view) {
+	public BaseController() {
+	}
+	
+	public <T extends BaseView> BaseController(T view) {
+		setView(view);
+	}
+
+	public <T extends BaseView> BaseController(Class<T> viewClass, boolean unique) {
 		try {
-			setView(view.getConstructor().newInstance(this));
+			BaseView view = ViewFactory.instance().get(viewClass, unique, this);
+			setView(view);
 		}
 		catch(Exception exception) {
 			 exception.printStackTrace();
 		}		
 	}
-	*/
 	
-	public BaseController() {
-	}
+	public final BaseView getView() { return _view; }
 	
-	public BaseController(IView view) {
-		setView(view);
-	}
-	
-	/**
-	 * Gets the view
-	 * 
-	 * @param viewClass The casting class
-	 * @return The view
-	 */
 	protected final <T extends IView> T getView(Class<T> viewClass) {	
 		return (T)_view;
 	}
 	
-	/**
-	 * Sets the view
-	 * 
-	 * @param view
-	 */
-	protected <T extends IView> void setView(T view) {
+	protected <T extends BaseView> void setView(T view) {
 		_view = view;
 	}
 		

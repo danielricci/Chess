@@ -27,29 +27,26 @@ package views;
 import java.awt.BorderLayout;
 
 import controllers.BaseController;
-import factories.ControllerFactory;
-import factories.ViewFactory;
-import factories.ViewFactory.ViewType;
+import controllers.MainWindowController;
 
 public class MainWindowView extends BaseView {
 
-	public MainWindowView() {
-		super();
-	}
-	
-	public MainWindowView(BaseController... controllers) {
-		super(controllers);
-		setLayout(new BorderLayout());
-	}
-	
 	public <T extends BaseController> MainWindowView(Class<T> controller) {
-		setController(ControllerFactory.instance().getUnique(controller, this));
+		super(controller);
 	}
+	
+	public MainWindowView(MainWindowController controller) {
+		super(controller);
+	}
+	
 	
 	@Override public void render() {
-		BaseView boardGameView = ViewFactory.instance().getView(ViewType.BoardGameView);
-		boardGameView.render();
-		add(boardGameView);
+		setLayout(new BorderLayout());
+		
+		// TODO 
+		//BaseView boardGameView = ViewFactory.instance().get(BoardGameView.class, false);
+		//boardGameView.render();
+		//add(boardGameView);
 	}
 
 	@Override public void dispose() {

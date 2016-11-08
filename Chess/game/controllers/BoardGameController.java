@@ -28,12 +28,12 @@ import java.awt.Color;
 import java.util.Observer;
 import java.util.Vector;
 
-import api.IView;
 import factories.ControllerFactory;
 import models.GameModel.Operation;
 import models.PlayerModel;
 import models.TileModel;
 import models.TileModel.Selection;
+import views.BoardGameView;
 
 public class BoardGameController extends BaseController {
 
@@ -41,10 +41,10 @@ public class BoardGameController extends BaseController {
 	private final Vector<TileModel> _tiles = new Vector<>();		
 	private TileModel _previouslySelectedTile;
 	
-	public BoardGameController(IView view) {
+	public BoardGameController(BoardGameView view) {
 		super(view);
 		
-		PlayerController playerController = ControllerFactory.instance().get(PlayerController.class);
+		PlayerController playerController = ControllerFactory.instance().get(PlayerController.class, false);
 		playerController.populatePlayers(view);
 	}
 	
@@ -55,8 +55,9 @@ public class BoardGameController extends BaseController {
   	public void createTile(Color tileViewColor, PlayerModel player, boolean isKingTile, Observer... observers) {		
 
   		// TODO - can we get rid of this disgusting crap
-		TileController tileController = ControllerFactory.instance().getUnique(
-			TileController.class, 
+		TileController tileController = ControllerFactory.instance().get(
+			TileController.class,
+			true,
 			player, 
 			isKingTile,
 			observers
@@ -89,7 +90,7 @@ public class BoardGameController extends BaseController {
 
 	public void processTileMove(TileModel captureTile) {
 
-		PlayerController controller = ControllerFactory.instance().get(PlayerController.class);
+		PlayerController controller = ControllerFactory.instance().get(PlayerController.class, false);
 		boolean tileCaptured = false;
 		
 		for(TileModel model : _previouslySelectedTile.getAllNeighbors()) {

@@ -31,23 +31,25 @@ import javax.swing.JPanel;
 
 import api.IView;
 import controllers.BaseController;
+import factories.ControllerFactory;
 import models.GameModel;
 
 public abstract class BaseView extends JPanel implements IView {
 
 	private final Vector<BaseController> _controllers = new Vector<>();
 	
-	public BaseView(){
+	private BaseView(){
 		register();
 	}
 	
-	public BaseView(BaseController... controllers) {			
+	public BaseView(BaseController controller) {			
 		this();
-		for(BaseController controller : controllers) {
-			if(!controllerExists(controller)) {
-				_controllers.add(controller);
-			}			
-		}
+		_controllers.add(controller);
+	}
+	
+	public <T extends BaseController> BaseView(Class<T> controller) {
+		this();
+		setController(ControllerFactory.instance().get(controller, true, this));
 	}
 	
 	protected final <T extends BaseController> T getController(Class<T> controllerClass) {	

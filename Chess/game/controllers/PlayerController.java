@@ -35,6 +35,7 @@ public class PlayerController extends BaseController {
 	private final Vector<PlayerModel> _players = new Vector<>();
 	private boolean _playerSelected = false;	
 	
+	
 	public void populatePlayers(Observer observer) {
 		PlayerModel player1 = new PlayerModel(observer);
 		PlayerModel player2 = new PlayerModel(observer);

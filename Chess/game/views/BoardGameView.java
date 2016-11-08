@@ -34,7 +34,6 @@ import java.util.Vector;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
-import controllers.BaseController;
 import controllers.BoardGameController;
 import factories.ControllerFactory;
 import models.GameModel;
@@ -48,20 +47,15 @@ public class BoardGameView extends BaseView {
 	private final Color _firstColor = new Color(209, 139, 71);		
 	private final Color _secondColor = new Color(255, 205, 158);
 	
-	public BoardGameView() {
-		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-	}
-
-	public BoardGameView(BaseController controllers) {
-		super(controllers);
-		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+	public BoardGameView(BoardGameController controller) {
+		super(controller);
 	}
 	
 	@Override public void update(Observable obs, Object arg) {
 		
 		super.update(obs, arg);
 		
-		BoardGameController boardGameController = ControllerFactory.instance().get(BoardGameController.class);
+		BoardGameController boardGameController = ControllerFactory.instance().get(BoardGameController.class, false);
 		TileModel tileModel = (TileModel)obs;
 		
 		for(GameModel.Operation operation : tileModel.getOperations()) {
@@ -82,6 +76,7 @@ public class BoardGameView extends BaseView {
 	@Override public void render() {
 
 		super.render();
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		// Set the constraints of this
 		GridBagConstraints gbc = new GridBagConstraints();

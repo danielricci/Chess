@@ -37,7 +37,6 @@ import java.util.Observable;
 
 import javax.swing.JLabel;
 
-import controllers.BaseController;
 import controllers.TileController;
 import models.GameModel;
 import models.GameModel.Operation;
@@ -57,7 +56,7 @@ public class TileView extends BaseView {
 	
 	private Map<Operation, MouseListener> _operationHandlers = new HashMap<>();
 	
-	public TileView(BaseController controller) {
+	public TileView(TileController controller) {
 		super(controller);	
 	}
 	

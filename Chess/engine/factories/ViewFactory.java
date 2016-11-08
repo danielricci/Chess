@@ -28,19 +28,12 @@ import java.util.Vector;
 
 import api.IDestructable;
 import views.BaseView;
-import views.BoardGameView;
-import views.MainWindowView;
 
 public class ViewFactory implements IDestructable {
 
 	private final Vector<BaseView> _views = new Vector<>(); 
 	private static ViewFactory _instance;
-	
-	public enum ViewType {
-		BoardGameView,
-		MainWindowView
-	}
-	
+		
 	private ViewFactory() {
 	}
 	
@@ -51,70 +44,45 @@ public class ViewFactory implements IDestructable {
 		return _instance;
 	}
 	
-	@Override public void dispose() {
-		for(BaseView view : _views) {
-			view.dispose();
-		}
-		_instance = null;
-	}
-	
-	// TODO - just like the factory controller, we shouldnt rely on an enum, make it Class<T>
-	public BaseView getView(ViewType viewType) {
+	public <T extends BaseView> T get(Class<T> viewClass, boolean unique, Object...args) {
 		
-		BaseView view = null;
-		switch(viewType) {
-			case BoardGameView: 
-			{
-				if((view = getView(BoardGameView.class)) != null) {
-					return view;
-				}
-				view = new BoardGameView();
-				break;
-			}
-			case MainWindowView:
-			{
-				if((view = getView(MainWindowView.class)) != null) {
-					return view;
-				}
-				view = new MainWindowView();
-				break;
-			}
-		}
-				
-		assert view != null : "Error: Cannot create a view of the specified type " + viewType.toString();
-		_views.add(view);
-		
-		return view;
-	}
-	
-	
-	public <T extends BaseView> T getUnique(Class<T> viewClass, Object... args) {
-		// TODO - this only works for concrete classes, we need to do the following
-		// TODO - check to see if we have a concrete implementation, if we do then use that, if not then we use a parent
-		T view = null;
-		
+		// Get the list of arguments together
 		Class<?>[] argsClass = new Class<?>[args.length];
 		for(int i = 0; i < args.length; ++i) {
 			argsClass[i] = args[i].getClass();
 		}
 		
-		try {			
-			view = viewClass.getConstructor(argsClass).newInstance(args);
-		} catch (Exception e) {
-			e.printStackTrace();
+		// If its unique then we don't add it to our list of created items we just construct and
+		// return it
+		if(unique) {
+			try {			
+				return viewClass.getConstructor(argsClass).newInstance(args);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}	
 		}
-		
-		return view;
-	}
-	
-	
-	private <T extends BaseView> BaseView getView(Class<T> viewClass) {
-		for(BaseView view : _views) {
-			if(view.getClass() == viewClass) {
-				return view;
+		else {
+			for(BaseView item : _views) {
+				if(item.getClass() == viewClass) {
+					return (T)item;
+				}
+			}
+
+			try {
+				_views.add(viewClass.getConstructor(argsClass).newInstance(args));
+				return (T)_views.lastElement(); 
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 		
 		return null;
+	}
+		
+	@Override public void dispose() {
+		for(BaseView view : _views) {
+			view.dispose();
+		}
+		_instance = null;
 	}
 }
