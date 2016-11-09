@@ -36,8 +36,10 @@ import javax.swing.JPanel;
 
 import controllers.BaseController;
 import controllers.BoardGameController;
+import controllers.PlayerController;
 import factories.ControllerFactory;
 import models.GameModel;
+import models.PlayerModel;
 import models.TileModel;
 import models.TileModel.NeighborXPosition;
 import models.TileModel.NeighborYPosition;
@@ -55,9 +57,6 @@ public class BoardGameView extends BaseView {
 	public <T extends BaseController> BoardGameView(Class<T> controller) {
 		super(controller);
 	}
-	
-	
-	
 	
 	@Override public void update(Observable obs, Object arg) {
 		
@@ -83,7 +82,6 @@ public class BoardGameView extends BaseView {
 	
 	@Override public void render() {
 
-		super.render();
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		// Set the constraints of this
@@ -92,7 +90,8 @@ public class BoardGameView extends BaseView {
 		gbc.weightx = 1.0;
 		gbc.weighty = 1.0;
 		
-		//PlayerController playerController = getController(PlayerController.class);
+		// Get references to the resources needed to populate the board
+		PlayerController playerController = ControllerFactory.instance().get(PlayerController.class, false);
 		BoardGameController boardGameController = getController(BoardGameController.class);
 		int boardDimensions = boardGameController.GetDimensions();
 		
@@ -100,14 +99,12 @@ public class BoardGameView extends BaseView {
 		
 		for (int row = 0; row < boardDimensions; ++row) {
 			
-			/*
 			PlayerModel player = null;
 			if(row == 0 || row == 1) {
 				player = playerController.getPlayer(0);
 			} else if(row == boardDimensions - 1 || row == boardDimensions) {
 				player = playerController.getPlayer(1);
 			}
-			*/
 			
 			Vector<TileModel> tilesRow = new Vector<>();
 			for (int col = 0, colorOffset = row % 2;  col < boardDimensions; ++col, colorOffset = (++colorOffset % 2 == 0 ? 0 : 1)) {
@@ -124,7 +121,7 @@ public class BoardGameView extends BaseView {
 				);
 				
 				// Add our components to our view
-				//_gamePanel.add(view, gbc);			
+				//gamePanel.add(view, gbc);			
 				//tilesRow.add(tile);
 			}
 			
