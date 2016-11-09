@@ -33,6 +33,7 @@ import models.GameModel.Operation;
 import models.PlayerModel;
 import models.TileModel;
 import models.TileModel.Selection;
+import views.BaseView;
 import views.BoardGameView;
 
 public class BoardGameController extends BaseController {
@@ -43,10 +44,17 @@ public class BoardGameController extends BaseController {
 	
 	public BoardGameController(BoardGameView view) {
 		super(view);
+	}
+	
+	public <T extends BaseView> BoardGameController(Class<T> viewClass) {
+		super(viewClass, true);
 		
 		PlayerController playerController = ControllerFactory.instance().get(PlayerController.class, false);
-		playerController.populatePlayers(view);
+		playerController.populatePlayers(getView());
 	}
+	
+	
+	
 	
 	public int GetDimensions() { 
 		return _rows; 

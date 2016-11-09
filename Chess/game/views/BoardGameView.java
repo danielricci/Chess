@@ -34,6 +34,7 @@ import java.util.Vector;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
+import controllers.BaseController;
 import controllers.BoardGameController;
 import factories.ControllerFactory;
 import models.GameModel;
@@ -50,6 +51,13 @@ public class BoardGameView extends BaseView {
 	public BoardGameView(BoardGameController controller) {
 		super(controller);
 	}
+	
+	public <T extends BaseController> BoardGameView(Class<T> controller) {
+		super(controller);
+	}
+	
+	
+	
 	
 	@Override public void update(Observable obs, Object arg) {
 		
