@@ -41,7 +41,6 @@ public class MainWindowView extends BaseView {
 		super(controller);
 	}
 	
-	
 	@Override public void render() {
 		setLayout(new BorderLayout());
 		
@@ -52,6 +51,7 @@ public class MainWindowView extends BaseView {
 	}
 
 	@Override public void dispose() {
-		removeAll();
+		//removeAll();
+		System.out.println("TODO - dispose in mainwindowview");
 	}
 }

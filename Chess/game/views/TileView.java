@@ -82,20 +82,6 @@ public class TileView extends BaseView {
 		_backgroundColor = backgroundColor;
 	}
 	
-	private void kingTileVisibility(TileModel tile, Operation operation) {
-		
-		Color color = _backgroundColor;
-		if(tile.getIsKingTile()) {
-			boolean isVisible = (boolean)tile.getCachedData(operation);
-			if(isVisible) {
-				color = _guideColor;
-			}			
-		}
-		
-		updateSelectedCommand(color);
-		repaint();		
-	}
-	
 	private void highlightNeighbors(TileModel tile, Operation operation) {
 		
 		boolean result = (boolean)tile.getCachedData(operation);
@@ -168,9 +154,6 @@ public class TileView extends BaseView {
 				break;
 			case Debugger_TileCoordinates:
 				tileCoordinateVisibility(tileModel.getCachedData(operation));
-				break;
-			case Debugger_KingTiles:
-				kingTileVisibility(tileModel, operation);
 				break;
 			case Debugger_HighlightNeighbors:
 				highlightNeighbors(tileModel, operation);

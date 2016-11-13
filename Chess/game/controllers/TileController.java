@@ -28,8 +28,6 @@ import java.awt.Color;
 import java.awt.Image;
 import java.util.Collection;
 import java.util.Map.Entry;
-import java.util.Observer;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.Vector;
 
@@ -40,19 +38,16 @@ import models.TileModel;
 import models.TileModel.NeighborXPosition;
 import models.TileModel.NeighborYPosition;
 import models.TileModel.Selection;
-import views.TileView;
-
+import views.BaseView;
 
 public class TileController extends BaseController {
 	
 	private TileModel _tile;
 	
-	public TileController(Color tileViewColor, PlayerModel player, boolean isKingTile, Observer... observers) {
-		_tile = new TileModel(player, isKingTile, observers);
+	public <T extends BaseView> TileController(Class<T> viewClass) {
+		super(viewClass, true);
 		
-		TileView tileView = new TileView(this);
-		tileView.setBackground(tileViewColor);
-		tileView.render();
+		_tile = new TileModel(getView());
 	}
 	
 	public TileModel getTile() {
@@ -69,7 +64,7 @@ public class TileController extends BaseController {
 	public void setNeighbors(NeighborYPosition neighborYPosition, Entry<NeighborXPosition, TileModel>... neighborTiles) {	
 		_tile.setNeighbors(neighborYPosition, neighborTiles);
 	}
-
+	
 	public void processTileSelected() {
 		
 		PlayerController playerController = ControllerFactory.instance().get(PlayerController.class, false);
@@ -124,11 +119,8 @@ public class TileController extends BaseController {
 	}
 	
 	public boolean hasMoves() {
-		
+		/*
 		Set<TileModel> neighbors = _tile.getForwardNeighbors();
-		if(_tile.getIsKingTile()) {
-			neighbors.addAll(_tile.getBackwardNeighbors());
-		}
 		
 		if(neighbors.size() == 0) {
 			return false;
@@ -138,7 +130,7 @@ public class TileController extends BaseController {
 			if(neighbor.isMovableTo() || neighbor.getCapturableNeighbors(_tile).size() > 0) {
 				return true;
 			}
-		}
+		}*/
 		
 		return false;
 	}
@@ -154,7 +146,7 @@ public class TileController extends BaseController {
 	
 	public boolean hasCapturePosition() {
 		
-		SortedSet<TileModel> neighbors = _tile.getForwardNeighbors();
+		/*SortedSet<TileModel> neighbors = _tile.getForwardNeighbors();
 		if(_tile.getIsKingTile() || _tile.getPlayer().getPlayerPiece(_tile).getIsKinged()) {
 			neighbors.addAll(_tile.getBackwardNeighbors());
 		}
@@ -166,7 +158,7 @@ public class TileController extends BaseController {
 					return true;
 				}
 			}
-		}
+		}*/
 		
 		return false;
 	}
@@ -175,9 +167,10 @@ public class TileController extends BaseController {
 		Selection selection = operation == Operation.ShowGuides ? Selection.GuideSelected : Selection.None;
 		
 		SortedSet<TileModel> tileNeighbors = _tile.getForwardNeighbors();
-		if(_tile.getIsKingTile() || _tile.getPlayer().getPlayerPiece(_tile).getIsKinged()) {
+		
+		/*if(_tile.getIsKingTile() || _tile.getPlayer().getPlayerPiece(_tile).getIsKinged()) {
 			tileNeighbors.addAll(_tile.getBackwardNeighbors());
-		}
+		}*/
 		
 		boolean captureExists = false;
 		

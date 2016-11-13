@@ -47,9 +47,7 @@ public class TileModel extends GameModel implements IPlayableTile, Comparable<Ti
 	private final int _identifier = ++IDENTIFIER;
     
 	private final Map<NeighborYPosition, Map<NeighborXPosition, TileModel>> _neighbors = new HashMap<>();
-		
-	private final boolean _isKingTile;
-	
+			
 	public enum Selection {
 		GuideSelected,
 		MoveSelected,
@@ -170,19 +168,18 @@ public class TileModel extends GameModel implements IPlayableTile, Comparable<Ti
 		}
 	};
 	
-    public TileModel(PlayerModel player, boolean isKingTile, Observer... observers) {
+    public TileModel(Observer... observers) {
 		super(observers);
 		
 		_neighbors.put(NeighborYPosition.BOTTOM, new HashMap<NeighborXPosition, TileModel>());
 		_neighbors.put(NeighborYPosition.NEUTRAL, new HashMap<NeighborXPosition, TileModel>());
 		_neighbors.put(NeighborYPosition.TOP, new HashMap<NeighborXPosition, TileModel>());
 		
-		_player = player;
-		_isKingTile = isKingTile;
+		//_player = player;
 
-		if(player != null) {
-			player.addTilePiece(this);
-		}
+		//if(player != null) {
+		//	player.addTilePiece(this);
+		//}
 		doneUpdating();
 	}
     
@@ -352,10 +349,6 @@ public class TileModel extends GameModel implements IPlayableTile, Comparable<Ti
     
 	@Override public boolean isPlayable() {
 		return _player != null && _selection != Selection.MoveSelected;
-	}
-	
-	public boolean getIsKingTile() {
-		return _isKingTile;
 	}
 	
 	/**

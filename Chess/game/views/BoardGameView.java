@@ -27,7 +27,6 @@ package views;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.Observable;
 import java.util.Vector;
 
@@ -36,19 +35,17 @@ import javax.swing.JPanel;
 
 import controllers.BaseController;
 import controllers.BoardGameController;
-import controllers.PlayerController;
 import factories.ControllerFactory;
 import models.GameModel;
-import models.PlayerModel;
 import models.TileModel;
-import models.TileModel.NeighborXPosition;
-import models.TileModel.NeighborYPosition;
 
 public class BoardGameView extends BaseView {
 	
 	private final JPanel _gamePanel = new JPanel(new GridBagLayout());	
 	private final Color _firstColor = new Color(209, 139, 71);		
 	private final Color _secondColor = new Color(255, 205, 158);
+	
+	private final int _dimension = 8;
 	
 	public BoardGameView(BoardGameController controller) {
 		super(controller);
@@ -84,15 +81,56 @@ public class BoardGameView extends BaseView {
 
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
-		// Set the constraints of this
+		// Set the constraints of views 
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.weightx = 1.0;
 		gbc.weighty = 1.0;
 		
-		// Get references to the resources needed to populate the board
-		PlayerController playerController = ControllerFactory.instance().get(PlayerController.class, false);
+		// Holds all the cells that are to be rendered
+		Vector<Vector<TileView>> tiles = new Vector<>();
+		
+		// Reference to the specified controller, in this case it is unique
 		BoardGameController boardGameController = getController(BoardGameController.class);
+		
+		// Create the boar, row by row
+		for(int row= 0; row < _dimension; ++row) {
+			
+			// Create a row
+			Vector<TileView> tileRow = new Vector<>();
+			for(int col = 0; col < _dimension; ++col) {		
+
+				TileView view = boardGameController.createTile();
+				tileRow.add(view);
+				
+				gbc.gridx = col;
+				gbc.gridy = row;
+				_gamePanel.add(view, gbc);			
+			}
+		
+			// Link the row elements together
+			boardGameController.link(tileRow);
+			tiles.add(tileRow);
+			
+			// Link the rows
+			if(tiles.size() > 1) {
+				boardGameController.link(
+					tiles.elementAt(_dimension - 2),
+					tiles.lastElement()
+				);
+			}
+		}
+		
+		// Render the elements
+		for(Vector<TileView> row : tiles) {
+			for(TileView view : row) {
+				view.render();
+			}
+		}
+				
+		
+		// Get references to the resources needed to populate the board
+		/*PlayerController playerController = ControllerFactory.instance().get(PlayerController.class, false);
 		int boardDimensions = boardGameController.GetDimensions();
 		
 		Vector<Vector<TileModel>> tiles = new Vector<>();
@@ -113,12 +151,6 @@ public class BoardGameView extends BaseView {
 				gbc.gridx = col;
 				gbc.gridy = row;
 				
-				boardGameController.createTile(
-					colorOffset == 0 ? _firstColor : _secondColor,
-					null, 
-					row == 0 || row == boardDimensions - 1, 
-					this
-				);
 				
 				// Add our components to our view
 				//gamePanel.add(view, gbc);			
@@ -167,7 +199,7 @@ public class BoardGameView extends BaseView {
 					);					
 				}
 			}
-		}
+		}*/
 		add(_gamePanel);
 	}
 

@@ -96,9 +96,9 @@ public final class PlayerModel extends GameModel {
 	public void updatePlayerPiece(TileModel oldTile, TileModel newTile) {
 		if(newTile != null) {
 			_pieces.put(newTile, _pieces.get(oldTile));	
-			if(newTile.getIsKingTile()) {
-				_pieces.get(newTile).setAsKinged();
-			}
+			//if(newTile.getIsKingTile()) {
+				//_pieces.get(newTile).setAsKinged();
+			//}
 		}
 		_pieces.remove(oldTile);
 	}
@@ -142,12 +142,13 @@ public final class PlayerModel extends GameModel {
 	}
 
 	public String getTeamPath(TileModel tile) {
-		String kingPath = "";
+		return null;
+		//String kingPath = "";
 				
-		if(_pieces.get(tile).getIsKinged() || (tile.getIsKingTile() && tile.getBackwardNeighbors().size() > 0)) {
-			kingPath = Team._kingPiecePath; 
-		}
-		return String.format("%s%s%s", _team._piecePath, kingPath, _team._piecePathExtension);
+		//if(_pieces.get(tile).getIsKinged() || (tile.getIsKingTile() && tile.getBackwardNeighbors().size() > 0)) {
+		//	kingPath = Team._kingPiecePath; 
+		//}
+		//return String.format("%s%s%s", _team._piecePath, kingPath, _team._piecePathExtension);
 	}
 
 	public PlayerPiece getPlayerPiece(TileModel tileModel) {

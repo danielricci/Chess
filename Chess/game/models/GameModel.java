@@ -50,7 +50,6 @@ public class GameModel extends Observable
 		// TODO - the debugger constants here are valid we wont need to remove them, we should try to remove the above however
 		Debugger_PlayerTiles,
 		Debugger_TileCoordinates, 
-		Debugger_KingTiles, 
 		Debugger_HighlightNeighbors
 	}
 	

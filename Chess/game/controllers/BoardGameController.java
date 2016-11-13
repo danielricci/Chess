@@ -24,21 +24,19 @@
 
 package controllers;
 
-import java.awt.Color;
-import java.util.Observer;
 import java.util.Vector;
 
+import api.IDebuggable;
 import factories.ControllerFactory;
 import models.GameModel.Operation;
-import models.PlayerModel;
 import models.TileModel;
 import models.TileModel.Selection;
 import views.BaseView;
 import views.BoardGameView;
+import views.TileView;
 
-public class BoardGameController extends BaseController {
+public class BoardGameController extends BaseController implements IDebuggable {
 
-	private final int _rows = 8;
 	private final Vector<TileModel> _tiles = new Vector<>();		
 	private TileModel _previouslySelectedTile;
 	
@@ -48,36 +46,37 @@ public class BoardGameController extends BaseController {
 	
 	public <T extends BaseView> BoardGameController(Class<T> viewClass) {
 		super(viewClass, true);
-		
-		PlayerController playerController = ControllerFactory.instance().get(PlayerController.class, false);
-		playerController.populatePlayers(getView());
 	}
 	
 	
-	
-	
-	public int GetDimensions() { 
-		return _rows; 
+	public TileView createTile() {
+		
+		// Create a new tile controller that is linked to a corresponding view
+		TileController controller = ControllerFactory.instance().get(TileController.class, true, TileView.class);
+		
+		// Reference the tile model that was created
+		_tiles.add(controller.getTile());
+		
+		// Return the associated view that was created
+		return controller.getView(TileView.class);
 	}
-		
-  	public void createTile(Color tileViewColor, PlayerModel player, boolean isKingTile, Observer... observers) {		
-
-  		// TODO - can we get rid of this disgusting crap
-		TileController tileController = ControllerFactory.instance().get(
-			TileController.class,
-			true,
-			player, 
-			isKingTile,
-			observers
-		);
-		
-		_tiles.addElement(tileController.getTile());
+	
+	public void link(Vector<TileView> tileRow) {		
 	}
 
-  	public void debuggerSelection(Operation operation, boolean selected) {
-  		for(TileModel tile : _tiles) {
-  			tile.addCachedData(operation, selected);
-  		}
+	public void link(Vector<TileView> elementAt, Vector<TileView> lastElement) {
+	}
+	
+	@Override public void dispose() {
+		_tiles.clear();
+	}	
+	
+	
+  	@Override public void debuggerSelection(DebugOption optionx, boolean selected) {
+  		// TODO - implement me
+  		//for(TileModel tile : _tiles) {
+  		//	tile.addCachedData(operation, selected);
+  		//}
   	}
   	
   	public void processTileSelected(TileModel tile) {
@@ -145,7 +144,8 @@ public class BoardGameController extends BaseController {
 	}
 
 	// TODO - Should Models be disposed as well?
-	@Override public void dispose() {
-		_tiles.clear();
-	}
+
+
+
+	
 }

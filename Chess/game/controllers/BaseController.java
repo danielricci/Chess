@@ -58,9 +58,13 @@ public abstract class BaseController implements IController  {
 		}		
 	}
 	
-	public final BaseView getView() { return _view; }
+	/**
+	 * @deprecated getView(Class<T> viewClass) 
+	 */
+	@Deprecated
+	public final <T extends BaseView> BaseView getView() { return _view; }
 	
-	protected final <T extends IView> T getView(Class<T> viewClass) {	
+	public final <T extends IView> T getView(Class<T> viewClass) {	
 		return (T)_view;
 	}
 	
