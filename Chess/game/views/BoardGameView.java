@@ -45,7 +45,6 @@ public class BoardGameView extends BaseView {
 	private final Color _firstColor = new Color(209, 139, 71);		
 	private final Color _secondColor = new Color(255, 205, 158);
 	
-	private final int _dimension = 8;
 	
 	public BoardGameView(BoardGameController controller) {
 		super(controller);
@@ -93,12 +92,12 @@ public class BoardGameView extends BaseView {
 		// Reference to the specified controller, in this case it is unique
 		BoardGameController boardGameController = getController(BoardGameController.class);
 		
-		// Create the boar, row by row
-		for(int row= 0; row < _dimension; ++row) {
+		// Create the board, row by row
+		for(int row= 0; row < boardGameController.getDimensions(); ++row) {
 			
 			// Create a row
 			Vector<TileView> tileRow = new Vector<>();
-			for(int col = 0; col < _dimension; ++col) {		
+			for(int col = 0; col < boardGameController.getDimensions(); ++col) {		
 
 				TileView view = boardGameController.createTile();
 				tileRow.add(view);
@@ -109,16 +108,8 @@ public class BoardGameView extends BaseView {
 			}
 		
 			// Link the row elements together
-			boardGameController.link(tileRow);
-			tiles.add(tileRow);
-			
-			// Link the rows
-			if(tiles.size() > 1) {
-				boardGameController.link(
-					tiles.elementAt(_dimension - 2),
-					tiles.lastElement()
-				);
-			}
+			boardGameController.link();
+			tiles.add(tileRow);			
 		}
 		
 		// Render the elements

@@ -37,7 +37,9 @@ import views.TileView;
 
 public class BoardGameController extends BaseController implements IDebuggable {
 
-	private final Vector<TileModel> _tiles = new Vector<>();		
+	private final int _dimension = 8;
+
+	private final Vector<Vector<TileModel>> _tiles = new Vector<>();		
 	private TileModel _previouslySelectedTile;
 	
 	public BoardGameController(BoardGameView view) {
@@ -54,17 +56,28 @@ public class BoardGameController extends BaseController implements IDebuggable {
 		// Create a new tile controller that is linked to a corresponding view
 		TileController controller = ControllerFactory.instance().get(TileController.class, true, TileView.class);
 		
-		// Reference the tile model that was created
-		_tiles.add(controller.getTile());
+		// Populate the tile model and observer it with our view
+		TileModel model = controller.populateTileModel(getView(BoardGameView.class));
+		
+		// If we reached our dimensions limit then buffer in a new row
+		if(_tiles.lastElement().size() == _dimension) {
+			_tiles.addElement(new Vector<TileModel>());
+		}
+		
+		// Add the row to the end of the list of tiles
+		_tiles.lastElement().add(model);
 		
 		// Return the associated view that was created
 		return controller.getView(TileView.class);
 	}
-	
-	public void link(Vector<TileView> tileRow) {		
-	}
 
-	public void link(Vector<TileView> elementAt, Vector<TileView> lastElement) {
+	public void link() {		
+	
+	}
+	
+
+	public int getDimensions() {		
+		return _dimension;
 	}
 	
 	@Override public void dispose() {
@@ -131,9 +144,9 @@ public class BoardGameController extends BaseController implements IDebuggable {
 	}
 	
 	public void processTileHideAllGuides() {
-		for(TileModel model : _tiles) {
-			model.setSelected(Operation.HideGuides, Selection.None, true);
-		}
+		//for(TileModel model : _tiles) {
+		//	model.setSelected(Operation.HideGuides, Selection.None, true);
+		//}
 	}
 	
 	public void processTileCancel(TileModel tileModel) {

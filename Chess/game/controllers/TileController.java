@@ -28,6 +28,7 @@ import java.awt.Color;
 import java.awt.Image;
 import java.util.Collection;
 import java.util.Map.Entry;
+import java.util.Observer;
 import java.util.SortedSet;
 import java.util.Vector;
 
@@ -39,6 +40,7 @@ import models.TileModel.NeighborXPosition;
 import models.TileModel.NeighborYPosition;
 import models.TileModel.Selection;
 import views.BaseView;
+import views.TileView;
 
 public class TileController extends BaseController {
 	
@@ -46,8 +48,12 @@ public class TileController extends BaseController {
 	
 	public <T extends BaseView> TileController(Class<T> viewClass) {
 		super(viewClass, true);
-		
-		_tile = new TileModel(getView());
+	}
+	
+	public TileModel populateTileModel(Observer observer) {
+		// Create a tile model and have it set our view as an observer
+		_tile = new TileModel(observer, getView(TileView.class));
+		return _tile;
 	}
 	
 	public TileModel getTile() {
