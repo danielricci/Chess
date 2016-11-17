@@ -59,8 +59,8 @@ public class TileView extends BaseView {
 	public TileView(TileController controller) {
 		super(controller);
 		
-		_backgroundColor = getBackgroundColor();
-		++TileView.TileViewCounter;
+		TileView.cycleBackgroundColor();
+		_backgroundColor = TileView.TileViewCounter % 2 == 0 ? TileView.FirstColor : TileView.SecondColor;
 	}
 	
 	@Override public void setBackground(Color backgroundColor) {
@@ -127,11 +127,12 @@ public class TileView extends BaseView {
 		
 		super.render();
 		setBackground(_backgroundColor);
+		repaint();
 		
 		/* 
 		 * TODO Enable this when it is time to run with real pieces
 		_image = controller.getTileImage();
-		repaint();
+		;
 		 */
 	}
 	
@@ -165,8 +166,8 @@ public class TileView extends BaseView {
 	}
 	
 	
-	public Color getBackgroundColor() {
-		return TileView.TileViewCounter % 2 == 0 ? TileView.FirstColor : TileView.SecondColor;
+	public static void cycleBackgroundColor() {
+		++TileView.TileViewCounter;
 	}
 	
 	private void highlightNeighbors(TileModel tile, Operation operation) {

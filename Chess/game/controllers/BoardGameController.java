@@ -71,7 +71,77 @@ public class BoardGameController extends BaseController implements IDebuggable {
 	}
 
 	public void link() {		
-	
+		// TODO - implement me!
+		/*PlayerController playerController = ControllerFactory.instance().get(PlayerController.class, false);
+		int boardDimensions = boardGameController.GetDimensions();
+		
+		Vector<Vector<TileModel>> tiles = new Vector<>();
+		
+		for (int row = 0; row < boardDimensions; ++row) {
+			
+			PlayerModel player = null;
+			if(row == 0 || row == 1) {
+				player = playerController.getPlayer(0);
+			} else if(row == boardDimensions - 1 || row == boardDimensions) {
+				player = playerController.getPlayer(1);
+			}
+			
+			Vector<TileModel> tilesRow = new Vector<>();
+			for (int col = 0,  col < boardDimensions; ++col,) {
+
+				// Set our grid-bad-constraints and create the game tile
+				gbc.gridx = col;
+				gbc.gridy = row;
+				
+				
+				// Add our components to our view
+				//gamePanel.add(view, gbc);			
+				//tilesRow.add(tile);
+			}
+			
+			// Populate the row neighbors
+			for(int i = 0; i < tilesRow.size(); ++i)
+			{
+				TileModel tile = tilesRow.get(i);
+				tile.setNeighbors(
+					NeighborYPosition.NEUTRAL,
+					new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.LEFT, i - 1 < 0 ? null : tilesRow.get(i - 1)),
+					new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.NEUTRAL, tile),
+					new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.RIGHT, i + 1 == tilesRow.size() ? null : tilesRow.get(i + 1))
+				);
+			}
+			tiles.add(tilesRow);
+		
+			// As long as we have one row in our buffer, try and connect it to what has currently
+			// been generated
+			// TODO - can we parallelize this?
+			if(tiles.size() > 1) {
+
+				// Grab the most recently populated two elements to populate their neighbors
+				Vector<TileModel> firstRow = tiles.get(tiles.size() - 2);
+				Vector<TileModel> secondRow = tiles.lastElement();
+				
+				// Populate both rows neighbors
+				for(int i = 0; i < firstRow.size(); ++i) {
+					TileModel firstRowElement = firstRow.get(i);
+					TileModel secondRowElement = secondRow.get(i);
+				
+					// Set the neighbors of the first rows bottom neighbors
+					firstRowElement.setNeighbors(NeighborYPosition.BOTTOM, 
+						new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.LEFT, i > 0 ? secondRow.get(i - 1) : null),
+						new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.NEUTRAL, secondRowElement),
+						new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.RIGHT, i + 1 < firstRow.size() ? secondRow.get(i + 1) : null)
+					);
+					
+					// Set the neighbors of the second rows top neighbors
+					secondRowElement.setNeighbors(NeighborYPosition.TOP, 
+						new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.LEFT, i > 0 ? firstRow.get(i - 1) : null),
+						new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.NEUTRAL, firstRowElement),
+						new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.RIGHT, i + 1 < firstRow.size() ? firstRow.get(i + 1) : null)
+					);					
+				}
+			}
+		}*/
 	}
 	
 
