@@ -52,8 +52,10 @@ public class TileController extends BaseController {
 	
 	public TileModel populateTileModel(Observer observer) {
 		// Create a tile model and have it set our view as an observer
+		
 		_tile = new TileModel(observer, getView(TileView.class));
 		return _tile;
+		
 	}
 	
 	public TileModel getTile() {

@@ -24,7 +24,6 @@
 
 package views;
 
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.Observable;
@@ -35,15 +34,12 @@ import javax.swing.JPanel;
 
 import controllers.BaseController;
 import controllers.BoardGameController;
-import factories.ControllerFactory;
 import models.GameModel;
 import models.TileModel;
 
 public class BoardGameView extends BaseView {
 	
 	private final JPanel _gamePanel = new JPanel(new GridBagLayout());	
-	private final Color _firstColor = new Color(209, 139, 71);		
-	private final Color _secondColor = new Color(255, 205, 158);
 	
 	
 	public BoardGameView(BoardGameController controller) {
@@ -58,7 +54,7 @@ public class BoardGameView extends BaseView {
 		
 		super.update(obs, arg);
 		
-		BoardGameController boardGameController = ControllerFactory.instance().get(BoardGameController.class, false);
+		BoardGameController boardGameController = getController(BoardGameController.class);
 		TileModel tileModel = (TileModel)obs;
 		
 		for(GameModel.Operation operation : tileModel.getOperations()) {
@@ -93,11 +89,11 @@ public class BoardGameView extends BaseView {
 		BoardGameController boardGameController = getController(BoardGameController.class);
 		
 		// Create the board, row by row
-		for(int row= 0; row < boardGameController.getDimensions(); ++row) {
+		for(int row = 0, dimensions = boardGameController.getDimensions(); row < dimensions; ++row) {
 			
 			// Create a row
 			Vector<TileView> tileRow = new Vector<>();
-			for(int col = 0; col < boardGameController.getDimensions(); ++col) {		
+			for(int col = 0; col < dimensions; ++col) {		
 
 				TileView view = boardGameController.createTile();
 				tileRow.add(view);

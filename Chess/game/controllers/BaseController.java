@@ -68,7 +68,7 @@ public abstract class BaseController implements IController  {
 		return (T)_view;
 	}
 	
-	protected <T extends BaseView> void setView(T view) {
+	protected final <T extends BaseView> void setView(T view) {
 		_view = view;
 	}
 		

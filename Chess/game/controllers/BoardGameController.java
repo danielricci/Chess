@@ -39,7 +39,7 @@ public class BoardGameController extends BaseController implements IDebuggable {
 
 	private final int _dimension = 8;
 
-	private final Vector<Vector<TileModel>> _tiles = new Vector<>();		
+	private Vector<Vector<TileModel>> _tiles = new Vector<>();		
 	private TileModel _previouslySelectedTile;
 	
 	public BoardGameController(BoardGameView view) {
@@ -49,8 +49,7 @@ public class BoardGameController extends BaseController implements IDebuggable {
 	public <T extends BaseView> BoardGameController(Class<T> viewClass) {
 		super(viewClass, true);
 	}
-	
-	
+		
 	public TileView createTile() {
 		
 		// Create a new tile controller that is linked to a corresponding view
@@ -60,7 +59,7 @@ public class BoardGameController extends BaseController implements IDebuggable {
 		TileModel model = controller.populateTileModel(getView(BoardGameView.class));
 		
 		// If we reached our dimensions limit then buffer in a new row
-		if(_tiles.lastElement().size() == _dimension) {
+		if(_tiles.size() == 0 || _tiles.lastElement().size() == _dimension) {
 			_tiles.addElement(new Vector<TileModel>());
 		}
 		

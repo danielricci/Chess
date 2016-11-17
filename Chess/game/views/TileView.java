@@ -35,8 +35,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
 
-import javax.swing.JLabel;
-
 import controllers.TileController;
 import models.GameModel;
 import models.GameModel.Operation;
@@ -45,41 +43,130 @@ import models.TileModel.Selection;
 
 public class TileView extends BaseView {
 
-	private Color _backgroundColor;
+	private static final Color FirstColor = new Color(209, 139, 71);		
+	private static final Color SecondColor = new Color(255, 205, 158);
+	private static final Color SelectedColor = Color.DARK_GRAY;
+	private static final Color GuideColor = Color.BLUE;
+	private static final Color CaptureColor = Color.GREEN;
 	
-	private static final Color _selectedColor = Color.DARK_GRAY;
-	private static final Color _guideColor = Color.BLUE;
-	private static final Color _captureColor = Color.GREEN;
+	private static int TileViewCounter = 0;
 	
-	private final JLabel _tileCoordinatesLabel = new JLabel();
 	private Image _image;
+	private Color _backgroundColor;
 	
 	private Map<Operation, MouseListener> _operationHandlers = new HashMap<>();
 	
 	public TileView(TileController controller) {
-		super(controller);	
-	}
-	
-	private void debugger_playerColorVisibility(TileModel tile, Operation operation) {
-		TileController controller = getController(TileController.class);
-		Color color = controller.getTileColor();
-
-		boolean isSelected = (boolean)tile.getCachedData(operation);
-		if(!isSelected || color == null) {
-			color = _backgroundColor;
-		}
+		super(controller);
 		
-		updateSelectedCommand(color);
-		repaint();
+		_backgroundColor = getBackgroundColor();
+		++TileView.TileViewCounter;
 	}
-	
-	private void tileCoordinateVisibility(boolean isVisible) { 
-		_tileCoordinatesLabel.setVisible(isVisible);
-    }
 	
 	@Override public void setBackground(Color backgroundColor) {
 		super.setBackground(backgroundColor);
 		_backgroundColor = backgroundColor;
+	}
+		
+    @Override public void register() {
+    	addMouseListener(new MouseAdapter() {  		    		
+    		@Override public void mouseReleased(MouseEvent e) {
+    			TileController controller = getController(TileController.class);
+    			controller.processTileSelected();
+    		}
+		});
+    }
+    
+	@Override public void update(Observable obs, Object arg) {
+		
+		super.update(obs, arg);
+		
+		TileModel tileModel = (TileModel)obs;
+		TileController tileController = getController(TileController.class);
+		
+		for(Operation operation : tileModel.getOperations()) {
+			switch(operation) {
+			case EmptyTileSelected:
+				break;
+			case PlayerPieceSelected:
+				updateSelectedCommand(TileView.SelectedColor);
+				tileController.tileGuidesCommand(Operation.ShowGuides);
+				break;
+			case PlayerPieceMoveCancel:
+				updateSelectedCommand(_backgroundColor);
+				tileController.tileGuidesCommand(Operation.HideGuides); 
+				break;
+			case PlayerPieceMoveAccepted:
+				updateSelectedCommand(_backgroundColor);
+				break;
+			case HideGuides:
+				updateSelectedCommand(_backgroundColor);
+				break;
+			case ShowGuides:
+				updateSelectedCommand(tileModel.getSelectionType() == Selection.CaptureSelected ? TileView.CaptureColor : TileView.GuideColor);
+				break;
+			case Debugger_PlayerTiles:
+				debugger_playerColorVisibility(tileModel, operation);
+				break;
+			case Debugger_TileCoordinates:
+				break;
+			case Debugger_HighlightNeighbors:
+				highlightNeighbors(tileModel, operation);
+				break;
+			case Refresh:
+				break;
+			default:
+				break;
+			}
+			refresh(tileModel); 
+		}
+		
+	}
+	
+	@Override public void render() {
+		
+		super.render();
+		setBackground(_backgroundColor);
+		
+		/* 
+		 * TODO Enable this when it is time to run with real pieces
+		_image = controller.getTileImage();
+		repaint();
+		 */
+	}
+	
+	@Override public void refresh(GameModel gameModel) {
+		
+		super.refresh(gameModel);
+		
+		/* TODO Enable this when it is time to run with real pieces
+		TileModel model = (TileModel)gameModel;
+		PlayerModel player = model.getPlayer();
+
+		if(player == null) {
+			_image = null;
+		}
+		else {
+			_image = player.getPieceData(model);
+		}
+		*/
+		repaint();
+		
+	}
+
+	@Override public void dispose() {
+		removeAll();
+	}
+	
+	@Override protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D)g;
+        g2d.drawImage(_image, 10, 8, 48, 48, null, null);       
+	}
+	
+	
+	public Color getBackgroundColor() {
+		return TileView.TileViewCounter % 2 == 0 ? TileView.FirstColor : TileView.SecondColor;
 	}
 	
 	private void highlightNeighbors(TileModel tile, Operation operation) {
@@ -112,107 +199,16 @@ public class TileView extends BaseView {
     	setBackground(color);
     }
 	
-    @Override public void register() {
-    	addMouseListener(new MouseAdapter() {  		    		
-    		@Override public void mouseReleased(MouseEvent e) {
-    			TileController controller = getController(TileController.class);
-    			controller.processTileSelected();
-    		}
-		});
-    }
-    
-	@Override public void update(Observable obs, Object arg) {
-		
-		super.update(obs, arg);
-		
-		TileModel tileModel = (TileModel)obs;
-		TileController tileController = getController(TileController.class);
-		
-		for(Operation operation : tileModel.getOperations()) {
-			switch(operation) {
-			case EmptyTileSelected:
-				break;
-			case PlayerPieceSelected:
-				updateSelectedCommand(_selectedColor);
-				tileController.tileGuidesCommand(Operation.ShowGuides);
-				break;
-			case PlayerPieceMoveCancel:
-				updateSelectedCommand(_backgroundColor);
-				tileController.tileGuidesCommand(Operation.HideGuides); 
-				break;
-			case PlayerPieceMoveAccepted:
-				updateSelectedCommand(_backgroundColor);
-				break;
-			case HideGuides:
-				updateSelectedCommand(_backgroundColor);
-				break;
-			case ShowGuides:
-				updateSelectedCommand(tileModel.getSelectionType() == Selection.CaptureSelected ? _captureColor : _guideColor);
-				break;
-			case Debugger_PlayerTiles:
-				debugger_playerColorVisibility(tileModel, operation);
-				break;
-			case Debugger_TileCoordinates:
-				tileCoordinateVisibility(tileModel.getCachedData(operation));
-				break;
-			case Debugger_HighlightNeighbors:
-				highlightNeighbors(tileModel, operation);
-				break;
-			case Refresh:
-				break;
-			default:
-				break;
-			}
-			refresh(tileModel); 
-		}
-		
-	}
-		
-	@Override protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        Graphics2D g2d = (Graphics2D)g;
-        g2d.drawImage(_image, 10, 8, 48, 48, null, null);       
-	}
-	
-	@Override public void render() {
-		
-		super.render();
-		
-		// Set the coordinates of this tile
+	private void debugger_playerColorVisibility(TileModel tile, Operation operation) {
 		TileController controller = getController(TileController.class);
-		_tileCoordinatesLabel.setText(Integer.toString(controller.getTileCoordinate()));
-		_tileCoordinatesLabel.setVisible(true);
-		add(_tileCoordinatesLabel);
-		
-		setBackground(_backgroundColor);
-		
-		/* 
-		 * TODO Enable this when it is time to run with real pieces
-		_image = controller.getTileImage();
-		repaint();
-		 */
-	}
-	
-	@Override public void refresh(GameModel gameModel) {
-		
-		super.refresh(gameModel);
-		
-		/* TODO Enable this when it is time to run with real pieces
-		TileModel model = (TileModel)gameModel;
-		PlayerModel player = model.getPlayer();
+		Color color = controller.getTileColor();
 
-		if(player == null) {
-			_image = null;
-		}
-		else {
-			_image = player.getPieceData(model);
+		boolean isSelected = (boolean)tile.getCachedData(operation);
+		if(!isSelected || color == null) {
+			color = _backgroundColor;
 		}
 		
+		updateSelectedCommand(color);
 		repaint();
-		*/
-	}
-
-	@Override public void dispose() {
-		removeAll();
 	}
 }
