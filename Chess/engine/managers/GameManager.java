@@ -107,8 +107,7 @@ public final class GameManager extends JFrame {
 	 * @param args Environment arguments to add
 	 */
 	public void SetEnvironmentVariables(String[] args) {
-		for(String arg : args)
-		{ 
+		for(String arg : args) { 
 			_environmentArgs.add(arg.toLowerCase());	
 		}
 	}
@@ -258,7 +257,9 @@ public final class GameManager extends JFrame {
 	    JCheckBoxMenuItem developerMenuHighlightNeighbors = new JCheckBoxMenuItem(ResourcesManager.Get(Resources.HighlightNeighbors));
 	    developerMenuHighlightNeighbors.addItemListener(new ItemListener() {
 			@Override public void itemStateChanged(ItemEvent e) {
-				//JCheckBoxMenuItem item = (JCheckBoxMenuItem)e.getItem();
+				JCheckBoxMenuItem item = (JCheckBoxMenuItem)e.getItem();
+				
+				
 				//BoardGameController boardGameController = ControllerFactory.instance().get(BoardGameController.class);
 				//boardGameController.debuggerSelection(Operation.Debugger_HighlightNeighbors, item.isSelected());
 			}

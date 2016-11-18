@@ -41,11 +41,12 @@ public class BoardGameView extends BaseView {
 	
 	private final JPanel _gamePanel = new JPanel(new GridBagLayout());	
 	
-	
+	// TODO - are we using this or the other one?
 	public BoardGameView(BoardGameController controller) {
 		super(controller);
 	}
 	
+	// TODO - are we using this or the other one?
 	public <T extends BaseController> BoardGameView(Class<T> controller) {
 		super(controller);
 	}
@@ -102,10 +103,9 @@ public class BoardGameView extends BaseView {
 				gbc.gridy = row;
 				_gamePanel.add(view, gbc);			
 			}
+			// TODO - can we do this somewhere else?
 			TileView.cycleBackgroundColor();
-		
-			// Link the row elements together
-			boardGameController.link();
+			
 			tiles.add(tileRow);			
 		}
 		

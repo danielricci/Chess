@@ -48,6 +48,7 @@ public class TileView extends BaseView {
 	private static final Color SelectedColor = Color.DARK_GRAY;
 	private static final Color GuideColor = Color.BLUE;
 	private static final Color CaptureColor = Color.GREEN;
+	private static final Color HoverClover = Color.LIGHT_GRAY;
 	
 	private static int TileViewCounter = 0;
 	
@@ -164,7 +165,6 @@ public class TileView extends BaseView {
         Graphics2D g2d = (Graphics2D)g;
         g2d.drawImage(_image, 10, 8, 48, 48, null, null);       
 	}
-	
 	
 	public static void cycleBackgroundColor() {
 		++TileView.TileViewCounter;
