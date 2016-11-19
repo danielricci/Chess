@@ -43,8 +43,6 @@ import models.TileModel.Selection;
 
 public class TileView extends BaseView {
 
-	private static final Color FirstColor = new Color(209, 139, 71);		
-	private static final Color SecondColor = new Color(255, 205, 158);
 	private static final Color SelectedColor = Color.DARK_GRAY;
 	private static final Color GuideColor = Color.BLUE;
 	private static final Color CaptureColor = Color.GREEN;
@@ -53,7 +51,9 @@ public class TileView extends BaseView {
 	private static int TileViewCounter = 0;
 	
 	private Image _image;
-	private Color _backgroundColor;
+	
+	private final Color _defaultBackgroundColor;
+	private Color _currentBackgroundColor;
 	
 	private Map<Operation, MouseListener> _operationHandlers = new HashMap<>();
 	
@@ -61,12 +61,14 @@ public class TileView extends BaseView {
 		super(controller);
 		
 		TileView.cycleBackgroundColor();
-		_backgroundColor = TileView.TileViewCounter % 2 == 0 ? TileView.FirstColor : TileView.SecondColor;
+		_defaultBackgroundColor = _currentBackgroundColor = TileView.TileViewCounter % 2 == 0 
+			? new Color(209, 139, 71) 
+			: new Color(255, 205, 158);
 	}
 	
 	@Override public void setBackground(Color backgroundColor) {
 		super.setBackground(backgroundColor);
-		_backgroundColor = backgroundColor;
+		_currentBackgroundColor = backgroundColor;
 	}
 		
     @Override public void register() {
@@ -74,6 +76,14 @@ public class TileView extends BaseView {
     		@Override public void mouseReleased(MouseEvent e) {
     			TileController controller = getController(TileController.class);
     			controller.processTileSelected();
+    		}
+    		@Override public void mouseEntered(MouseEvent e) {
+    			TileController controller = getController(TileController.class);
+    			controller.setNeighborsSelected(true);    					    			
+    		}
+    		@Override public void mouseExited(MouseEvent e) {
+    			TileController controller = getController(TileController.class);
+    			controller.setNeighborsSelected(false);
     		}
 		});
     }
@@ -94,14 +104,14 @@ public class TileView extends BaseView {
 				tileController.tileGuidesCommand(Operation.ShowGuides);
 				break;
 			case PlayerPieceMoveCancel:
-				updateSelectedCommand(_backgroundColor);
+				updateSelectedCommand(_currentBackgroundColor);
 				tileController.tileGuidesCommand(Operation.HideGuides); 
 				break;
 			case PlayerPieceMoveAccepted:
-				updateSelectedCommand(_backgroundColor);
+				updateSelectedCommand(_currentBackgroundColor);
 				break;
 			case HideGuides:
-				updateSelectedCommand(_backgroundColor);
+				updateSelectedCommand(_currentBackgroundColor);
 				break;
 			case ShowGuides:
 				updateSelectedCommand(tileModel.getSelectionType() == Selection.CaptureSelected ? TileView.CaptureColor : TileView.GuideColor);
@@ -127,7 +137,7 @@ public class TileView extends BaseView {
 	@Override public void render() {
 		
 		super.render();
-		setBackground(_backgroundColor);
+		setBackground(_currentBackgroundColor);
 		repaint();
 		
 		/* 
@@ -206,7 +216,7 @@ public class TileView extends BaseView {
 
 		boolean isSelected = (boolean)tile.getCachedData(operation);
 		if(!isSelected || color == null) {
-			color = _backgroundColor;
+			color = _currentBackgroundColor;
 		}
 		
 		updateSelectedCommand(color);
