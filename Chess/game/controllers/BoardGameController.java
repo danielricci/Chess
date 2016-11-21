@@ -57,14 +57,14 @@ public class BoardGameController extends BaseController implements IDebuggable {
 		// Populate the tile model and observer it with our view
 		TileModel model = controller.populateTileModel(getView(BoardGameView.class));
 		
-		// If we reached our dimensions limit then buffer in a new row
-		if(_tiles.lastElement().size() == _dimension) {
-			//link();
-			_tiles.addElement(new Vector<TileModel>());
-		}
-		
 		// Add the row to the end of the list of tiles
 		_tiles.lastElement().add(model);
+		
+		// If we reached our dimensions limit then buffer in a new row
+		if(_tiles.lastElement().size() == _dimension) {
+			link();
+			_tiles.addElement(new Vector<TileModel>());
+		}
 		
 		// Return the associated view that was created
 		return controller.getView(TileView.class);
@@ -83,7 +83,7 @@ public class BoardGameController extends BaseController implements IDebuggable {
 			);
 		}
 		
-		if(_tiles.lastElement().size() > 1) {
+		if(_tiles.size() > 1) {
 
 			// Grab the most recently populated two elements to populate their neighbors
 			Vector<TileModel> firstRow = _tiles.get(_tiles.size() - 2);

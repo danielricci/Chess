@@ -111,7 +111,7 @@ public class TileView extends BaseView {
 				updateSelectedCommand(_currentBackgroundColor);
 				break;
 			case HideGuides:
-				updateSelectedCommand(_currentBackgroundColor);
+				updateSelectedCommand(_defaultBackgroundColor);
 				break;
 			case ShowGuides:
 				updateSelectedCommand(tileModel.getSelectionType() == Selection.CaptureSelected ? TileView.CaptureColor : TileView.GuideColor);
