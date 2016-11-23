@@ -24,7 +24,6 @@
 
 package views;
 
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -106,21 +105,19 @@ public final class RootView extends JFrame {
 	
 	private void SetWindowedInstanceMenu() {
 		
-		JMenuBar menu = new JMenuBar();
-		PopulateFileMenu(menu);
+		PopulateFileMenu(getJMenuBar());
 		
 		if(_environmentArgs.contains("developer"))
 		{
-			PopulateDeveloperMenu(menu);
-			PopulateWindowMenu(menu);
+			PopulateDeveloperMenu(getJMenuBar());
+			PopulateWindowMenu(getJMenuBar());
 			setTitle(ResourcesManager.Get(Resources.ChessTitleDeveloper));
 		}
 		
-		PopulateHelpMenu(menu);
-		setJMenuBar(menu);
+		PopulateHelpMenu(getJMenuBar());
 		
-		menu.revalidate();
-		menu.repaint();
+		getJMenuBar().revalidate();
+		getJMenuBar().repaint();
 	}
 	private void PopulateFileMenu(JMenuBar menu) {
 		
@@ -165,22 +162,14 @@ public final class RootView extends JFrame {
         menu.add(fileMenu);
 	}
 	private void PopulateDeveloperMenu(JMenuBar menu) {
+		
+		
 		JMenu developerMenu = new JMenu("Developer");
-		developerMenu.setMnemonic('D');
 		developerMenu.addMenuListener(new MenuListener() {
-			@Override public void menuSelected(MenuEvent arg0) {
-				for(Component component : developerMenu.getMenuComponents()) {
-					if(component instanceof JMenuItem)
-					{
-						// TODO - Custom control for IsVisible, IsEnabled, OnSelected
-						JMenuItem item = (JMenuItem)component;
-					}
-				}
+			@Override public void menuSelected(MenuEvent e) {
 			}
-
 			@Override public void menuCanceled(MenuEvent e) {
 			}
-
 			@Override public void menuDeselected(MenuEvent e) {
 			}			
 		});
