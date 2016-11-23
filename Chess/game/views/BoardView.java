@@ -37,17 +37,17 @@ import controllers.BoardGameController;
 import models.GameModel;
 import models.TileModel;
 
-public class BoardGameView extends BaseView {
+public class BoardView extends BaseView {
 	
 	private final JPanel _gamePanel = new JPanel(new GridBagLayout());	
 	
 	// TODO - are we using this or the other one?
-	public BoardGameView(BoardGameController controller) {
+	public BoardView(BoardGameController controller) {
 		super(controller);
 	}
 	
 	// TODO - are we using this or the other one?
-	public <T extends BaseController> BoardGameView(Class<T> controller) {
+	public <T extends BaseController> BoardView(Class<T> controller) {
 		super(controller);
 	}
 	

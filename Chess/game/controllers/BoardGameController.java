@@ -35,7 +35,7 @@ import models.TileModel;
 import models.TileModel.NeighborXPosition;
 import models.TileModel.NeighborYPosition;
 import models.TileModel.Selection;
-import views.BoardGameView;
+import views.BoardView;
 import views.TileView;
 
 public class BoardGameController extends BaseController implements IDebuggable {
@@ -45,7 +45,7 @@ public class BoardGameController extends BaseController implements IDebuggable {
 	private Vector<Vector<TileModel>> _tiles = new Vector<>(Arrays.asList(new Vector<TileModel>()));		
 	private TileModel _previouslySelectedTile;
 	
-	public BoardGameController(BoardGameView view) {
+	public BoardGameController(BoardView view) {
 		super(view);
 	}
 	
@@ -55,7 +55,7 @@ public class BoardGameController extends BaseController implements IDebuggable {
 		TileController controller = ControllerFactory.instance().get(TileController.class, true, TileView.class);
 		
 		// Populate the tile model and observer it with our view
-		TileModel model = controller.populateTileModel(getView(BoardGameView.class));
+		TileModel model = controller.populateTileModel(getView(BoardView.class));
 		
 		// Add the row to the end of the list of tiles
 		_tiles.lastElement().add(model);

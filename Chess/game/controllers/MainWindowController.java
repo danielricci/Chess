@@ -25,10 +25,10 @@
 package controllers;
 
 import views.BaseView;
-import views.MainWindowView;
+import views.MainView;
 
 public class MainWindowController extends BaseController {
-	public MainWindowController(MainWindowView view) {
+	public MainWindowController(MainView view) {
 		super(view);
 	}
 	

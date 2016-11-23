@@ -22,7 +22,7 @@
 * IN THE SOFTWARE.
 */
 
-package managers;
+package views;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -52,78 +52,27 @@ import javax.swing.event.MenuListener;
 import controllers.MainWindowController;
 import factories.ControllerFactory;
 import factories.ViewFactory;
+import managers.ResourcesManager;
 import managers.ResourcesManager.Resources;
-import views.BaseView;
-import views.MainWindowView;
 
-public final class GameManager extends JFrame {
+public final class RootView extends JFrame {
 
-	/**
-	 * The singleton instance 
-	 */
-	private static GameManager _instance;
-	
-	/**
-	 * Environment Arguments
-	 */
+	private static RootView _instance;
 	private Set<String> _environmentArgs = new HashSet<>();
 	
-	/**
-	 * Constructor 
-	 */
-	private GameManager() {
+	private RootView() {
 		super(ResourcesManager.Get(Resources.ChessTitle));
 		
-		// The dimensions of the window is hard-coded by default
-		Dimension windowSize = new Dimension(800, 800);
-		setSize(windowSize);
+		setJMenuBar(new JMenuBar());
+		setSize(new Dimension(800, 800));
 		setResizable(false);
-		setIconImage(new ImageIcon("data/internal/chess-icon-16.png").getImage());
-		
-		final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		setLocation(
-			screenSize.width / 2 - windowSize.width / 2,
-			screenSize.height / 2 - windowSize.height / 2
-		);
-		
-		SetListeners();
-	}
-	
-	/**
-	 * Gets the singleton reference to this class
-	 * 
-	 * @return The singleton reference to this class
-	 */
-	public static GameManager Instance() {
-		if(_instance == null) {
-			_instance = new GameManager();
-		}
-		return _instance;
-	}
-	
-	/**
-	 * Sets the arguments for the singleton
-	 * 
-	 * @param args Environment arguments to add
-	 */
-	public void SetEnvironmentVariables(String[] args) {
-		for(String arg : args) { 
-			_environmentArgs.add(arg.toLowerCase());	
-		}
-	}
-	
-	/**
-	 * Adds the standard set of window listeners to this window
-	 */
-	private void SetListeners() {
-		
-		// Needed to manually handle closing of the window
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-		
+		setIconImage(new ImageIcon("data/internal/chess-icon-16.png").getImage());  // TODO - use resources instead of hardcoded
+	
 		// Add a listener to whenever the window is closed
 		addWindowListener(new WindowAdapter() {
 			@Override public void windowClosing(WindowEvent event) {
-				int response= JOptionPane.showConfirmDialog(GameManager.Instance(), "Are you sure that you wish to exit the game?", "Exit Game", JOptionPane.YES_NO_OPTION);
+				int response= JOptionPane.showConfirmDialog(RootView.Instance(), "Are you sure that you wish to exit the game?", "Exit Game", JOptionPane.YES_NO_OPTION);
 				if(response == JOptionPane.YES_OPTION) {
 					dispose();
 				}
@@ -136,20 +85,31 @@ public final class GameManager extends JFrame {
 				setJMenuBar(null);
 			}
 			@Override public void componentShown(ComponentEvent e) {
+				setLocationRelativeTo(null);
 				SetWindowedInstanceMenu();
 			}
 		});
 	}
 	
-	/**
-	 * Populates the menu bar and all the sub-menu items
-	 */
+	public static RootView Instance() {
+		if(_instance == null) {
+			_instance = new RootView();
+		}
+		return _instance;
+	}
+	
+	public void AddEnvironmentVariables(String[] args) {
+		for(String arg : args) { 
+			_environmentArgs.add(arg.toLowerCase());	
+		}
+	}
+	
 	private void SetWindowedInstanceMenu() {
 		
-		final JMenuBar menu = new JMenuBar();
+		JMenuBar menu = new JMenuBar();
 		PopulateFileMenu(menu);
 		
-		if(_environmentArgs.contains("-developer"))
+		if(_environmentArgs.contains("developer"))
 		{
 			PopulateDeveloperMenu(menu);
 			PopulateWindowMenu(menu);
@@ -162,12 +122,6 @@ public final class GameManager extends JFrame {
 		menu.revalidate();
 		menu.repaint();
 	}
-
-	/**
-	 * Adds the 'File' menu and its functionality to the specified menu bar
-	 * 
-	 * @param menu The menu bar to attach the functionality onto
-	 */
 	private void PopulateFileMenu(JMenuBar menu) {
 		
 		// Create the file menu 
@@ -210,12 +164,6 @@ public final class GameManager extends JFrame {
         fileMenu.add(fileMenuExit);
         menu.add(fileMenu);
 	}
-	
-	/**
-	 * Adds the 'Developer' menu and its functionality to the specified menu bar
-	 * 
-	 * @param menu The menu bar to attach the functionality onto
-	 */
 	private void PopulateDeveloperMenu(JMenuBar menu) {
 		JMenu developerMenu = new JMenu("Developer");
 		developerMenu.setMnemonic('D');
@@ -246,7 +194,7 @@ public final class GameManager extends JFrame {
 				ViewFactory.instance().dispose();
 				getContentPane().removeAll();					
 				
-				BaseView view = ViewFactory.instance().get(MainWindowView.class, true, MainWindowController.class);
+				BaseView view = ViewFactory.instance().get(MainView.class, true, MainWindowController.class);
 				view.render();
 				
 				add(view);
@@ -273,12 +221,6 @@ public final class GameManager extends JFrame {
 	    
 	    menu.add(developerMenu);
 	}
-	
-	/**
-	 * Adds the 'Developer' menu and its functionality to the specified menu bar
-	 * 
-	 * @param menu The menu bar to attach the functionality onto
-	 */
 	private void PopulateWindowMenu(JMenuBar menu) {
 
 		JMenu windowMenu = new JMenu("Window");
@@ -299,14 +241,7 @@ public final class GameManager extends JFrame {
 	    windowMenu.add(windowMenuResetPosition);
 	    menu.add(windowMenu);
 	}
-
-	/**
-	 * Adds the 'Help' menu and its functionality to the specified menu bar
-	 * 
-	 * @param menu The menu bar to attach the functionality onto
-	 */
-	private void PopulateHelpMenu(JMenuBar menu)
-	{
+	private void PopulateHelpMenu(JMenuBar menu)	{
 		JMenu help = new JMenu("Help");
 		help.setMnemonic('H');
 		
@@ -314,7 +249,7 @@ public final class GameManager extends JFrame {
 		JMenuItem aboutItem = new JMenuItem(new AbstractAction("About") {
 			@Override public void actionPerformed(ActionEvent event) {
 				JOptionPane.showMessageDialog(
-					GameManager.Instance(),
+					RootView.Instance(),
 					"Chess\nVersion 1.0\n\nDaniel Ricci\nthedanny09@gmail.com\nhttps:/github.com/danielricci/Chess",
 					"About Chess",
 					JOptionPane.INFORMATION_MESSAGE

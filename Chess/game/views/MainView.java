@@ -31,20 +31,20 @@ import controllers.BoardGameController;
 import controllers.MainWindowController;
 import factories.ViewFactory;
 
-public class MainWindowView extends BaseView {
+public class MainView extends BaseView {
 
-	public <T extends BaseController> MainWindowView(Class<T> controller) {
+	public <T extends BaseController> MainView(Class<T> controller) {
 		super(controller);
 	}
 	
-	public MainWindowView(MainWindowController controller) {
+	public MainView(MainWindowController controller) {
 		super(controller);
 	}
 	
 	@Override public void render() {
 		setLayout(new BorderLayout());
 		
-		BaseView boardGameView = ViewFactory.instance().get(BoardGameView.class, false, BoardGameController.class);
+		BaseView boardGameView = ViewFactory.instance().get(BoardView.class, false, BoardGameController.class);
 		boardGameView.render();
 		
 		add(boardGameView);
