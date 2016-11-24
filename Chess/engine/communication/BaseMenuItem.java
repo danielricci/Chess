@@ -1,10 +1,10 @@
 package communication;
 
 import javax.swing.JComponent;
+import javax.swing.JMenu;
 
 import api.IMenuItem;
 import controllers.BaseController;
-import views.BaseView;
 
 public abstract class BaseMenuItem implements IMenuItem {
 	
@@ -14,7 +14,11 @@ public abstract class BaseMenuItem implements IMenuItem {
 		_component = component;
 	}
 
-	protected <T extends JComponent> T get(Class<T> componentClass) {
+	protected final JComponent get() {
+		return _component;
+	}
+	
+	protected final <T extends JComponent> T get(Class<T> componentClass) {
 		return (T)_component;
 	}
 	
@@ -26,7 +30,7 @@ public abstract class BaseMenuItem implements IMenuItem {
 		return _component.isEnabled();
 	}
 	
-	@Override public void bind(BaseView view) {
+	@Override public void bind(JMenu view) {
 	}
 
 	@Override public void bind(BaseController controller) {

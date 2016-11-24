@@ -163,17 +163,35 @@ public final class RootView extends JFrame {
 	}
 	private void PopulateDeveloperMenu(JMenuBar menu) {
 		
-		
 		JMenu developerMenu = new JMenu("Developer");
 		developerMenu.addMenuListener(new MenuListener() {
 			@Override public void menuSelected(MenuEvent e) {
+				
+				JMenu menu = (JMenu) e.getSource();
+				for(Object o : menu.getItemListeners()) {
+					int x =55;
+				}
+				System.out.println("menuSelected");
+				//IMenuItem item = (BaseMenuItem) e.getSource();
+				//item.onExecute();
 			}
 			@Override public void menuCanceled(MenuEvent e) {
+				System.out.println("menuCanceled");
 			}
 			@Override public void menuDeselected(MenuEvent e) {
+				System.out.println("menuDeselected");
 			}			
 		});
 	    
+		
+		// TODO - Here we need to figure out how the relationship will be!
+		//NewGameMenuItem o = new NewGameMenuItem(new JMenuItem());
+		//o.bind(developerMenu);
+	
+		
+				
+		
+		
 		JMenuItem developerMenuNew = new JMenuItem(new AbstractAction(ResourcesManager.Get(Resources.NewGame)) {       	
 			@Override public void actionPerformed(ActionEvent event) {	
 	    		
