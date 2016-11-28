@@ -48,6 +48,8 @@ import javax.swing.KeyStroke;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
+import communication.BaseComponent;
+import communication.NewGameMenuItem;
 import controllers.MainWindowController;
 import factories.ControllerFactory;
 import factories.ViewFactory;
@@ -167,6 +169,8 @@ public final class RootView extends JFrame {
 		developerMenu.addMenuListener(new MenuListener() {
 			@Override public void menuSelected(MenuEvent e) {
 				
+				// When the menu is selected, it goes through all the items that were assigned
+				// to it, which means it needs to extend a MenuItem of some sort
 				JMenu menu = (JMenu) e.getSource();
 				for(Object o : menu.getItemListeners()) {
 					int x =55;
@@ -182,15 +186,15 @@ public final class RootView extends JFrame {
 				System.out.println("menuDeselected");
 			}			
 		});
-	    
+		
+		BaseComponent component = new NewGameMenuItem(developerMenu);			    
+		
+
+		
 		
 		// TODO - Here we need to figure out how the relationship will be!
 		//NewGameMenuItem o = new NewGameMenuItem(new JMenuItem());
 		//o.bind(developerMenu);
-	
-		
-				
-		
 		
 		JMenuItem developerMenuNew = new JMenuItem(new AbstractAction(ResourcesManager.Get(Resources.NewGame)) {       	
 			@Override public void actionPerformed(ActionEvent event) {	
@@ -208,6 +212,10 @@ public final class RootView extends JFrame {
 				validate();						
 			}	
 	    });
+
+		
+
+		
 	    
 	    JCheckBoxMenuItem developerMenuHighlightNeighbors = new JCheckBoxMenuItem(ResourcesManager.Get(Resources.HighlightNeighbors));
 	    developerMenuHighlightNeighbors.addItemListener(new ItemListener() {
