@@ -5,10 +5,10 @@ import javax.swing.JMenu;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
-public class MenuComponent extends BaseComponent{
+public abstract class MenuComponent extends BaseComponent{
 
-	protected MenuComponent(JComponent component) {
-		super(component, null);
+	protected MenuComponent(JComponent component, JComponent parent) {
+		super(component, parent);
 	}
 
 	@Override protected void onInitialize() {
@@ -24,7 +24,4 @@ public class MenuComponent extends BaseComponent{
 			}			
 		});
 	}
-
-	@Override public void onExecute() {
-	}	
 }

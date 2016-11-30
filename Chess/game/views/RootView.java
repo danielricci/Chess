@@ -49,6 +49,7 @@ import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
 import communication.BaseComponent;
+import communication.FileMenuComponent;
 import communication.NewGameMenuItem;
 import controllers.MainWindowController;
 import factories.ControllerFactory;
@@ -163,7 +164,7 @@ public final class RootView extends JFrame {
         fileMenu.add(fileMenuExit);
         menu.add(fileMenu);
 	}
-	private void PopulateDeveloperMenu(JMenuBar menu) {
+	private void PopulateDeveloperMenu(JMenuBar menuBar) {
 		
 		JMenu developerMenu = new JMenu("Developer");
 		developerMenu.addMenuListener(new MenuListener() {
@@ -186,6 +187,12 @@ public final class RootView extends JFrame {
 				System.out.println("menuDeselected");
 			}			
 		});
+		
+		
+		
+		
+		BaseComponent menuComponent = new FileMenuComponent(getJMenuBar());
+		
 		
 		BaseComponent component = new NewGameMenuItem(developerMenu);			    
 		
@@ -234,7 +241,7 @@ public final class RootView extends JFrame {
 	    developerMenu.addSeparator();
 	    developerMenu.add(developerMenuHighlightNeighbors);
 	    
-	    menu.add(developerMenu);
+	    //menu.add(developerMenu);
 	}
 	private void PopulateWindowMenu(JMenuBar menu) {
 
