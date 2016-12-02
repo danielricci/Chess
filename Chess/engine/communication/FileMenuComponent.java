@@ -9,7 +9,6 @@ public class FileMenuComponent extends MenuComponent {
 		super(new JMenu("File"), parent);
 	}
 
-	@Override
-	public void onExecute() {
+	@Override public void onExecute() {
 	}
 }

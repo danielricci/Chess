@@ -189,9 +189,11 @@ public final class RootView extends JFrame {
 		});
 		
 		
+		FileMenuComponent fileMenuComponent = new FileMenuComponent(getJMenuBar());
 		
 		
-		BaseComponent menuComponent = new FileMenuComponent(getJMenuBar());
+		
+		
 		
 		
 		BaseComponent component = new NewGameMenuItem(developerMenu);			    
