@@ -29,8 +29,6 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.HashSet;
@@ -38,20 +36,16 @@ import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
 
-import communication.BaseComponent;
-import communication.FileMenuComponent;
+import communication.BaseComponentBuilder;
+import communication.DeveloperMenuComponent;
 import communication.NewGameMenuItem;
-import controllers.MainWindowController;
 import factories.ControllerFactory;
 import factories.ViewFactory;
 import managers.ResourcesManager;
@@ -105,19 +99,18 @@ public final class RootView extends JFrame {
 			_environmentArgs.add(arg.toLowerCase());	
 		}
 	}
-	
 	private void SetWindowedInstanceMenu() {
 		
-		PopulateFileMenu(getJMenuBar());
+		//PopulateFileMenu(getJMenuBar());
 		
 		if(_environmentArgs.contains("developer"))
 		{
-			PopulateDeveloperMenu(getJMenuBar());
-			PopulateWindowMenu(getJMenuBar());
+			PopulateDeveloperMenu();
+			//PopulateWindowMenu(getJMenuBar());
 			setTitle(ResourcesManager.Get(Resources.ChessTitleDeveloper));
 		}
 		
-		PopulateHelpMenu(getJMenuBar());
+		//PopulateHelpMenu(getJMenuBar());
 		
 		getJMenuBar().revalidate();
 		getJMenuBar().repaint();
@@ -164,87 +157,36 @@ public final class RootView extends JFrame {
         fileMenu.add(fileMenuExit);
         menu.add(fileMenu);
 	}
-	private void PopulateDeveloperMenu(JMenuBar menuBar) {
+	
+	private void PopulateDeveloperMenu() {
 		
-		JMenu developerMenu = new JMenu("Developer");
-		developerMenu.addMenuListener(new MenuListener() {
-			@Override public void menuSelected(MenuEvent e) {
-				
-				// When the menu is selected, it goes through all the items that were assigned
-				// to it, which means it needs to extend a MenuItem of some sort
-				JMenu menu = (JMenu) e.getSource();
-				for(Object o : menu.getItemListeners()) {
-					int x =55;
-				}
-				System.out.println("menuSelected");
-				//IMenuItem item = (BaseMenuItem) e.getSource();
-				//item.onExecute();
-			}
-			@Override public void menuCanceled(MenuEvent e) {
-				System.out.println("menuCanceled");
-			}
-			@Override public void menuDeselected(MenuEvent e) {
-				System.out.println("menuDeselected");
-			}			
-		});
-		
-		
-		FileMenuComponent fileMenuComponent = new FileMenuComponent(getJMenuBar());
-		
-		
-		
-		
-		
-		
-		BaseComponent component = new NewGameMenuItem(developerMenu);			    
-		
+		BaseComponentBuilder.root(getJMenuBar())
+			.addMenu(DeveloperMenuComponent.class)
+			.addMenuItems(
+				NewGameMenuItem.class,
+				NewGameMenuItem.class
+			)
+		.render();
 
-		
-		
-		// TODO - Here we need to figure out how the relationship will be!
-		//NewGameMenuItem o = new NewGameMenuItem(new JMenuItem());
-		//o.bind(developerMenu);
-		
-		JMenuItem developerMenuNew = new JMenuItem(new AbstractAction(ResourcesManager.Get(Resources.NewGame)) {       	
-			@Override public void actionPerformed(ActionEvent event) {	
-	    		
-				// Ensures everything is cleaned up before
-				// starting the game
-				ControllerFactory.instance().dispose();
-				ViewFactory.instance().dispose();
-				getContentPane().removeAll();					
-				
-				BaseView view = ViewFactory.instance().get(MainView.class, true, MainWindowController.class);
-				view.render();
-				
-				add(view);
-				validate();						
-			}	
-	    });
-
-		
-
-		
-	    
-	    JCheckBoxMenuItem developerMenuHighlightNeighbors = new JCheckBoxMenuItem(ResourcesManager.Get(Resources.HighlightNeighbors));
-	    developerMenuHighlightNeighbors.addItemListener(new ItemListener() {
-			@Override public void itemStateChanged(ItemEvent e) {
-				JCheckBoxMenuItem item = (JCheckBoxMenuItem)e.getItem();
-				
-				
+	    //JCheckBoxMenuItem developerMenuHighlightNeighbors = new JCheckBoxMenuItem(ResourcesManager.Get(Resources.HighlightNeighbors));
+	    //developerMenuHighlightNeighbors.addItemListener(new ItemListener() {
+			//@Override public void itemStateChanged(ItemEvent e) {
+				//JCheckBoxMenuItem item = (JCheckBoxMenuItem)e.getItem();			
 				//BoardGameController boardGameController = ControllerFactory.instance().get(BoardGameController.class);
 				//boardGameController.debuggerSelection(Operation.Debugger_HighlightNeighbors, item.isSelected());
-			}
-		});       	
+			//}
+		//});       	
 	    //developerMenuHighlightNeighbors.setEnabled(false);  
 	    
 	    
-	    developerMenu.add(developerMenuNew);
-	    developerMenu.addSeparator();
-	    developerMenu.add(developerMenuHighlightNeighbors);
+	    //developerMenu.add(developerMenuNew);
+	    //developerMenu.addSeparator();
+	    //developerMenu.add(developerMenuHighlightNeighbors);
 	    
 	    //menu.add(developerMenu);
 	}
+	
+	
 	private void PopulateWindowMenu(JMenuBar menu) {
 
 		JMenu windowMenu = new JMenu("Window");
