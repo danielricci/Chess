@@ -18,7 +18,7 @@ public abstract class BaseComponent implements IBaseComponent {
 		_parent = parent;
 		if(parent != null) {
 			_parent.putClientProperty(ParentKey, parent);
-			_parent.add(_component);
+			//_parent.add(_component);
 		}
 		
 		onInitialize();

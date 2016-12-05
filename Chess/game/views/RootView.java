@@ -161,12 +161,9 @@ public final class RootView extends JFrame {
 	private void PopulateDeveloperMenu() {
 		
 		BaseComponentBuilder.root(getJMenuBar())
-			.addMenu(DeveloperMenuComponent.class)
-			.addMenuItems(
-				NewGameMenuItem.class,
-				NewGameMenuItem.class
-			)
-		.render();
+			.AddItem(DeveloperMenuComponent.class)
+			.AddItem(NewGameMenuItem.class)
+			.render();
 
 	    //JCheckBoxMenuItem developerMenuHighlightNeighbors = new JCheckBoxMenuItem(ResourcesManager.Get(Resources.HighlightNeighbors));
 	    //developerMenuHighlightNeighbors.addItemListener(new ItemListener() {

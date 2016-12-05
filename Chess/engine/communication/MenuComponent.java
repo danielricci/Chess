@@ -10,7 +10,7 @@ public abstract class MenuComponent extends BaseComponent{
 	protected MenuComponent(JComponent component, JComponent parent) {
 		super(component, parent);
 	}
-
+	
 	@Override protected void onInitialize() {
 		super.get(JMenu.class).addMenuListener(new MenuListener() {
 			@Override public void menuSelected(MenuEvent e) {
