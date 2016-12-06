@@ -15,10 +15,10 @@ import views.BaseView;
 import views.MainView;
 import views.RootView;
 
-public class NewGameMenuItem extends BaseComponent {
+public class NewGameMenuItem extends ItemComponent {
 
 	public NewGameMenuItem(JComponent parent) {
-		super(new JMenuItem(), parent);
+		super(new JMenuItem(ResourcesManager.Get(Resources.NewGame)), parent);
 	}
 	
 	@Override public void onExecute() {

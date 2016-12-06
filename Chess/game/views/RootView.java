@@ -159,28 +159,10 @@ public final class RootView extends JFrame {
 	}
 	
 	private void PopulateDeveloperMenu() {
-		
 		BaseComponentBuilder.root(getJMenuBar())
 			.AddItem(DeveloperMenuComponent.class)
 			.AddItem(NewGameMenuItem.class)
-			.render();
-
-	    //JCheckBoxMenuItem developerMenuHighlightNeighbors = new JCheckBoxMenuItem(ResourcesManager.Get(Resources.HighlightNeighbors));
-	    //developerMenuHighlightNeighbors.addItemListener(new ItemListener() {
-			//@Override public void itemStateChanged(ItemEvent e) {
-				//JCheckBoxMenuItem item = (JCheckBoxMenuItem)e.getItem();			
-				//BoardGameController boardGameController = ControllerFactory.instance().get(BoardGameController.class);
-				//boardGameController.debuggerSelection(Operation.Debugger_HighlightNeighbors, item.isSelected());
-			//}
-		//});       	
-	    //developerMenuHighlightNeighbors.setEnabled(false);  
-	    
-	    
-	    //developerMenu.add(developerMenuNew);
-	    //developerMenu.addSeparator();
-	    //developerMenu.add(developerMenuHighlightNeighbors);
-	    
-	    //menu.add(developerMenu);
+		.render();
 	}
 	
 	

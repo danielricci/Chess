@@ -38,7 +38,7 @@ public final class BaseComponentBuilder {
 	/**
 	 * The list of components in chronologically added order
 	 */
-	private Vector<BaseComponent> _components = new Vector<>();
+	private Vector<Class<BaseComponent>> _components = new Vector<>();
 	
 	/**
 	 * Constructs a new object of this class
@@ -61,18 +61,6 @@ public final class BaseComponentBuilder {
 	}
 	
 	/**
-	 * Constructs a new object of the specified type
-	 * 
-	 * @param construct The type of class to construct
-	 * @return A reference to this builder
-	 * 
-	 * @throws Exception 
-	 */
-	private <T extends BaseComponent> T Construct(Class<T> construct) throws Exception {
-		return construct.getConstructor(JComponent.class).newInstance(_root);
-	}
-	
-	/**
 	 * Adds a new item of the specified component to the builder
 	 * 
 	 * @param component The type of component to construct
@@ -81,7 +69,7 @@ public final class BaseComponentBuilder {
 	 */
 	public final <T extends BaseComponent> BaseComponentBuilder AddItem(Class<T> component) {
 		try {
-			_components.add(Construct(component));
+			_components.add((Class<BaseComponent>) component);
 		} 
 		catch (Exception exception) {
 			exception.printStackTrace();
@@ -94,5 +82,20 @@ public final class BaseComponentBuilder {
 	 * Renders all components registered to this builder
 	 */
 	public void render() {
+		BaseComponent baseComponent = null;
+		for(Class<BaseComponent> component : _components) {
+			try {
+				BaseComponent createdComponent = component.getConstructor(JComponent.class).newInstance(
+					baseComponent == null  
+					? _root
+					: baseComponent.getComponent());
+				
+				if(createdComponent instanceof MenuComponent) {
+					baseComponent = createdComponent;
+				}
+			} catch (Exception exception) {
+				exception.printStackTrace();
+			}
+		}
 	}
 }
