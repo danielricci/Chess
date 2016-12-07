@@ -1,8 +1,6 @@
-package communication.internal.item;
+package communication.internal;
 
 import javax.swing.JComponent;
-
-import communication.internal.BaseComponent;
 
 public abstract class ItemComponent extends BaseComponent{
 

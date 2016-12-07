@@ -6,6 +6,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 
+import communication.internal.ItemComponent;
 import controllers.MainWindowController;
 import factories.ControllerFactory;
 import factories.ViewFactory;
@@ -18,7 +19,7 @@ import views.RootView;
 public class DeveloperNewGameMenuItem extends ItemComponent {
 
 	public DeveloperNewGameMenuItem(JComponent parent) {
-		super(new JMenuItem(), parent);
+		super(new JMenuItem(ResourcesManager.Get(Resources.NewGame)), parent);
 	}
 	
 	@Override public void onExecute() {

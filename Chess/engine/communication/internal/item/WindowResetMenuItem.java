@@ -6,6 +6,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 
+import communication.internal.ItemComponent;
 import managers.ResourcesManager;
 import managers.ResourcesManager.Resources;
 import views.RootView;

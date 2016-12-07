@@ -6,6 +6,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 
+import communication.internal.ItemComponent;
 import controllers.MainWindowController;
 import factories.ControllerFactory;
 import factories.ViewFactory;
@@ -23,6 +24,10 @@ public class NewGameMenuItem extends ItemComponent {
 	
 	@Override public void onExecute() {
 		System.out.println("NewGameMenuItem::onExecute");
+	}
+	
+	@Override public boolean enabled() {
+		return false;
 	}
 
 	@Override protected void onInitialize() {

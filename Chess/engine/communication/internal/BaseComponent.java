@@ -85,11 +85,11 @@ public abstract class BaseComponent implements IBaseComponent {
 		return (T)_component;
 	}
 	
-	@Override public boolean isVisible() {
+	@Override public boolean visibility() {
 		return _component.isVisible();
 	}
 
-	@Override public boolean isEnabled() {
+	@Override public boolean enabled() {
 		return _component.isEnabled();
 	}
 	

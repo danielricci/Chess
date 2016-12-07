@@ -28,9 +28,7 @@ import java.util.Vector;
 
 import javax.swing.JComponent;
 
-import communication.internal.menu.MenuComponent;
-
-public final class BaseComponentBuilder {
+public final class ComponentBuilder {
 
 	/**
 	 * The root component of this menu system
@@ -47,7 +45,7 @@ public final class BaseComponentBuilder {
 	 * 
 	 * @param root The root component of this menu system
 	 */
-	private BaseComponentBuilder(JComponent root) {
+	private ComponentBuilder(JComponent root) {
 		_root = root;
 	}
 	
@@ -58,8 +56,8 @@ public final class BaseComponentBuilder {
 	 * 
 	 * @return A reference to this builder
 	 */
-	public static BaseComponentBuilder root(JComponent root) {
-		return new BaseComponentBuilder(root);
+	public static ComponentBuilder root(JComponent root) {
+		return new ComponentBuilder(root);
 	}
 	
 	/**
@@ -69,7 +67,7 @@ public final class BaseComponentBuilder {
 	 * 
 	 * @return A reference to this builder
 	 */
-	public final <T extends BaseComponent> BaseComponentBuilder AddItem(Class<T> component) {
+	public final <T extends BaseComponent> ComponentBuilder AddItem(Class<T> component) {
 		try {
 			_components.add((Class<BaseComponent>) component);
 		} 
