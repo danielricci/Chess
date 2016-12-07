@@ -25,36 +25,31 @@
 package views;
 
 import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.HashSet;
-import java.util.Set;
 
-import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.KeyStroke;
 
-import communication.BaseComponentBuilder;
-import communication.DeveloperMenuComponent;
-import communication.NewGameMenuItem;
-import factories.ControllerFactory;
-import factories.ViewFactory;
+import communication.internal.BaseComponentBuilder;
+import communication.internal.item.AboutMenuItem;
+import communication.internal.item.ExitGameItem;
+import communication.internal.item.NewGameMenuItem;
+import communication.internal.item.WindowResetMenuItem;
+import communication.internal.menu.DeveloperMenuComponent;
+import communication.internal.menu.FileMenuComponent;
+import communication.internal.menu.HelpMenuComponent;
+import communication.internal.menu.WindowMenuComponent;
 import managers.ResourcesManager;
 import managers.ResourcesManager.Resources;
 
 public final class RootView extends JFrame {
 
 	private static RootView _instance;
-	private Set<String> _environmentArgs = new HashSet<>();
 	
 	private RootView() {
 		super(ResourcesManager.Get(Resources.ChessTitle));
@@ -94,68 +89,21 @@ public final class RootView extends JFrame {
 		return _instance;
 	}
 	
-	public void AddEnvironmentVariables(String[] args) {
-		for(String arg : args) { 
-			_environmentArgs.add(arg.toLowerCase());	
-		}
-	}
 	private void SetWindowedInstanceMenu() {
-		
-		//PopulateFileMenu(getJMenuBar());
-		
-		if(_environmentArgs.contains("developer"))
-		{
-			PopulateDeveloperMenu();
-			//PopulateWindowMenu(getJMenuBar());
-			setTitle(ResourcesManager.Get(Resources.ChessTitleDeveloper));
-		}
-		
-		//PopulateHelpMenu(getJMenuBar());
+		PopulateFileMenu();
+		PopulateDeveloperMenu();
+		PopulateWindowMenu();		
+		PopulateHelpMenu();
 		
 		getJMenuBar().revalidate();
 		getJMenuBar().repaint();
 	}
-	private void PopulateFileMenu(JMenuBar menu) {
-		
-		// Create the file menu 
-		JMenu fileMenu = new JMenu("File");
-        fileMenu.setMnemonic('F');
-			        
-        // Set the event handler
-        JMenuItem fileMenuNew = new JMenuItem(new AbstractAction(ResourcesManager.Get(Resources.NewGame)) {       	
-			@Override public void actionPerformed(ActionEvent event) {	
-	    		
-				ControllerFactory.instance().dispose();
-				ViewFactory.instance().dispose();
-				getContentPane().removeAll();					
-				
-				//BaseView mainWindowView = ViewFactory.instance().getView(ViewType.MainWindowView);
-				//mainWindowView.render();
-				//add(mainWindowView);
-				
-				validate();
-				System.out.println("Game loaded");
-			}	
-			
-        });
-        
-        // TODO - when we want to enable to actual game, we need to enable this
-        fileMenuNew.setEnabled(false);
-
-        // Set the shortcut
-        fileMenuNew.setAccelerator(KeyStroke.getKeyStroke('N', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-        fileMenu.add(fileMenuNew);
-        fileMenu.addSeparator();
-        
-        // Set the event handler
-        JMenuItem fileMenuExit = new JMenuItem(new AbstractAction("Exit") {
-        	@Override public void actionPerformed(ActionEvent event) {
-        		_instance.dispatchEvent(new WindowEvent(_instance, WindowEvent.WINDOW_CLOSING));
-			}	
-		});
-       
-        fileMenu.add(fileMenuExit);
-        menu.add(fileMenu);
+	private void PopulateFileMenu() {
+		BaseComponentBuilder.root(getJMenuBar())
+			.AddItem(FileMenuComponent.class)
+			.AddItem(NewGameMenuItem.class)
+			.AddItem(ExitGameItem.class)
+		.render();
 	}
 	
 	private void PopulateDeveloperMenu() {
@@ -164,46 +112,18 @@ public final class RootView extends JFrame {
 			.AddItem(NewGameMenuItem.class)
 		.render();
 	}
-	
-	
-	private void PopulateWindowMenu(JMenuBar menu) {
 
-		JMenu windowMenu = new JMenu("Window");
-		windowMenu.setMnemonic('W');
-			        
-	    JMenuItem windowMenuResetPosition = new JMenuItem(new AbstractAction(ResourcesManager.Get(Resources.ResetPosition)) {       	
-			@Override public void actionPerformed(ActionEvent event) {	
-				final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-				setLocation(
-					screenSize.width / 2 - getWidth() / 2,
-					screenSize.height / 2 - getHeight() / 2
-				);
-				validate();						
-			}	
-			
-	    });
-	      
-	    windowMenu.add(windowMenuResetPosition);
-	    menu.add(windowMenu);
+	private void PopulateWindowMenu() {
+		BaseComponentBuilder.root(getJMenuBar())
+			.AddItem(WindowMenuComponent.class)
+			.AddItem(WindowResetMenuItem.class)
+		.render();
 	}
-	private void PopulateHelpMenu(JMenuBar menu)	{
-		JMenu help = new JMenu("Help");
-		help.setMnemonic('H');
-		
-		// Help -> About
-		JMenuItem aboutItem = new JMenuItem(new AbstractAction("About") {
-			@Override public void actionPerformed(ActionEvent event) {
-				JOptionPane.showMessageDialog(
-					RootView.Instance(),
-					"Chess\nVersion 1.0\n\nDaniel Ricci\nthedanny09@gmail.com\nhttps:/github.com/danielricci/Chess",
-					"About Chess",
-					JOptionPane.INFORMATION_MESSAGE
-				);
-			}
-		});
-
-		help.add(aboutItem);	
-		
-		menu.add(help);
+	
+	private void PopulateHelpMenu()	{
+		BaseComponentBuilder.root(getJMenuBar())
+			.AddItem(HelpMenuComponent.class)
+			.AddItem(AboutMenuItem.class)
+		.render();
 	}
 }

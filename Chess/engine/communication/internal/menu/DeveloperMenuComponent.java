@@ -1,4 +1,4 @@
-package communication;
+package communication.internal.menu;
 
 import javax.swing.JComponent;
 import javax.swing.JMenu;

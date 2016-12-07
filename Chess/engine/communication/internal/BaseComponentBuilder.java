@@ -22,11 +22,13 @@
 * IN THE SOFTWARE.
 */
 
-package communication;
+package communication.internal;
 
 import java.util.Vector;
 
 import javax.swing.JComponent;
+
+import communication.internal.menu.MenuComponent;
 
 public final class BaseComponentBuilder {
 

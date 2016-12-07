@@ -22,7 +22,7 @@
 * IN THE SOFTWARE.
 */
 
-package communication;
+package communication.internal;
 
 import java.util.UUID;
 

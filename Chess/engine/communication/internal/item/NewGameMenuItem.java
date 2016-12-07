@@ -1,4 +1,4 @@
-package communication;
+package communication.internal.item;
 
 import java.awt.event.ActionEvent;
 
@@ -26,8 +26,7 @@ public class NewGameMenuItem extends ItemComponent {
 	}
 
 	@Override protected void onInitialize() {
-		JMenuItem item = super.get(JMenuItem.class);
-		item.addActionListener(new AbstractAction(ResourcesManager.Get(Resources.NewGame)) {       	
+		super.get(JMenuItem.class).addActionListener(new AbstractAction(ResourcesManager.Get(Resources.NewGame)) {       	
 			@Override public void actionPerformed(ActionEvent event) {	
 	    		
 				ControllerFactory.instance().dispose();

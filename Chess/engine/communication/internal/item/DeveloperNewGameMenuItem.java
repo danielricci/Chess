@@ -1,4 +1,4 @@
-package communication;
+package communication.internal.item;
 
 import java.awt.event.ActionEvent;
 
@@ -15,7 +15,7 @@ import views.BaseView;
 import views.MainView;
 import views.RootView;
 
-public class DeveloperNewGameMenuItem extends BaseComponent {
+public class DeveloperNewGameMenuItem extends ItemComponent {
 
 	public DeveloperNewGameMenuItem(JComponent parent) {
 		super(new JMenuItem(), parent);

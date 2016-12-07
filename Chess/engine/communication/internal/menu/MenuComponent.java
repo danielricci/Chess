@@ -1,9 +1,11 @@
-package communication;
+package communication.internal.menu;
 
 import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
+
+import communication.internal.BaseComponent;
 
 public abstract class MenuComponent extends BaseComponent{
 

@@ -1,6 +1,3 @@
-package main;
-import views.RootView;
-
 /**
 * Daniel Ricci <thedanny09@gmail.com>
 *
@@ -25,10 +22,13 @@ import views.RootView;
 * IN THE SOFTWARE.
 */
 
+package main;
+import views.RootView;
+
 public final class Chess {
 	public static void main(String[] args) {
         try {
-        	RootView.Instance().AddEnvironmentVariables(args);
+        	//RootView.Instance().AddEnvironmentVariables(args);
 			RootView.Instance().setVisible(true);
         } catch (Exception exception) {
         	exception.printStackTrace();
