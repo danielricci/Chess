@@ -4,7 +4,9 @@ jdk:
   - oraclejdk7
   - oraclejdk8
 
-install: true
+android:
+  components:
+    - gradle-wrapper
 
 before_script:
   - cd Chess
