@@ -8,7 +8,8 @@ install: true
 
 before_install:
  - chmod +x gradlew
-before_script
+ 
+before_script:
   - cd Chess
   
 #gradle check
