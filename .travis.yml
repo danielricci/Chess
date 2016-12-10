@@ -1,8 +1,15 @@
 language: java
+
 jdk: 
   - oraclejdk7
   - oraclejdk8
+
 install: true
-before_script: cd Chess
+
+before_install:
+ - chmod +x gradlew
+before_script
+  - cd Chess
+  
 #gradle check
 #gradle assemble
