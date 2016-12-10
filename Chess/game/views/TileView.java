@@ -46,7 +46,7 @@ public class TileView extends BaseView {
 	private static final Color SelectedColor = Color.DARK_GRAY;
 	private static final Color GuideColor = Color.BLUE;
 	private static final Color CaptureColor = Color.GREEN;
-	private static final Color HoverClover = Color.LIGHT_GRAY;
+	private static final Color HoverColor = Color.LIGHT_GRAY;
 	
 	private static int TileViewCounter = 0;
 	
@@ -57,7 +57,7 @@ public class TileView extends BaseView {
 	
 	private Map<Operation, MouseListener> _operationHandlers = new HashMap<>();
 	
-	public TileView(TileController controller) {
+	public TileView(final TileController controller) {
 		super(controller);
 		
 		TileView.cycleBackgroundColor();

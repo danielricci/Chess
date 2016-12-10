@@ -42,7 +42,7 @@ public abstract class BaseView extends JPanel implements IView {
 		register();
 	}
 	
-	public BaseView(BaseController controller) {			
+	public BaseView(final BaseController controller) {			
 		this();
 		_controllers.add(controller);
 	}
