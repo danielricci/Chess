@@ -3,6 +3,6 @@ jdk:
   - oraclejdk7
   - oraclejdk8
 install: true
-before_script: cd project
+before_script: cd Chess
 #gradle check
 #gradle assemble
