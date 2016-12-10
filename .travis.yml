@@ -6,11 +6,9 @@ jdk:
 
 install: true
 
-before_install:
- - chmod +x gradlew
- 
 before_script:
   - cd Chess
+  - chmod +x gradlew
   
 #gradle check
 #gradle assemble
