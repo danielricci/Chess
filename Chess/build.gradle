@@ -9,7 +9,7 @@
 
 /*
 // Apply the java plugin to add support for Java
-apply plugin: 'java'
+
 
 // In this section you declare where to find the dependencies of your project
 repositories {
@@ -30,6 +30,11 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 */
+
+apply plugin: 'java'
+apply plugin: 'application'
+
+mainClassName = 'main.Chess'
 
 task wrapper(type: Wrapper) {
    gradleVersion = '2.14.1' //version required
