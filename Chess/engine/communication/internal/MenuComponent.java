@@ -7,7 +7,7 @@ import javax.swing.JMenu;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
-public abstract class MenuComponent extends BaseComponent{
+public abstract class MenuComponent extends BaseComponent {
 
 	protected MenuComponent(JComponent component, JComponent parent) {
 		super(component, parent);

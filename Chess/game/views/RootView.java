@@ -55,7 +55,6 @@ public final class RootView extends JFrame {
 		setJMenuBar(new JMenuBar());
 		setSize(new Dimension(800, 800));
 		setResizable(false);
-		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setIconImage(new ImageIcon("data/internal/chess-icon-16.png").getImage());
 		
 		SetListeners();
