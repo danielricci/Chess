@@ -40,13 +40,7 @@ public final class ComponentBuilder {
 	 */
 	private Vector<Class<BaseComponent>> _components = new Vector<>();
 	
-	/**
-	 * Constructs a new object of this class
-	 * 
-	 * @param root The root component of this menu system
-	 */
-	private ComponentBuilder(JComponent root) {
-		_root = root;
+	private ComponentBuilder() {
 	}
 	
 	/**
@@ -56,8 +50,13 @@ public final class ComponentBuilder {
 	 * 
 	 * @return A reference to this builder
 	 */
-	public static ComponentBuilder root(JComponent root) {
-		return new ComponentBuilder(root);
+	public static ComponentBuilder start() {
+		return new ComponentBuilder();
+	}
+	
+	public ComponentBuilder root(JComponent root) {
+	    _root = root;
+	    return this;
 	}
 	
 	/**

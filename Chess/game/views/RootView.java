@@ -47,75 +47,79 @@ import managers.ResourcesManager.Resources;
 
 public final class RootView extends JFrame {
 
-	private static RootView _instance;
-	
-	private RootView() {
-		super(ResourcesManager.Get(Resources.ChessTitle));
-		
-		setJMenuBar(new JMenuBar());
-		setSize(new Dimension(800, 800));
-		setResizable(false);
-		setIconImage(new ImageIcon("data/internal/chess-icon-16.png").getImage());
-		
-		SetListeners();
-	}
-	
-	public static RootView Instance() {
-		if(_instance == null) {
-			_instance = new RootView();
-		}
-		return _instance;
-	}
-	
-	private void SetListeners() {
-		addComponentListener(new ComponentAdapter() {
-			@Override public void componentHidden(ComponentEvent e) {
-				setJMenuBar(null);
-			}
-			@Override public void componentShown(ComponentEvent e) {
-				setLocationRelativeTo(null);
-				SetWindowedInstanceMenu();
-			}
-		});
-	
-	}
-	
-	private void SetWindowedInstanceMenu() {
-		PopulateFileMenu();
-		PopulateDeveloperMenu();
-		PopulateWindowMenu();		
-		PopulateHelpMenu();
-		
-		getJMenuBar().revalidate();
-		getJMenuBar().repaint();
-	}
-	
-	private void PopulateFileMenu() {
-		ComponentBuilder.root(getJMenuBar())
-			.AddItem(FileMenuComponent.class)
-			.AddItem(NewGameMenuItem.class)
-			.AddItem(ExitGameItem.class)
-		.render();
-	}
-	
-	private void PopulateDeveloperMenu() {
-		ComponentBuilder.root(getJMenuBar())
-			.AddItem(DeveloperMenuComponent.class)
-			.AddItem(DeveloperNewGameMenuItem.class)
-		.render();
-	}
+    private static RootView _instance;
+    
+    private RootView() {
+        super(ResourcesManager.Get(Resources.ChessTitle));
+        
+        setJMenuBar(new JMenuBar());
+        setSize(new Dimension(800, 800));
+        setResizable(false);
+        setIconImage(new ImageIcon("data/internal/chess-icon-16.png").getImage());
+        
+        SetListeners();
+    }
+    
+    public static RootView Instance() {
+        if(_instance == null) {
+            _instance = new RootView();
+        }
+        return _instance;
+    }
+    
+    private void SetListeners() {
+        addComponentListener(new ComponentAdapter() {
+            @Override public void componentHidden(ComponentEvent e) {
+                setJMenuBar(null);
+            }
+            @Override public void componentShown(ComponentEvent e) {
+                setLocationRelativeTo(null);
+                SetWindowedInstanceMenu();
+            }
+        });
+    
+    }
+    
+    private void SetWindowedInstanceMenu() {
+        PopulateFileMenu();
+        PopulateDeveloperMenu();
+        PopulateWindowMenu();       
+        PopulateHelpMenu();
+        
+        getJMenuBar().revalidate();
+        getJMenuBar().repaint();
+    }
+    
+    private void PopulateFileMenu() {
+        ComponentBuilder.start()
+            .root(getJMenuBar())
+            .AddItem(FileMenuComponent.class)
+            .AddItem(NewGameMenuItem.class)
+            .AddItem(ExitGameItem.class)
+        .render();
+    }
+    
+    private void PopulateDeveloperMenu() {
+        ComponentBuilder.start()
+            .root(getJMenuBar())
+            .AddItem(DeveloperMenuComponent.class)
+            .AddItem(DeveloperNewGameMenuItem.class)
+        .render();
+    }
 
-	private void PopulateWindowMenu() {
-		ComponentBuilder.root(getJMenuBar())
-			.AddItem(WindowMenuComponent.class)
-			.AddItem(WindowResetMenuItem.class)
-		.render();
-	}
-	
-	private void PopulateHelpMenu()	{
-		ComponentBuilder.root(getJMenuBar())
-			.AddItem(HelpMenuComponent.class)
-			.AddItem(AboutMenuItem.class)
-		.render();
-	}
+    private void PopulateWindowMenu() {
+        ComponentBuilder.start()
+            .root(getJMenuBar())
+            .AddItem(WindowMenuComponent.class)
+            .AddItem(WindowResetMenuItem.class)
+        .render();
+    }
+    
+    private void PopulateHelpMenu() {
+        ComponentBuilder.start()
+            .root(getJMenuBar())
+            .AddItem(HelpMenuComponent.class)
+            .AddItem(AboutMenuItem.class)
+        .render();
+    }
 }
