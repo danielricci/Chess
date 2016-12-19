@@ -3,7 +3,7 @@
 <img src="https://travis-ci.com/danielricci/Chess.svg?token=mMTpyEqHpouDpJNArzCm&branch=master" />
 
 <h3>Setup</h3>
-- Chess is played on a square board consisting of eight rows called ranks (1 - 8), and eight columns called files (a - h)
+- Chess is played on a square board consisting of eight rows called ranks, and eight columns called files (a - h)
 - The colors of the square starting at the top left of the board are alternating between light and dark
 - The game pieces are divided into white and black sets
 - Each player begin with 16 pieces
