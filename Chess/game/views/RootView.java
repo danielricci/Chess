@@ -38,6 +38,7 @@ import communication.internal.item.DeveloperNewGameMenuItem;
 import communication.internal.item.ExitGameMenuItem;
 import communication.internal.item.NewGameMenuItem;
 import communication.internal.item.WindowResetMenuItem;
+import communication.internal.item.debug.NearestNeighbourItem;
 import communication.internal.menu.DeveloperMenuComponent;
 import communication.internal.menu.FileMenuComponent;
 import communication.internal.menu.HelpMenuComponent;
@@ -100,7 +101,8 @@ public final class RootView extends JFrame {
     private void PopulateDeveloperMenu() {
         ComponentBuilder.start(getJMenuBar())
             .AddItem(DeveloperMenuComponent.class)
-            .AddItem(DeveloperNewGameMenuItem.class);
+            .AddItem(DeveloperNewGameMenuItem.class)
+            .AddItem(NearestNeighbourItem.class);
     }
 
     private void PopulateWindowMenu() {

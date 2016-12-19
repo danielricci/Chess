@@ -5,12 +5,14 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import communication.internal.ItemComponent;
+import managers.ResourcesManager;
+import managers.ResourcesManager.Resources;
 import views.RootView;
 
 public class AboutMenuItem extends ItemComponent {
 
 	public AboutMenuItem(JComponent parent) {
-		super(new JMenuItem("About"), parent);
+		super(new JMenuItem(ResourcesManager.Get(Resources.AboutMenu)), parent);
 	}
 	
 	@Override public void onExecute() {
