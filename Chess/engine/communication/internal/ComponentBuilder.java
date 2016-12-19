@@ -30,6 +30,11 @@ import javax.swing.JComponent;
 
 public final class ComponentBuilder {
 
+    /**
+     * The host of this builder
+     */
+    private final JComponent _host;
+    
 	/**
 	 * The root component of this menu system
 	 */
@@ -38,9 +43,10 @@ public final class ComponentBuilder {
 	/**
 	 * The list of components in chronologically added order
 	 */
-	private Vector<Class<BaseComponent>> _components = new Vector<>();
+	private Vector<BaseComponent> _components = new Vector<>();
 	
-	private ComponentBuilder() {
+	private ComponentBuilder(JComponent host) {
+	    _host = host;
 	}
 	
 	/**
@@ -50,10 +56,28 @@ public final class ComponentBuilder {
 	 * 
 	 * @return A reference to this builder
 	 */
-	public static ComponentBuilder start() {
-		return new ComponentBuilder();
+	public static ComponentBuilder start(JComponent host) {
+		return new ComponentBuilder(host);
 	}
 	
+	/**
+	 * Builder entry-point
+	 * 
+     * @param root The root component of this menu system
+     * 
+     * @return A reference to this builder
+	 */
+	public static ComponentBuilder start(ComponentBuilder host) {
+	    return start(host._root);
+	}
+	
+	/**
+	 * Sets the root of this builder
+	 * 
+	 * @param root The root of this builder
+	 * 
+	 * @return A reference to this builder
+	 */
 	public ComponentBuilder root(JComponent root) {
 	    _root = root;
 	    return this;
@@ -68,7 +92,13 @@ public final class ComponentBuilder {
 	 */
 	public final <T extends BaseComponent> ComponentBuilder AddItem(Class<T> component) {
 		try {
-			_components.add((Class<BaseComponent>) component);
+		    BaseComponent baseComponent = render(component);
+		    if(_components.isEmpty() && _root == null) {
+		        _root = baseComponent.getComponent();
+		    }
+		    else {
+		        _components.add(baseComponent);    
+		    }
 		} 
 		catch (Exception exception) {
 			exception.printStackTrace();
@@ -77,24 +107,26 @@ public final class ComponentBuilder {
 		return this;
 	}
 	
+    public ComponentBuilder AddItem(ComponentBuilder builder) {
+        builder._root = _root;
+        _components.addAll(builder._components);
+        
+        return this;
+    }
+	
 	/**
 	 * Renders all components registered to this builder
 	 */
-	public void render() {
-		BaseComponent baseComponent = null;
-		for(Class<BaseComponent> component : _components) {
-			try {
-				BaseComponent createdComponent = component.getConstructor(JComponent.class).newInstance(
-					baseComponent == null  
-					? _root
-					: baseComponent.getComponent());
-				
-				if(createdComponent instanceof MenuComponent) {
-					baseComponent = createdComponent;
-				}
-			} catch (Exception exception) {
-				exception.printStackTrace();
-			}
-		}
+	private final <T extends BaseComponent> T render(Class<T> component) { 
+	    BaseComponent createdComponent = null;
+		try {
+		    createdComponent = component.getConstructor(JComponent.class).newInstance(_root == null ? _host : _root);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+		
+		return (T) createdComponent;
 	}
+
+
 }

@@ -35,7 +35,7 @@ import javax.swing.JMenuBar;
 import communication.internal.ComponentBuilder;
 import communication.internal.item.AboutMenuItem;
 import communication.internal.item.DeveloperNewGameMenuItem;
-import communication.internal.item.ExitGameItem;
+import communication.internal.item.ExitGameMenuItem;
 import communication.internal.item.NewGameMenuItem;
 import communication.internal.item.WindowResetMenuItem;
 import communication.internal.menu.DeveloperMenuComponent;
@@ -91,35 +91,27 @@ public final class RootView extends JFrame {
     }
     
     private void PopulateFileMenu() {
-        ComponentBuilder.start()
-            .root(getJMenuBar())
+        ComponentBuilder.start(getJMenuBar())
             .AddItem(FileMenuComponent.class)
             .AddItem(NewGameMenuItem.class)
-            .AddItem(ExitGameItem.class)
-        .render();
+            .AddItem(ExitGameMenuItem.class);     
     }
     
     private void PopulateDeveloperMenu() {
-        ComponentBuilder.start()
-            .root(getJMenuBar())
+        ComponentBuilder.start(getJMenuBar())
             .AddItem(DeveloperMenuComponent.class)
-            .AddItem(DeveloperNewGameMenuItem.class)
-        .render();
+            .AddItem(DeveloperNewGameMenuItem.class);
     }
 
     private void PopulateWindowMenu() {
-        ComponentBuilder.start()
-            .root(getJMenuBar())
+        ComponentBuilder.start(getJMenuBar())
             .AddItem(WindowMenuComponent.class)
-            .AddItem(WindowResetMenuItem.class)
-        .render();
+            .AddItem(WindowResetMenuItem.class);
     }
     
     private void PopulateHelpMenu() {
-        ComponentBuilder.start()
-            .root(getJMenuBar())
+        ComponentBuilder.start(getJMenuBar())
             .AddItem(HelpMenuComponent.class)
-            .AddItem(AboutMenuItem.class)
-        .render();
+            .AddItem(AboutMenuItem.class);
     }
 }

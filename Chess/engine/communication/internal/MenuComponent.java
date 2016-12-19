@@ -28,9 +28,12 @@ public abstract class MenuComponent extends BaseComponent {
 				for(Component component : menu.getMenuComponents()) {
 					if(component instanceof JComponent) {
 						JComponent jComponent = (JComponent) component;
-						ItemComponent itemComponent = (ItemComponent) jComponent.getClientProperty(jComponent);
-						jComponent.setEnabled(itemComponent.enabled());
-						jComponent.setVisible(itemComponent.visibility());
+						Object clientProperty = jComponent.getClientProperty(jComponent);
+						if(clientProperty instanceof ItemComponent) {
+						    ItemComponent itemComponent = (ItemComponent) jComponent.getClientProperty(jComponent);
+	                        jComponent.setEnabled(itemComponent.enabled());
+	                        jComponent.setVisible(itemComponent.visibility());    
+						}
 					}
 				}
 			}

@@ -12,9 +12,9 @@ import managers.ResourcesManager;
 import managers.ResourcesManager.Resources;
 import views.RootView;
 
-public class ExitGameItem extends ItemComponent {
+public class ExitGameMenuItem extends ItemComponent {
 	
-	public ExitGameItem(JComponent parent) {
+	public ExitGameMenuItem(JComponent parent) {
 		super(new JMenuItem(ResourcesManager.Get(Resources.ExitMenu)), parent);
 	}
 	
