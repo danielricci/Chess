@@ -85,6 +85,10 @@ public abstract class BaseComponent implements IBaseComponent {
 		return (T)_component;
 	}
 	
+	protected final JComponent get() {
+		return _component;
+	}
+	
 	@Override public boolean visibility() {
 		return _component.isVisible();
 	}

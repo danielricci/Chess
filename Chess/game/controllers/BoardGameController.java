@@ -39,7 +39,7 @@ import views.BoardView;
 import views.TileView;
 
 public class BoardGameController extends BaseController implements IDebuggable {
-
+	
 	private static final int _dimension = 8;
 
 	private Vector<Vector<TileModel>> _tiles = new Vector<>(Arrays.asList(new Vector<TileModel>()));		
@@ -191,10 +191,4 @@ public class BoardGameController extends BaseController implements IDebuggable {
 		}	
 		_previouslySelectedTile = null;
 	}
-
-	// TODO - Should Models be disposed as well?
-
-
-
-	
 }

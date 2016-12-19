@@ -1,8 +1,5 @@
 package communication.internal.item;
 
-import java.awt.event.ActionEvent;
-
-import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 
@@ -23,27 +20,18 @@ public class NewGameMenuItem extends ItemComponent {
 	}
 	
 	@Override public void onExecute() {
-		System.out.println("NewGameMenuItem::onExecute");
+		ControllerFactory.instance().dispose();
+		ViewFactory.instance().dispose();
+		RootView.Instance().getContentPane().removeAll();					
+		
+		BaseView view = ViewFactory.instance().get(MainView.class, true, MainWindowController.class);
+		view.render();
+		
+		RootView.Instance().add(view);
+		RootView.Instance().validate();
 	}
 	
 	@Override public boolean enabled() {
 		return false;
-	}
-
-	@Override protected void onInitialize() {
-		super.get(JMenuItem.class).addActionListener(new AbstractAction(ResourcesManager.Get(Resources.NewGame)) {       	
-			@Override public void actionPerformed(ActionEvent event) {	
-	    		
-				ControllerFactory.instance().dispose();
-				ViewFactory.instance().dispose();
-				RootView.Instance().getContentPane().removeAll();					
-				
-				BaseView view = ViewFactory.instance().get(MainView.class, true, MainWindowController.class);
-				view.render();
-				
-				RootView.Instance().add(view);
-				RootView.Instance().validate();						
-			}	
-	    });
 	}
 }
