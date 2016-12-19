@@ -17,11 +17,3 @@ cache:
 before_script:
   - cd Chess
   - chmod +x gradlew
-
-deploy:
-  provider: releases
-  api_key: "2a1722e71dd57e722e64b78520dc7582e64a2138 "
-  file: "build/libs/Chess.jar"
-  skip_cleanup: true
-  on:
-    tags: true
