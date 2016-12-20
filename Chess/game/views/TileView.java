@@ -35,11 +35,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
 
+import communication.internal.dispatcher.DispatchOperation;
 import controllers.TileController;
 import models.GameModel;
-import models.GameModel.Operation;
 import models.TileModel;
-import models.TileModel.Selection;
 
 public class TileView extends BaseView {
 
@@ -55,7 +54,7 @@ public class TileView extends BaseView {
 	private final Color _defaultBackgroundColor;
 	private Color _currentBackgroundColor;
 	
-	private Map<Operation, MouseListener> _operationHandlers = new HashMap<>();
+	private Map<communication.internal.dispatcher.DispatchOperation, MouseListener> _operationHandlers = new HashMap<>();
 	
 	public TileView(final TileController controller) {
 		super(controller);
@@ -95,35 +94,8 @@ public class TileView extends BaseView {
 		TileModel tileModel = (TileModel)obs;
 		TileController tileController = getController(TileController.class);
 		
-		for(Operation operation : tileModel.getOperations()) {
+		for(DispatchOperation operation : tileModel.getOperations()) {
 			switch(operation) {
-			case EmptyTileSelected:
-				break;
-			case PlayerPieceSelected:
-				updateSelectedCommand(TileView.SelectedColor);
-				tileController.tileGuidesCommand(Operation.ShowGuides);
-				break;
-			case PlayerPieceMoveCancel:
-				updateSelectedCommand(_currentBackgroundColor);
-				tileController.tileGuidesCommand(Operation.HideGuides); 
-				break;
-			case PlayerPieceMoveAccepted:
-				updateSelectedCommand(_currentBackgroundColor);
-				break;
-			case HideGuides:
-				updateSelectedCommand(_defaultBackgroundColor);
-				break;
-			case ShowGuides:
-				updateSelectedCommand(tileModel.getSelectionType() == Selection.CaptureSelected ? TileView.CaptureColor : TileView.GuideColor);
-				break;
-			case Debugger_PlayerTiles:
-				debugger_playerColorVisibility(tileModel, operation);
-				break;
-			case Debugger_TileCoordinates:
-				break;
-			case Debugger_HighlightNeighbors:
-				highlightNeighbors(tileModel, operation);
-				break;
 			case Refresh:
 				break;
 			default:
@@ -180,7 +152,7 @@ public class TileView extends BaseView {
 		++TileView.TileViewCounter;
 	}
 	
-	private void highlightNeighbors(TileModel tile, Operation operation) {
+	private void highlightNeighbors(TileModel tile, DispatchOperation operation) {
 		
 		boolean result = (boolean)tile.getCachedData(operation);
 		if(!result)
@@ -210,7 +182,7 @@ public class TileView extends BaseView {
     	setBackground(color);
     }
 	
-	private void debugger_playerColorVisibility(TileModel tile, Operation operation) {
+	private void debugger_playerColorVisibility(TileModel tile, DispatchOperation operation) {
 		TileController controller = getController(TileController.class);
 		Color color = controller.getTileColor();
 

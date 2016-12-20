@@ -1,9 +1,9 @@
-package communication.internal.item.debug;
+package communication.internal.command.item;
 
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 
-import communication.internal.ItemComponent;
+import communication.internal.command.ItemComponent;
 import managers.ResourcesManager;
 import managers.ResourcesManager.Resources;
 

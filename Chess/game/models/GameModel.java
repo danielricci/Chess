@@ -31,27 +31,12 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Queue;
 
+import communication.internal.dispatcher.DispatchOperation;
+
 public class GameModel extends Observable
 {
-	private final Queue<Operation> _operations = new LinkedList<>();
-	private final Map<Operation, Object> _debugger = new HashMap<>();
-	
-	// NOTE: We need these operations to be reduced, for example show guides and hide guides and player piece commands are pretty
-	// much the same thing, we need a separation of concerns
-	public enum Operation {
-		PlayerPieceSelected,
-		PlayerPieceMoveCancel,
-		EmptyTileSelected, 
-		PlayerPieceMoveAccepted, 
-		ShowGuides,
-		HideGuides,
-		Refresh,
-		
-		// TODO - the debugger constants here are valid we wont need to remove them, we should try to remove the above however
-		Debugger_PlayerTiles,
-		Debugger_TileCoordinates, 
-		Debugger_HighlightNeighbors
-	}
+	private final Queue<DispatchOperation> _operations = new LinkedList<>();
+	private final Map<DispatchOperation, Object> _debugger = new HashMap<>();
 	
 	protected GameModel(Observer... observer) {
 		for(Observer obs : observer) {
@@ -59,26 +44,26 @@ public class GameModel extends Observable
 		}
 	}
 	
-	public final void addCachedData(Operation operation, Object value) {
+	public final void addCachedData(DispatchOperation operation, Object value) {
 		_debugger.put(operation, value);
 		addOperation(operation);
 		doneUpdating();
 	}
-	public final <T extends Object> T getCachedData(Operation operation) { 
+	public final <T extends Object> T getCachedData(DispatchOperation operation) { 
 		return (T)_debugger.get(operation); 
 	}
-	public final Queue<Operation> getOperations() {
+	public final Queue<DispatchOperation> getOperations() {
 		return _operations;
 	}
 		
 	protected final void doneUpdating() {
 		setChanged();
 		if(_operations.isEmpty()) {
-			_operations.add(Operation.Refresh);
+			_operations.add(DispatchOperation.Refresh);
 		}
 		notifyObservers(_operations);
 		_operations.clear();
 	}	
-	protected final void addOperation(Operation operation) { _operations.add(operation); }
+	protected final void addOperation(DispatchOperation operation) { _operations.add(operation); }
 	protected final void clearOperations() { _operations.clear(); }
 }

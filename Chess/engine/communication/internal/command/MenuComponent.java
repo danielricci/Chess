@@ -1,4 +1,4 @@
-package communication.internal;
+package communication.internal.command;
 
 import java.awt.Component;
 

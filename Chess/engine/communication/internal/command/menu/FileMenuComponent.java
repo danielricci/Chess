@@ -1,9 +1,9 @@
-package communication.internal.menu;
+package communication.internal.command.menu;
 
 import javax.swing.JComponent;
 import javax.swing.JMenu;
 
-import communication.internal.MenuComponent;
+import communication.internal.command.MenuComponent;
 
 public class FileMenuComponent extends MenuComponent {
 

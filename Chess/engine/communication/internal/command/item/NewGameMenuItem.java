@@ -1,9 +1,9 @@
-package communication.internal.item;
+package communication.internal.command.item;
 
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 
-import communication.internal.ItemComponent;
+import communication.internal.command.ItemComponent;
 import controllers.MainWindowController;
 import factories.ControllerFactory;
 import factories.ViewFactory;
@@ -13,9 +13,9 @@ import views.BaseView;
 import views.MainView;
 import views.RootView;
 
-public class DeveloperNewGameMenuItem extends ItemComponent {
+public class NewGameMenuItem extends ItemComponent {
 
-	public DeveloperNewGameMenuItem(JComponent parent) {
+	public NewGameMenuItem(JComponent parent) {
 		super(new JMenuItem(ResourcesManager.Get(Resources.NewGame)), parent);
 	}
 	
@@ -29,5 +29,9 @@ public class DeveloperNewGameMenuItem extends ItemComponent {
 		
 		RootView.Instance().add(view);
 		RootView.Instance().validate();
+	}
+	
+	@Override public boolean enabled() {
+		return false;
 	}
 }

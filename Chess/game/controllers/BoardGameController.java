@@ -28,9 +28,7 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
 import java.util.Vector;
 
-import api.IDebuggable;
 import factories.ControllerFactory;
-import models.GameModel.Operation;
 import models.TileModel;
 import models.TileModel.NeighborXPosition;
 import models.TileModel.NeighborYPosition;
@@ -38,7 +36,7 @@ import models.TileModel.Selection;
 import views.BoardView;
 import views.TileView;
 
-public class BoardGameController extends BaseController implements IDebuggable {
+public class BoardGameController extends BaseController {
 	
 	private static final int _dimension = 8;
 
@@ -70,7 +68,7 @@ public class BoardGameController extends BaseController implements IDebuggable {
 		return controller.getView(TileView.class);
 	}
 
-	private void link() {		
+	private void link() {
 		
 		Vector<TileModel> tilesRow = _tiles.lastElement();
 		for(int i = 0; i < tilesRow.size(); ++i) {
@@ -111,7 +109,6 @@ public class BoardGameController extends BaseController implements IDebuggable {
 		}
 	}
 	
-
 	public int getDimensions() {		
 		return _dimension;
 	}
@@ -119,20 +116,12 @@ public class BoardGameController extends BaseController implements IDebuggable {
 	@Override public void dispose() {
 		_tiles.clear();
 	}	
-	
-	
-  	@Override public void debuggerSelection(DebugOption optionx, boolean selected) {
-  		// TODO - implement me
-  		//for(TileModel tile : _tiles) {
-  		//	tile.addCachedData(operation, selected);
-  		//}
-  	}
-  	
+	  	
   	public void processTileSelected(TileModel tile) {
-		if(_previouslySelectedTile != null) {
-			_previouslySelectedTile.setSelected(Operation.PlayerPieceMoveCancel, Selection.None, true);			
+		/*if(_previouslySelectedTile != null) {
+			_previouslySelectedTile.setSelected(DispatchOperation.PlayerPieceMoveCancel, Selection.None, true);			
 			if(_previouslySelectedTile != tile) {
-				tile.setSelected(Operation.PlayerPieceSelected, Selection.MoveSelected);
+				tile.setSelected(DispatchOperation.PlayerPieceSelected, Selection.MoveSelected);
 				_previouslySelectedTile = tile;
 			}
 			else {
@@ -141,7 +130,7 @@ public class BoardGameController extends BaseController implements IDebuggable {
 		} 
 		else {
 			_previouslySelectedTile = tile;	
-		}
+		}*/
   	} 	
 
 	public void processTileMove(TileModel captureTile) {
@@ -175,7 +164,7 @@ public class BoardGameController extends BaseController implements IDebuggable {
 		}
 		else{
 			System.out.println("Player can still continue playing.");
-			captureTile.setSelected(Operation.PlayerPieceSelected, Selection.MoveSelected, true);	
+			//captureTile.setSelected(DispatchOperation.PlayerPieceSelected, Selection.MoveSelected, true);	
 		}
 	}
 	
@@ -187,7 +176,7 @@ public class BoardGameController extends BaseController implements IDebuggable {
 	
 	public void processTileCancel(TileModel tileModel) {
 		for(TileModel model : _previouslySelectedTile.getForwardNeighbors()) {
-			model.setSelected(Operation.HideGuides, Selection.None, true);
+		//	model.setSelected(DispatchOperation.HideGuides, Selection.None, true);
 		}	
 		_previouslySelectedTile = null;
 	}

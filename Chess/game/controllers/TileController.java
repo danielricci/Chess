@@ -32,8 +32,8 @@ import java.util.Observer;
 import java.util.SortedSet;
 import java.util.Vector;
 
+import communication.internal.dispatcher.DispatchOperation;
 import factories.ControllerFactory;
-import models.GameModel.Operation;
 import models.PlayerModel;
 import models.TileModel;
 import models.TileModel.NeighborXPosition;
@@ -94,7 +94,7 @@ public class TileController extends BaseController {
 			playerController.setCurrentPlayer(_tile.getPlayer());
 		}
 		
-		
+		/*
 		// Check if the player tries to select the piece of our opponent
 		if(_tile.getPlayer() != null && _tile.getPlayer() != playerController.getCurrentPlayer()) {
 			System.out.println("Cannot select other players pieces!");	
@@ -103,17 +103,17 @@ public class TileController extends BaseController {
 		
 		if(_tile.isSelected() || _tile.isGuideSelected() && _tile.getPlayer() != playerController.getCurrentPlayer()) {
 			if(!_tile.isMovableTo()) {
-				_tile.setSelected(Operation.PlayerPieceMoveCancel, Selection.None);
+				_tile.setSelected(DispatchOperation.PlayerPieceMoveCancel, Selection.None);
 			} 
 			else {
-				_tile.setSelected(Operation.PlayerPieceMoveAccepted, Selection.None, true);				
+				_tile.setSelected(DispatchOperation.PlayerPieceMoveAccepted, Selection.None, true);				
 			}				
 		}
 		else {
 			if(_tile.getPlayer() == playerController.getCurrentPlayer()) {
 				if(hasMoves())
 				{
-					_tile.setSelected(Operation.PlayerPieceSelected, Selection.MoveSelected, true);	
+					_tile.setSelected(DispatchOperation.PlayerPieceSelected, Selection.MoveSelected, true);	
 				}
 				else 
 				{
@@ -124,6 +124,7 @@ public class TileController extends BaseController {
 				System.out.println("Player is selecting a tile that is not a valid move");
 			}
 		}
+		*/
 	}
 	
 	public boolean hasMoves() {
@@ -171,8 +172,8 @@ public class TileController extends BaseController {
 		return false;
 	}
 	
-	public void tileGuidesCommand(Operation operation) {
-		Selection selection = operation == Operation.ShowGuides ? Selection.GuideSelected : Selection.None;
+	public void tileGuidesCommand(DispatchOperation operation) {
+		Selection selection = operation == DispatchOperation.ToggleGuides ? Selection.GuideSelected : Selection.None;
 		
 		SortedSet<TileModel> tileNeighbors = _tile.getForwardNeighbors();
 		
@@ -233,7 +234,7 @@ public class TileController extends BaseController {
 
 	public void setNeighborsSelected(boolean selected) {
 		for(TileModel model : getAllNeighbors()) {
-			model.setSelected(selected ? Operation.ShowGuides : Operation.HideGuides, Selection.None);
+			//model.setSelected(selected ? DispatchOperation.ShowGuides : DispatchOperation.HideGuides, Selection.None);
 		}
 	}
 }

@@ -34,7 +34,6 @@ import javax.swing.JPanel;
 
 import controllers.BaseController;
 import controllers.BoardGameController;
-import models.GameModel;
 import models.TileModel;
 
 public class BoardView extends BaseView {
@@ -57,8 +56,8 @@ public class BoardView extends BaseView {
 		
 		BoardGameController boardGameController = getController(BoardGameController.class);
 		TileModel tileModel = (TileModel)obs;
-		
-		for(GameModel.Operation operation : tileModel.getOperations()) {
+		/*
+		for(GameModel.DispatchOperation operation : tileModel.getOperations()) {
 			switch(operation) {
 			case PlayerPieceSelected:
 				boardGameController.processTileSelected(tileModel);
@@ -71,6 +70,7 @@ public class BoardView extends BaseView {
 				break;
 			}
 		}
+		*/
 	};
 	
 	@Override public void render() {

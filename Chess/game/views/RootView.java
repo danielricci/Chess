@@ -32,17 +32,17 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 
-import communication.internal.ComponentBuilder;
-import communication.internal.item.AboutMenuItem;
-import communication.internal.item.DeveloperNewGameMenuItem;
-import communication.internal.item.ExitGameMenuItem;
-import communication.internal.item.NewGameMenuItem;
-import communication.internal.item.WindowResetMenuItem;
-import communication.internal.item.debug.NearestNeighbourItem;
-import communication.internal.menu.DeveloperMenuComponent;
-import communication.internal.menu.FileMenuComponent;
-import communication.internal.menu.HelpMenuComponent;
-import communication.internal.menu.WindowMenuComponent;
+import communication.internal.command.ComponentBuilder;
+import communication.internal.command.item.AboutMenuItem;
+import communication.internal.command.item.DeveloperNewGameMenuItem;
+import communication.internal.command.item.ExitGameMenuItem;
+import communication.internal.command.item.NearestNeighbourItem;
+import communication.internal.command.item.NewGameMenuItem;
+import communication.internal.command.item.WindowResetMenuItem;
+import communication.internal.command.menu.DeveloperMenuComponent;
+import communication.internal.command.menu.FileMenuComponent;
+import communication.internal.command.menu.HelpMenuComponent;
+import communication.internal.command.menu.WindowMenuComponent;
 import managers.ResourcesManager;
 import managers.ResourcesManager.Resources;
 

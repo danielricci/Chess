@@ -1,11 +1,11 @@
-package communication.internal.item;
+package communication.internal.command.item;
 
 import java.awt.event.WindowEvent;
 
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 
-import communication.internal.ItemComponent;
+import communication.internal.command.ItemComponent;
 import managers.ResourcesManager;
 import managers.ResourcesManager.Resources;
 import views.RootView;
