@@ -32,18 +32,16 @@ import factories.ControllerFactory;
 import models.TileModel;
 import models.TileModel.NeighborXPosition;
 import models.TileModel.NeighborYPosition;
-import models.TileModel.Selection;
 import views.BoardView;
 import views.TileView;
 
-public class BoardGameController extends BaseController {
+public class BoardController extends BaseController {
 	
 	private static final int _dimension = 8;
 
 	private Vector<Vector<TileModel>> _tiles = new Vector<>(Arrays.asList(new Vector<TileModel>()));		
-	private TileModel _previouslySelectedTile;
 	
-	public BoardGameController(BoardView view) {
+	public BoardController(BoardView view) {
 		super(view);
 	}
 	
@@ -116,68 +114,4 @@ public class BoardGameController extends BaseController {
 	@Override public void dispose() {
 		_tiles.clear();
 	}	
-	  	
-  	public void processTileSelected(TileModel tile) {
-		/*if(_previouslySelectedTile != null) {
-			_previouslySelectedTile.setSelected(DispatchOperation.PlayerPieceMoveCancel, Selection.None, true);			
-			if(_previouslySelectedTile != tile) {
-				tile.setSelected(DispatchOperation.PlayerPieceSelected, Selection.MoveSelected);
-				_previouslySelectedTile = tile;
-			}
-			else {
-				_previouslySelectedTile = null;				
-			}
-		} 
-		else {
-			_previouslySelectedTile = tile;	
-		}*/
-  	} 	
-
-	public void processTileMove(TileModel captureTile) {
-
-		PlayerController controller = ControllerFactory.instance().get(PlayerController.class, false);
-		boolean tileCaptured = false;
-		
-		for(TileModel model : _previouslySelectedTile.getAllNeighbors()) {
-			if(model.getSelectionType() == Selection.CaptureSelected && model.getAllNeighbors().contains(captureTile)) {
-				tileCaptured = true;
-				
-				// If the tile we are capturing is a king then the player performing
-				// the capture assumes control over the piece
-				if(model.getPlayer().getPlayerPiece(model).getIsKinged()) {
-					model.updateOwner(controller.getCurrentPlayer());
-				}
-				else {
-					model.removeTile();					
-				}
-			}
-		}
-		
-		// Removes all guides from the board
-		processTileHideAllGuides();
-		
-		_previouslySelectedTile.swapWith(captureTile);
-		_previouslySelectedTile = null;
-		
-		if(!tileCaptured) {
-			controller.moveFinished();
-		}
-		else{
-			System.out.println("Player can still continue playing.");
-			//captureTile.setSelected(DispatchOperation.PlayerPieceSelected, Selection.MoveSelected, true);	
-		}
-	}
-	
-	public void processTileHideAllGuides() {
-		//for(TileModel model : _tiles) {
-		//	model.setSelected(Operation.HideGuides, Selection.None, true);
-		//}
-	}
-	
-	public void processTileCancel(TileModel tileModel) {
-		for(TileModel model : _previouslySelectedTile.getForwardNeighbors()) {
-		//	model.setSelected(DispatchOperation.HideGuides, Selection.None, true);
-		}	
-		_previouslySelectedTile = null;
-	}
 }

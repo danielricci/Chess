@@ -24,12 +24,15 @@
 
 package views;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Observable;
 import java.util.Vector;
 
 import javax.swing.JPanel;
 
 import api.IView;
+import communication.internal.dispatcher.DispatchOperation;
 import controllers.BaseController;
 import factories.ControllerFactory;
 import models.GameModel;
@@ -37,9 +40,11 @@ import models.GameModel;
 public abstract class BaseView extends JPanel implements IView {
 
 	private final Vector<BaseController> _controllers = new Vector<>();
+	private final Vector<DispatchOperation> _registeredOperations = new Vector<>();
 	
 	private BaseView(){
 		register();
+		_registeredOperations.addAll(getRegisteredOperations());
 	}
 	
 	public BaseView(final BaseController controller) {			
@@ -70,6 +75,10 @@ public abstract class BaseView extends JPanel implements IView {
 		}
 	}
 	
+	protected Collection<DispatchOperation> getRegisteredOperations() {
+		return Collections.emptyList();
+	}
+	
 	private boolean controllerExists(BaseController controller) {
 		assert controller != null : "Cannot pass a null controller";
 		boolean found = false;
@@ -86,7 +95,7 @@ public abstract class BaseView extends JPanel implements IView {
 	
 	@Override public void register(){
 	}
-	
+		
 	@Override public void render(){
 	}
 	
@@ -95,7 +104,7 @@ public abstract class BaseView extends JPanel implements IView {
 	
 	@Override public void update(Observable o, Object arg){
 	} 
-	
+			
 	@Override public void dispose() {
 		removeAll();
 		_controllers.clear();

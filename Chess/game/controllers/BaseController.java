@@ -57,14 +57,8 @@ public abstract class BaseController implements IController  {
 			 exception.printStackTrace();
 		}		
 	}
-	
-	/**
-	 * @deprecated getView(Class<T> viewClass) 
-	 */
-	@Deprecated
-	public final <T extends BaseView> BaseView getView() { return _view; }
-	
-	public final <T extends IView> T getView(Class<T> viewClass) {	
+		
+	public final <T extends IView> T getView(Class<T> viewClass) {
 		return (T)_view;
 	}
 	

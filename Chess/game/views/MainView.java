@@ -27,7 +27,7 @@ package views;
 import java.awt.BorderLayout;
 
 import controllers.BaseController;
-import controllers.BoardGameController;
+import controllers.BoardController;
 import controllers.MainWindowController;
 import factories.ViewFactory;
 
@@ -44,7 +44,7 @@ public class MainView extends BaseView {
 	@Override public void render() {
 		setLayout(new BorderLayout());
 		
-		BaseView boardGameView = ViewFactory.instance().get(BoardView.class, false, BoardGameController.class);
+		BaseView boardGameView = ViewFactory.instance().get(BoardView.class, false, BoardController.class);
 		boardGameView.render();
 		
 		add(boardGameView);

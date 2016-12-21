@@ -30,9 +30,8 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Observable;
 
 import communication.internal.dispatcher.DispatchOperation;
@@ -41,11 +40,6 @@ import models.GameModel;
 import models.TileModel;
 
 public class TileView extends BaseView {
-
-	private static final Color SelectedColor = Color.DARK_GRAY;
-	private static final Color GuideColor = Color.BLUE;
-	private static final Color CaptureColor = Color.GREEN;
-	private static final Color HoverColor = Color.LIGHT_GRAY;
 	
 	private static int TileViewCounter = 0;
 	
@@ -53,9 +47,7 @@ public class TileView extends BaseView {
 	
 	private final Color _defaultBackgroundColor;
 	private Color _currentBackgroundColor;
-	
-	private Map<communication.internal.dispatcher.DispatchOperation, MouseListener> _operationHandlers = new HashMap<>();
-	
+		
 	public TileView(final TileController controller) {
 		super(controller);
 		
@@ -87,13 +79,10 @@ public class TileView extends BaseView {
 		});
     }
     
-	@Override public void update(Observable obs, Object arg) {
-		
+	@Override public void update(Observable obs, Object arg) {		
 		super.update(obs, arg);
 		
 		TileModel tileModel = (TileModel)obs;
-		TileController tileController = getController(TileController.class);
-		
 		for(DispatchOperation operation : tileModel.getOperations()) {
 			switch(operation) {
 			case Refresh:
@@ -103,7 +92,6 @@ public class TileView extends BaseView {
 			}
 			refresh(tileModel); 
 		}
-		
 	}
 	
 	@Override public void render() {
@@ -148,50 +136,13 @@ public class TileView extends BaseView {
         g2d.drawImage(_image, 10, 8, 48, 48, null, null);       
 	}
 	
+	@Override protected Collection<DispatchOperation> getRegisteredOperations() {
+		return Arrays.asList(
+			DispatchOperation.ToggleNeighborTiles
+		);
+	}
+	
 	public static void cycleBackgroundColor() {
 		++TileView.TileViewCounter;
-	}
-	
-	private void highlightNeighbors(TileModel tile, DispatchOperation operation) {
-		
-		boolean result = (boolean)tile.getCachedData(operation);
-		if(!result)
-		{
-			removeMouseListener(_operationHandlers.get(operation));
-			_operationHandlers.remove(operation);
-		}
-		else
-		{
-			MouseListener ml = new MouseAdapter() {  		    		
-	    		@Override public void mouseEntered(MouseEvent e) {
-	    			TileController controller = getController(TileController.class);
-	    			controller.setNeighborsSelected(true);    					    			
-	    		}
-	    		@Override public void mouseExited(MouseEvent e) {
-	    			TileController controller = getController(TileController.class);
-	    			controller.setNeighborsSelected(false);
-	    		}
-			};
-    		
-			addMouseListener(ml);
-			_operationHandlers.put(operation, ml);
-		}
-	}
-	
-	private void updateSelectedCommand(Color color) {
-    	setBackground(color);
-    }
-	
-	private void debugger_playerColorVisibility(TileModel tile, DispatchOperation operation) {
-		TileController controller = getController(TileController.class);
-		Color color = controller.getTileColor();
-
-		boolean isSelected = (boolean)tile.getCachedData(operation);
-		if(!isSelected || color == null) {
-			color = _currentBackgroundColor;
-		}
-		
-		updateSelectedCommand(color);
-		repaint();
 	}
 }

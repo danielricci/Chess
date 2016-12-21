@@ -26,35 +26,31 @@ package views;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Observable;
 import java.util.Vector;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
+import communication.internal.dispatcher.DispatchOperation;
 import controllers.BaseController;
-import controllers.BoardGameController;
+import controllers.BoardController;
 import models.TileModel;
 
 public class BoardView extends BaseView {
 	
 	private final JPanel _gamePanel = new JPanel(new GridBagLayout());	
-	
-	// TODO - are we using this or the other one?
-	public BoardView(BoardGameController controller) {
-		super(controller);
-	}
-	
-	// TODO - are we using this or the other one?
+		
 	public <T extends BaseController> BoardView(Class<T> controller) {
 		super(controller);
 	}
 	
 	@Override public void update(Observable obs, Object arg) {
-		
 		super.update(obs, arg);
 		
-		BoardGameController boardGameController = getController(BoardGameController.class);
+		BoardController boardGameController = getController(BoardController.class);
 		TileModel tileModel = (TileModel)obs;
 		/*
 		for(GameModel.DispatchOperation operation : tileModel.getOperations()) {
@@ -87,7 +83,7 @@ public class BoardView extends BaseView {
 		Vector<Vector<TileView>> tiles = new Vector<>();
 		
 		// Reference to the specified controller, in this case it is unique
-		BoardGameController boardGameController = getController(BoardGameController.class);
+		BoardController boardGameController = getController(BoardController.class);
 		
 		// Create the board, row by row
 		for(int row = 0, dimensions = boardGameController.getDimensions(); row < dimensions; ++row) {
@@ -122,4 +118,12 @@ public class BoardView extends BaseView {
 	@Override public void dispose() {
 		_gamePanel.removeAll();
 	}
+
+	@Override protected Collection<DispatchOperation> getRegisteredOperations() {
+		return Arrays.asList(
+			DispatchOperation.CellSelected
+		);
+	}
+
+
 }
