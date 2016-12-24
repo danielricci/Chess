@@ -100,6 +100,7 @@ public abstract class BaseComponent implements IBaseComponent {
 	@Override public void bind(BaseController controller) {
 	}
 	
+	
+	
 	protected abstract void onInitialize();
-	@Override public abstract void onExecute();
 }

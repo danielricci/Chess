@@ -24,19 +24,19 @@
 
 package models;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Queue;
 
+import api.IView;
 import communication.internal.dispatcher.DispatchOperation;
 
 public class GameModel extends Observable
 {
 	private final Queue<DispatchOperation> _operations = new LinkedList<>();
-	private final Map<DispatchOperation, Object> _debugger = new HashMap<>();
+	private final ArrayList<Observer> _observers = new ArrayList<>();
 	
 	protected GameModel(Observer... observer) {
 		for(Observer obs : observer) {
@@ -44,16 +44,42 @@ public class GameModel extends Observable
 		}
 	}
 	
-	public final void addCachedData(DispatchOperation operation, Object value) {
-		_debugger.put(operation, value);
+	public final void addCachedData(DispatchOperation operation) {
 		addOperation(operation);
 		doneUpdating();
 	}
-	public final <T extends Object> T getCachedData(DispatchOperation operation) { 
-		return (T)_debugger.get(operation); 
-	}
+	
 	public final Queue<DispatchOperation> getOperations() {
 		return _operations;
+	}
+	
+	@Override public synchronized void addObserver(Observer observer) {
+		super.addObserver(observer);
+		_observers.add(observer);
+	}
+	
+	@Override public synchronized void deleteObserver(Observer observer) {
+		super.deleteObserver(observer);
+		_observers.remove(observer);
+	}
+	
+	@Override public void notifyObservers(Object arg) {
+		if (!hasChanged()) 
+		{
+			return;
+		}
+        
+		clearChanged();        
+        for(Observer obs : _observers) {
+        	if(obs instanceof IView)
+        	{
+        		IView obsView = (IView) obs;
+        		if(obsView.isValidListener(_operations.toArray(new DispatchOperation[_operations.size()])))
+        		{
+            		obs.update(this, arg);        			
+        		}
+        	}
+        }
 	}
 		
 	protected final void doneUpdating() {
@@ -64,6 +90,12 @@ public class GameModel extends Observable
 		notifyObservers(_operations);
 		_operations.clear();
 	}	
-	protected final void addOperation(DispatchOperation operation) { _operations.add(operation); }
-	protected final void clearOperations() { _operations.clear(); }
+	
+	protected final void addOperation(DispatchOperation operation) { 
+		_operations.add(operation); 
+	}
+	
+	protected final void clearOperations() { 
+		_operations.clear(); 
+	}
 }

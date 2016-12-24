@@ -13,10 +13,12 @@ public abstract class ItemComponent extends BaseComponent{
 	}	
 	
 	@Override protected final void onInitialize() {
-		super.get(JMenuItem.class).addActionListener(new AbstractAction() {
+		super.get(JMenuItem.class).addActionListener(new AbstractAction(super.toString()) {
 			@Override public void actionPerformed(ActionEvent actionEvent) {
-				onExecute();
+				onExecute(actionEvent);
 			}
 		});
 	}
+	
+	
 }

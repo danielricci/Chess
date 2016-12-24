@@ -1,5 +1,7 @@
 package communication.internal.command.item;
 
+import java.awt.event.ActionEvent;
+
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 
@@ -19,7 +21,7 @@ public class NewGameMenuItem extends ItemComponent {
 		super(new JMenuItem(ResourcesManager.Get(Resources.NewGame)), parent);
 	}
 	
-	@Override public void onExecute() {
+	@Override public void onExecute(ActionEvent actionEvent) {
 		ControllerFactory.instance().dispose();
 		ViewFactory.instance().dispose();
 		RootView.Instance().getContentPane().removeAll();					

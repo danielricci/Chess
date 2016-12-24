@@ -37,7 +37,6 @@ import java.util.Observable;
 import communication.internal.dispatcher.DispatchOperation;
 import controllers.TileController;
 import models.GameModel;
-import models.TileModel;
 
 public class TileView extends BaseView {
 	
@@ -81,17 +80,7 @@ public class TileView extends BaseView {
     
 	@Override public void update(Observable obs, Object arg) {		
 		super.update(obs, arg);
-		
-		TileModel tileModel = (TileModel)obs;
-		for(DispatchOperation operation : tileModel.getOperations()) {
-			switch(operation) {
-			case Refresh:
-				break;
-			default:
-				break;
-			}
-			refresh(tileModel); 
-		}
+		System.out.println("Calling update from TileView");
 	}
 	
 	@Override public void render() {
@@ -138,7 +127,8 @@ public class TileView extends BaseView {
 	
 	@Override protected Collection<DispatchOperation> getRegisteredOperations() {
 		return Arrays.asList(
-			DispatchOperation.ToggleNeighborTiles
+			DispatchOperation.ToggleNeighborTiles,
+			DispatchOperation.CellSelected
 		);
 	}
 	

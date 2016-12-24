@@ -1,6 +1,7 @@
 package communication.internal.command;
 
 import java.awt.Component;
+import java.awt.event.ActionEvent;
 
 import javax.swing.JComponent;
 import javax.swing.JMenu;
@@ -19,6 +20,9 @@ public abstract class MenuComponent extends BaseComponent {
 
 	@Override public final boolean visibility() {
 		return super.visibility();
+	}
+	
+	@Override public final void onExecute(ActionEvent actionEvent) {
 	}
 	
 	@Override protected void onInitialize() {

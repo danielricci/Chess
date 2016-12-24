@@ -10,8 +10,4 @@ public class HelpMenuComponent extends MenuComponent {
 	public HelpMenuComponent(JComponent parent) {
 		super(new JMenu("Help"), parent);
 	}
-
-	
-	@Override public void onExecute() {
-	}
 }

@@ -102,8 +102,17 @@ public abstract class BaseView extends JPanel implements IView {
 	@Override public void refresh(GameModel model){
 	}
 	
-	@Override public void update(Observable o, Object arg){
+	@Override public void update(Observable obs, Object arg){
 	} 
+	
+	@Override public boolean isValidListener(DispatchOperation... operation) {
+		for(DispatchOperation op : operation) {
+			if(_registeredOperations.contains(op)) {
+				return true;
+			}
+		}
+		return false;
+	}
 			
 	@Override public void dispose() {
 		removeAll();

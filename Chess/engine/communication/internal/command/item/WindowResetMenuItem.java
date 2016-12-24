@@ -1,5 +1,7 @@
 package communication.internal.command.item;
 
+import java.awt.event.ActionEvent;
+
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 
@@ -14,7 +16,7 @@ public class WindowResetMenuItem extends ItemComponent {
 		super(new JMenuItem(ResourcesManager.Get(Resources.ResetPosition)), parent);
 	}
 	
-	@Override public void onExecute() {
+	@Override public void onExecute(ActionEvent actionEvent) {
 		RootView.Instance().setLocationRelativeTo(null);
 	}
 }

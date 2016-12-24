@@ -1,5 +1,6 @@
 package communication.internal.command.item;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JComponent;
@@ -16,7 +17,7 @@ public class ExitGameMenuItem extends ItemComponent {
 		super(new JMenuItem(ResourcesManager.Get(Resources.ExitMenu)), parent);
 	}
 	
-	@Override public void onExecute() {
+	@Override public void onExecute(ActionEvent actionEvent) {
 		RootView.Instance().dispatchEvent(new WindowEvent(RootView.Instance(), WindowEvent.WINDOW_CLOSING));
 	}
 }

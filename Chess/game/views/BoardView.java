@@ -37,10 +37,11 @@ import javax.swing.JPanel;
 import communication.internal.dispatcher.DispatchOperation;
 import controllers.BaseController;
 import controllers.BoardController;
-import models.TileModel;
 
 public class BoardView extends BaseView {
 	
+	// TODO - cant we just make BoardView have this layout and add to this
+	// why the fuck do we need to have another JPanel?
 	private final JPanel _gamePanel = new JPanel(new GridBagLayout());	
 		
 	public <T extends BaseController> BoardView(Class<T> controller) {
@@ -49,24 +50,7 @@ public class BoardView extends BaseView {
 	
 	@Override public void update(Observable obs, Object arg) {
 		super.update(obs, arg);
-		
-		BoardController boardGameController = getController(BoardController.class);
-		TileModel tileModel = (TileModel)obs;
-		/*
-		for(GameModel.DispatchOperation operation : tileModel.getOperations()) {
-			switch(operation) {
-			case PlayerPieceSelected:
-				boardGameController.processTileSelected(tileModel);
-				break;
-			case PlayerPieceMoveCancel:
-				boardGameController.processTileCancel(tileModel);
-				break;
-			case PlayerPieceMoveAccepted:
-				boardGameController.processTileMove(tileModel);
-				break;
-			}
-		}
-		*/
+		System.out.println("Calling update from BoardView");
 	};
 	
 	@Override public void render() {
@@ -124,6 +108,4 @@ public class BoardView extends BaseView {
 			DispatchOperation.CellSelected
 		);
 	}
-
-
 }

@@ -29,8 +29,6 @@ import java.awt.Image;
 import java.util.Collection;
 import java.util.Map.Entry;
 import java.util.Observer;
-import java.util.SortedSet;
-import java.util.Vector;
 
 import communication.internal.dispatcher.DispatchOperation;
 import factories.ControllerFactory;
@@ -38,7 +36,6 @@ import models.PlayerModel;
 import models.TileModel;
 import models.TileModel.NeighborXPosition;
 import models.TileModel.NeighborYPosition;
-import models.TileModel.Selection;
 import views.BaseView;
 import views.TileView;
 
@@ -173,43 +170,7 @@ public class TileController extends BaseController {
 	}
 	
 	public void tileGuidesCommand(DispatchOperation operation) {
-		Selection selection = operation == DispatchOperation.ToggleGuides ? Selection.GuideSelected : Selection.None;
-		
-		SortedSet<TileModel> tileNeighbors = _tile.getForwardNeighbors();
-		
-		/*if(_tile.getIsKingTile() || _tile.getPlayer().getPlayerPiece(_tile).getIsKinged()) {
-			tileNeighbors.addAll(_tile.getBackwardNeighbors());
-		}*/
-		
-		boolean captureExists = false;
-		
-		// Check to see locally if a capture exists
-		for(TileModel neighbor : tileNeighbors) {
-			if(neighbor.getPlayer() != _tile.getPlayer()){
-				Vector<TileModel> capturablePositions = neighbor.getCapturableNeighbors(_tile);
-				if(capturablePositions.size() > 0) {
-					for(TileModel capturablePosition : capturablePositions) {
-						capturablePosition.setSelected(operation, selection);
-					}
-					neighbor.setSelected(operation, Selection.CaptureSelected);
-					captureExists = true;
-				}
-			}
-		}
-
-		if(!captureExists) {
-			// Before going forward, make sure that no other captures exist on the board
-			if(_tile.getPlayer().hasCaptures()) {
-				System.out.println("Capture exists elsewhere, please perform that!");
-			}
-			else {
-				for(TileModel neighbor : tileNeighbors) {
-					if(neighbor.isMovableTo()) {
-						neighbor.setSelected(operation, selection);				
-					}
-				}		
-			}
-		}		
+			
   	}
 
 	public int getTileCoordinate() {

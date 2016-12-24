@@ -1,5 +1,7 @@
 package communication.internal.command.item;
 
+import java.awt.event.ActionEvent;
+
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -15,7 +17,7 @@ public class AboutMenuItem extends ItemComponent {
 		super(new JMenuItem(ResourcesManager.Get(Resources.AboutMenu)), parent);
 	}
 	
-	@Override public void onExecute() {
+	@Override public void onExecute(ActionEvent actionEvent) {
 		JOptionPane.showMessageDialog(
 			RootView.Instance(),
 			"Chess\nVersion 1.0\n\nDaniel Ricci\nthedanny09@gmail.com\nhttps:/github.com/danielricci/Chess",
