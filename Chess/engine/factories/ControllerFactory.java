@@ -24,24 +24,71 @@
 
 package factories;
 
-import java.util.Vector;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import api.IDestructable;
 import controllers.BaseController;
 
 public class ControllerFactory implements IDestructable {
-
-	private final Vector<BaseController> _controllers = new Vector<>(); 
+   
+    /**
+     * Contains the history of all the controllers ever created by this factory, organized 
+     * by class name and mapping to the list of all those classes
+     */
+    private final Map<String, Set<BaseController>> _history = new HashMap<>();
+    
+    /**
+     * Contains the list of all exposed unique controllers created by this factory.  An exposed
+     * controller is one where the controller reference is marked to be stored by this factory
+     * so that it may be referenced by others during the lifespan of the process
+     */
+	private final Set<BaseController> _controllers = new HashSet<>(); 
+	
+	/**
+	 * Singleton instance of this class
+	 */
 	private static ControllerFactory _instance;
 	
+	/**
+	 * Constructs a new object of this class
+	 */
 	private ControllerFactory() {
 	}
 	
+	/**
+	 * Returns the singleton reference 
+	 * 
+	 * @return The singleton reference
+	 */
 	public synchronized static ControllerFactory instance() {
 		if(_instance == null) {
 			_instance = new ControllerFactory();
 		}	
 		return _instance;
+	}
+	
+	/**
+	 * Adds a controller
+	 * 
+	 * @param controller The controller to add
+	 * @param unique If the controller should be added into the exposed cache
+	 */
+	private void Add(BaseController controller, boolean unique) { 
+	    String controllerName = controller.getClass().getName();
+	    
+	    Set<BaseController> controllers = _history.get(controllerName);
+	    if(controllers == null) {
+	        controllers = new HashSet<BaseController>();
+	        _history.put(controllerName, controllers);
+	    }
+	    controllers.add(controller);
+	    
+	    if(!unique) {
+	        _controllers.add(controller);
+	    }
 	}
 
 	public <T extends BaseController> T get(Class<T> controllerClass, boolean unique, Object...args) {
@@ -55,8 +102,12 @@ public class ControllerFactory implements IDestructable {
 		// If its unique then we don't add it to our list of created items we just construct and
 		// return it
 		if(unique) {
-			try {			
-				return controllerClass.getConstructor(argsClass).newInstance(args);
+			try {		
+			    
+			    T controller = controllerClass.getConstructor(argsClass).newInstance(args);
+			    Add(controller, unique);
+				return controller;
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}	
@@ -69,8 +120,11 @@ public class ControllerFactory implements IDestructable {
 			}
 
 			try {
-				_controllers.add(controllerClass.getConstructor(argsClass).newInstance(args));
-				return (T)_controllers.lastElement(); 
+			    
+			    T createdClass = controllerClass.getConstructor(argsClass).newInstance(args);
+				Add(createdClass, unique);
+				return createdClass;
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
