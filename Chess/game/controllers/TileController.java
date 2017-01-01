@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.Map.Entry;
 import java.util.Observer;
 
+import api.IReceiver;
 import communication.internal.dispatcher.DispatchOperation;
 import factories.ControllerFactory;
 import models.PlayerModel;
@@ -39,7 +40,7 @@ import models.TileModel.NeighborYPosition;
 import views.BaseView;
 import views.TileView;
 
-public class TileController extends BaseController {
+public class TileController extends BaseController implements IReceiver<TileController> {
 	
 	private TileModel _tile;
 	
@@ -52,12 +53,21 @@ public class TileController extends BaseController {
 		
 		_tile = new TileModel(observer, getView(TileView.class));
 		return _tile;
-		
 	}
 	
 	public TileModel getTile() {
 		return _tile;
 	}
+	
+	
+	
+	
+	
+	
+	/** EVERYTHING BELOW THIS LINE IS LEGACY CODE AND SHOULD BE REPLACED */
+	
+	
+	
 	
     // TODO - can we get this to render by making calls to each individual model
     // and getting it to render through debug mode
