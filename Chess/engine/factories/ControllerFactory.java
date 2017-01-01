@@ -30,15 +30,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import api.Dispatchable;
 import api.IDestructable;
 import controllers.BaseController;
 
-public class ControllerFactory implements IDestructable {
-	
-	public enum MessageType 
-	{ 
-		Debug_RenderNeighborTiles
-	} 	
+public class ControllerFactory implements IDestructable, Dispatchable {
 	
 	/**
 	* Daniel Ricci <thedanny09@gmail.com>
@@ -64,13 +60,7 @@ public class ControllerFactory implements IDestructable {
 	* IN THE SOFTWARE.
 	*/
 	private class MessageDispatcher extends Thread 
-	{
-		private class Message
-		{
-			public MessageType type;
-			public Map args;
-		}
-		
+	{		
 		private volatile ConcurrentLinkedQueue<Message> _messages = new ConcurrentLinkedQueue<Message>();		
 		@Override public void run() {
 			while(true) {
@@ -87,15 +77,12 @@ public class ControllerFactory implements IDestructable {
 		}
 
 
-		public void SendMessage(MessageType message, Map args) {
-			Message thisMessage = new Message();
-			thisMessage.type = message;
-			thisMessage.args = args;
-			_messages.add(thisMessage);
+		public void SendMessage(Message message) {
+			_messages.add(message);
 		}
 
 
-		public void BroadcastMessage(MessageType message, Map args) {
+		public void BroadcastMessage(Message message) {
 			// TODO - implement me
 		}
 	}
@@ -223,11 +210,11 @@ public class ControllerFactory implements IDestructable {
 		_instance = null;
 	}	
 	
-	public void SendMessage(MessageType message, Map args) {
-		_dispatcher.SendMessage(message, args);
+	@Override public void SendMessage(Message message) {
+		_dispatcher.SendMessage(message);
 	}
 
-	public void BroadcastMessage(MessageType message, Map args) {
-		_dispatcher.BroadcastMessage(message, args);
+	@Override public void BroadcastMessage(Message message) {
+		_dispatcher.BroadcastMessage(message);
 	}
 }
