@@ -28,12 +28,83 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import api.IDestructable;
 import controllers.BaseController;
 
 public class ControllerFactory implements IDestructable {
-   
+	
+	public enum MessageType 
+	{ 
+		Debug_RenderNeighborTiles
+	} 	
+	
+	/**
+	* Daniel Ricci <thedanny09@gmail.com>
+	*
+	* Permission is hereby granted, free of charge, to any person
+	* obtaining a copy of this software and associated documentation
+	* files (the "Software"), to deal in the Software without restriction,
+	* including without limitation the rights to use, copy, modify, merge,
+	* publish, distribute, sublicense, and/or sell copies of the Software,
+	* and to permit persons to whom the Software is furnished to do so, subject
+	* to the following conditions:
+	*
+	* The above copyright notice and this permission notice shall be included in
+	* all copies or substantial portions of the Software.
+	*
+	*
+	* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+	* THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+	* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+	* IN THE SOFTWARE.
+	*/
+	private class MessageDispatcher extends Thread 
+	{
+		private class Message
+		{
+			public MessageType type;
+			public Map args;
+		}
+		
+		private volatile ConcurrentLinkedQueue<Message> _messages = new ConcurrentLinkedQueue<Message>();		
+		@Override public void run() {
+			while(true) {
+				try {
+					Message message = _messages.poll();
+					if(message != null) {
+						System.out.println("Consuming message " + message.type.toString());
+					}
+					Thread.sleep(220);						
+				} catch (InterruptedException exception) {
+					exception.printStackTrace();
+				}
+			}
+		}
+
+
+		public void SendMessage(MessageType message, Map args) {
+			Message thisMessage = new Message();
+			thisMessage.type = message;
+			thisMessage.args = args;
+			_messages.add(thisMessage);
+		}
+
+
+		public void BroadcastMessage(MessageType message, Map args) {
+			// TODO - implement me
+		}
+	}
+	
+	/**
+	 * A message dispatcher used to communicate with controller 
+	 */
+	MessageDispatcher _dispatcher;
+	
     /**
      * Contains the history of all the controllers ever created by this factory, organized 
      * by class name and mapping to the list of all those classes
@@ -56,6 +127,10 @@ public class ControllerFactory implements IDestructable {
 	 * Constructs a new object of this class
 	 */
 	private ControllerFactory() {
+		if(_dispatcher == null) {
+			_dispatcher = new MessageDispatcher();
+			_dispatcher.start();
+		}
 	}
 	
 	/**
@@ -91,6 +166,14 @@ public class ControllerFactory implements IDestructable {
 	    }
 	}
 
+	/**
+	 * Gets the specified type of resource
+	 * 
+	 * @param controllerClass The controller class to get
+	 * @param unique If the factory should keep tabs of this class
+	 * @param args The arguments to pass into the controller class
+	 * @return A reference to the specified class
+	 */
 	public <T extends BaseController> T get(Class<T> controllerClass, boolean unique, Object...args) {
 		
 		// Get the list of arguments together
@@ -139,4 +222,12 @@ public class ControllerFactory implements IDestructable {
 		}
 		_instance = null;
 	}	
+	
+	public void SendMessage(MessageType message, Map args) {
+		_dispatcher.SendMessage(message, args);
+	}
+
+	public void BroadcastMessage(MessageType message, Map args) {
+		_dispatcher.BroadcastMessage(message, args);
+	}
 }

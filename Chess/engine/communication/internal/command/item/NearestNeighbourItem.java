@@ -6,6 +6,8 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 
 import communication.internal.command.ItemComponent;
+import factories.ControllerFactory;
+import factories.ControllerFactory.MessageType;
 import managers.ResourcesManager;
 import managers.ResourcesManager.Resources;
 
@@ -16,8 +18,6 @@ public class NearestNeighbourItem extends ItemComponent {
 	}
 
 	@Override public void onExecute(ActionEvent actionEvent) {
-	    /*
-	    EventDispatcher.PublishEvent(
-	    */
+	    ControllerFactory.instance().SendMessage(MessageType.Debug_RenderNeighborTiles, null);
 	}
 }
