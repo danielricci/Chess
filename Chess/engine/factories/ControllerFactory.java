@@ -24,10 +24,14 @@
 
 package factories;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import api.IDestructable;
 import api.IDispatchable;
@@ -35,14 +39,14 @@ import communication.internal.dispatcher.DispatchOperation;
 import controllers.BaseController;
 
 public class ControllerFactory implements IDestructable, IDispatchable<BaseController> {
-	/*
+	
 	private class MessageDispatcher extends Thread
 	{
-		private volatile ConcurrentLinkedQueue<Message> _messages = new ConcurrentLinkedQueue<>();		
+		private volatile ConcurrentLinkedQueue<Message<?>> _messages = new ConcurrentLinkedQueue<>();		
 		@Override public void run() {
 			while(true) {
 				try {
-					Message message = _messages.poll();
+					Message<?> message = _messages.poll();
 					if(message != null) {
 						System.out.println("Consuming message " + message.operation.toString());
 					}
@@ -53,12 +57,12 @@ public class ControllerFactory implements IDestructable, IDispatchable<BaseContr
 			}
 		}
 	}
-	*/
+	
 	
 	/**
 	 * A message dispatcher used to communicate with controller 
 	 */
-	//MessageDispatcher _dispatcher;
+	MessageDispatcher _dispatcher;
 	
     /**
      * Contains the history of all the controllers ever created by this factory, organized 
@@ -82,10 +86,10 @@ public class ControllerFactory implements IDestructable, IDispatchable<BaseContr
 	 * Constructs a new object of this class
 	 */
 	private ControllerFactory() {
-		/*if(_dispatcher == null) {
+		if(_dispatcher == null) {
 			_dispatcher = new MessageDispatcher();
 			_dispatcher.start();
-		}*/
+		}
 	}
 	
 	/**
@@ -180,16 +184,17 @@ public class ControllerFactory implements IDestructable, IDispatchable<BaseContr
 
 	@Override public <U extends BaseController> void SendMessage(DispatchOperation operation, Class<U> type, Object... args) {
 		
-		Set<U> resources;
+		List<U> resources = null;
 		
 		for(Set<BaseController> controllers : _history.values()) {
 			if(controllers.iterator().next().getClass() == type) {
-				resources = (Set<U>) controllers;
+				resources = new ArrayList<>((Set<U>) controllers);
 				break;
 			} 
 			continue;
 		}
-		
-		Message<U> message = new Message<>(operation, null, null);
+
+		Message<U> message = new Message<U>(operation, resources, Arrays.asList(args));
+		_dispatcher._messages.add(message);
 	}
 }
