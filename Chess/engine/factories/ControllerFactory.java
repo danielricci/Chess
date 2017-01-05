@@ -28,46 +28,23 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
-import api.Dispatchable;
 import api.IDestructable;
+import api.IDispatchable;
+import communication.internal.dispatcher.DispatchOperation;
 import controllers.BaseController;
 
-public class ControllerFactory implements IDestructable, Dispatchable {
-	
-	/**
-	* Daniel Ricci <thedanny09@gmail.com>
-	*
-	* Permission is hereby granted, free of charge, to any person
-	* obtaining a copy of this software and associated documentation
-	* files (the "Software"), to deal in the Software without restriction,
-	* including without limitation the rights to use, copy, modify, merge,
-	* publish, distribute, sublicense, and/or sell copies of the Software,
-	* and to permit persons to whom the Software is furnished to do so, subject
-	* to the following conditions:
-	*
-	* The above copyright notice and this permission notice shall be included in
-	* all copies or substantial portions of the Software.
-	*
-	*
-	* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-	* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-	* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-	* THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-	* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-	* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-	* IN THE SOFTWARE.
-	*/
-	private class MessageDispatcher extends Thread 
-	{		
-		private volatile ConcurrentLinkedQueue<Message> _messages = new ConcurrentLinkedQueue<Message>();		
+public class ControllerFactory implements IDestructable, IDispatchable<BaseController> {
+	/*
+	private class MessageDispatcher extends Thread
+	{
+		private volatile ConcurrentLinkedQueue<Message> _messages = new ConcurrentLinkedQueue<>();		
 		@Override public void run() {
 			while(true) {
 				try {
 					Message message = _messages.poll();
 					if(message != null) {
-						System.out.println("Consuming message " + message.type.toString());
+						System.out.println("Consuming message " + message.operation.toString());
 					}
 					Thread.sleep(220);						
 				} catch (InterruptedException exception) {
@@ -75,22 +52,13 @@ public class ControllerFactory implements IDestructable, Dispatchable {
 				}
 			}
 		}
-
-
-		public void SendMessage(Message message) {
-			_messages.add(message);
-		}
-
-
-		public void BroadcastMessage(Message message) {
-			// TODO - implement me
-		}
 	}
+	*/
 	
 	/**
 	 * A message dispatcher used to communicate with controller 
 	 */
-	MessageDispatcher _dispatcher;
+	//MessageDispatcher _dispatcher;
 	
     /**
      * Contains the history of all the controllers ever created by this factory, organized 
@@ -114,10 +82,10 @@ public class ControllerFactory implements IDestructable, Dispatchable {
 	 * Constructs a new object of this class
 	 */
 	private ControllerFactory() {
-		if(_dispatcher == null) {
+		/*if(_dispatcher == null) {
 			_dispatcher = new MessageDispatcher();
 			_dispatcher.start();
-		}
+		}*/
 	}
 	
 	/**
@@ -208,13 +176,20 @@ public class ControllerFactory implements IDestructable, Dispatchable {
 			controller.dispose();
 		}
 		_instance = null;
-	}	
-	
-	@Override public void SendMessage(Message message) {
-		_dispatcher.SendMessage(message);
 	}
 
-	@Override public void BroadcastMessage(Message message) {
-		_dispatcher.BroadcastMessage(message);
+	@Override public <U extends BaseController> void SendMessage(DispatchOperation operation, Class<U> type, Object... args) {
+		
+		Set<U> resources;
+		
+		for(Set<BaseController> controllers : _history.values()) {
+			if(controllers.iterator().next().getClass() == type) {
+				resources = (Set<U>) controllers;
+				break;
+			} 
+			continue;
+		}
+		
+		Message<U> message = new Message<>(operation, null, null);
 	}
 }

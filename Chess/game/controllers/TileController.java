@@ -30,7 +30,6 @@ import java.util.Collection;
 import java.util.Map.Entry;
 import java.util.Observer;
 
-import api.IReceiver;
 import communication.internal.dispatcher.DispatchOperation;
 import factories.ControllerFactory;
 import models.PlayerModel;
@@ -40,7 +39,7 @@ import models.TileModel.NeighborYPosition;
 import views.BaseView;
 import views.TileView;
 
-public class TileController extends BaseController implements IReceiver<TileController> {
+public class TileController extends BaseController {//implements IReceiver<TileController> {
 	
 	private TileModel _tile;
 	

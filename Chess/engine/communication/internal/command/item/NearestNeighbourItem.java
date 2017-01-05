@@ -5,9 +5,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 
-import api.Dispatchable.Message;
-import api.Dispatchable.Message.MessageType;
 import communication.internal.command.ItemComponent;
+import communication.internal.dispatcher.DispatchOperation;
 import controllers.TileController;
 import factories.ControllerFactory;
 import managers.ResourcesManager;
@@ -20,10 +19,11 @@ public class NearestNeighbourItem extends ItemComponent {
 	}
 
 	@Override public void onExecute(ActionEvent actionEvent) {
-		Message<TileController> message = new Message<>(TileController.class);
-		message.type = MessageType.Debug_RenderNeighborTiles;
-		message.args[0] = true;
-				
-	    ControllerFactory.instance().SendMessage(message);
+		JCheckBoxMenuItem item = (JCheckBoxMenuItem) actionEvent.getSource();
+		ControllerFactory.instance().SendMessage(
+			DispatchOperation.ToggleNeighborTiles, 
+			TileController.class,
+			item.isSelected()
+		);		
 	}
 }
