@@ -68,7 +68,7 @@ public class ControllerFactory implements IDestructable, IDispatchable<BaseContr
      * Contains the history of all the controllers ever created by this factory, organized 
      * by class name and mapping to the list of all those classes
      */
-    private final Map<String, Set<BaseController>> _history = new HashMap<>();
+    private final Map<String, Set<BaseController>> _history = new HashMap<>(); // TODO - can this be put into the dispatcher functionality?
     
     /**
      * Contains the list of all exposed unique controllers created by this factory.  An exposed

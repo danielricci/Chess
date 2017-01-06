@@ -74,17 +74,6 @@ public final class PlayerModel extends GameModel {
 		_team = Team.values()[TEAM_INDEX++];
 	}
 	
-	public boolean hasCaptures() {
-		// TODO - get rid of this crap where the model calls the controller!
-		/*for(TileModel tile :_pieces.keySet()) {
-			if(tile.getPlayer() != null && tile.<TileController>getController().hasCapturePosition()) {
-				return true;
-			}
-		}
-		*/
-		return false;
-	}
-	
 	public Vector<TileModel> getPlayerOwnedTiles() {
 		return new Vector<>(_pieces.keySet());
 	}

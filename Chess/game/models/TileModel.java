@@ -56,7 +56,6 @@ public class TileModel extends GameModel implements IPlayableTile, Comparable<Ti
 		None;
 	}
 	
-	// TODO - delete
 	public enum NeighborXPosition {
 		/**
 		 * Note: Make sure that agnostic values follow non-agnostic ones
@@ -78,7 +77,7 @@ public class TileModel extends GameModel implements IPlayableTile, Comparable<Ti
 			_agnostic = agnostic;
 		}
 	}
-	// TODO - delete
+
 	public enum NeighborYPosition {
 		
 		/**
