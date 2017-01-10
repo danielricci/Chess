@@ -33,9 +33,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import api.IController;
 import api.IDestructable;
 import api.IDispatchable;
-import communication.internal.dispatcher.DispatchOperation;
+import communication.internal.dispatcher.Operation;
 import controllers.BaseController;
 
 public class ControllerFactory implements IDestructable, IDispatchable<BaseController> {
@@ -48,7 +49,14 @@ public class ControllerFactory implements IDestructable, IDispatchable<BaseContr
 				try {
 					Message<?> message = _messages.poll();
 					if(message != null) {
-						System.out.println("Consuming message " + message.operation.toString());
+						for(Object resource : message.resources)
+						{
+							IController controller = (IController)resource;
+							if(controller.isValidListener(message.operation))
+							{
+								System.out.println("We have a match!");
+							}
+						}
 					}
 					Thread.sleep(220);						
 				} catch (InterruptedException exception) {
@@ -57,7 +65,6 @@ public class ControllerFactory implements IDestructable, IDispatchable<BaseContr
 			}
 		}
 	}
-	
 	
 	/**
 	 * A message dispatcher used to communicate with controller 
@@ -182,7 +189,7 @@ public class ControllerFactory implements IDestructable, IDispatchable<BaseContr
 		_instance = null;
 	}
 
-	@Override public <U extends BaseController> void SendMessage(DispatchOperation operation, Class<U> type, Object... args) {
+	@Override public <U extends BaseController> void SendMessage(Operation operation, Class<U> type, Object... args) {
 		
 		List<U> resources = null;
 		

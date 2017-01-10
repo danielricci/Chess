@@ -28,7 +28,7 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
 import java.util.Vector;
 
-import communication.internal.dispatcher.DispatchOperation;
+import communication.internal.dispatcher.Operation;
 import factories.ControllerFactory;
 import models.TileModel;
 import models.TileModel.NeighborXPosition;
@@ -120,7 +120,7 @@ public class BoardController extends BaseController {
 	public void Test() {
 		for(Vector<TileModel> row : _tiles) {
 			for(TileModel model : row) {
-				model.setSelected(DispatchOperation.ToggleNeighborTiles, Selection.CaptureSelected);
+				model.setSelected(Operation.ToggleNeighborTiles, Selection.CaptureSelected);
 			}
 		}
 	}	

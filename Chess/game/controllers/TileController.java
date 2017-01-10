@@ -26,11 +26,12 @@ package controllers;
 
 import java.awt.Color;
 import java.awt.Image;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map.Entry;
 import java.util.Observer;
 
-import communication.internal.dispatcher.DispatchOperation;
+import communication.internal.dispatcher.Operation;
 import factories.ControllerFactory;
 import models.PlayerModel;
 import models.TileModel;
@@ -39,7 +40,7 @@ import models.TileModel.NeighborYPosition;
 import views.BaseView;
 import views.TileView;
 
-public class TileController extends BaseController {//implements IReceiver<TileController> {
+public class TileController extends BaseController {
 	
 	private TileModel _tile;
 	
@@ -47,15 +48,26 @@ public class TileController extends BaseController {//implements IReceiver<TileC
 		super(viewClass, true);
 	}
 	
-	public TileModel populateTileModel(Observer observer) {
-		// Create a tile model and have it set our view as an observer
-		
+	// TODO - can this be done from the constructor
+	public TileModel populateTileModel(Observer observer) {		
 		_tile = new TileModel(observer, getView(TileView.class));
 		return _tile;
 	}
 	
+	// TODO - can this be removed, perhaps replaced with a function that does something on behalf of the TileModel
 	public TileModel getTile() {
 		return _tile;
+	}
+	
+	@Override public Collection<Operation> getRegisteredOperations() {
+		return Arrays.asList(
+			Operation.ToggleNeighborTiles
+		);
+	}
+	
+	// TODO - should this call dispose on the model first?
+	@Override public void dispose() {
+		_tile = null;		
 	}
 	
 	
@@ -178,7 +190,7 @@ public class TileController extends BaseController {//implements IReceiver<TileC
 		return false;
 	}
 	
-	public void tileGuidesCommand(DispatchOperation operation) {
+	public void tileGuidesCommand(Operation operation) {
 			
   	}
 
@@ -198,9 +210,7 @@ public class TileController extends BaseController {//implements IReceiver<TileC
 		return color;
 	}
 
-	@Override public void dispose() {
-		_tile = null;		
-	}
+
 
 	public void setNeighborsSelected(boolean selected) {
 		for(TileModel model : getAllNeighbors()) {

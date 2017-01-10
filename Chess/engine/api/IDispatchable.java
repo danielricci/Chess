@@ -2,22 +2,22 @@ package api;
 
 import java.util.List;
 
-import communication.internal.dispatcher.DispatchOperation;
+import communication.internal.dispatcher.Operation;
 
-public interface IDispatchable<T> {	
+public interface IDispatchable<T> {
 	
 	public class Message<U>
 	{ 
 		public final List<Object> args;
-		public final DispatchOperation operation;
+		public final Operation operation;
 		public final List<U> resources;
 		
-		public Message(DispatchOperation operation, List<U> resources, List<Object> args) {
+		public Message(Operation operation, List<U> resources, List<Object> args) {
 			this.operation = operation;
 			this.resources = resources;
-			this.args = args;	
+			this.args = args;
 		}
 	}
 
-	public <U extends T> void SendMessage(DispatchOperation operation, Class<U> type, Object... args);
+	public <U extends T> void SendMessage(Operation operation, Class<U> type, Object... args);
 }

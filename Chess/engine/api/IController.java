@@ -1,4 +1,4 @@
 package api;
 
-public interface IController extends IDestructable {
+public interface IController extends IDestructable, IReceivable {
 }

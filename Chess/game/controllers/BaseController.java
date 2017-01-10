@@ -24,8 +24,13 @@
 
 package controllers;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Vector;
+
 import api.IController;
 import api.IView;
+import communication.internal.dispatcher.Operation;
 import factories.ViewFactory;
 import views.BaseView;
 
@@ -41,14 +46,20 @@ public abstract class BaseController implements IController  {
 	 */
 	private BaseView _view;
 	
+	private final Vector<Operation> _registeredOperations = new Vector<>();
+	
 	public BaseController() {
+		_registeredOperations.addAll(getRegisteredOperations());
 	}
 	
 	public <T extends BaseView> BaseController(T view) {
+		this();
 		setView(view);
 	}
 
 	public <T extends BaseView> BaseController(Class<T> viewClass, boolean unique) {
+		this();
+		
 		try {
 			BaseView view = ViewFactory.instance().get(viewClass, unique, this);
 			setView(view);
@@ -65,7 +76,20 @@ public abstract class BaseController implements IController  {
 	protected final <T extends BaseView> void setView(T view) {
 		_view = view;
 	}
+	
+	@Override public final boolean isValidListener(Operation... operation) {
+		for(Operation op : operation) {
+			if(_registeredOperations.contains(op)) {
+				return true;
+			}
+		}
+		return false;
+	}
 		
+	@Override public Collection<Operation> getRegisteredOperations() {
+		return Collections.emptyList();
+	}
+	
 	/**
 	 * Disposes the currently set view
 	 */

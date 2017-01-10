@@ -34,7 +34,7 @@ import java.util.Vector;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
-import communication.internal.dispatcher.DispatchOperation;
+import communication.internal.dispatcher.Operation;
 import controllers.BaseController;
 import controllers.BoardController;
 
@@ -103,9 +103,9 @@ public class BoardView extends BaseView {
 		_gamePanel.removeAll();
 	}
 
-	@Override protected Collection<DispatchOperation> getRegisteredOperations() {
+	@Override public Collection<Operation> getRegisteredOperations() {
 		return Arrays.asList(
-			DispatchOperation.CellSelected
+			Operation.CellSelected
 		);
 	}
 }

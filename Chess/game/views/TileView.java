@@ -34,7 +34,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Observable;
 
-import communication.internal.dispatcher.DispatchOperation;
+import communication.internal.dispatcher.Operation;
 import controllers.TileController;
 import models.GameModel;
 
@@ -125,10 +125,10 @@ public class TileView extends BaseView {
         g2d.drawImage(_image, 10, 8, 48, 48, null, null);       
 	}
 	
-	@Override protected Collection<DispatchOperation> getRegisteredOperations() {
+	@Override public Collection<Operation> getRegisteredOperations() {
 		return Arrays.asList(
-			DispatchOperation.ToggleNeighborTiles,
-			DispatchOperation.CellSelected
+			Operation.ToggleNeighborTiles,
+			Operation.CellSelected
 		);
 	}
 	

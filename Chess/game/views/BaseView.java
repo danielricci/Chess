@@ -32,7 +32,7 @@ import java.util.Vector;
 import javax.swing.JPanel;
 
 import api.IView;
-import communication.internal.dispatcher.DispatchOperation;
+import communication.internal.dispatcher.Operation;
 import controllers.BaseController;
 import factories.ControllerFactory;
 import models.GameModel;
@@ -40,7 +40,7 @@ import models.GameModel;
 public abstract class BaseView extends JPanel implements IView {
 
 	private final Vector<BaseController> _controllers = new Vector<>();
-	private final Vector<DispatchOperation> _registeredOperations = new Vector<>();
+	private final Vector<Operation> _registeredOperations = new Vector<>();
 	
 	private BaseView(){
 		register();
@@ -75,7 +75,7 @@ public abstract class BaseView extends JPanel implements IView {
 		}
 	}
 	
-	protected Collection<DispatchOperation> getRegisteredOperations() {
+	@Override public Collection<Operation> getRegisteredOperations() {
 		return Collections.emptyList();
 	}
 	
@@ -105,8 +105,8 @@ public abstract class BaseView extends JPanel implements IView {
 	@Override public void update(Observable obs, Object arg){
 	} 
 	
-	@Override public boolean isValidListener(DispatchOperation... operation) {
-		for(DispatchOperation op : operation) {
+	@Override public boolean isValidListener(Operation... operation) {
+		for(Operation op : operation) {
 			if(_registeredOperations.contains(op)) {
 				return true;
 			}
