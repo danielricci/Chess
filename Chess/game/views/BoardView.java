@@ -83,7 +83,6 @@ public class BoardView extends BaseView {
 				gbc.gridy = row;
 				_gamePanel.add(view, gbc);			
 			}
-			// TODO - can we do this somewhere else?
 			TileView.cycleBackgroundColor();
 			
 			tiles.add(tileRow);			
