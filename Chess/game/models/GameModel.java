@@ -53,16 +53,19 @@ public class GameModel extends Observable
 		return _operations;
 	}
 	
+	// TODO - remove observer crap and replace it with our new system
 	@Override public synchronized void addObserver(Observer observer) {
 		super.addObserver(observer);
 		_observers.add(observer);
 	}
 	
+	// TODO - remove observer crap and replace it with our new system
 	@Override public synchronized void deleteObserver(Observer observer) {
 		super.deleteObserver(observer);
 		_observers.remove(observer);
 	}
 	
+	// TODO - remove observer crap and replace it with our new system
 	@Override public void notifyObservers(Object arg) {
 		if (!hasChanged()) 
 		{
@@ -73,11 +76,16 @@ public class GameModel extends Observable
         for(Observer obs : _observers) {
         	if(obs instanceof IView)
         	{
-        		IView obsView = (IView) obs;
+        		obs.update(this,  arg);
+        		// TODO - remove observer crap and replace it with our new system
+        		//IView obsView = (IView) obs;
+        		//obsView.update(tho, arg);
+        		/*
         		if(obsView.isValidListener(_operations.toArray(new Operation[_operations.size()])))
         		{
             		obs.update(this, arg);        			
         		}
+        		*/
         	}
         }
 	}

@@ -26,8 +26,11 @@ package controllers;
 
 import java.awt.Color;
 import java.awt.Image;
-import java.util.Arrays;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Observer;
 
@@ -58,17 +61,23 @@ public class TileController extends BaseController {
 	public TileModel getTile() {
 		return _tile;
 	}
-	
-	@Override public Collection<Operation> getRegisteredOperations() {
-		return Arrays.asList(
-			Operation.ToggleNeighborTiles
-		);
+		
+	private class ToggleNeighborTiles implements ActionListener 
+	{
+		@Override public void actionPerformed(ActionEvent e) {
+			System.out.println("ToggleNeighborTiles");
+		}		
 	}
 	
-	// TODO - should this call dispose on the model first?
-	@Override public void dispose() {
-		_tile = null;		
+	@Override public Map<Operation, ActionListener> getRegisteredOperations() {
+		return new HashMap<Operation, ActionListener>(){{
+			put(Operation.ToggleNeighborTiles, new ToggleNeighborTiles());
+		}};
 	}
+	
+	
+	
+	
 	
 	
 	
@@ -77,10 +86,7 @@ public class TileController extends BaseController {
 	
 	/** EVERYTHING BELOW THIS LINE IS LEGACY CODE AND SHOULD BE REPLACED */
 	
-	
-	
-	
-    // TODO - can we get this to render by making calls to each individual model
+	// TODO - can we get this to render by making calls to each individual model
     // and getting it to render through debug mode
 	public Collection<TileModel> getAllNeighbors()
 	{
@@ -170,29 +176,6 @@ public class TileController extends BaseController {
 		
 		return null;
 	}
-	
-	public boolean hasCapturePosition() {
-		
-		/*SortedSet<TileModel> neighbors = _tile.getForwardNeighbors();
-		if(_tile.getIsKingTile() || _tile.getPlayer().getPlayerPiece(_tile).getIsKinged()) {
-			neighbors.addAll(_tile.getBackwardNeighbors());
-		}
-
-		for(TileModel neighbor : neighbors) {
-			if(neighbor.getPlayer() != null && neighbor.getPlayer() != _tile.getPlayer()){
-				Vector<TileModel> capturablePositions = neighbor.getCapturableNeighbors(_tile);
-				if(capturablePositions.size() > 0) {
-					return true;
-				}
-			}
-		}*/
-		
-		return false;
-	}
-	
-	public void tileGuidesCommand(Operation operation) {
-			
-  	}
 
 	public int getTileCoordinate() {
 		return _tile.getIdentifier();
@@ -216,5 +199,11 @@ public class TileController extends BaseController {
 		for(TileModel model : getAllNeighbors()) {
 			//model.setSelected(selected ? DispatchOperation.ShowGuides : DispatchOperation.HideGuides, Selection.None);
 		}
+	}
+
+	@Override
+	public void dispose() {
+		// TODO Auto-generated method stub
+		
 	}
 }

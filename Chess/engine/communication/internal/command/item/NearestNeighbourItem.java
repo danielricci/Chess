@@ -21,6 +21,7 @@ public class NearestNeighbourItem extends ItemComponent {
 	@Override public void onExecute(ActionEvent actionEvent) {
 		JCheckBoxMenuItem item = (JCheckBoxMenuItem) actionEvent.getSource();
 		ControllerFactory.instance().SendMessage(
+			this,
 			Operation.ToggleNeighborTiles, 
 			TileController.class,
 			item.isSelected()

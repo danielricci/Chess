@@ -24,8 +24,6 @@
 
 package views;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Observable;
 import java.util.Vector;
 
@@ -40,11 +38,9 @@ import models.GameModel;
 public abstract class BaseView extends JPanel implements IView {
 
 	private final Vector<BaseController> _controllers = new Vector<>();
-	private final Vector<Operation> _registeredOperations = new Vector<>();
 	
 	private BaseView(){
 		register();
-		_registeredOperations.addAll(getRegisteredOperations());
 	}
 	
 	public BaseView(final BaseController controller) {			
@@ -75,10 +71,9 @@ public abstract class BaseView extends JPanel implements IView {
 		}
 	}
 	
-	@Override public Collection<Operation> getRegisteredOperations() {
-		return Collections.emptyList();
+	@Override public void executeRegisteredOperation(Operation operation) {
 	}
-	
+		
 	private boolean controllerExists(BaseController controller) {
 		assert controller != null : "Cannot pass a null controller";
 		boolean found = false;
@@ -104,15 +99,6 @@ public abstract class BaseView extends JPanel implements IView {
 	
 	@Override public void update(Observable obs, Object arg){
 	} 
-	
-	@Override public boolean isValidListener(Operation... operation) {
-		for(Operation op : operation) {
-			if(_registeredOperations.contains(op)) {
-				return true;
-			}
-		}
-		return false;
-	}
 			
 	@Override public void dispose() {
 		removeAll();

@@ -26,15 +26,12 @@ package views;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Observable;
 import java.util.Vector;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
-import communication.internal.dispatcher.Operation;
 import controllers.BaseController;
 import controllers.BoardController;
 
@@ -100,11 +97,5 @@ public class BoardView extends BaseView {
 
 	@Override public void dispose() {
 		_gamePanel.removeAll();
-	}
-
-	@Override public Collection<Operation> getRegisteredOperations() {
-		return Arrays.asList(
-			Operation.CellSelected
-		);
 	}
 }

@@ -24,9 +24,10 @@
 
 package controllers;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Vector;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
 
 import api.IController;
 import api.IView;
@@ -40,16 +41,13 @@ import views.BaseView;
  * @author Daniel Ricci <thedanny09@gmail.com>
  */
 public abstract class BaseController implements IController  {
-	
+		
 	/**
 	 * The view assigned to the controller
 	 */
 	private BaseView _view;
-	
-	private final Vector<Operation> _registeredOperations = new Vector<>();
-	
+		
 	public BaseController() {
-		_registeredOperations.addAll(getRegisteredOperations());
 	}
 	
 	public <T extends BaseView> BaseController(T view) {
@@ -76,25 +74,18 @@ public abstract class BaseController implements IController  {
 	protected final <T extends BaseView> void setView(T view) {
 		_view = view;
 	}
-	
-	@Override public final boolean isValidListener(Operation... operation) {
-		for(Operation op : operation) {
-			if(_registeredOperations.contains(op)) {
-				return true;
-			}
-		}
-		return false;
+		
+	protected Map<Operation, ActionListener> getRegisteredOperations() {
+		return new HashMap<Operation, ActionListener>();
 	}
 		
-	@Override public Collection<Operation> getRegisteredOperations() {
-		return Collections.emptyList();
+	@Override public void executeRegisteredOperation(Object sender, Operation operation) {		
+		ActionListener event = getRegisteredOperations().get(operation);
+		if(event != null) {
+			event.actionPerformed(new ActionEvent(sender, 0, null));
+		}
 	}
 	
-	/**
-	 * Disposes the currently set view
-	 */
-	@Override public void dispose() {
-		_view.dispose();
-		_view = null;
+	@Override public void dispose() {	
 	}
 }

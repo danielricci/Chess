@@ -44,6 +44,7 @@ public class ControllerFactory implements IDestructable, IDispatchable<BaseContr
 	private class MessageDispatcher extends Thread
 	{
 		private volatile ConcurrentLinkedQueue<Message<?>> _messages = new ConcurrentLinkedQueue<>();		
+		
 		@Override public void run() {
 			while(true) {
 				try {
@@ -51,11 +52,7 @@ public class ControllerFactory implements IDestructable, IDispatchable<BaseContr
 					if(message != null) {
 						for(Object resource : message.resources)
 						{
-							IController controller = (IController)resource;
-							if(controller.isValidListener(message.operation))
-							{
-								System.out.println("We have a match!");
-							}
+							((IController)resource).executeRegisteredOperation(message.sender, message.operation);
 						}
 					}
 					Thread.sleep(220);						
@@ -189,7 +186,7 @@ public class ControllerFactory implements IDestructable, IDispatchable<BaseContr
 		_instance = null;
 	}
 
-	@Override public <U extends BaseController> void SendMessage(Operation operation, Class<U> type, Object... args) {
+	@Override public <U extends BaseController> void SendMessage(Object sender, Operation operation, Class<U> type, Object... args) {
 		
 		List<U> resources = null;
 		
@@ -201,7 +198,7 @@ public class ControllerFactory implements IDestructable, IDispatchable<BaseContr
 			continue;
 		}
 
-		Message<U> message = new Message<U>(operation, resources, Arrays.asList(args));
+		Message<U> message = new Message<U>(sender, operation, resources, Arrays.asList(args));
 		_dispatcher._messages.add(message);
 	}
 }

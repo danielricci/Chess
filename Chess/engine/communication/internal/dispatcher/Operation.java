@@ -2,9 +2,7 @@ package communication.internal.dispatcher;
 
 public enum Operation {
 	Refresh,
-	CellSelected, 
+	CellSelected,
 	ToggleNeighborTiles,
 	TogglePlayerTiles
 }
-
-

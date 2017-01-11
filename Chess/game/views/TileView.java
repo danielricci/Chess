@@ -30,11 +30,8 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Observable;
 
-import communication.internal.dispatcher.Operation;
 import controllers.TileController;
 import models.GameModel;
 
@@ -125,13 +122,7 @@ public class TileView extends BaseView {
         g2d.drawImage(_image, 10, 8, 48, 48, null, null);       
 	}
 	
-	@Override public Collection<Operation> getRegisteredOperations() {
-		return Arrays.asList(
-			Operation.ToggleNeighborTiles,
-			Operation.CellSelected
-		);
-	}
-	
+	// TODO - find a way to get rid of this
 	public static void cycleBackgroundColor() {
 		++TileView.TileViewCounter;
 	}
