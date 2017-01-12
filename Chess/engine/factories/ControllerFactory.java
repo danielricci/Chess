@@ -31,42 +31,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
-import api.IController;
 import api.IDestructable;
 import api.IDispatchable;
-import communication.internal.dispatcher.Operation;
+import communication.internal.dispatcher.Dispatcher;
+import communication.internal.dispatcher.DispatcherMessage;
+import communication.internal.dispatcher.DispatcherOperation;
 import controllers.BaseController;
 
 public class ControllerFactory implements IDestructable, IDispatchable<BaseController> {
 	
-	private class MessageDispatcher extends Thread
-	{
-		private volatile ConcurrentLinkedQueue<Message<?>> _messages = new ConcurrentLinkedQueue<>();		
-		
-		@Override public void run() {
-			while(true) {
-				try {
-					Message<?> message = _messages.poll();
-					if(message != null) {
-						for(Object resource : message.resources)
-						{
-							((IController)resource).executeRegisteredOperation(message.sender, message.operation);
-						}
-					}
-					Thread.sleep(220);						
-				} catch (InterruptedException exception) {
-					exception.printStackTrace();
-				}
-			}
-		}
-	}
-	
 	/**
 	 * A message dispatcher used to communicate with controller 
 	 */
-	MessageDispatcher _dispatcher;
+	Dispatcher _dispatcher;
 	
     /**
      * Contains the history of all the controllers ever created by this factory, organized 
@@ -91,7 +69,7 @@ public class ControllerFactory implements IDestructable, IDispatchable<BaseContr
 	 */
 	private ControllerFactory() {
 		if(_dispatcher == null) {
-			_dispatcher = new MessageDispatcher();
+			_dispatcher = new Dispatcher();
 			_dispatcher.start();
 		}
 	}
@@ -186,7 +164,7 @@ public class ControllerFactory implements IDestructable, IDispatchable<BaseContr
 		_instance = null;
 	}
 
-	@Override public <U extends BaseController> void SendMessage(Object sender, Operation operation, Class<U> type, Object... args) {
+	@Override public <U extends BaseController> void SendMessage(Object sender, DispatcherOperation operation, Class<U> type, Object... args) {
 		
 		List<U> resources = null;
 		
@@ -198,7 +176,7 @@ public class ControllerFactory implements IDestructable, IDispatchable<BaseContr
 			continue;
 		}
 
-		Message<U> message = new Message<U>(sender, operation, resources, Arrays.asList(args));
-		_dispatcher._messages.add(message);
+		DispatcherMessage<U> message = new DispatcherMessage<U>(sender, operation, resources, Arrays.asList(args));
+		_dispatcher.add(message);
 	}
 }

@@ -31,11 +31,11 @@ import java.util.Observer;
 import java.util.Queue;
 
 import api.IView;
-import communication.internal.dispatcher.Operation;
+import communication.internal.dispatcher.DispatcherOperation;
 
 public class GameModel extends Observable
 {
-	private final Queue<Operation> _operations = new LinkedList<>();
+	private final Queue<DispatcherOperation> _operations = new LinkedList<>();
 	private final ArrayList<Observer> _observers = new ArrayList<>();
 	
 	protected GameModel(Observer... observer) {
@@ -44,12 +44,12 @@ public class GameModel extends Observable
 		}
 	}
 	
-	public final void addCachedData(Operation operation) {
+	public final void addCachedData(DispatcherOperation operation) {
 		addOperation(operation);
 		doneUpdating();
 	}
 	
-	public final Queue<Operation> getOperations() {
+	public final Queue<DispatcherOperation> getOperations() {
 		return _operations;
 	}
 	
@@ -93,13 +93,13 @@ public class GameModel extends Observable
 	protected final void doneUpdating() {
 		setChanged();
 		if(_operations.isEmpty()) {
-			_operations.add(Operation.Refresh);
+			_operations.add(DispatcherOperation.Refresh);
 		}
 		notifyObservers(_operations);
 		_operations.clear();
 	}	
 	
-	protected final void addOperation(Operation operation) { 
+	protected final void addOperation(DispatcherOperation operation) { 
 		_operations.add(operation); 
 	}
 	

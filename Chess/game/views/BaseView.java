@@ -24,13 +24,16 @@
 
 package views;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Vector;
 
 import javax.swing.JPanel;
 
 import api.IView;
-import communication.internal.dispatcher.Operation;
+import communication.internal.dispatcher.DispatcherOperation;
 import controllers.BaseController;
 import factories.ControllerFactory;
 import models.GameModel;
@@ -71,7 +74,16 @@ public abstract class BaseView extends JPanel implements IView {
 		}
 	}
 	
-	@Override public void executeRegisteredOperation(Object sender, Operation operation) {
+	@Override public Map<DispatcherOperation, ActionListener> getRegisteredOperations() {
+		return null;
+	}
+		
+	@Override public final void executeRegisteredOperation(Object sender, DispatcherOperation operation) {		
+		Map<DispatcherOperation, ActionListener> operations = getRegisteredOperations();
+		ActionListener event;
+		if(operations != null && (event = getRegisteredOperations().get(operation)) != null) {
+			event.actionPerformed(new ActionEvent(sender, 0, null));	
+		}
 	}
 	
 	private boolean controllerExists(BaseController controller) {

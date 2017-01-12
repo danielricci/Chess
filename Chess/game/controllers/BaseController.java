@@ -26,12 +26,11 @@ package controllers;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
 import java.util.Map;
 
 import api.IController;
 import api.IView;
-import communication.internal.dispatcher.Operation;
+import communication.internal.dispatcher.DispatcherOperation;
 import factories.ViewFactory;
 import views.BaseView;
 
@@ -74,15 +73,16 @@ public abstract class BaseController implements IController  {
 	protected final <T extends BaseView> void setView(T view) {
 		_view = view;
 	}
-		
-	protected Map<Operation, ActionListener> getRegisteredOperations() {
-		return new HashMap<Operation, ActionListener>();
+	
+	@Override public Map<DispatcherOperation, ActionListener> getRegisteredOperations() {
+		return null;
 	}
 		
-	@Override public void executeRegisteredOperation(Object sender, Operation operation) {		
-		ActionListener event = getRegisteredOperations().get(operation);
-		if(event != null) {
-			event.actionPerformed(new ActionEvent(sender, 0, null));
+	@Override public final void executeRegisteredOperation(Object sender, DispatcherOperation operation) {		
+		Map<DispatcherOperation, ActionListener> operations = getRegisteredOperations();
+		ActionListener event;
+		if(operations != null && (event = getRegisteredOperations().get(operation)) != null) {
+			event.actionPerformed(new ActionEvent(sender, 0, null));	
 		}
 	}
 	

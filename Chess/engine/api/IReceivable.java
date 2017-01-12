@@ -1,7 +1,11 @@
 package api;
 
-import communication.internal.dispatcher.Operation;
+import java.awt.event.ActionListener;
+import java.util.Map;
+
+import communication.internal.dispatcher.DispatcherOperation;
 
 public interface IReceivable {
-	public void executeRegisteredOperation(Object sender, Operation operation);
+	public void executeRegisteredOperation(Object sender, DispatcherOperation operation);
+	public Map<DispatcherOperation, ActionListener> getRegisteredOperations();
 }

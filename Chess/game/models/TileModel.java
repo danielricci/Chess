@@ -32,7 +32,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.Vector;
 
-import communication.internal.dispatcher.Operation;
+import communication.internal.dispatcher.DispatcherOperation;
 import models.PlayerModel.Team.Orientation;
 
 /** 
@@ -246,7 +246,7 @@ public class TileModel extends GameModel implements IPlayableTile, Comparable<Ti
 		*/		
 	}
 	 
-	public void setSelected(Operation operation, Selection selection, boolean flushBuffer) {
+	public void setSelected(DispatcherOperation operation, Selection selection, boolean flushBuffer) {
 		if(flushBuffer) {
 			clearOperations();
 		}
@@ -255,7 +255,7 @@ public class TileModel extends GameModel implements IPlayableTile, Comparable<Ti
 		doneUpdating();
 	}
 	
-	public void setSelected(Operation operation, Selection selection) { 
+	public void setSelected(DispatcherOperation operation, Selection selection) { 
 		setSelected(operation, selection, false); 
 	}
 		

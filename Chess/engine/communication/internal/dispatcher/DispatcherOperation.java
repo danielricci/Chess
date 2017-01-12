@@ -1,6 +1,6 @@
 package communication.internal.dispatcher;
 
-public enum Operation {
+public enum DispatcherOperation {
 	Refresh,
 	CellSelected,
 	ToggleNeighborTiles,
