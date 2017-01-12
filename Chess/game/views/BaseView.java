@@ -71,9 +71,9 @@ public abstract class BaseView extends JPanel implements IView {
 		}
 	}
 	
-	@Override public void executeRegisteredOperation(Operation operation) {
+	@Override public void executeRegisteredOperation(Object sender, Operation operation) {
 	}
-		
+	
 	private boolean controllerExists(BaseController controller) {
 		assert controller != null : "Cannot pass a null controller";
 		boolean found = false;
