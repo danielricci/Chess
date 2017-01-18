@@ -75,7 +75,7 @@ public abstract class BaseView extends JPanel implements IView {
 	}
 	
 	@Override public Map<DispatcherOperation, ActionListener> getRegisteredOperations() {
-		//return null;
+		return null;
 	}
 		
 	@Override public final void executeRegisteredOperation(Object sender, DispatcherOperation operation) {		
