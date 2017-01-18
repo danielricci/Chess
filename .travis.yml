@@ -18,4 +18,4 @@ before_script:
   - cd Chess
   - chmod +x gradlew
   
-script: gradle cleanall buildall
+script: gradle cleanall build-all
