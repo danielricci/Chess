@@ -49,6 +49,7 @@ public abstract class BaseView extends JPanel implements IView {
 	public BaseView(final BaseController controller) {			
 		this();
 		_controllers.add(controller);
+		this();
 	}
 	
 	public <T extends BaseController> BaseView(Class<T> controller) {
