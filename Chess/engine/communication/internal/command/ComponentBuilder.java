@@ -43,7 +43,7 @@ public final class ComponentBuilder {
 	/**
 	 * The list of components in chronologically added order
 	 */
-	private Vector<BaseComponent> _components = new Vector<>();
+	private Vector<JComponent> _components = new Vector<>();
 	
 	private ComponentBuilder(JComponent host) {
 	    _host = host;
@@ -92,12 +92,12 @@ public final class ComponentBuilder {
 	 */
 	public final <T extends BaseComponent> ComponentBuilder AddItem(Class<T> component) {
 		try {
-		    BaseComponent baseComponent = render(component);
+		    T baseComponent = component.getConstructor(JComponent.class).newInstance(_root == null ? _host : _root);
 		    if(_components.isEmpty() && _root == null) {
 		        _root = baseComponent.getComponent();
 		    }
 		    else {
-		        _components.add(baseComponent);    
+		        _components.add(baseComponent.getComponent());    
 		    }
 		} 
 		catch (Exception exception) {
@@ -107,26 +107,20 @@ public final class ComponentBuilder {
 		return this;
 	}
 	
+	public final <T extends BaseComponent> ComponentBuilder AddSeparator() {
+		if(_root != null) {
+			T component = (T) _root.getClientProperty(_root);
+			component.addSeperator();			
+		}
+		
+		return this;
+	}
+
+		
     public ComponentBuilder AddItem(ComponentBuilder builder) {
         builder._root = _root;
         _components.addAll(builder._components);
         
         return this;
     }
-	
-	/**
-	 * Renders all components registered to this builder
-	 */
-	private final <T extends BaseComponent> T render(Class<T> component) { 
-	    BaseComponent createdComponent = null;
-		try {
-		    createdComponent = component.getConstructor(JComponent.class).newInstance(_root == null ? _host : _root);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-		
-		return (T) createdComponent;
-	}
-
-
 }

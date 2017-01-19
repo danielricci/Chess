@@ -27,6 +27,7 @@ package communication.internal.command;
 import java.util.UUID;
 
 import javax.swing.JComponent;
+import javax.swing.JSeparator;
 
 import api.IBaseComponent;
 import controllers.BaseController;
@@ -98,6 +99,11 @@ public abstract class BaseComponent implements IBaseComponent {
 	}
 	
 	@Override public void bind(BaseController controller) {
+	}
+	
+	public void addSeperator() {
+		JSeparator separator = new JSeparator();
+		_component.add(separator);
 	}
 
 	protected abstract void onInitialize();

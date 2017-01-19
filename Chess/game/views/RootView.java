@@ -95,6 +95,7 @@ public final class RootView extends JFrame {
         ComponentBuilder.start(getJMenuBar())
             .AddItem(FileMenuComponent.class)
             .AddItem(NewGameMenuItem.class)
+            .AddSeparator()
             .AddItem(ExitGameMenuItem.class);     
     }
     
@@ -102,6 +103,7 @@ public final class RootView extends JFrame {
         ComponentBuilder.start(getJMenuBar())
             .AddItem(DeveloperMenuComponent.class)
             .AddItem(DeveloperNewGameMenuItem.class)
+            .AddSeparator()
             .AddItem(NearestNeighbourItem.class);
     }
 
