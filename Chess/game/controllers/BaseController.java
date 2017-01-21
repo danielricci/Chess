@@ -77,11 +77,11 @@ public abstract class BaseController implements IController  {
 	@Override public Map<DispatcherOperation, ActionListener> getRegisteredOperations() {
 		return null;
 	}
-		
+	
 	@Override public final void executeRegisteredOperation(Object sender, DispatcherOperation operation) {		
 		Map<DispatcherOperation, ActionListener> operations = getRegisteredOperations();
 		ActionListener event;
-		if(operations != null && (event = getRegisteredOperations().get(operation)) != null) {
+		if(operations != null && (event = operations.get(operation)) != null) {
 			event.actionPerformed(new ActionEvent(sender, 0, null));	
 		}
 	}

@@ -22,28 +22,30 @@
 * IN THE SOFTWARE.
 */
 
-package models;
+package api;
 
-import api.IReceiver;
+import java.awt.event.ActionListener;
+import java.util.Map;
 
-public class TileModel extends GameModel {
-    	
-	private static int IDENTIFIER;
-	private final int _identifier = ++IDENTIFIER;
-    
-	public enum Selection {
-		GuideSelected,
-		MoveSelected,
-		CaptureSelected,
-		None;
-	}
+import communication.internal.dispatcher.DispatcherOperation;
+
+/**
+ * Contract that specifies how entities register to dispatched events
+ */
+public interface IReceiver {
 	
-	public TileModel(IReceiver... receivers) {
-		super(receivers);
-		doneUpdating();
-	}
+	/**
+	 * Executes the specified operation based on the operations registered by the IReceivable entity
+	 * 
+	 * @param sender The sender
+	 * @param operation The operation
+	 */
+	public void executeRegisteredOperation(Object sender, DispatcherOperation operation);
 	
-	@Override public String toString() {
-		return Integer.toString(_identifier);
-	}
+	/**
+	 * Gets the list of registered operation by the entity
+	 * 
+	 * @return Map<DispatcherOperation, ActionListener>
+	 */
+	public Map<DispatcherOperation, ActionListener> getRegisteredOperations();
 }

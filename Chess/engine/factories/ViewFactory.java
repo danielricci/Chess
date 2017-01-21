@@ -33,15 +33,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
-import api.IDestructable;
-import api.IDispatchable;
+import api.IDestructor;
+import api.IDispatcher;
 import api.IView;
 import communication.internal.dispatcher.Dispatcher;
 import communication.internal.dispatcher.DispatcherMessage;
 import communication.internal.dispatcher.DispatcherOperation;
 import views.BaseView;
 
-public class ViewFactory implements IDestructable, IDispatchable<BaseView> {
+public class ViewFactory implements IDestructor, IDispatcher<BaseView> {
 
 	/**
 	 * A message dispatcher used to communicate with views 

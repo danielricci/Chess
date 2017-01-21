@@ -22,28 +22,8 @@
 * IN THE SOFTWARE.
 */
 
-package models;
+package api;
 
-import api.IReceiver;
-
-public class TileModel extends GameModel {
-    	
-	private static int IDENTIFIER;
-	private final int _identifier = ++IDENTIFIER;
-    
-	public enum Selection {
-		GuideSelected,
-		MoveSelected,
-		CaptureSelected,
-		None;
-	}
-	
-	public TileModel(IReceiver... receivers) {
-		super(receivers);
-		doneUpdating();
-	}
-	
-	@Override public String toString() {
-		return Integer.toString(_identifier);
-	}
+public interface IDestructor {
+	public void dispose();
 }

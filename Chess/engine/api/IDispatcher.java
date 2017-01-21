@@ -22,28 +22,10 @@
 * IN THE SOFTWARE.
 */
 
-package models;
+package api;
 
-import api.IReceiver;
+import communication.internal.dispatcher.DispatcherOperation;
 
-public class TileModel extends GameModel {
-    	
-	private static int IDENTIFIER;
-	private final int _identifier = ++IDENTIFIER;
-    
-	public enum Selection {
-		GuideSelected,
-		MoveSelected,
-		CaptureSelected,
-		None;
-	}
-	
-	public TileModel(IReceiver... receivers) {
-		super(receivers);
-		doneUpdating();
-	}
-	
-	@Override public String toString() {
-		return Integer.toString(_identifier);
-	}
+public interface IDispatcher<T> {
+	public <U extends T> void SendMessage(Object sender, DispatcherOperation operation, Class<U> type, Object... args);
 }

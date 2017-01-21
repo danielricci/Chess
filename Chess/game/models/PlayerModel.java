@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
-import api.IReceivable;
+import api.IReceiver;
 import models.PlayerModel.Team.Orientation;
 
 public final class PlayerModel extends GameModel {
@@ -69,7 +69,7 @@ public final class PlayerModel extends GameModel {
 		}
 	}
 	
-	public PlayerModel(IReceivable receiver) {
+	public PlayerModel(IReceiver receiver) {
 		super(receiver);
 		_team = Team.values()[TEAM_INDEX++];
 	}

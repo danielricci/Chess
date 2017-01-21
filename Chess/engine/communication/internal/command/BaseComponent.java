@@ -29,10 +29,10 @@ import java.util.UUID;
 import javax.swing.JComponent;
 import javax.swing.JSeparator;
 
-import api.IBaseComponent;
+import api.IComponent;
 import controllers.BaseController;
 
-public abstract class BaseComponent implements IBaseComponent {
+public abstract class BaseComponent implements IComponent {
 	
 	private final UUID _identifier = UUID.randomUUID();
 	private final String ParentKey = "__parent__";

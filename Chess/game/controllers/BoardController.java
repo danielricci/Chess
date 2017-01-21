@@ -25,15 +25,16 @@
 package controllers;
 
 import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
-import factories.ControllerFactory;
+import controllers.TileController.NeighborXPosition;
+import controllers.TileController.NeighborYPosition;
 import models.TileModel;
-import models.TileModel.NeighborXPosition;
-import models.TileModel.NeighborYPosition;
 import views.BoardView;
-import views.TileView;
 
 public class BoardController extends BaseController {
 	
@@ -41,29 +42,25 @@ public class BoardController extends BaseController {
 
 	private Vector<Vector<TileModel>> _tiles = new Vector<>(Arrays.asList(new Vector<TileModel>()));		
 	
+	/**
+	 * The list of neighbors logically associated to a specified controller
+	 * Key1: A Controller that maps to its association of neighbors
+	 * Key2: The Y-Axis of the neighbor
+	 * Key3: The X-Axis of the neighbor
+	 */
+	private final Map<TileController, Map<NeighborYPosition, Map<NeighborXPosition, TileController>>> _neighbors = new HashMap<>();
+	
 	public BoardController(BoardView view) {
 		super(view);
-	}
+	}	
 	
-	public TileView createTile() {
-		
-		// Create a new tile controller that is linked to a corresponding view
-		TileController controller = ControllerFactory.instance().get(TileController.class, true, TileView.class);
-		
+	public void createTileRow(ArrayList<TileController> controllers) {
 		// Populate the tile model and observer it with our view
-		TileModel model = controller.populateTileModel(getView(BoardView.class));
-		
-		// Add the row to the end of the list of tiles
-		_tiles.lastElement().add(model);
-		
-		// If we reached our dimensions limit then buffer in a new row
-		if(_tiles.lastElement().size() == _dimension) {
-			link();
-			_tiles.addElement(new Vector<TileModel>());
+		for(TileController controller : controllers) {
+			controller.populateTileModel(getView(BoardView.class));
 		}
 		
-		// Return the associated view that was created
-		return controller.getView(TileView.class);
+		link();
 	}
 
 	private void link() {
@@ -107,7 +104,7 @@ public class BoardController extends BaseController {
 		}
 	}
 	
-	public int getDimensions() {		
+	public static int getDimensions() {		
 		return _dimension;
 	}
 	

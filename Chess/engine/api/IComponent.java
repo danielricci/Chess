@@ -22,35 +22,18 @@
 * IN THE SOFTWARE.
 */
 
-package models;
+package api;
 
-import java.awt.Image;
+import java.awt.event.ActionEvent;
 
-import javax.swing.ImageIcon;
+import controllers.BaseController;
 
-public class PlayerPiece {
+public interface IComponent {
 	
-	private PlayerModel _playerModel;
-	private boolean _isKinged;
-		
-	public PlayerPiece(PlayerModel playerModel) {
-		_playerModel = playerModel;
-	}	
+	public boolean visibility();
+	public boolean enabled();
+	
+	public void onExecute(ActionEvent actionEvent);
 
-	public void updatePlayerPiece(TileModel tileModel, PlayerModel playerModel) {
-		_playerModel.updatePlayerPiece(tileModel, null);
-		_playerModel = playerModel;
-	}
-	
-	public Image getImage(TileModel tile) {
-		return new ImageIcon(getClass().getResource(_playerModel.getTeamPath(tile))).getImage();
-	}
-	
-	public void setAsKinged() { 
-		_isKinged = true;
-	}
-	
-	public boolean getIsKinged() {
-		return _isKinged;
-	}
+	public void bind(BaseController controller);
 }

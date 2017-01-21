@@ -29,7 +29,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import api.IReceivable;
+import api.IReceiver;
 import communication.internal.dispatcher.DispatcherOperation;
 
 /**
@@ -40,7 +40,7 @@ public class GameModel
 	/**
 	 * The list of receivers that can receive a message from the GameModel
 	 */
-	private final ArrayList<IReceivable> _receivers = new ArrayList<>();
+	private final ArrayList<IReceiver> _receivers = new ArrayList<>();
 
 	/**
 	 * The list of operations that can be used on the model
@@ -52,20 +52,20 @@ public class GameModel
 	 * 
 	 * @param receivers The list of receivers
 	 */
-	protected GameModel(IReceivable... receivers) {
+	protected GameModel(IReceiver... receivers) {
 		_receivers.addAll(Arrays.asList(receivers));
 	}
 		
-	public final void addReceiver(IReceivable receiver) {
+	public final void addReceiver(IReceiver receiver) {
 		_receivers.add(receiver);
 	}
 
-	public final void removeReciever(IReceivable receiver) {
+	public final void removeReciever(IReceiver receiver) {
 		_receivers.remove(receiver);
 	}
 
 	protected final void notifyReceivers() {
-		for(IReceivable receiver : _receivers) {
+		for(IReceiver receiver : _receivers) {
 			for(DispatcherOperation operation : _operations) {
 				receiver.executeRegisteredOperation(this, operation);
 			}

@@ -33,14 +33,14 @@ import java.util.Map;
 import java.util.Set;
 
 import api.IController;
-import api.IDestructable;
-import api.IDispatchable;
+import api.IDestructor;
+import api.IDispatcher;
 import communication.internal.dispatcher.Dispatcher;
 import communication.internal.dispatcher.DispatcherMessage;
 import communication.internal.dispatcher.DispatcherOperation;
 import controllers.BaseController;
 
-public class ControllerFactory implements IDestructable, IDispatchable<BaseController> {
+public class ControllerFactory implements IDestructor, IDispatcher<BaseController> {
 	
 	/**
 	 * A message dispatcher used to communicate with controller 

@@ -26,6 +26,7 @@ package views;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.swing.BoxLayout;
@@ -33,12 +34,12 @@ import javax.swing.JPanel;
 
 import controllers.BaseController;
 import controllers.BoardController;
+import controllers.TileController;
+import factories.ViewFactory;
 
 public class BoardView extends BaseView {
 	
-	// TODO - cant we just make BoardView have this layout and add to this
-	// why the fuck do we need to have another JPanel?
-	private final JPanel _gamePanel = new JPanel(new GridBagLayout());	
+	private final JPanel _gamePanel = new JPanel(new GridBagLayout()); 	// TODO - cant we just make BoardView have this layout and add to this	
 		
 	public <T extends BaseController> BoardView(Class<T> controller) {
 		super(controller);
@@ -57,25 +58,31 @@ public class BoardView extends BaseView {
 		// Holds all the cells that are to be rendered
 		Vector<Vector<TileView>> tiles = new Vector<>();
 		
-		// Reference to the specified controller, in this case it is unique
-		BoardController boardGameController = getController(BoardController.class);
-		
 		// Create the board, row by row
-		for(int row = 0, dimensions = boardGameController.getDimensions(); row < dimensions; ++row) {
+		for(int row = 0, dimensions = BoardController.getDimensions(); row < dimensions; ++row) {
 			
 			// Create a row
 			Vector<TileView> tileRow = new Vector<>();
 			for(int col = 0; col < dimensions; ++col) {		
-
-				TileView view = boardGameController.createTile();
+				
+				// Create a tile
+				TileView view = ViewFactory.instance().get(TileView.class, true, TileController.class);
 				tileRow.add(view);
 				
 				gbc.gridx = col;
 				gbc.gridy = row;
 				_gamePanel.add(view, gbc);			
 			}
-			TileView.cycleBackgroundColor();
 			
+			ArrayList<TileController> tileControllers = new ArrayList<>();
+			for(TileView view : tileRow) {
+				tileControllers.add(view.getController(TileController.class));
+			}
+			
+			// Create the list of tiles
+			getController(BoardController.class).createTileRow(tileControllers);
+				
+			// Add the tiles to our list of tiles
 			tiles.add(tileRow);			
 		}
 		
@@ -87,9 +94,5 @@ public class BoardView extends BaseView {
 		}
 		
 		add(_gamePanel);
-	}
-
-	@Override public void dispose() {
-		_gamePanel.removeAll();
 	}
 }
