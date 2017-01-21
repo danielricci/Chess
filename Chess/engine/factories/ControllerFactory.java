@@ -51,7 +51,7 @@ public class ControllerFactory implements IDestructable, IDispatchable<BaseContr
      * Contains the history of all the controllers ever created by this factory, organized 
      * by class name and mapping to the list of all those classes
      */
-    private final Map<String, Set<BaseController>> _history = new HashMap<>(); // TODO - can this be put into the dispatcher functionality?
+    private final Map<String, Set<IController>> _history = new HashMap<>(); // TODO - can this be put into the dispatcher functionality?
     
     /**
      * Contains the list of all exposed unique controllers created by this factory.  An exposed
@@ -93,9 +93,9 @@ public class ControllerFactory implements IDestructable, IDispatchable<BaseContr
 	private void Add(BaseController controller, boolean unique) { 
 	    String controllerName = controller.getClass().getName();
 	    
-	    Set<BaseController> controllers = _history.get(controllerName);
+	    Set<IController> controllers = _history.get(controllerName);
 	    if(controllers == null) {
-	        controllers = new HashSet<BaseController>();
+	        controllers = new HashSet<IController>();
 	        _history.put(controllerName, controllers);
 	    }
 	    controllers.add(controller);
@@ -164,17 +164,17 @@ public class ControllerFactory implements IDestructable, IDispatchable<BaseContr
 
 	@Override public <U extends BaseController> void SendMessage(Object sender, DispatcherOperation operation, Class<U> type, Object... args) {
 		
-		List<U> resources = null;
+		List<IController> resources = null;
 		
-		for(Set<BaseController> controllers : _history.values()) {
+		for(Set<IController> controllers : _history.values()) {
 			if(controllers.iterator().next().getClass() == type) {
-				resources = new ArrayList<>((Set<U>) controllers);
+				resources = new ArrayList<>(controllers);
 				break;
 			} 
 			continue;
 		}
 
-		DispatcherMessage<U> message = new DispatcherMessage<U>(sender, operation, resources, Arrays.asList(args));
-		_dispatcher.add((DispatcherMessage<IController>) message);
+		DispatcherMessage<IController> message = new DispatcherMessage<IController>(sender, operation, resources, Arrays.asList(args));
+		_dispatcher.add(message);
 	}
 }
