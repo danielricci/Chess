@@ -52,7 +52,7 @@ public class ViewFactory implements IDestructable, IDispatchable<BaseView> {
      * Contains the history of all the views ever created by this factory, organized 
      * by class name and mapping to the list of all those classes
      */
-    private final Map<String, Set<BaseView>> _history = new HashMap<>();
+    private final Map<String, Set<IView>> _history = new HashMap<>();
 
 	private final Vector<BaseView> _views = new Vector<>(); 
 	
@@ -71,9 +71,9 @@ public class ViewFactory implements IDestructable, IDispatchable<BaseView> {
 	private void Add(BaseView view, boolean unique) { 
 	    String viewName = view.getClass().getName();
 	    
-	    Set<BaseView> views = _history.get(viewName);
+	    Set<IView> views = _history.get(viewName);
 	    if(views == null) {
-	        views = new HashSet<BaseView>();
+	        views = new HashSet<IView>();
 	        _history.put(viewName, views);
 	    }
 	    views.add(view);
@@ -136,17 +136,17 @@ public class ViewFactory implements IDestructable, IDispatchable<BaseView> {
 	}
 
 	@Override public <U extends BaseView> void SendMessage(Object sender, DispatcherOperation operation, Class<U> type, Object... args) {
-		List<U> resources = null;
+		List<IView> resources = null;
 		
-		for(Set<BaseView> views : _history.values()) {
+		for(Set<IView> views : _history.values()) {
 			if(views.iterator().next().getClass() == type) {
-				resources = new ArrayList<>((Set<U>) views);
+				resources = new ArrayList<>(views);
 				break;
 			} 
 			continue;
 		}
 
-		DispatcherMessage<U> message = new DispatcherMessage<U>(sender, operation, resources, Arrays.asList(args));
-		_dispatcher.add((DispatcherMessage<IView>) message);
+		DispatcherMessage<IView> message = new DispatcherMessage<IView>(sender, operation, resources, Arrays.asList(args));
+		_dispatcher.add(message);
 	}
 }
