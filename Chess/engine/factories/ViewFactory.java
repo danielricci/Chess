@@ -24,17 +24,63 @@
 
 package factories;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import api.IDestructable;
+import api.IDispatchable;
+import api.IView;
+import communication.internal.dispatcher.Dispatcher;
+import communication.internal.dispatcher.DispatcherMessage;
+import communication.internal.dispatcher.DispatcherOperation;
 import views.BaseView;
 
-public class ViewFactory implements IDestructable {
+public class ViewFactory implements IDestructable, IDispatchable<BaseView> {
+
+	/**
+	 * A message dispatcher used to communicate with views 
+	 */
+	Dispatcher<IView> _dispatcher = new Dispatcher<>();
+	
+	/**
+     * Contains the history of all the views ever created by this factory, organized 
+     * by class name and mapping to the list of all those classes
+     */
+    private final Map<String, Set<BaseView>> _history = new HashMap<>();
 
 	private final Vector<BaseView> _views = new Vector<>(); 
+	
 	private static ViewFactory _instance;
 		
 	private ViewFactory() {
+		_dispatcher.start();
+	}
+	
+	/**
+	 * Adds a view
+	 * 
+	 * @param controller The controller to add
+	 * @param unique If the controller should be added into the exposed cache
+	 */
+	private void Add(BaseView view, boolean unique) { 
+	    String viewName = view.getClass().getName();
+	    
+	    Set<BaseView> views = _history.get(viewName);
+	    if(views == null) {
+	        views = new HashSet<BaseView>();
+	        _history.put(viewName, views);
+	    }
+	    views.add(view);
+	    
+	    if(!unique) {
+	        _views.add(view);
+	    }
 	}
 	
 	public synchronized static ViewFactory instance() {
@@ -55,8 +101,10 @@ public class ViewFactory implements IDestructable {
 		// If its unique then we don't add it to our list of created items we just construct and
 		// return it
 		if(unique) {
-			try {			
-				return viewClass.getConstructor(argsClass).newInstance(args);
+			try {	
+				T view = viewClass.getConstructor(argsClass).newInstance(args);
+				Add(view, unique);
+				return view;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}	
@@ -69,8 +117,9 @@ public class ViewFactory implements IDestructable {
 			}
 
 			try {
-				_views.add(viewClass.getConstructor(argsClass).newInstance(args));
-				return (T)_views.lastElement(); 
+				T view = viewClass.getConstructor(argsClass).newInstance(args);
+				Add(view, unique);
+				return view; 
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -80,9 +129,24 @@ public class ViewFactory implements IDestructable {
 	}
 		
 	@Override public void dispose() {
-		for(BaseView view : _views) {
+		for(BaseView view : _views) { // TODO - this needs to remove from _history
 			view.dispose();
 		}
 		_instance = null;
+	}
+
+	@Override public <U extends BaseView> void SendMessage(Object sender, DispatcherOperation operation, Class<U> type, Object... args) {
+		List<U> resources = null;
+		
+		for(Set<BaseView> views : _history.values()) {
+			if(views.iterator().next().getClass() == type) {
+				resources = new ArrayList<>((Set<U>) views);
+				break;
+			} 
+			continue;
+		}
+
+		DispatcherMessage<U> message = new DispatcherMessage<U>(sender, operation, resources, Arrays.asList(args));
+		_dispatcher.add((DispatcherMessage<IView>) message);
 	}
 }

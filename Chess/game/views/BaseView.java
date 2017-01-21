@@ -27,7 +27,6 @@ package views;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Map;
-import java.util.Observable;
 import java.util.Vector;
 
 import javax.swing.JPanel;
@@ -108,10 +107,7 @@ public abstract class BaseView extends JPanel implements IView {
 	
 	@Override public void refresh(GameModel model){
 	}
-	
-	@Override public void update(Observable obs, Object arg){
-	} 
-			
+				
 	@Override public void dispose() {
 		removeAll();
 		_controllers.clear();

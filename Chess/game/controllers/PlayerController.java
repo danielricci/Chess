@@ -25,9 +25,9 @@
 package controllers;
 
 import java.util.Collections;
-import java.util.Observer;
 import java.util.Vector;
 
+import api.IReceivable;
 import models.PlayerModel;
 
 public class PlayerController extends BaseController {
@@ -35,9 +35,9 @@ public class PlayerController extends BaseController {
 	private final Vector<PlayerModel> _players = new Vector<>();
 	private boolean _playerSelected = false;	
 	
-	public void populatePlayers(Observer observer) {
-		PlayerModel player1 = new PlayerModel(observer);
-		PlayerModel player2 = new PlayerModel(observer);
+	public void populatePlayers(IReceivable receiver) {
+		PlayerModel player1 = new PlayerModel(receiver);
+		PlayerModel player2 = new PlayerModel(receiver);
 
 		_players.add(player1);
 		_players.add(player2);

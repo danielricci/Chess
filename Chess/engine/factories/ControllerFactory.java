@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import api.IController;
 import api.IDestructable;
 import api.IDispatchable;
 import communication.internal.dispatcher.Dispatcher;
@@ -44,7 +45,7 @@ public class ControllerFactory implements IDestructable, IDispatchable<BaseContr
 	/**
 	 * A message dispatcher used to communicate with controller 
 	 */
-	Dispatcher _dispatcher;
+	Dispatcher<IController> _dispatcher = new Dispatcher<>();
 	
     /**
      * Contains the history of all the controllers ever created by this factory, organized 
@@ -68,10 +69,7 @@ public class ControllerFactory implements IDestructable, IDispatchable<BaseContr
 	 * Constructs a new object of this class
 	 */
 	private ControllerFactory() {
-		if(_dispatcher == null) {
-			_dispatcher = new Dispatcher();
-			_dispatcher.start();
-		}
+		_dispatcher.start();
 	}
 	
 	/**
@@ -158,7 +156,7 @@ public class ControllerFactory implements IDestructable, IDispatchable<BaseContr
 	}
 	
 	@Override public void dispose() {
-		for(BaseController controller : _controllers) {
+		for(BaseController controller : _controllers) { // TODO - this needs to remove from _history
 			controller.dispose();
 		}
 		_instance = null;
@@ -177,6 +175,6 @@ public class ControllerFactory implements IDestructable, IDispatchable<BaseContr
 		}
 
 		DispatcherMessage<U> message = new DispatcherMessage<U>(sender, operation, resources, Arrays.asList(args));
-		_dispatcher.add(message);
+		_dispatcher.add((DispatcherMessage<IController>) message);
 	}
 }

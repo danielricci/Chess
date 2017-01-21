@@ -28,8 +28,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Observer;
 
+import api.IReceivable;
 import communication.internal.dispatcher.DispatcherOperation;
 import models.TileModel;
 import views.BaseView;
@@ -43,21 +43,25 @@ public class TileController extends BaseController {
 		super(viewClass, true);
 	}
 	
+	// TODO - can this be done from the constructor
+	public TileModel populateTileModel(IReceivable receiver) {		
+		_tile = new TileModel(receiver, getView(TileView.class));
+		return _tile;
+	}
+	
 	private class ToggleNeighborTiles implements ActionListener {
 		@Override public void actionPerformed(ActionEvent actionEvent) {
-			System.out.println("ToggleNeighborTiles");
+			_tile.setSelected(DispatcherOperation.ToggleNeighborTiles);
 		}		
 	}
 	
-	// TODO - can this be done from the constructor
-	public TileModel populateTileModel(Observer observer) {		
-		_tile = new TileModel(observer, getView(TileView.class));
-		return _tile;
-	}
-
 	@Override public Map<DispatcherOperation, ActionListener> getRegisteredOperations() {
 		return new HashMap<DispatcherOperation, ActionListener>(){{
 			put(DispatcherOperation.ToggleNeighborTiles, new ToggleNeighborTiles());
 		}};
+	}
+
+	public void highlightNeighbors(boolean isHighlighted) {
+		_tile.getAllNeighbors();
 	}
 }

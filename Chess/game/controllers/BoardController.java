@@ -28,12 +28,10 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
 import java.util.Vector;
 
-import communication.internal.dispatcher.DispatcherOperation;
 import factories.ControllerFactory;
 import models.TileModel;
 import models.TileModel.NeighborXPosition;
 import models.TileModel.NeighborYPosition;
-import models.TileModel.Selection;
 import views.BoardView;
 import views.TileView;
 
@@ -116,12 +114,4 @@ public class BoardController extends BaseController {
 	@Override public void dispose() {
 		_tiles.clear();
 	}
-
-	public void Test() {
-		for(Vector<TileModel> row : _tiles) {
-			for(TileModel model : row) {
-				model.setSelected(DispatcherOperation.ToggleNeighborTiles, Selection.CaptureSelected);
-			}
-		}
-	}	
 }

@@ -27,11 +27,10 @@ package models;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Observer;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.Vector;
 
+import api.IReceivable;
 import communication.internal.dispatcher.DispatcherOperation;
 import models.PlayerModel.Team.Orientation;
 
@@ -39,10 +38,8 @@ import models.PlayerModel.Team.Orientation;
  * A tile model represents a tile that knows about what it currently holds on itself
  * and its current state; it also is aware of its immediate neighbors
  */
-public class TileModel extends GameModel implements IPlayableTile, Comparable<TileModel> {
+public class TileModel extends GameModel {
     
-	private PlayerModel _player;	
-	private Selection _selection;
 	
 	private static int IDENTIFIER;
 	private final int _identifier = ++IDENTIFIER;
@@ -169,29 +166,20 @@ public class TileModel extends GameModel implements IPlayableTile, Comparable<Ti
 		}
 	};
 	
-    public TileModel(Observer... observers) {
-		super(observers);
+    public TileModel(IReceivable... receivers) {
+		super(receivers);
 		
 		_neighbors.put(NeighborYPosition.BOTTOM, new HashMap<NeighborXPosition, TileModel>());
 		_neighbors.put(NeighborYPosition.NEUTRAL, new HashMap<NeighborXPosition, TileModel>());
 		_neighbors.put(NeighborYPosition.TOP, new HashMap<NeighborXPosition, TileModel>());
 		
-		//_player = player;
-
-		//if(player != null) {
-		//	player.addTilePiece(this);
-		//}
 		doneUpdating();
 	}
     
-	private SortedSet<TileModel> getNeighbors(NeighborYPosition position) {
+	public SortedSet<TileModel> getNeighbors(NeighborYPosition position) {
 		
 		if(position.isAgnostic()) {
 			position = NeighborYPosition.fromAgnostic(position);
-		}
-		else if(_player != null && _player.getPlayerOrientation() == Orientation.DOWN) {
-			// This is done to normalize the neighbor concept
-			position = NeighborYPosition.flip(position);
 		}
 		
 		SortedSet<TileModel> tiles = new TreeSet<>();
@@ -245,21 +233,12 @@ public class TileModel extends GameModel implements IPlayableTile, Comparable<Ti
 		return neighbors;
 		*/		
 	}
-	 
-	public void setSelected(DispatcherOperation operation, Selection selection, boolean flushBuffer) {
-		if(flushBuffer) {
-			clearOperations();
-		}
+	
+	public void setSelected(DispatcherOperation operation) {
 		addOperation(operation);
-		_selection = selection;
 		doneUpdating();
 	}
-	
-	public void setSelected(DispatcherOperation operation, Selection selection) { 
-		setSelected(operation, selection, false); 
-	}
 		
-
 	/**
 	 * Sets the neighbors specified to this model
 	 * 
@@ -282,58 +261,6 @@ public class TileModel extends GameModel implements IPlayableTile, Comparable<Ti
 		}
 	}
 	
-	public void removeTile() {
-		_player.updatePlayerPiece(this,  null);
-		_player = null;
-
-		clearOperations();
-		doneUpdating();
-	}
-	
-	/**
-	 * Updates the player of this 
-	 * @param player
-	 */
-	public void updateOwner(PlayerModel player) {
-		
-		// Update the piece of the tile so that it is now
-		// associated to this tile
-		PlayerPiece piece = _player.getPlayerPiece(this);
-		
-		// Update the piece to indicate the new player that owns it
-		piece.updatePlayerPiece(this, player);
-		
-		// Update the tile to indicate the player is currently playing on it
-		_player = player;
-				
-		// Update the players list of pieces that it owns
-		player.addTilePiece(this, piece);
-	}
-	
-	public void swapWith(TileModel tileModel) {
-		
-		// Update the player
-		PlayerModel player = _player;
-		_player = tileModel._player;
-		tileModel._player = player;
-		
-		// Update the players entry
-		tileModel._player.updatePlayerPiece(this, tileModel);
-		
-		// Send done signals
-		doneUpdating();
-		tileModel.doneUpdating();
-	}
-	
-	public boolean isPlayerHuman() { return _player != null; }
-	public boolean isSelected() { return _selection == Selection.MoveSelected; }
-	public boolean isGuideSelected() { return _selection == Selection.GuideSelected; }
-
-	public int getIdentifier() { return _identifier; }
-	
-	public Selection getSelectionType() { return _selection; }
-	public PlayerModel getPlayer() { return _player; }
-	
 	public SortedSet<TileModel> getAllNeighbors() {
 		SortedSet<TileModel> allNeighbours = new TreeSet<>(
 			getNeighbors(NeighborYPosition.TOP)
@@ -344,72 +271,7 @@ public class TileModel extends GameModel implements IPlayableTile, Comparable<Ti
 		return allNeighbours;
 	}
 	
-	@Override public boolean isMovableTo() {
-    	return _player == null && _selection != Selection.MoveSelected;
-    }
-    
-	@Override public boolean isPlayable() {
-		return _player != null && _selection != Selection.MoveSelected;
-	}
-	
-	/**
-	 * Gets all of the tiles surrounding this tile that are considered "capturable" w.r.t the passed in capturer
-	 * 
-	 * @param capturer The tile performing the capture on this tile
-	 * 
-	 * @return List of tiles that are capturable by the capturer
-	 */
-	public Vector<TileModel> getCapturableNeighbors(TileModel capturer) {
-		
-		Vector<TileModel> capturablePositions = new Vector<>();
-		if(_player == null || capturer.getPlayer() == _player) {
-			return capturablePositions;
-		}
-		
-		NeighborYPosition position = NeighborYPosition.convertOrientation(_player.getPlayerOrientation());
-		populateCapturableTiles(capturer, capturablePositions, capturer.getForwardNeighbors(), position);
-		if(capturer.getPlayer().getPlayerPiece(capturer).getIsKinged()) {
-			populateCapturableTiles(capturer, capturablePositions, capturer.getBackwardNeighbors(), NeighborYPosition.flip(position));
-		}
-		
-		return capturablePositions;
-	}
-	
-	private void populateCapturableTiles(TileModel capturer, Vector<TileModel> outCapturablePositions, SortedSet<TileModel> capturerNeighbors, NeighborYPosition position) {
-		int index = -1;
-		if(capturerNeighbors.contains(this)) {
-			index = capturerNeighbors.headSet(this).size();
-		} 
-		
-		if(index == -1) {
-			return;
-		}
-			
-		position = NeighborYPosition.flip(position);
-		position = NeighborYPosition.toAgnostic(position);
-		
-		Object[] neighborObjects = getNeighbors(position).toArray();
-		if(neighborObjects.length > 1) {
-			TileModel diagonalTile = (TileModel) neighborObjects[index];
-			if(capturer.getForwardNeighbors().size() == 1 && diagonalTile.getForwardNeighbors().size() == 1) {
-				diagonalTile = (TileModel)neighborObjects[++index];
-			}
-			
-			if(diagonalTile.isMovableTo()) {
-				outCapturablePositions.add(diagonalTile);
-			}	
-		}
-	}
-	
 	@Override public String toString() {
 		return Integer.toString(_identifier);
-	}
-
-	@Override public int compareTo(TileModel tileModel) {
-		if(tileModel == this || _identifier == tileModel._identifier) {
-			return 0;
-		}
-		
-		return _identifier < tileModel._identifier ? -1 : 1;
 	}
 }

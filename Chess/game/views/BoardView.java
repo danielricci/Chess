@@ -26,7 +26,6 @@ package views;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.util.Observable;
 import java.util.Vector;
 
 import javax.swing.BoxLayout;
@@ -44,12 +43,7 @@ public class BoardView extends BaseView {
 	public <T extends BaseController> BoardView(Class<T> controller) {
 		super(controller);
 	}
-	
-	@Override public void update(Observable obs, Object arg) {
-		super.update(obs, arg);
-		System.out.println("Calling update from BoardView");
-	};
-	
+		
 	@Override public void render() {
 
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));

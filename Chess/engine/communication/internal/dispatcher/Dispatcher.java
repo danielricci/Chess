@@ -3,18 +3,19 @@ package communication.internal.dispatcher;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import api.IController;
+import api.IReceivable;
 
-public class Dispatcher extends Thread {
-	private volatile ConcurrentLinkedQueue<DispatcherMessage<?>> _messages = new ConcurrentLinkedQueue<>();		
+public class Dispatcher<T extends IReceivable> extends Thread {
+	private volatile ConcurrentLinkedQueue<DispatcherMessage<T>> _messages = new ConcurrentLinkedQueue<>();		
 	
-	public void add(DispatcherMessage<?> message) {
+	public void add(DispatcherMessage<T> message) {
 		_messages.add(message);
 	}
 	
 	@Override public void run() {
 		while(true) {
 			try {
-				DispatcherMessage<?> message = _messages.poll();
+				DispatcherMessage<T> message = _messages.poll();
 				if(message != null) {
 					for(Object resource : message.resources)
 					{

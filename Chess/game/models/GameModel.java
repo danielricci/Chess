@@ -1,5 +1,5 @@
 /**
-* Daniel Ricci <2016> <thedanny09@gmail.com>
+* Daniel Ricci <thedanny09@gmail.com>
 *
 * Permission is hereby granted, free of charge, to any person
 * obtaining a copy of this software and associated documentation
@@ -25,77 +25,59 @@
 package models;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.Queue;
 
-import api.IView;
+import api.IReceivable;
 import communication.internal.dispatcher.DispatcherOperation;
 
-public class GameModel extends Observable
+/**
+ * A Game Model represents the base class of all model type objects
+ */
+public class GameModel
 {
+	/**
+	 * The list of receivers that can receive a message from the GameModel
+	 */
+	private final ArrayList<IReceivable> _receivers = new ArrayList<>();
+
+	/**
+	 * The list of operations that can be used on the model
+	 */
 	private final Queue<DispatcherOperation> _operations = new LinkedList<>();
-	private final ArrayList<Observer> _observers = new ArrayList<>();
 	
-	protected GameModel(Observer... observer) {
-		for(Observer obs : observer) {
-			addObserver(obs);
-		}
-	}
-	
-	public final void addCachedData(DispatcherOperation operation) {
-		addOperation(operation);
-		doneUpdating();
-	}
-	
-	public final Queue<DispatcherOperation> getOperations() {
-		return _operations;
-	}
-	
-	// TODO - remove observer crap and replace it with our new system
-	@Override public synchronized void addObserver(Observer observer) {
-		super.addObserver(observer);
-		_observers.add(observer);
-	}
-	
-	// TODO - remove observer crap and replace it with our new system
-	@Override public synchronized void deleteObserver(Observer observer) {
-		super.deleteObserver(observer);
-		_observers.remove(observer);
-	}
-	
-	// TODO - remove observer crap and replace it with our new system
-	@Override public void notifyObservers(Object arg) {
-		if (!hasChanged()) 
-		{
-			return;
-		}
-        
-		clearChanged();        
-        for(Observer obs : _observers) {
-        	if(obs instanceof IView)
-        	{
-        		obs.update(this,  arg);
-        		// TODO - remove observer crap and replace it with our new system
-        		//IView obsView = (IView) obs;
-        		//obsView.update(tho, arg);
-        		/*
-        		if(obsView.isValidListener(_operations.toArray(new Operation[_operations.size()])))
-        		{
-            		obs.update(this, arg);        			
-        		}
-        		*/
-        	}
-        }
+	/**
+	 * The list of receivable objects that can receive messages 
+	 * 
+	 * @param receivers The list of receivers
+	 */
+	protected GameModel(IReceivable... receivers) {
+		_receivers.addAll(Arrays.asList(receivers));
 	}
 		
+	public final void addReceiver(IReceivable receiver) {
+		_receivers.add(receiver);
+	}
+
+	public final void removeReciever(IReceivable receiver) {
+		_receivers.remove(receiver);
+	}
+
+	protected final void notifyReceivers() {
+		for(IReceivable receiver : _receivers) {
+			for(DispatcherOperation operation : _operations) {
+				receiver.executeRegisteredOperation(this, operation);
+			}
+		}
+	}
+				
 	protected final void doneUpdating() {
-		setChanged();
 		if(_operations.isEmpty()) {
 			_operations.add(DispatcherOperation.Refresh);
 		}
-		notifyObservers(_operations);
+		
+		notifyReceivers();
 		_operations.clear();
 	}	
 	
@@ -103,7 +85,9 @@ public class GameModel extends Observable
 		_operations.add(operation); 
 	}
 	
-	protected final void clearOperations() { 
-		_operations.clear(); 
+	protected final DispatcherOperation[] getOperations() {
+		DispatcherOperation[] operations = new DispatcherOperation[_operations.size()];
+		_operations.toArray(operations);
+		return operations;
 	}
 }

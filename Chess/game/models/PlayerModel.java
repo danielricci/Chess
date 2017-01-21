@@ -28,9 +28,9 @@ import java.awt.Color;
 import java.awt.Image;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Observer;
 import java.util.Vector;
 
+import api.IReceivable;
 import models.PlayerModel.Team.Orientation;
 
 public final class PlayerModel extends GameModel {
@@ -69,8 +69,8 @@ public final class PlayerModel extends GameModel {
 		}
 	}
 	
-	public PlayerModel(Observer observer) {
-		super(observer);
+	public PlayerModel(IReceivable receiver) {
+		super(receiver);
 		_team = Team.values()[TEAM_INDEX++];
 	}
 	

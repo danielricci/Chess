@@ -28,10 +28,14 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Observable;
+import java.util.HashMap;
+import java.util.Map;
 
+import communication.internal.dispatcher.DispatcherOperation;
 import controllers.TileController;
 import models.GameModel;
 
@@ -42,8 +46,23 @@ public class TileView extends BaseView {
 	private Image _image;
 	
 	private final Color _defaultBackgroundColor;
+	
+	private Color _previousBackgroundColor;
 	private Color _currentBackgroundColor;
 		
+	private class ToggleNeighborTiles implements ActionListener {
+		@Override public void actionPerformed(ActionEvent actionEvent) {
+			addMouseListener(new MouseAdapter() {
+				@Override public void mouseEntered(MouseEvent event) {
+					getController(TileController.class).highlightNeighbors(true);
+				}
+				@Override public void mouseExited(MouseEvent event) {
+					getController(TileController.class).highlightNeighbors(false);
+				}
+			});
+		}		
+	}
+	
 	public TileView(final TileController controller) {
 		super(controller);
 		
@@ -53,6 +72,8 @@ public class TileView extends BaseView {
 			: new Color(255, 205, 158);
 	}
 	
+
+	
 	@Override public void setBackground(Color backgroundColor) {
 		super.setBackground(backgroundColor);
 		_currentBackgroundColor = backgroundColor;
@@ -60,8 +81,6 @@ public class TileView extends BaseView {
 		
     @Override public void register() {
     	addMouseListener(new MouseAdapter() {  		    		
-    		@Override public void mouseReleased(MouseEvent e) {
-    		}
     		@Override public void mouseEntered(MouseEvent e) {
     		}
     		@Override public void mouseExited(MouseEvent e) {
@@ -69,9 +88,10 @@ public class TileView extends BaseView {
 		});
     }
     
-	@Override public void update(Observable obs, Object arg) {		
-		super.update(obs, arg);
-		System.out.println("Calling update from TileView");
+	@Override public Map<DispatcherOperation, ActionListener> getRegisteredOperations() {
+		return new HashMap<DispatcherOperation, ActionListener>(){{
+			put(DispatcherOperation.ToggleNeighborTiles, new ToggleNeighborTiles());
+		}};
 	}
 	
 	@Override public void render() {
