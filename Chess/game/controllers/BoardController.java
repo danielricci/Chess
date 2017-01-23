@@ -24,23 +24,17 @@
 
 package controllers;
 
-import java.util.AbstractMap.SimpleEntry;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
 import controllers.TileController.NeighborXPosition;
 import controllers.TileController.NeighborYPosition;
-import models.TileModel;
 import views.BoardView;
 
 public class BoardController extends BaseController {
 	
 	private static final int _dimension = 8;
-
-	private Vector<Vector<TileModel>> _tiles = new Vector<>(Arrays.asList(new Vector<TileModel>()));		
 	
 	/**
 	 * The list of neighbors logically associated to a specified controller
@@ -52,19 +46,28 @@ public class BoardController extends BaseController {
 	
 	public BoardController(BoardView view) {
 		super(view);
+		
+		// Create the placeholder for the neighboring system
+		//_neighbors.put(NeighborYPosition.BOTTOM, new HashMap<NeighborXPosition, TileController>());
+		//_neighbors.put(NeighborYPosition.NEUTRAL, new HashMap<NeighborXPosition, TileController>());
+		//_neighbors.put(NeighborYPosition.TOP, new HashMap<NeighborXPosition, TileController>());
 	}	
 	
-	public void createTileRow(ArrayList<TileController> controllers) {
+	public void populateBoardNeighbors(Vector<TileController> tilesController) {
+		
+		
+		
+		
 		// Populate the tile model and observer it with our view
-		for(TileController controller : controllers) {
+		for(TileController controller : tilesController) {
 			controller.populateTileModel(getView(BoardView.class));
 		}
-		
+		 
 		link();
 	}
 
 	private void link() {
-		
+		/*
 		Vector<TileModel> tilesRow = _tiles.lastElement();
 		for(int i = 0; i < tilesRow.size(); ++i) {
 			TileModel tile = tilesRow.get(i);
@@ -102,6 +105,7 @@ public class BoardController extends BaseController {
 				);					
 			}
 		}
+		*/
 	}
 	
 	public static int getDimensions() {		
@@ -109,6 +113,6 @@ public class BoardController extends BaseController {
 	}
 	
 	@Override public void dispose() {
-		_tiles.clear();
+		//_tiles.clear();
 	}
 }

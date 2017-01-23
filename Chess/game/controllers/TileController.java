@@ -28,7 +28,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -188,6 +187,17 @@ public class TileController extends BaseController {
 	}
 	
 	/**
+	 * Populates this controller with a receivable entity model
+	 * 
+	 * @param receiver The receiver to hook onto the model
+	 * 
+	 */
+	public void populateTileModel(IReceiver receiver) { // TODO - can this be done in a different way
+		_tile = new TileModel(receiver, getView(TileView.class));
+	}
+	
+	
+	/**
 	 * Gets the list of neighbors
 	 * 
 	 * @param position The forward position orientation
@@ -231,8 +241,8 @@ public class TileController extends BaseController {
 	 * @param neighborTiles The neighboring tiles to add to this model
 	 * 
 	 */
-	@SafeVarargs
-	public final void setNeighbors(NeighborYPosition neighborYPosition, Entry<NeighborXPosition, TileModel>... neighborTiles) {	
+	//@SafeVarargs
+	/*public final void setNeighbors(NeighborYPosition neighborYPosition, Entry<NeighborXPosition, TileModel>... neighborTiles) {	
 
 		// Set the reference to the mappings for the neighbors to this model
 		if(_neighbors.containsKey(neighborYPosition)) {
@@ -245,21 +255,9 @@ public class TileController extends BaseController {
 			}
 		}
 	}
+	*/
 	
-	
-	
-	
-	
-	
-	/**
-	 * Populates this controller with a receivable entity model
-	 * 
-	 * @param receiver The receiver to hook onto the model
-	 * 
-	 */
-	public void populateTileModel(IReceiver receiver) { // TODO - can this be done from the constructor
-		_tile = new TileModel(receiver, getView(TileView.class));
-	}
+
 	
 	private class ToggleNeighborTiles implements ActionListener { // TODO - can we get rid of classes and just write methods
 		@Override public void actionPerformed(ActionEvent actionEvent) {
@@ -280,6 +278,6 @@ public class TileController extends BaseController {
 	 * @param isHighlighted If it should be enabled or not
 	 */
 	public void highlightNeighbors(boolean enabled) {
-		_tile.getAllNeighbors();
+		//_tile.getAllNeighbors();
 	}
 }

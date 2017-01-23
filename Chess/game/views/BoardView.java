@@ -26,7 +26,6 @@ package views;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.swing.BoxLayout;
@@ -57,36 +56,37 @@ public class BoardView extends BaseView {
 		
 		// Holds all the cells that are to be rendered
 		Vector<Vector<TileView>> tiles = new Vector<>();
+		Vector<TileController> tilesController = new Vector<>();
 		
-		// Create the board, row by row
+		BoardController boardController = getController(BoardController.class);
+		
+		// Create the board view structure, row by row
 		for(int row = 0, dimensions = BoardController.getDimensions(); row < dimensions; ++row) {
 			
 			// Create a row
 			Vector<TileView> tileRow = new Vector<>();
-			for(int col = 0; col < dimensions; ++col) {		
+			for(int col =  0; col < dimensions; ++col) {		
 				
 				// Create a tile
-				TileView view = ViewFactory.instance().get(TileView.class, true, TileController.class);
+				TileView view = ViewFactory.instance().get(TileView.class, true, TileController.class, boardController);
 				tileRow.add(view);
+								
+				// Add a reference to the controller of the tileview so we can
+				// use it later
+				tilesController.add(view.getController(TileController.class));
 				
 				gbc.gridx = col;
 				gbc.gridy = row;
 				_gamePanel.add(view, gbc);			
 			}
-			
-			ArrayList<TileController> tileControllers = new ArrayList<>();
-			for(TileView view : tileRow) {
-				tileControllers.add(view.getController(TileController.class));
-			}
-			
-			// Create the list of tiles
-			getController(BoardController.class).createTileRow(tileControllers);
-				
+						
 			// Add the tiles to our list of tiles
 			tiles.add(tileRow);			
 		}
 		
-		// Render the elements
+		// Creates the logical neighbors of the tiles
+		getController(BoardController.class).populateBoardNeighbors(tilesController);
+		
 		for(Vector<TileView> row : tiles) {
 			for(TileView view : row) {
 				view.render();
