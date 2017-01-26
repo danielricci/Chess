@@ -28,14 +28,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
-import api.IReceiver;
 import communication.internal.dispatcher.DispatcherOperation;
+import factories.ViewFactory;
 import models.PlayerModel.Team.Orientation;
 import models.TileModel;
 import views.BaseView;
+import views.BoardView;
 import views.TileView;
 
 /**
@@ -180,22 +179,14 @@ public class TileController extends BaseController {
 	public <T extends BaseView> TileController(Class<T> viewClass) {
 		super(viewClass, true);
 		
+		// Create our model and assign to it the receivers
+		_tile = new TileModel(getView(TileView.class), ViewFactory.instance().get(BoardView.class, false));
+		
 		// Create the placeholder for the neighboring system
-		_neighbors.put(NeighborYPosition.BOTTOM, new HashMap<NeighborXPosition, TileController>());
-		_neighbors.put(NeighborYPosition.NEUTRAL, new HashMap<NeighborXPosition, TileController>());
-		_neighbors.put(NeighborYPosition.TOP, new HashMap<NeighborXPosition, TileController>());
+		//_neighbors.put(NeighborYPosition.BOTTOM, new HashMap<NeighborXPosition, TileController>());
+		//_neighbors.put(NeighborYPosition.NEUTRAL, new HashMap<NeighborXPosition, TileController>());
+		//_neighbors.put(NeighborYPosition.TOP, new HashMap<NeighborXPosition, TileController>());
 	}
-	
-	/**
-	 * Populates this controller with a receivable entity model
-	 * 
-	 * @param receiver The receiver to hook onto the model
-	 * 
-	 */
-	public void populateTileModel(IReceiver receiver) { // TODO - can this be done in a different way
-		_tile = new TileModel(receiver, getView(TileView.class));
-	}
-	
 	
 	/**
 	 * Gets the list of neighbors
@@ -204,7 +195,7 @@ public class TileController extends BaseController {
 	 * 
 	 * @return The list of neighbors 
 	 */
-	private SortedSet<TileController> getNeighbors(NeighborYPosition position) {
+	/*private SortedSet<TileController> getNeighbors(NeighborYPosition position) {
 		
 		if(position.isAgnostic()) {
 			position = NeighborYPosition.fromAgnostic(position);
@@ -220,10 +211,12 @@ public class TileController extends BaseController {
 		}
 		return neighbors;
 	}
+	*/
 	
 	/**
 	 * Gets all the neighbors associated to this controller
 	 */
+	/*
 	public SortedSet<TileController> getAllNeighbors() {
 		SortedSet<TileController> allNeighbours = new TreeSet<>(
 			getNeighbors(NeighborYPosition.TOP)
@@ -232,7 +225,7 @@ public class TileController extends BaseController {
 		allNeighbours.addAll(getNeighbors(NeighborYPosition.BOTTOM));
 
 		return allNeighbours;
-	}
+	}*/
 	
 	/**
 	 * Sets the neighbors specified to this model

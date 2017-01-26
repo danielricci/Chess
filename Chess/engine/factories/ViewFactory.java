@@ -115,7 +115,7 @@ public class ViewFactory implements IDestructor, IDispatcher<BaseView> {
 					return (T)item;
 				}
 			}
-
+			System.out.println("Tried to find " + viewClass.getName() + " but could not find it, this might be bad!");
 			try {
 				T view = viewClass.getConstructor(argsClass).newInstance(args);
 				Add(view, unique);

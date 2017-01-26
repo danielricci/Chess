@@ -24,9 +24,10 @@
 
 package controllers;
 
+import java.awt.Dimension;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import controllers.TileController.NeighborXPosition;
 import controllers.TileController.NeighborYPosition;
@@ -34,7 +35,7 @@ import views.BoardView;
 
 public class BoardController extends BaseController {
 	
-	private static final int _dimension = 8;
+	private static final Dimension _dimensions = new Dimension(8, 8);
 	
 	/**
 	 * The list of neighbors logically associated to a specified controller
@@ -46,73 +47,53 @@ public class BoardController extends BaseController {
 	
 	public BoardController(BoardView view) {
 		super(view);
-		
-		// Create the placeholder for the neighboring system
-		//_neighbors.put(NeighborYPosition.BOTTOM, new HashMap<NeighborXPosition, TileController>());
-		//_neighbors.put(NeighborYPosition.NEUTRAL, new HashMap<NeighborXPosition, TileController>());
-		//_neighbors.put(NeighborYPosition.TOP, new HashMap<NeighborXPosition, TileController>());
 	}	
 	
-	public void populateBoardNeighbors(Vector<TileController> tilesController) {
-		
-		
-		
-		
-		// Populate the tile model and observer it with our view
-		for(TileController controller : tilesController) {
-			controller.populateTileModel(getView(BoardView.class));
-		}
-		 
-		link();
-	}
-
-	private void link() {
-		/*
-		Vector<TileModel> tilesRow = _tiles.lastElement();
-		for(int i = 0; i < tilesRow.size(); ++i) {
-			TileModel tile = tilesRow.get(i);
-			tile.setNeighbors(
-				NeighborYPosition.NEUTRAL,
-				new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.LEFT, i - 1 < 0 ? null : tilesRow.get(i - 1)),
-				new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.NEUTRAL, tile),
-				new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.RIGHT, i + 1 == tilesRow.size() ? null : tilesRow.get(i + 1))
-			);
-		}
-		
-		if(_tiles.size() > 1) {
-
-			// Grab the most recently populated two elements to populate their neighbors
-			Vector<TileModel> firstRow = _tiles.get(_tiles.size() - 2);
-			Vector<TileModel> secondRow = _tiles.lastElement();
-			
-			// Populate both rows neighbors
-			for(int i = 0; i < firstRow.size(); ++i) {
-				TileModel firstRowElement = firstRow.get(i);
-				TileModel secondRowElement = secondRow.get(i);
-			
-				// Set the neighbors of the first rows bottom neighbors
-				firstRowElement.setNeighbors(NeighborYPosition.BOTTOM, 
-					new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.LEFT, i > 0 ? secondRow.get(i - 1) : null),
-					new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.NEUTRAL, secondRowElement),
-					new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.RIGHT, i + 1 < firstRow.size() ? secondRow.get(i + 1) : null)
-				);
+	public void populateBoardNeighbors(List<List<TileController>> tiles) {
 				
-				// Set the neighbors of the second rows top neighbors
-				secondRowElement.setNeighbors(NeighborYPosition.TOP, 
-					new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.LEFT, i > 0 ? firstRow.get(i - 1) : null),
-					new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.NEUTRAL, firstRowElement),
-					new SimpleEntry<NeighborXPosition, TileModel>(NeighborXPosition.RIGHT, i + 1 < firstRow.size() ? firstRow.get(i + 1) : null)
-				);					
-			}
+		for(int i = 0; i < tiles.size(); ++i) {
+			link(tiles.get(0), tiles.get(1), tiles.get(2));
 		}
-		*/
+	}
+
+	/**
+	 * Links together the passed in rows with respect to a flood fill 
+	 * @param top
+	 * @param neutral
+	 * @param bottom
+	 */
+	private void link(List<TileController> topRow, List<TileController> neutralRow, List<TileController> bottomRow) {
+		
+		Map<NeighborYPosition, Map<NeighborXPosition, TileController>> neighbors = new HashMap<NeighborYPosition, Map<NeighborXPosition, TileController>>(){{
+			put(NeighborYPosition.TOP, new HashMap<NeighborXPosition, TileController>());
+			put(NeighborYPosition.NEUTRAL, new HashMap<NeighborXPosition, TileController>());
+			put(NeighborYPosition.BOTTOM, new HashMap<NeighborXPosition, TileController>());
+		}};
+		
+		for(int i = 0, dim = getDimensionX(); i < dim; ++i) {
+					
+			// Top Neighbors
+			neighbors.get(NeighborYPosition.TOP).put(NeighborXPosition.LEFT, i - 1 < 0 ? null : topRow.get(i - 1));
+			neighbors.get(NeighborYPosition.TOP).put(NeighborXPosition.NEUTRAL, i - 1 < 0 ? null : topRow.get(i - 1));
+			neighbors.get(NeighborYPosition.TOP).put(NeighborXPosition.RIGHT, i - 1 < 0 ? null : topRow.get(i - 1));
+			
+			// Neutral Neighbors
+			neighbors.get(NeighborYPosition.NEUTRAL).put(NeighborXPosition.LEFT, i - 1 < 0 ? null : neutralRow.get(i - 1));
+			neighbors.get(NeighborYPosition.NEUTRAL).put(NeighborXPosition.NEUTRAL, i - 1 < 0 ? null : neutralRow.get(i - 1));
+			neighbors.get(NeighborYPosition.NEUTRAL).put(NeighborXPosition.RIGHT, i - 1 < 0 ? null : neutralRow.get(i - 1));
+				
+			// Bottom Neighbors
+			neighbors.get(NeighborYPosition.BOTTOM).put(NeighborXPosition.LEFT, i - 1 < 0 ? null : bottomRow.get(i - 1));
+			neighbors.get(NeighborYPosition.BOTTOM).put(NeighborXPosition.NEUTRAL, i - 1 < 0 ? null : bottomRow.get(i - 1));
+			neighbors.get(NeighborYPosition.BOTTOM).put(NeighborXPosition.RIGHT, i - 1 < 0 ? null : bottomRow.get(i - 1));
+		}
 	}
 	
-	public static int getDimensions() {		
-		return _dimension;
+	public static int getDimensionX() {		
+		return _dimensions.width;
 	}
 	
-	@Override public void dispose() {
-		//_tiles.clear();
+	public static int getDimensionY() {		
+		return _dimensions.height;
 	}
 }

@@ -26,6 +26,8 @@ package views;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.BoxLayout;
@@ -53,45 +55,42 @@ public class BoardView extends BaseView {
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.weightx = 1.0;
 		gbc.weighty = 1.0;
-		
-		// Holds all the cells that are to be rendered
-		Vector<Vector<TileView>> tiles = new Vector<>();
-		Vector<TileController> tilesController = new Vector<>();
-		
-		BoardController boardController = getController(BoardController.class);
+				
+		// Holds the list of tile views 
+		List<List<TileView>> tiles = new ArrayList<>();
 		
 		// Create the board view structure, row by row
-		for(int row = 0, dimensions = BoardController.getDimensions(); row < dimensions; ++row) {
+		for(int row = 0, dimensionsX = BoardController.getDimensionX(); row < dimensionsX; ++row) {
 			
-			// Create a row
 			Vector<TileView> tileRow = new Vector<>();
-			for(int col =  0; col < dimensions; ++col) {		
+			// Create a row
+			for(int col =  0, dimensionsY = BoardController.getDimensionY(); col < dimensionsY; ++col) {		
 				
-				// Create a tile
-				TileView view = ViewFactory.instance().get(TileView.class, true, TileController.class, boardController);
+				// Create a tile and add it to our board
+				TileView view = ViewFactory.instance().get(TileView.class, true, TileController.class);
 				tileRow.add(view);
-								
-				// Add a reference to the controller of the tileview so we can
-				// use it later
-				tilesController.add(view.getController(TileController.class));
 				
+				// Make sure that dimensions are properly mapped
 				gbc.gridx = col;
 				gbc.gridy = row;
-				_gamePanel.add(view, gbc);			
-			}
-						
-			// Add the tiles to our list of tiles
-			tiles.add(tileRow);			
-		}
-		
-		// Creates the logical neighbors of the tiles
-		getController(BoardController.class).populateBoardNeighbors(tilesController);
-		
-		for(Vector<TileView> row : tiles) {
-			for(TileView view : row) {
+				_gamePanel.add(view, gbc);
+				
+				// render the view
 				view.render();
 			}
+			
+			tiles.add(tileRow);
 		}
+		
+		/*
+		// Link the views together logically
+		getController(BoardController.class).populateBoardNeighbors(
+			tiles
+			.stream().map(z -> z
+			.stream().map(a -> a.getController(TileController.class)).collect(Collectors.toList()))
+			.collect(Collectors.toList())
+		);
+		*/
 		
 		add(_gamePanel);
 	}

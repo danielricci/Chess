@@ -44,7 +44,7 @@ public class MainView extends BaseView {
 	@Override public void render() {
 		setLayout(new BorderLayout());
 		
-		BaseView boardGameView = ViewFactory.instance().get(BoardView.class, false, BoardController.class);
+		BaseView boardGameView = ViewFactory.instance().get(BoardView.class, true, BoardController.class);
 		boardGameView.render();
 		
 		add(boardGameView);

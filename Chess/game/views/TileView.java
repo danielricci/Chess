@@ -63,7 +63,7 @@ public class TileView extends BaseView {
 		}		
 	}
 	
-	public TileView(final TileController controller) {
+	public TileView(Class<TileController> controller) {
 		super(controller);
 		
 		TileView.cycleBackgroundColor();
