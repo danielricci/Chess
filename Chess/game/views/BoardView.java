@@ -37,6 +37,7 @@ import controllers.BaseController;
 import controllers.BoardController;
 import controllers.TileController;
 import factories.ViewFactory;
+import views.TileView.TileBackgroundColor;
 
 public class BoardView extends BaseView {
 	
@@ -68,6 +69,7 @@ public class BoardView extends BaseView {
 				
 				// Create a tile and add it to our board
 				TileView view = ViewFactory.instance().get(TileView.class, true, TileController.class);
+				view.setDefaultBackgroundColor((col + row) % 2 == 0 ? TileBackgroundColor.FirstColor :  TileBackgroundColor.SecondColor);
 				tileRow.add(view);
 				
 				// Make sure that dimensions are properly mapped

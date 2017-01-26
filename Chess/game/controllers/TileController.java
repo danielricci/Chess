@@ -30,11 +30,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import communication.internal.dispatcher.DispatcherOperation;
-import factories.ViewFactory;
 import models.PlayerModel.Team.Orientation;
 import models.TileModel;
 import views.BaseView;
-import views.BoardView;
 import views.TileView;
 
 /**
@@ -176,11 +174,11 @@ public class TileController extends BaseController {
 	 * 
 	 * @param viewClass The view to instantiate this controller with
 	 */
-	public <T extends BaseView> TileController(Class<T> viewClass) {
-		super(viewClass, true);
+	public <T extends BaseView> TileController(TileView viewClass) {
+		super(viewClass);
 		
 		// Create our model and assign to it the receivers
-		_tile = new TileModel(getView(TileView.class), ViewFactory.instance().get(BoardView.class, false));
+		//_tile = new TileModel(getView(TileView.class), ViewFactory.instance().get(BoardView.class, false));
 		
 		// Create the placeholder for the neighboring system
 		//_neighbors.put(NeighborYPosition.BOTTOM, new HashMap<NeighborXPosition, TileController>());

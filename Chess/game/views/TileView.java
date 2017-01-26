@@ -41,13 +41,20 @@ import models.GameModel;
 
 public class TileView extends BaseView {
 	
-	private static int TileViewCounter = 0;
+	public enum TileBackgroundColor {
+		FirstColor(new Color(209, 139, 71)),
+		SecondColor(new Color(255, 205, 158));
+		
+		public final Color color;
+		
+		TileBackgroundColor(Color color) {
+			this.color = color;
+		}
+	}
 	
 	private Image _image;
 	
-	private final Color _defaultBackgroundColor;
-	
-	private Color _previousBackgroundColor;
+	private Color _defaultBackgroundColor;
 	private Color _currentBackgroundColor;
 		
 	private class ToggleNeighborTiles implements ActionListener {
@@ -65,14 +72,11 @@ public class TileView extends BaseView {
 	
 	public TileView(Class<TileController> controller) {
 		super(controller);
-		
-		TileView.cycleBackgroundColor();
-		_defaultBackgroundColor = _currentBackgroundColor = TileView.TileViewCounter % 2 == 0 
-			? new Color(209, 139, 71) 
-			: new Color(255, 205, 158);
 	}
 	
-
+	public void setDefaultBackgroundColor(TileBackgroundColor backgroundColor) {
+		_defaultBackgroundColor = _currentBackgroundColor = backgroundColor.color;
+	}
 	
 	@Override public void setBackground(Color backgroundColor) {
 		super.setBackground(backgroundColor);
@@ -134,10 +138,5 @@ public class TileView extends BaseView {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D)g;
         g2d.drawImage(_image, 10, 8, 48, 48, null, null);       
-	}
-	
-	// TODO - find a way to get rid of this
-	public static void cycleBackgroundColor() {
-		++TileView.TileViewCounter;
 	}
 }
