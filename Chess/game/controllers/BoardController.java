@@ -52,7 +52,7 @@ public class BoardController extends BaseController {
 	public void populateBoardNeighbors(List<List<TileController>> tiles) {
 				
 		for(int i = 0; i < tiles.size(); ++i) {
-			link(tiles.get(0), tiles.get(1), tiles.get(2));
+			link(i - 1 > 0 ? tiles.get(i - 1) : null, tiles.get(i), i + 1 < tiles.size() ? tiles.get(i + 1) : null);
 		}
 	}
 
@@ -69,7 +69,7 @@ public class BoardController extends BaseController {
 			put(NeighborYPosition.NEUTRAL, new HashMap<NeighborXPosition, TileController>());
 			put(NeighborYPosition.BOTTOM, new HashMap<NeighborXPosition, TileController>());
 		}};
-		
+			
 		for(int i = 0, dim = getDimensionX(); i < dim; ++i) {
 					
 			// Top Neighbors
@@ -87,6 +87,8 @@ public class BoardController extends BaseController {
 			neighbors.get(NeighborYPosition.BOTTOM).put(NeighborXPosition.NEUTRAL, i - 1 < 0 ? null : bottomRow.get(i - 1));
 			neighbors.get(NeighborYPosition.BOTTOM).put(NeighborXPosition.RIGHT, i - 1 < 0 ? null : bottomRow.get(i - 1));
 		}
+		
+		
 	}
 	
 	public static int getDimensionX() {		

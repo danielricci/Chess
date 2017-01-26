@@ -103,31 +103,11 @@ public class TileView extends BaseView {
 		super.render();
 		setBackground(_currentBackgroundColor);
 		repaint();
-		
-		/* 
-		 * TODO Enable this when it is time to run with real pieces
-		_image = controller.getTileImage();
-		;
-		 */
 	}
 	
 	@Override public void refresh(GameModel gameModel) {
-		
 		super.refresh(gameModel);
-		
-		/* TODO Enable this when it is time to run with real pieces
-		TileModel model = (TileModel)gameModel;
-		PlayerModel player = model.getPlayer();
-
-		if(player == null) {
-			_image = null;
-		}
-		else {
-			_image = player.getPieceData(model);
-		}
-		*/
-		repaint();
-		
+		repaint();		
 	}
 
 	@Override public void dispose() {

@@ -29,6 +29,7 @@ import java.awt.GridBagLayout;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import java.util.stream.Collectors;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
@@ -84,7 +85,7 @@ public class BoardView extends BaseView {
 			tiles.add(tileRow);
 		}
 		
-		/*
+		
 		// Link the views together logically
 		getController(BoardController.class).populateBoardNeighbors(
 			tiles
@@ -92,7 +93,6 @@ public class BoardView extends BaseView {
 			.stream().map(a -> a.getController(TileController.class)).collect(Collectors.toList()))
 			.collect(Collectors.toList())
 		);
-		*/
 		
 		add(_gamePanel);
 	}
