@@ -40,6 +40,10 @@ import views.TileView;
  */
 public class TileController extends BaseController {
 	
+	private static int counter = 0;
+	
+	private int identifier = ++counter;
+	
 	/**
 	 * The Model associated to this controller
 	 */
@@ -270,5 +274,10 @@ public class TileController extends BaseController {
 	 */
 	public void highlightNeighbors(boolean enabled) {
 		//_tile.getAllNeighbors();
+	}
+	
+	@Override
+	public String toString() {
+		return String.valueOf(identifier);
 	}
 }

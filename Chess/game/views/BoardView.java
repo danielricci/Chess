@@ -62,11 +62,11 @@ public class BoardView extends BaseView {
 		List<List<TileView>> tiles = new ArrayList<>();
 		
 		// Create the board view structure, row by row
-		for(int row = 0, dimensionsX = BoardController.getDimensionX(); row < dimensionsX; ++row) {
+		for(int row = 0, dimensionsX = BoardController.Dimensions.width; row < dimensionsX; ++row) {
 			
 			Vector<TileView> tileRow = new Vector<>();
 			// Create a row
-			for(int col =  0, dimensionsY = BoardController.getDimensionY(); col < dimensionsY; ++col) {		
+			for(int col =  0, dimensionsY = BoardController.Dimensions.height; col < dimensionsY; ++col) {		
 				
 				// Create a tile and add it to our board
 				TileView view = ViewFactory.instance().get(TileView.class, true, TileController.class);

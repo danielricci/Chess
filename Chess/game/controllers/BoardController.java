@@ -35,67 +35,75 @@ import views.BoardView;
 
 public class BoardController extends BaseController {
 	
-	private static final Dimension _dimensions = new Dimension(8, 8);
+	/**
+	 * The dimensions of the board
+	 */
+	public static final Dimension Dimensions = new Dimension(8, 8);
 	
 	/**
 	 * The list of neighbors logically associated to a specified controller
+	 * 
 	 * Key1: A Controller that maps to its association of neighbors
 	 * Key2: The Y-Axis of the neighbor
 	 * Key3: The X-Axis of the neighbor
 	 */
 	private final Map<TileController, Map<NeighborYPosition, Map<NeighborXPosition, TileController>>> _neighbors = new HashMap<>();
 	
+	/**
+	 * Constructs a new instance of this class
+	 * 
+	 * @param view The view to link with this controller
+	 */
 	public BoardController(BoardView view) {
 		super(view);
 	}	
 	
+	/**
+	 * Populates the list of neighbors, logically attaching them
+	 * 
+	 * @param tiles The list of tiles 
+	 */
 	public void populateBoardNeighbors(List<List<TileController>> tiles) {
-				
 		for(int i = 0; i < tiles.size(); ++i) {
 			link(i - 1 > 0 ? tiles.get(i - 1) : null, tiles.get(i), i + 1 < tiles.size() ? tiles.get(i + 1) : null);
 		}
 	}
 
 	/**
-	 * Links together the passed in rows with respect to a flood fill 
-	 * @param top
-	 * @param neutral
-	 * @param bottom
+	 * Links together the passed in rows with respect to a flood fill
+	 *  
+	 * @param top The top row
+	 * @param neutral the neutral row
+	 * @param bottom The bottom row
 	 */
 	private void link(List<TileController> topRow, List<TileController> neutralRow, List<TileController> bottomRow) {
 		
-		Map<NeighborYPosition, Map<NeighborXPosition, TileController>> neighbors = new HashMap<NeighborYPosition, Map<NeighborXPosition, TileController>>(){{
-			put(NeighborYPosition.TOP, new HashMap<NeighborXPosition, TileController>());
-			put(NeighborYPosition.NEUTRAL, new HashMap<NeighborXPosition, TileController>());
-			put(NeighborYPosition.BOTTOM, new HashMap<NeighborXPosition, TileController>());
-		}};
+		for(int i = 0, dim = Dimensions.width ; i < dim; ++i) {
 			
-		for(int i = 0, dim = getDimensionX(); i < dim; ++i) {
+			Map<NeighborYPosition, Map<NeighborXPosition, TileController>> neighbors = new HashMap<NeighborYPosition, Map<NeighborXPosition, TileController>>(){{
+				put(NeighborYPosition.TOP, new HashMap<NeighborXPosition, TileController>());
+				put(NeighborYPosition.NEUTRAL, new HashMap<NeighborXPosition, TileController>());
+				put(NeighborYPosition.BOTTOM, new HashMap<NeighborXPosition, TileController>());
+			}};
 					
 			// Top Neighbors
-			neighbors.get(NeighborYPosition.TOP).put(NeighborXPosition.LEFT, i - 1 < 0 ? null : topRow.get(i - 1));
-			neighbors.get(NeighborYPosition.TOP).put(NeighborXPosition.NEUTRAL, i - 1 < 0 ? null : topRow.get(i - 1));
-			neighbors.get(NeighborYPosition.TOP).put(NeighborXPosition.RIGHT, i - 1 < 0 ? null : topRow.get(i - 1));
+			neighbors.get(NeighborYPosition.TOP).put(NeighborXPosition.LEFT, i - 1 < 0 || topRow == null ? null : topRow.get(i - 1));
+			neighbors.get(NeighborYPosition.TOP).put(NeighborXPosition.NEUTRAL, topRow == null ? null : topRow.get(i));
+			neighbors.get(NeighborYPosition.TOP).put(NeighborXPosition.RIGHT, i + 1 >= dim || topRow == null ? null : topRow.get(i + 1));
 			
 			// Neutral Neighbors
 			neighbors.get(NeighborYPosition.NEUTRAL).put(NeighborXPosition.LEFT, i - 1 < 0 ? null : neutralRow.get(i - 1));
-			neighbors.get(NeighborYPosition.NEUTRAL).put(NeighborXPosition.NEUTRAL, i - 1 < 0 ? null : neutralRow.get(i - 1));
-			neighbors.get(NeighborYPosition.NEUTRAL).put(NeighborXPosition.RIGHT, i - 1 < 0 ? null : neutralRow.get(i - 1));
+			neighbors.get(NeighborYPosition.NEUTRAL).put(NeighborXPosition.NEUTRAL, neutralRow.get(i));
+			neighbors.get(NeighborYPosition.NEUTRAL).put(NeighborXPosition.RIGHT, i + 1 >= dim ? null : neutralRow.get(i + 1));
 				
 			// Bottom Neighbors
-			neighbors.get(NeighborYPosition.BOTTOM).put(NeighborXPosition.LEFT, i - 1 < 0 ? null : bottomRow.get(i - 1));
-			neighbors.get(NeighborYPosition.BOTTOM).put(NeighborXPosition.NEUTRAL, i - 1 < 0 ? null : bottomRow.get(i - 1));
-			neighbors.get(NeighborYPosition.BOTTOM).put(NeighborXPosition.RIGHT, i - 1 < 0 ? null : bottomRow.get(i - 1));
+			neighbors.get(NeighborYPosition.BOTTOM).put(NeighborXPosition.LEFT, i - 1 < 0 || bottomRow == null ? null : bottomRow.get(i - 1));
+			neighbors.get(NeighborYPosition.BOTTOM).put(NeighborXPosition.NEUTRAL, bottomRow == null ? null : bottomRow.get(i));
+			neighbors.get(NeighborYPosition.BOTTOM).put(NeighborXPosition.RIGHT, i + 1 >= dim || bottomRow == null ? null : bottomRow.get(i + 1));
+			
+			// Assign the mappings where we reference the neutral-neutral tile as the key
+			_neighbors.put(neutralRow.get(i), neighbors);
 		}
-		
-		
-	}
-	
-	public static int getDimensionX() {		
-		return _dimensions.width;
-	}
-	
-	public static int getDimensionY() {		
-		return _dimensions.height;
+			
 	}
 }
