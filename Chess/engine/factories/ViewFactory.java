@@ -66,9 +66,9 @@ public class ViewFactory implements IDestructor, IDispatcher<BaseView> {
 	 * Adds a view
 	 * 
 	 * @param controller The controller to add
-	 * @param unique If the controller should be added into the exposed cache
+	 * @param isShared If the controller should be added into the exposed cache
 	 */
-	private void Add(BaseView view, boolean unique) { 
+	private void Add(BaseView view, boolean isShared) { 
 	    String viewName = view.getClass().getName();
 	    
 	    Set<IView> views = _history.get(viewName);
@@ -78,7 +78,7 @@ public class ViewFactory implements IDestructor, IDispatcher<BaseView> {
 	    }
 	    views.add(view);
 	    
-	    if(!unique) {
+	    if(isShared) {
 	        _views.add(view);
 	    }
 	}
@@ -90,7 +90,15 @@ public class ViewFactory implements IDestructor, IDispatcher<BaseView> {
 		return _instance;
 	}
 	
-	public <T extends BaseView> T get(Class<T> viewClass, boolean unique, Object...args) {
+	public <T extends BaseView> T get(Class<T> viewClass, boolean isShared, Object...args) {
+		
+		if(isShared) {
+			for(BaseView item : _views) {
+				if(item.getClass() == viewClass) {
+					return (T)item;
+				}
+			}
+		}
 		
 		// Get the list of arguments together
 		Class<?>[] argsClass = new Class<?>[args.length];
@@ -98,32 +106,13 @@ public class ViewFactory implements IDestructor, IDispatcher<BaseView> {
 			argsClass[i] = args[i].getClass();
 		}
 		
-		// If its unique then we don't add it to our list of created items we just construct and
-		// return it
-		if(unique) {
-			try {	
-				T view = viewClass.getConstructor(argsClass).newInstance(args);
-				Add(view, unique);
-				return view;
-			} catch (Exception e) {
-				e.printStackTrace();
-			}	
-		}
-		else {
-			for(BaseView item : _views) {
-				if(item.getClass() == viewClass) {
-					return (T)item;
-				}
-			}
-			System.out.println("Tried to find " + viewClass.getName() + " but could not find it, this might be bad!");
-			try {
-				T view = viewClass.getConstructor(argsClass).newInstance(args);
-				Add(view, unique);
-				return view; 
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+		try {	
+			T view = viewClass.getConstructor(argsClass).newInstance(args);
+			Add(view, isShared);
+			return view;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
 		
 		return null;
 	}

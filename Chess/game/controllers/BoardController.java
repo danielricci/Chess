@@ -29,8 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import controllers.TileController.NeighborXPosition;
-import controllers.TileController.NeighborYPosition;
+import models.PlayerModel.Team.Orientation;
 import views.BoardView;
 
 public class BoardController extends BaseController {
@@ -48,6 +47,125 @@ public class BoardController extends BaseController {
 	 * Key3: The X-Axis of the neighbor
 	 */
 	private final Map<TileController, Map<NeighborYPosition, Map<NeighborXPosition, TileController>>> _neighbors = new HashMap<>();
+	
+	/**
+	 * Specifies the interactions on the x-axis of neighbors 
+	 */
+	private enum NeighborXPosition {
+		/**
+		 * Note: Make sure that agnostic values follow non-agnostic ones
+		 */
+		LEFT	(1 << 0, false),
+		LEFT_AGNOSTIC(1 << 1, true),
+		
+		RIGHT (1 << 2, false),
+		RIGHT_AGNOSTIC	(1 << 3, true),
+		
+		NEUTRAL(1 << 4, false),
+		NEUTRAL_AGNOSTIC(1 << 5, true);
+	
+		private final int _value;
+		private final boolean _agnostic;
+		
+		private NeighborXPosition(int value, boolean agnostic) {
+			_value = value;
+			_agnostic = agnostic;
+		}
+	}
+	
+	/**
+	 * Specifies the interactions on the x-axis of neighbors
+	 */
+	private enum NeighborYPosition {
+		
+		/**
+		 * Note: Make sure that agnostic values follow non-agnostic ones
+		 */
+		TOP	(1 << 0, false),
+		TOP_AGNOSTIC(1 << 1, true),
+		
+		BOTTOM (1 << 2, false),
+		BOTTOM_AGNOSTIC	(1 << 3, true),
+		
+		NEUTRAL(1 << 4, false),
+		NEUTRAL_AGNOSTIC(1 << 5, true);
+	
+		private final int _value;
+		private final boolean _agnostic;
+		
+		private NeighborYPosition(int value, boolean agnostic) {
+			_value = value;
+			_agnostic = agnostic;
+		}
+		
+		protected static NeighborYPosition flip(NeighborYPosition pos) {
+			switch(pos) {
+			case BOTTOM:
+				return TOP;
+			case TOP:
+				return BOTTOM;
+			default:
+				return pos;
+			}
+		}
+		
+		/**
+		 * Normalizes a position by removing its agnostic value
+		 */
+		protected static NeighborYPosition fromAgnostic(NeighborYPosition position) {
+			switch(position) {
+				case BOTTOM_AGNOSTIC:
+				case TOP_AGNOSTIC:
+				case NEUTRAL_AGNOSTIC:
+				{
+					int val = position._value >> 1;
+					for(NeighborYPosition pos : NeighborYPosition.values()) {
+						if(pos._value == val) {
+							return pos;
+						}
+					}			
+					break;
+				}
+			}
+			System.out.println("Error with fromAgnostic");
+			System.out.println(java.util.Arrays.toString((new Throwable()).getStackTrace()));
+			return position;
+		}
+		
+		protected boolean isAgnostic() {
+			return _agnostic;
+		}
+		
+		protected static NeighborYPosition convertOrientation(Orientation orientation) {
+			return orientation == Orientation.UP 
+				? NeighborYPosition.TOP 
+				: NeighborYPosition.BOTTOM;
+		}
+		
+		protected static NeighborYPosition toAgnostic(NeighborYPosition position) {
+			switch(position) {
+			case BOTTOM:
+			case TOP:
+				int val = position._value << 1;
+				for(NeighborYPosition pos : NeighborYPosition.values()) {
+					if(pos._value == val) {
+						return pos;
+					}
+				}
+				break;
+			case BOTTOM_AGNOSTIC:
+				break;
+			case TOP_AGNOSTIC:
+				break;
+			default:
+				break;
+			}
+			
+			System.out.println("Error with toAgnostic");
+			System.out.println(java.util.Arrays.toString((new Throwable()).getStackTrace()));
+			return position;
+		}
+	};
 	
 	/**
 	 * Constructs a new instance of this class
@@ -104,6 +222,67 @@ public class BoardController extends BaseController {
 			// Assign the mappings where we reference the neutral-neutral tile as the key
 			_neighbors.put(neutralRow.get(i), neighbors);
 		}
-			
 	}
+	
+	/**
+	 * Gets the list of neighbors
+	 * 
+	 * @param position The forward position orientation
+	 * 
+	 * @return The list of neighbors 
+	 */
+	/*private SortedSet<TileController> getNeighbors(NeighborYPosition position) {
+		
+		if(position.isAgnostic()) {
+			position = NeighborYPosition.fromAgnostic(position);
+		}
+		
+		SortedSet<TileController> neighbors = new TreeSet<>();
+		if(_neighbors.containsKey(position)) {
+			for(TileController controller : _neighbors.get(position).values()) {
+				if(controller != null) {
+					neighbors.add(controller);
+				}
+			}
+		}
+		return neighbors;
+	}
+	*/
+	
+	/**
+	 * Gets all the neighbors associated to this controller
+	 */
+	/*
+	public SortedSet<TileController> getAllNeighbors() {
+		SortedSet<TileController> allNeighbours = new TreeSet<>(
+			getNeighbors(NeighborYPosition.TOP)
+		);
+		allNeighbours.addAll(getNeighbors(NeighborYPosition.NEUTRAL));
+		allNeighbours.addAll(getNeighbors(NeighborYPosition.BOTTOM));
+
+		return allNeighbours;
+	}*/
+	
+	/**
+	 * Sets the neighbors specified to this model
+	 * 
+	 * @param neighborYPosition The Y-Axis positioning of the neighbor, refer to documentation for this if need be
+	 * @param neighborTiles The neighboring tiles to add to this model
+	 * 
+	 */
+	//@SafeVarargs
+	/*public final void setNeighbors(NeighborYPosition neighborYPosition, Entry<NeighborXPosition, TileModel>... neighborTiles) {	
+
+		// Set the reference to the mappings for the neighbors to this model
+		if(_neighbors.containsKey(neighborYPosition)) {
+			_neighbors.get(neighborYPosition).clear();
+
+			// Go through the passed in contents and add use it to populate the neighbors of this model
+			for (Entry<NeighborXPosition, TileModel> neighborTile : neighborTiles)
+			{
+				_neighbors.get(neighborYPosition).put(neighborTile.getKey(), neighborTile.getValue());
+			}
+		}
+	}
+	*/
 }

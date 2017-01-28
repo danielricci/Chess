@@ -69,7 +69,7 @@ public class BoardView extends BaseView {
 			for(int col =  0, dimensionsY = BoardController.Dimensions.height; col < dimensionsY; ++col) {		
 				
 				// Create a tile and add it to our board
-				TileView view = ViewFactory.instance().get(TileView.class, true, TileController.class);
+				TileView view = ViewFactory.instance().get(TileView.class, false, TileController.class);
 				view.setDefaultBackgroundColor((col + row) % 2 == 0 ? TileBackgroundColor.FirstColor :  TileBackgroundColor.SecondColor);
 				tileRow.add(view);
 				

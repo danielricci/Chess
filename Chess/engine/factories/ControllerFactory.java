@@ -88,9 +88,9 @@ public class ControllerFactory implements IDestructor, IDispatcher<BaseControlle
 	 * Adds a controller
 	 * 
 	 * @param controller The controller to add
-	 * @param unique If the controller should be added into the exposed cache
+	 * @param isShared If the controller should be added into the exposed cache
 	 */
-	private void Add(BaseController controller, boolean unique) { 
+	private void Add(BaseController controller, boolean isShared) { 
 	    String controllerName = controller.getClass().getName();
 	    
 	    Set<IController> controllers = _history.get(controllerName);
@@ -100,7 +100,7 @@ public class ControllerFactory implements IDestructor, IDispatcher<BaseControlle
 	    }
 	    controllers.add(controller);
 	    
-	    if(!unique) {
+	    if(isShared) {
 	        _controllers.add(controller);
 	    }
 	}
@@ -109,11 +109,19 @@ public class ControllerFactory implements IDestructor, IDispatcher<BaseControlle
 	 * Gets the specified type of resource
 	 * 
 	 * @param controllerClass The controller class to get
-	 * @param unique If the factory should keep tabs of this class
+	 * @param isShared If the factory should keep tabs of this class
 	 * @param args The arguments to pass into the controller class
 	 * @return A reference to the specified class
 	 */
-	public <T extends BaseController> T get(Class<T> controllerClass, boolean unique, Object...args) {
+	public <T extends BaseController> T get(Class<T> controllerClass, boolean isShared, Object...args) {
+		
+		if(isShared) {
+			for(BaseController item : _controllers) {
+				if(item.getClass() == controllerClass) {
+					return (T)item;
+				}
+			}
+		}
 		
 		// Get the list of arguments together
 		Class<?>[] argsClass = new Class<?>[args.length];
@@ -121,37 +129,15 @@ public class ControllerFactory implements IDestructor, IDispatcher<BaseControlle
 			argsClass[i] = args[i].getClass();
 		}
 		
-		// If its unique then we don't add it to our list of created items we just construct and
-		// return it
-		if(unique) {
-			try {		
-			    
-			    T controller = controllerClass.getConstructor(argsClass).newInstance(args);
-			    Add(controller, unique);
-				return controller;
-				
-			} catch (Exception e) {
-				e.printStackTrace();
-			}	
+		try {
+		    T createdClass = controllerClass.getConstructor(argsClass).newInstance(args);
+			Add(createdClass, isShared);
+			return createdClass;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		else {
-			for(BaseController item : _controllers) {
-				if(item.getClass() == controllerClass) {
-					return (T)item;
-				}
-			}
-
-			try {
-			    
-			    T createdClass = controllerClass.getConstructor(argsClass).newInstance(args);
-				Add(createdClass, unique);
-				return createdClass;
-				
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		
+			
 		return null;
 	}
 	
