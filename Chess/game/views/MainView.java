@@ -37,6 +37,7 @@ public class MainView extends BaseView {
 		super(controller);
 	}
 	
+	
 	public MainView(MainWindowController controller) {
 		super(controller);
 	}

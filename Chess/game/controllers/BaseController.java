@@ -26,6 +26,7 @@ package controllers;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 import java.util.Map;
 
 import api.IController;
@@ -78,7 +79,7 @@ public abstract class BaseController implements IController  {
 		return null;
 	}
 	
-	@Override public final void executeRegisteredOperation(Object sender, DispatcherOperation operation) {		
+	@Override public final void executeRegisteredOperation(Object sender, DispatcherOperation operation, List<Object> args) {		
 		Map<DispatcherOperation, ActionListener> operations = getRegisteredOperations();
 		ActionListener event;
 		if(operations != null && (event = operations.get(operation)) != null) {

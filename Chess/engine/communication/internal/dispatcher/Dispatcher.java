@@ -26,7 +26,6 @@ package communication.internal.dispatcher;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import api.IController;
 import api.IReceiver;
 
 public class Dispatcher<T extends IReceiver> extends Thread {
@@ -43,7 +42,7 @@ public class Dispatcher<T extends IReceiver> extends Thread {
 				if(message != null) {
 					for(Object resource : message.resources)
 					{
-						((IController)resource).executeRegisteredOperation(message.sender, message.operation);
+						((T)resource).executeRegisteredOperation(message.sender, message.operation, message.args);
 					}
 				}
 				Thread.sleep(220);						

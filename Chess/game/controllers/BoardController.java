@@ -28,6 +28,7 @@ import java.awt.Dimension;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
 
 import models.PlayerModel.Team.Orientation;
 import views.BoardView;
@@ -227,17 +228,13 @@ public class BoardController extends BaseController {
 	/**
 	 * Gets the list of neighbors
 	 * 
-	 * @param position The forward position orientation
-	 * 
 	 * @return The list of neighbors 
 	 */
-	/*private SortedSet<TileController> getNeighbors(NeighborYPosition position) {
-		
-		if(position.isAgnostic()) {
-			position = NeighborYPosition.fromAgnostic(position);
-		}
-		
+	private SortedSet<TileController> getNeighbors(NeighborYPosition position) {
+		return null;
+		/*
 		SortedSet<TileController> neighbors = new TreeSet<>();
+		
 		if(_neighbors.containsKey(position)) {
 			for(TileController controller : _neighbors.get(position).values()) {
 				if(controller != null) {
@@ -246,8 +243,8 @@ public class BoardController extends BaseController {
 			}
 		}
 		return neighbors;
+		*/
 	}
-	*/
 	
 	/**
 	 * Gets all the neighbors associated to this controller

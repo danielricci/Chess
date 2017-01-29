@@ -49,7 +49,7 @@ public class TileController extends BaseController {
 	/**
 	 * The identifier numeral of this controller
 	 */
-	private int identifier = ++counter;
+	private final int identifier = ++counter;
 	
 	/**
 	 * The Model associated to this controller
@@ -65,22 +65,32 @@ public class TileController extends BaseController {
 		super(viewClass);
 		
 		// Create our model and assign to it the receivers
-		_tile = new TileModel(getView(TileView.class), ViewFactory.instance().get(BoardView.class, true));
-	}
-	
-	private class ToggleNeighborTiles implements ActionListener { // TODO - can we get rid of classes and just write methods
-		@Override public void actionPerformed(ActionEvent actionEvent) {
-			System.out.println("private class ToggleNeighborTiles implements ActionListener");
-			//_tile.setSelected(DispatcherOperation.ToggleNeighborTiles);
-		}		
+		_tile = new TileModel(
+			getView(TileView.class), 
+			ViewFactory.instance().get(BoardView.class, true)
+		);
 	}
 	
 	@Override public Map<DispatcherOperation, ActionListener> getRegisteredOperations() {
 		return new HashMap<DispatcherOperation, ActionListener>(){{
-			put(DispatcherOperation.ToggleNeighborTiles, new ToggleNeighborTiles());
+			put(DispatcherOperation.ToggleNeighborTiles, new NeighborTilesDebuggable());
 		}};
 	}
 
+	/**
+	 * Sets the tile up such that it can recieve events to be debugged 
+	 * @author danielricci
+	 *
+	 */
+	private class NeighborTilesDebuggable implements ActionListener {
+		@Override public void actionPerformed(ActionEvent actionEvent) {
+			// Get list of neighbors, and update the tiles
+			
+		}		
+	}
+	
+	
+	
 	/**
 	 * Performs a highlight command on the surrounding cells
 	 *  

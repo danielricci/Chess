@@ -32,14 +32,65 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.JCheckBoxMenuItem;
+
+import communication.internal.command.ItemComponent;
 import communication.internal.dispatcher.DispatcherOperation;
 import controllers.TileController;
 import models.GameModel;
 
 public class TileView extends BaseView {
+	
+	private Image _image;
+	
+	private Color _defaultBackgroundColor;
+	private Color _currentBackgroundColor;
+		
+	public TileView(Class<TileController> controller) {
+		super(controller);
+	}
+		
+	@Override public void register() {
+    
+	}
+	
+	@Override public Map<DispatcherOperation, ActionListener> getRegisteredOperations() {
+		return new HashMap<DispatcherOperation, ActionListener>(){{
+			put(DispatcherOperation.ToggleNeighborTiles, new ToggleNeighborTiles());
+		}};
+	}
+		
+	private class ToggleNeighborTiles extends MouseAdapter implements ActionListener {
+	
+		@Override public void mouseExited(MouseEvent e) {
+		
+		}
+		
+		@Override public void mouseEntered(MouseEvent e) {
+			
+		}
+		
+		@Override public void actionPerformed(ActionEvent actionEvent) {
+			ItemComponent itemComponent = (ItemComponent) actionEvent.getSource();
+			JCheckBoxMenuItem item = (JCheckBoxMenuItem)itemComponent.getComponent();
+			if(item.isSelected()) {
+				System.out.println("Adding listener");
+				addMouseListener(this);
+			}
+			else {
+				System.out.println("Removing listener");
+				for(MouseListener listener : getMouseListeners()) {
+					if(listener instanceof ToggleNeighborTiles) {
+						removeMouseListener(listener);
+					}
+				}
+			}
+		}		
+	}
 	
 	public enum TileBackgroundColor {
 		FirstColor(new Color(209, 139, 71)),
@@ -52,27 +103,19 @@ public class TileView extends BaseView {
 		}
 	}
 	
-	private Image _image;
 	
-	private Color _defaultBackgroundColor;
-	private Color _currentBackgroundColor;
-		
-	private class ToggleNeighborTiles implements ActionListener {
-		@Override public void actionPerformed(ActionEvent actionEvent) {
-			addMouseListener(new MouseAdapter() {
-				@Override public void mouseEntered(MouseEvent event) {
-					getController(TileController.class).highlightNeighbors(true);
-				}
-				@Override public void mouseExited(MouseEvent event) {
-					getController(TileController.class).highlightNeighbors(false);
-				}
-			});
-		}		
-	}
 	
-	public TileView(Class<TileController> controller) {
-		super(controller);
-	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	public void setDefaultBackgroundColor(TileBackgroundColor backgroundColor) {
 		_defaultBackgroundColor = _currentBackgroundColor = backgroundColor.color;
@@ -83,20 +126,9 @@ public class TileView extends BaseView {
 		_currentBackgroundColor = backgroundColor;
 	}
 		
-    @Override public void register() {
-    	addMouseListener(new MouseAdapter() {  		    		
-    		@Override public void mouseEntered(MouseEvent e) {
-    		}
-    		@Override public void mouseExited(MouseEvent e) {
-    		}
-		});
-    }
+ 
     
-	@Override public Map<DispatcherOperation, ActionListener> getRegisteredOperations() {
-		return new HashMap<DispatcherOperation, ActionListener>(){{
-			put(DispatcherOperation.ToggleNeighborTiles, new ToggleNeighborTiles());
-		}};
-	}
+	
 	
 	@Override public void render() {
 		

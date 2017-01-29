@@ -7,10 +7,10 @@ import javax.swing.JComponent;
 
 import communication.internal.command.ItemComponent;
 import communication.internal.dispatcher.DispatcherOperation;
-import controllers.TileController;
-import factories.ControllerFactory;
+import factories.ViewFactory;
 import managers.ResourcesManager;
 import managers.ResourcesManager.Resources;
+import views.TileView;
 
 public class NearestNeighbourItem extends ItemComponent {
 
@@ -20,10 +20,10 @@ public class NearestNeighbourItem extends ItemComponent {
 
 	@Override public void onExecute(ActionEvent actionEvent) {
 		JCheckBoxMenuItem item = (JCheckBoxMenuItem) actionEvent.getSource();
-		ControllerFactory.instance().SendMessage(
+		ViewFactory.instance().SendMessage(
 			this,
 			DispatcherOperation.ToggleNeighborTiles, 
-			TileController.class,
+			TileView.class,
 			item.isSelected()
 		);		
 	}

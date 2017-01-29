@@ -26,6 +26,7 @@ package views;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -77,10 +78,11 @@ public abstract class BaseView extends JPanel implements IView {
 		return null;
 	}
 		
-	@Override public final void executeRegisteredOperation(Object sender, DispatcherOperation operation) {		
+	@Override public final void executeRegisteredOperation(Object sender, DispatcherOperation operation, List<Object> args) {		
 		Map<DispatcherOperation, ActionListener> operations = getRegisteredOperations();
 		ActionListener event;
-		if(operations != null && (event = getRegisteredOperations().get(operation)) != null) {
+		if(operations != null && (event = operations.get(operation)) != null) {
+			//event.setArgs(args); // TODO - implement me when the time is right
 			event.actionPerformed(new ActionEvent(sender, 0, null));	
 		}
 	}
