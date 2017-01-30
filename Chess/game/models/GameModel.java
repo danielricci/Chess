@@ -67,7 +67,7 @@ public class GameModel
 	protected final void notifyReceivers() {
 		for(IReceiver receiver : _receivers) {
 			for(DispatcherOperation operation : _operations) {
-				receiver.executeRegisteredOperation(this, operation, null); // TODO - implement me
+				receiver.executeRegisteredOperation(this, operation);
 			}
 		}
 	}

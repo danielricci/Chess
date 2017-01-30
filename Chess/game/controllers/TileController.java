@@ -27,9 +27,12 @@ package controllers;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import communication.internal.dispatcher.DispatcherOperation;
+import factories.ControllerFactory;
 import factories.ViewFactory;
 import models.TileModel;
 import views.BaseView;
@@ -64,6 +67,8 @@ public class TileController extends BaseController {
 	public <T extends BaseView> TileController(TileView viewClass) {
 		super(viewClass);
 		
+		System.out.println("Tile Created: " + counter);
+		
 		// Create our model and assign to it the receivers
 		_tile = new TileModel(
 			getView(TileView.class), 
@@ -84,7 +89,6 @@ public class TileController extends BaseController {
 	 */
 	private class NeighborTilesDebuggable implements ActionListener {
 		@Override public void actionPerformed(ActionEvent actionEvent) {
-			// Get list of neighbors, and update the tiles
 			
 		}		
 	}
@@ -102,5 +106,10 @@ public class TileController extends BaseController {
 	
 	@Override public String toString() {
 		return String.valueOf(identifier);
+	}
+
+	public List<TileView> getNeighbors() {
+		List<TileController> neighbors = ControllerFactory.instance().get(BoardController.class, true).getNeighbors(this);
+		return neighbors.stream().map(z -> z.getView(TileView.class)).collect(Collectors.toList());
 	}
 }

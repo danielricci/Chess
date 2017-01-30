@@ -25,7 +25,6 @@
 package api;
 
 import java.awt.event.ActionListener;
-import java.util.List;
 import java.util.Map;
 
 import communication.internal.dispatcher.DispatcherOperation;
@@ -42,7 +41,7 @@ public interface IReceiver {
 	 * @param operation The operation
 	 * @param args 
 	 */
-	public void executeRegisteredOperation(Object sender, DispatcherOperation operation, List<Object> args);
+	public void executeRegisteredOperation(Object sender, DispatcherOperation operation);
 	
 	/**
 	 * Gets the list of registered operation by the entity

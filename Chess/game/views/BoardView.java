@@ -45,7 +45,7 @@ public class BoardView extends BaseView {
 	private final JPanel _gamePanel = new JPanel(new GridBagLayout()); 	// TODO - cant we just make BoardView have this layout and add to this	
 		
 	public <T extends BaseController> BoardView(Class<T> controller) {
-		super(controller);
+		super(controller, true);
 	}
 		
 	@Override public void render() {
@@ -69,8 +69,13 @@ public class BoardView extends BaseView {
 			for(int col =  0, dimensionsY = BoardController.Dimensions.height; col < dimensionsY; ++col) {		
 				
 				// Create a tile and add it to our board
-				TileView view = ViewFactory.instance().get(TileView.class, false, TileController.class);
-				view.setDefaultBackgroundColor((col + row) % 2 == 0 ? TileBackgroundColor.FirstColor :  TileBackgroundColor.SecondColor);
+				TileView view = ViewFactory.instance().get(
+					TileView.class, 
+					false, 
+					TileController.class,
+					(col + row) % 2 == 0 ? TileBackgroundColor.FirstColor :  TileBackgroundColor.SecondColor
+				);
+
 				tileRow.add(view);
 				
 				// Make sure that dimensions are properly mapped

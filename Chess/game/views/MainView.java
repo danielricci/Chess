@@ -34,7 +34,7 @@ import factories.ViewFactory;
 public class MainView extends BaseView {
 
 	public <T extends BaseController> MainView(Class<T> controller) {
-		super(controller);
+		super(controller, true);
 	}
 	
 	

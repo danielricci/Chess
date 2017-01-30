@@ -42,7 +42,7 @@ public class Dispatcher<T extends IReceiver> extends Thread {
 				if(message != null) {
 					for(Object resource : message.resources)
 					{
-						((T)resource).executeRegisteredOperation(message.sender, message.operation, message.args);
+						((T)resource).executeRegisteredOperation(message.sender, message.operation);
 					}
 				}
 				Thread.sleep(220);						

@@ -25,10 +25,11 @@
 package controllers;
 
 import java.awt.Dimension;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
+import java.util.stream.Collectors;
 
 import models.PlayerModel.Team.Orientation;
 import views.BoardView;
@@ -47,7 +48,7 @@ public class BoardController extends BaseController {
 	 * Key2: The Y-Axis of the neighbor
 	 * Key3: The X-Axis of the neighbor
 	 */
-	private final Map<TileController, Map<NeighborYPosition, Map<NeighborXPosition, TileController>>> _neighbors = new HashMap<>();
+	private final Map<TileController, Map<NeighborYPosition, Map<NeighborXPosition, TileController>>> _neighbors = new HashMap<TileController, Map<NeighborYPosition, Map<NeighborXPosition, TileController>>>();
 	
 	/**
 	 * Specifies the interactions on the x-axis of neighbors 
@@ -184,7 +185,11 @@ public class BoardController extends BaseController {
 	 */
 	public void populateBoardNeighbors(List<List<TileController>> tiles) {
 		for(int i = 0; i < tiles.size(); ++i) {
-			link(i - 1 > 0 ? tiles.get(i - 1) : null, tiles.get(i), i + 1 < tiles.size() ? tiles.get(i + 1) : null);
+			link(
+				i - 1 >= 0 ? tiles.get(i - 1) : null, 
+				tiles.get(i), 
+				i + 1 < tiles.size() ? tiles.get(i + 1) : null
+			);
 		}
 	}
 
@@ -225,25 +230,20 @@ public class BoardController extends BaseController {
 		}
 	}
 	
+	
 	/**
 	 * Gets the list of neighbors
 	 * 
 	 * @return The list of neighbors 
 	 */
-	private SortedSet<TileController> getNeighbors(NeighborYPosition position) {
-		return null;
-		/*
-		SortedSet<TileController> neighbors = new TreeSet<>();
+	public List<TileController> getNeighbors(TileController neutral) {
 		
-		if(_neighbors.containsKey(position)) {
-			for(TileController controller : _neighbors.get(position).values()) {
-				if(controller != null) {
-					neighbors.add(controller);
-				}
-			}
+		List<TileController> controllers = new ArrayList<>();
+		Map<NeighborYPosition, Map<NeighborXPosition, TileController>> neighbors = _neighbors.get(neutral);
+		for(Map.Entry<NeighborYPosition, Map<NeighborXPosition, TileController>> entry : neighbors.entrySet()) {
+			controllers.addAll(entry.getValue().entrySet().stream().map(z -> z.getValue()).filter(a-> a != null).collect(Collectors.toList()));
 		}
-		return neighbors;
-		*/
+		return controllers;
 	}
 	
 	/**

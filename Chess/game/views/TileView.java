@@ -34,6 +34,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JCheckBoxMenuItem;
@@ -45,17 +46,33 @@ import models.GameModel;
 
 public class TileView extends BaseView {
 	
+	private static int _counter = 0; 
+	private int _coordinate = ++_counter;;
+	
 	private Image _image;
 	
 	private Color _defaultBackgroundColor;
 	private Color _currentBackgroundColor;
+	private Color _previousBackgroundColor;
 		
-	public TileView(Class<TileController> controller) {
-		super(controller);
+	public enum TileBackgroundColor {
+		FirstColor(new Color(209, 139, 71)),
+		SecondColor(new Color(255, 205, 158)),
+		NeighborColor(Color.BLUE);
+		
+		public final Color color;
+		
+		TileBackgroundColor(Color color) {
+			this.color = color;
+		}
 	}
+	
+	public TileView(Class<TileController> controller, TileBackgroundColor defaultBackgroundColor) {
+		super(controller, false);
 		
-	@Override public void register() {
-    
+		// Set the default background color, and set the currently active color which should
+		// be both the same when the initial render happens
+		_defaultBackgroundColor = _currentBackgroundColor = defaultBackgroundColor.color;
 	}
 	
 	@Override public Map<DispatcherOperation, ActionListener> getRegisteredOperations() {
@@ -66,23 +83,29 @@ public class TileView extends BaseView {
 		
 	private class ToggleNeighborTiles extends MouseAdapter implements ActionListener {
 	
-		@Override public void mouseExited(MouseEvent e) {
-		
+		@Override public void mouseExited(MouseEvent event) {
+			TileController controller = getController(TileController.class);
+			List<TileView> views = controller.getNeighbors();
+			for(TileView view : views) {
+				view.setBackground(view._defaultBackgroundColor);
+			}
 		}
 		
-		@Override public void mouseEntered(MouseEvent e) {
-			
+		@Override public void mouseEntered(MouseEvent event) {
+			TileController controller = getController(TileController.class);
+			List<TileView> views = controller.getNeighbors();
+			for(TileView view : views) {
+				view.setBackground(TileBackgroundColor.NeighborColor.color);
+			}
 		}
 		
 		@Override public void actionPerformed(ActionEvent actionEvent) {
 			ItemComponent itemComponent = (ItemComponent) actionEvent.getSource();
 			JCheckBoxMenuItem item = (JCheckBoxMenuItem)itemComponent.getComponent();
 			if(item.isSelected()) {
-				System.out.println("Adding listener");
 				addMouseListener(this);
 			}
 			else {
-				System.out.println("Removing listener");
 				for(MouseListener listener : getMouseListeners()) {
 					if(listener instanceof ToggleNeighborTiles) {
 						removeMouseListener(listener);
@@ -92,46 +115,15 @@ public class TileView extends BaseView {
 		}		
 	}
 	
-	public enum TileBackgroundColor {
-		FirstColor(new Color(209, 139, 71)),
-		SecondColor(new Color(255, 205, 158));
-		
-		public final Color color;
-		
-		TileBackgroundColor(Color color) {
-			this.color = color;
-		}
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	public void setDefaultBackgroundColor(TileBackgroundColor backgroundColor) {
-		_defaultBackgroundColor = _currentBackgroundColor = backgroundColor.color;
-	}
+
 	
 	@Override public void setBackground(Color backgroundColor) {
 		super.setBackground(backgroundColor);
 		_currentBackgroundColor = backgroundColor;
+		repaint();
 	}
 		
- 
-    
-	
-	
-	@Override public void render() {
-		
+ 	@Override public void render() {
 		super.render();
 		setBackground(_currentBackgroundColor);
 		repaint();
@@ -150,5 +142,9 @@ public class TileView extends BaseView {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D)g;
         g2d.drawImage(_image, 10, 8, 48, 48, null, null);       
+	}
+	
+	@Override public String toString() {
+		return String.valueOf(_coordinate);
 	}
 }

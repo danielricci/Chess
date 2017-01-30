@@ -26,7 +26,6 @@ package controllers;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 import java.util.Map;
 
 import api.IController;
@@ -55,16 +54,9 @@ public abstract class BaseController implements IController  {
 		setView(view);
 	}
 
-	public <T extends BaseView> BaseController(Class<T> viewClass, boolean unique) {
+	public <T extends BaseView> BaseController(Class<T> viewClass, boolean shared) {
 		this();
-		
-		try {
-			BaseView view = ViewFactory.instance().get(viewClass, unique, this);
-			setView(view);
-		}
-		catch(Exception exception) {
-			 exception.printStackTrace();
-		}		
+		setView(ViewFactory.instance().get(viewClass, shared, this));
 	}
 		
 	public final <T extends IView> T getView(Class<T> viewClass) {
@@ -79,7 +71,7 @@ public abstract class BaseController implements IController  {
 		return null;
 	}
 	
-	@Override public final void executeRegisteredOperation(Object sender, DispatcherOperation operation, List<Object> args) {		
+	@Override public final void executeRegisteredOperation(Object sender, DispatcherOperation operation) {		
 		Map<DispatcherOperation, ActionListener> operations = getRegisteredOperations();
 		ActionListener event;
 		if(operations != null && (event = operations.get(operation)) != null) {
