@@ -26,9 +26,10 @@ package views;
 
 import java.awt.BorderLayout;
 
-import controllers.BaseController;
 import controllers.BoardController;
 import controllers.MainWindowController;
+import core.mvc.controller.BaseController;
+import core.mvc.view.BaseView;
 import factories.ViewFactory;
 
 public class MainView extends BaseView {

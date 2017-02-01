@@ -30,7 +30,7 @@ import javax.swing.JComponent;
 import javax.swing.JSeparator;
 
 import api.IComponent;
-import controllers.BaseController;
+import core.mvc.controller.BaseController;
 
 public abstract class BaseComponent implements IComponent {
 	

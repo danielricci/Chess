@@ -22,7 +22,7 @@
 * IN THE SOFTWARE.
 */
 
-package controllers;
+package core.mvc.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,8 +31,8 @@ import java.util.Map;
 import api.IController;
 import api.IView;
 import communication.internal.dispatcher.DispatcherOperation;
+import core.mvc.view.BaseView;
 import factories.ViewFactory;
-import views.BaseView;
 
 /**
  * This class holds base controller implementation functionality for all controllers
@@ -59,7 +59,7 @@ public abstract class BaseController implements IController  {
 		setView(ViewFactory.instance().get(viewClass, shared, this));
 	}
 		
-	public final <T extends IView> T getView(Class<T> viewClass) {
+	protected final <T extends IView> T getView(Class<T> viewClass) {
 		return (T)_view;
 	}
 	

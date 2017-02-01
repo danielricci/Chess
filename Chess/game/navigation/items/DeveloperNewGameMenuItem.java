@@ -1,35 +1,37 @@
-package communication.internal.command.item;
+package navigation.items;
 
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
+import javax.swing.SwingUtilities;
 
 import communication.internal.command.ItemComponent;
-import controllers.MainWindowController;
-import factories.ControllerFactory;
-import factories.ViewFactory;
-import managers.ResourcesManager;
-import managers.ResourcesManager.Resources;
-import views.BaseView;
-import views.MainView;
-import views.RootView;
+import managers.LocalizationManager;
+import managers.LocalizationManager.Resources;
 
 public class DeveloperNewGameMenuItem extends ItemComponent {
 
 	public DeveloperNewGameMenuItem(JComponent parent) {
-		super(new JMenuItem(ResourcesManager.Get(Resources.NewGame)), parent);
+		super(new JMenuItem(LocalizationManager.Get(Resources.NewGame)), parent);
 	}
 	
 	@Override public void onExecute(ActionEvent actionEvent) {
+		
+		JMenuItem component = ((JMenuItem)actionEvent.getSource());
+		Window window = SwingUtilities.getWindowAncestor(component.getParent());
+
+/*
 		ControllerFactory.instance().dispose();
 		ViewFactory.instance().dispose();
-		RootView.Instance().getContentPane().removeAll();					
+		application.getContentPane().removeAll();					
 		
 		BaseView view = ViewFactory.instance().get(MainView.class, true, MainWindowController.class);
 		view.render();
 		
-		RootView.Instance().add(view);
-		RootView.Instance().validate();
+		application.add(view);
+		application.validate();
+		*/
 	}
 }

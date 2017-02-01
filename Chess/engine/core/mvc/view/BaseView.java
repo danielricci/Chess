@@ -22,7 +22,7 @@
 * IN THE SOFTWARE.
 */
 
-package views;
+package core.mvc.view;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,9 +33,9 @@ import javax.swing.JPanel;
 
 import api.IView;
 import communication.internal.dispatcher.DispatcherOperation;
-import controllers.BaseController;
+import core.mvc.controller.BaseController;
+import core.mvc.model.GameModel;
 import factories.ControllerFactory;
-import models.GameModel;
 
 public abstract class BaseView extends JPanel implements IView {
 
@@ -55,7 +55,8 @@ public abstract class BaseView extends JPanel implements IView {
 		setController(ControllerFactory.instance().get(controller, shared, this));
 	}
 	
-	protected final <T extends BaseController> T getController(Class<T> controllerClass) {	
+	// TODO - this needs to be protected
+	public final <T extends BaseController> T getController(Class<T> controllerClass) {	
 		BaseController myController = null;
 		for(BaseController controller : _controllers) {
 			if(controller.getClass() == controllerClass) {

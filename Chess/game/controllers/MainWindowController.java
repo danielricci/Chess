@@ -24,7 +24,8 @@
 
 package controllers;
 
-import views.BaseView;
+import core.mvc.controller.BaseController;
+import core.mvc.view.BaseView;
 import views.MainView;
 
 public class MainWindowController extends BaseController {

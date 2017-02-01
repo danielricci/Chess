@@ -8,12 +8,12 @@ import java.util.ResourceBundle;
  * @author Daniel Ricci <thedanny09@gmail.com>
  *
  */
-public final class ResourcesManager {
+public final class LocalizationManager {
 	
 	/**
 	 * The single instance
 	 */
-	private static ResourcesManager _instance;
+	private static LocalizationManager _instance;
 	
 	/**
 	 * The locale being used
@@ -43,7 +43,7 @@ public final class ResourcesManager {
 	 * Constructs an object of this class
 	 * 
 	 */
-	private ResourcesManager()
+	private LocalizationManager()
 	{
 	}
 	
@@ -52,11 +52,11 @@ public final class ResourcesManager {
 	 * 
 	 * @return The singleton instance
 	 */
-	private static ResourcesManager Instance()
+	private static LocalizationManager Instance()
 	{
 		if(_instance == null)
 		{
-			_instance = new ResourcesManager();
+			_instance = new LocalizationManager();
 		}
 		
 		return _instance;

@@ -22,16 +22,35 @@
 * IN THE SOFTWARE.
 */
 
-package main;
-import views.RootView;
+package core.mvc.view;
 
-public final class Chess {
-	public static void main(String[] args) {
-        try {
-        	//RootView.Instance().AddEnvironmentVariables(args);
-			RootView.Instance().setVisible(true);
-        } catch (Exception exception) {
-        	exception.printStackTrace();
-        }
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+
+import javax.swing.JFrame;
+
+public abstract class Application extends JFrame {
+
+    protected Application() {
+        SetListeners();
+    }
+    
+    private void SetListeners() {
+        addComponentListener(new ComponentAdapter() {
+            @Override public void componentHidden(ComponentEvent e) {
+                setJMenuBar(null);
+            }
+            @Override public void componentShown(ComponentEvent e) {
+                setLocationRelativeTo(null);
+
+                // Generate menu system
+                SetWindowedInstanceMenu();
+            	getJMenuBar().revalidate();
+                getJMenuBar().repaint();
+            }
+        });
+    }
+    
+    protected void SetWindowedInstanceMenu() {
     }
 }

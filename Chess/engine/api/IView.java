@@ -24,7 +24,7 @@
 
 package api;
 
-import models.GameModel;
+import core.mvc.model.GameModel;
 
 public interface IView extends IDestructor, IReceiver {
 	public void render();

@@ -39,7 +39,7 @@ import api.IView;
 import communication.internal.dispatcher.Dispatcher;
 import communication.internal.dispatcher.DispatcherMessage;
 import communication.internal.dispatcher.DispatcherOperation;
-import views.BaseView;
+import core.mvc.view.BaseView;
 
 public class ViewFactory implements IDestructor, IDispatcher<BaseView> {
 

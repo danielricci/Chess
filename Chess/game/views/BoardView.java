@@ -34,9 +34,10 @@ import java.util.stream.Collectors;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
-import controllers.BaseController;
 import controllers.BoardController;
 import controllers.TileController;
+import core.mvc.controller.BaseController;
+import core.mvc.view.BaseView;
 import factories.ViewFactory;
 import views.TileView.TileBackgroundColor;
 
@@ -89,7 +90,6 @@ public class BoardView extends BaseView {
 			
 			tiles.add(tileRow);
 		}
-		
 		
 		// Link the views together logically
 		getController(BoardController.class).populateBoardNeighbors(

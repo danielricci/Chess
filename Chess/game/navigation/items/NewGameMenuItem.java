@@ -1,4 +1,4 @@
-package communication.internal.command.item;
+package navigation.items;
 
 import java.awt.event.ActionEvent;
 
@@ -6,31 +6,26 @@ import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 
 import communication.internal.command.ItemComponent;
-import controllers.MainWindowController;
-import factories.ControllerFactory;
-import factories.ViewFactory;
-import managers.ResourcesManager;
-import managers.ResourcesManager.Resources;
-import views.BaseView;
-import views.MainView;
-import views.RootView;
+import managers.LocalizationManager;
+import managers.LocalizationManager.Resources;
 
 public class NewGameMenuItem extends ItemComponent {
 
 	public NewGameMenuItem(JComponent parent) {
-		super(new JMenuItem(ResourcesManager.Get(Resources.NewGame)), parent);
+		super(new JMenuItem(LocalizationManager.Get(Resources.NewGame)), parent);
 	}
 	
 	@Override public void onExecute(ActionEvent actionEvent) {
-		ControllerFactory.instance().dispose();
+		/*ControllerFactory.instance().dispose();
 		ViewFactory.instance().dispose();
-		RootView.Instance().getContentPane().removeAll();					
+		Application.Instance().getContentPane().removeAll();					
 		
 		BaseView view = ViewFactory.instance().get(MainView.class, true, MainWindowController.class);
 		view.render();
 		
-		RootView.Instance().add(view);
-		RootView.Instance().validate();
+		Application.Instance().add(view);
+		Application.Instance().validate();
+		*/
 	}
 	
 	@Override public boolean enabled() {

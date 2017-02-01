@@ -22,7 +22,7 @@
 * IN THE SOFTWARE.
 */
 
-package models;
+package core.mvc.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;

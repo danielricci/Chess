@@ -38,7 +38,7 @@ import api.IDispatcher;
 import communication.internal.dispatcher.Dispatcher;
 import communication.internal.dispatcher.DispatcherMessage;
 import communication.internal.dispatcher.DispatcherOperation;
-import controllers.BaseController;
+import core.mvc.controller.BaseController;
 
 public class ControllerFactory implements IDestructor, IDispatcher<BaseController> {
 	

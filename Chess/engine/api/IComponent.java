@@ -26,7 +26,7 @@ package api;
 
 import java.awt.event.ActionEvent;
 
-import controllers.BaseController;
+import core.mvc.controller.BaseController;
 
 public interface IComponent {
 	

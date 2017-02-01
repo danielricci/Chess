@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import models.PlayerModel.Team.Orientation;
+import core.mvc.controller.BaseController;
 import views.BoardView;
 
 public class BoardController extends BaseController {
@@ -136,12 +136,6 @@ public class BoardController extends BaseController {
 		
 		protected boolean isAgnostic() {
 			return _agnostic;
-		}
-		
-		protected static NeighborYPosition convertOrientation(Orientation orientation) {
-			return orientation == Orientation.UP 
-				? NeighborYPosition.TOP 
-				: NeighborYPosition.BOTTOM;
 		}
 		
 		protected static NeighborYPosition toAgnostic(NeighborYPosition position) {

@@ -1,4 +1,4 @@
-package communication.internal.command.menu;
+package navigation.menus;
 
 import java.awt.event.KeyEvent;
 

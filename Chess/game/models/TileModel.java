@@ -25,6 +25,7 @@
 package models;
 
 import api.IReceiver;
+import core.mvc.model.GameModel;
 
 public class TileModel extends GameModel {
     	
