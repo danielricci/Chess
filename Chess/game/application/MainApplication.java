@@ -29,6 +29,7 @@ public class MainApplication extends Application {
         setIconImage(new ImageIcon("data/internal/chess-icon-16.png").getImage());
 	}
 	
+	
 	public static void main(String[] args) {
         try {
 			MainApplication application = new MainApplication();
