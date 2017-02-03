@@ -20,12 +20,6 @@
     <target name="init">
         <mkdir dir="bin"/>
         <copy includeemptydirs="false" todir="bin">
-            <fileset dir="engine">
-                <exclude name="**/*.launch"/>
-                <exclude name="**/*.java"/>
-            </fileset>
-        </copy>
-        <copy includeemptydirs="false" todir="bin">
             <fileset dir="game">
                 <exclude name="**/*.launch"/>
                 <exclude name="**/*.java"/>
@@ -46,7 +40,6 @@
     <target depends="init" name="build-project">
         <echo message="${ant.project.name}: ${ant.file}"/>
         <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
-            <src path="engine"/>
             <src path="game"/>
             <src path="data"/>
             <classpath refid="Chess.classpath"/>
