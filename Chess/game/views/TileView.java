@@ -42,7 +42,6 @@ import javax.swing.JCheckBoxMenuItem;
 import controllers.TileController;
 import engine.communication.internal.command.ItemComponent;
 import engine.communication.internal.dispatcher.DispatcherOperation;
-import engine.core.mvc.model.GameModel;
 import engine.core.mvc.view.BaseView;
 
 public class TileView extends BaseView {
@@ -130,11 +129,6 @@ public class TileView extends BaseView {
 		repaint();
 	}
 	
-	@Override public void refresh(GameModel gameModel) {
-		super.refresh(gameModel);
-		repaint();		
-	}
-
 	@Override public void dispose() {
 		removeAll();
 	}
