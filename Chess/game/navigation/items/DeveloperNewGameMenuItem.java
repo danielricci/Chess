@@ -6,14 +6,14 @@ import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-import communication.internal.command.ItemComponent;
 import controllers.MainWindowController;
-import core.mvc.view.Application;
-import core.mvc.view.BaseView;
-import factories.ControllerFactory;
-import factories.ViewFactory;
-import managers.LocalizationManager;
-import managers.LocalizationManager.Resources;
+import engine.communication.internal.command.ItemComponent;
+import engine.core.mvc.view.Application;
+import engine.core.mvc.view.BaseView;
+import engine.factories.ControllerFactory;
+import engine.factories.ViewFactory;
+import engine.managers.LocalizationManager;
+import engine.managers.LocalizationManager.Resources;
 import views.MainView;
 
 public class DeveloperNewGameMenuItem extends ItemComponent {

@@ -31,11 +31,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import communication.internal.dispatcher.DispatcherOperation;
-import core.mvc.controller.BaseController;
-import core.mvc.view.BaseView;
-import factories.ControllerFactory;
-import factories.ViewFactory;
+import engine.communication.internal.dispatcher.DispatcherOperation;
+import engine.core.mvc.controller.BaseController;
+import engine.core.mvc.view.BaseView;
+import engine.factories.ControllerFactory;
+import engine.factories.ViewFactory;
 import models.TileModel;
 import views.BoardView;
 import views.TileView;

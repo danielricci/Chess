@@ -6,9 +6,9 @@ import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
-import communication.internal.command.ItemComponent;
-import managers.LocalizationManager;
-import managers.LocalizationManager.Resources;
+import engine.communication.internal.command.ItemComponent;
+import engine.managers.LocalizationManager;
+import engine.managers.LocalizationManager.Resources;
 
 public class AboutMenuItem extends ItemComponent {
 

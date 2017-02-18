@@ -4,10 +4,10 @@ import java.awt.Dimension;
 import javax.swing.ImageIcon;
 import javax.swing.JMenuBar;
 
-import communication.internal.command.ComponentBuilder;
-import core.mvc.view.Application;
-import managers.LocalizationManager;
-import managers.LocalizationManager.Resources;
+import engine.communication.internal.command.ComponentBuilder;
+import engine.core.mvc.view.Application;
+import engine.managers.LocalizationManager;
+import engine.managers.LocalizationManager.Resources;
 import navigation.items.AboutMenuItem;
 import navigation.items.DeveloperNewGameMenuItem;
 import navigation.items.ExitGameMenuItem;

@@ -5,7 +5,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
 
-import communication.internal.command.MenuComponent;
+import engine.communication.internal.command.MenuComponent;
 
 public class FileMenuComponent extends MenuComponent {
 

@@ -39,11 +39,11 @@ import java.util.Map;
 
 import javax.swing.JCheckBoxMenuItem;
 
-import communication.internal.command.ItemComponent;
-import communication.internal.dispatcher.DispatcherOperation;
 import controllers.TileController;
-import core.mvc.model.GameModel;
-import core.mvc.view.BaseView;
+import engine.communication.internal.command.ItemComponent;
+import engine.communication.internal.dispatcher.DispatcherOperation;
+import engine.core.mvc.model.GameModel;
+import engine.core.mvc.view.BaseView;
 
 public class TileView extends BaseView {
 	

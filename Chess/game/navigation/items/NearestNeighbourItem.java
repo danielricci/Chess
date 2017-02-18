@@ -5,11 +5,11 @@ import java.awt.event.ActionEvent;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 
-import communication.internal.command.ItemComponent;
-import communication.internal.dispatcher.DispatcherOperation;
-import factories.ViewFactory;
-import managers.LocalizationManager;
-import managers.LocalizationManager.Resources;
+import engine.communication.internal.command.ItemComponent;
+import engine.communication.internal.dispatcher.DispatcherOperation;
+import engine.factories.ViewFactory;
+import engine.managers.LocalizationManager;
+import engine.managers.LocalizationManager.Resources;
 import views.TileView;
 
 public class NearestNeighbourItem extends ItemComponent {

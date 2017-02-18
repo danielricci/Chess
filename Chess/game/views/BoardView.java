@@ -36,9 +36,9 @@ import javax.swing.JPanel;
 
 import controllers.BoardController;
 import controllers.TileController;
-import core.mvc.controller.BaseController;
-import core.mvc.view.BaseView;
-import factories.ViewFactory;
+import engine.core.mvc.controller.BaseController;
+import engine.core.mvc.view.BaseView;
+import engine.factories.ViewFactory;
 import views.TileView.TileBackgroundColor;
 
 public class BoardView extends BaseView {
