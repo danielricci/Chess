@@ -4,12 +4,14 @@ apply plugin: 'java'
 apply plugin: 'application'
 //-------------------------------
 
-mainClassName = 'main.Chess'
-sourceSets.main.java.srcDirs = ['game.main']
+mainClassName = 'application.MainApplication'
+
 
 /** ANT **/
 //-------------------------------
-ant.importBuild 'build.xml'
+ant.importBuild('build.xml') { antTargetName ->
+    'ant-' + antTargetName
+}
 //-------------------------------
 /** REPOSITORIES **/
 //-------------------------------
