@@ -40,8 +40,7 @@ import java.util.Map;
 import javax.swing.JCheckBoxMenuItem;
 
 import controllers.TileController;
-import engine.communication.internal.command.ItemComponent;
-import engine.communication.internal.dispatcher.DispatcherOperation;
+import engine.communication.internal.menu.ItemComponent;
 import engine.core.mvc.view.BaseView;
 
 public class TileView extends BaseView {
@@ -75,9 +74,9 @@ public class TileView extends BaseView {
 		_defaultBackgroundColor = _currentBackgroundColor = defaultBackgroundColor.color;
 	}
 	
-	@Override public Map<DispatcherOperation, ActionListener> getRegisteredOperations() {
-		return new HashMap<DispatcherOperation, ActionListener>(){{
-			put(DispatcherOperation.ToggleNeighborTiles, new ToggleNeighborTiles());
+	@Override public Map<String, ActionListener> getRegisteredOperations() {
+		return new HashMap<String, ActionListener>(){{
+			put("ToggleNeighborTiles", new ToggleNeighborTiles());
 		}};
 	}
 		

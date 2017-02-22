@@ -29,15 +29,16 @@ import java.awt.GridBagLayout;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import java.util.stream.Collectors;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import controllers.BoardController;
 import controllers.TileController;
+import engine.core.factories.ViewFactory;
 import engine.core.mvc.controller.BaseController;
 import engine.core.mvc.view.BaseView;
-import engine.factories.ViewFactory;
 import views.TileView.TileBackgroundColor;
 
 public class BoardView extends BaseView {
@@ -91,15 +92,13 @@ public class BoardView extends BaseView {
 		}
 		
 		// Link the views together logically
-		/*
 		getController(BoardController.class).populateBoardNeighbors(
 			tiles
 			.stream().map(z -> z
 			.stream().map(a -> a.getController(TileController.class)).collect(Collectors.toList()))
 			.collect(Collectors.toList())
 		);
-		*/
-		
+			
 		add(_gamePanel);
 	}
 }

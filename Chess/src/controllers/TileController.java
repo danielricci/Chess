@@ -31,11 +31,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import engine.communication.internal.dispatcher.DispatcherOperation;
+import engine.core.factories.ControllerFactory;
+import engine.core.factories.ViewFactory;
 import engine.core.mvc.controller.BaseController;
 import engine.core.mvc.view.BaseView;
-import engine.factories.ControllerFactory;
-import engine.factories.ViewFactory;
 import models.TileModel;
 import views.BoardView;
 import views.TileView;
@@ -77,9 +76,9 @@ public class TileController extends BaseController {
 		);
 	}
 	
-	@Override public Map<DispatcherOperation, ActionListener> getRegisteredOperations() {
-		return new HashMap<DispatcherOperation, ActionListener>(){{
-			put(DispatcherOperation.ToggleNeighborTiles, new NeighborTilesDebuggable());
+	@Override public Map<String, ActionListener> getRegisteredOperations() {
+		return new HashMap<String, ActionListener>(){{
+			put("ToggleTileNeighbors", new NeighborTilesDebuggable());
 		}};
 	}
 

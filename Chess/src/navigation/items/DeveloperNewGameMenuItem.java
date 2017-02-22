@@ -7,11 +7,11 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
 import controllers.MainWindowController;
-import engine.communication.internal.command.ItemComponent;
+import engine.communication.internal.menu.ItemComponent;
+import engine.core.factories.ControllerFactory;
+import engine.core.factories.ViewFactory;
 import engine.core.mvc.view.Application;
 import engine.core.mvc.view.BaseView;
-import engine.factories.ControllerFactory;
-import engine.factories.ViewFactory;
 import engine.managers.LocalizationManager;
 import engine.managers.LocalizationManager.Resources;
 import views.MainView;

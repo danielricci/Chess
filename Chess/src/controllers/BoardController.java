@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import engine.core.mvc.controller.BaseController;
+import models.TileModel;
 import views.BoardView;
 
 public class BoardController extends BaseController {

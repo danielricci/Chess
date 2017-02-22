@@ -4,7 +4,7 @@ import java.awt.Dimension;
 import javax.swing.ImageIcon;
 import javax.swing.JMenuBar;
 
-import engine.communication.internal.command.ComponentBuilder;
+import engine.communication.internal.menu.ComponentBuilder;
 import engine.core.mvc.view.Application;
 import engine.managers.LocalizationManager;
 import engine.managers.LocalizationManager.Resources;

@@ -6,7 +6,7 @@ import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
-import engine.communication.internal.command.ItemComponent;
+import engine.communication.internal.menu.ItemComponent;
 import engine.managers.LocalizationManager;
 import engine.managers.LocalizationManager.Resources;
 
