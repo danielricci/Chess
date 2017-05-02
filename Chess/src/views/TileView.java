@@ -33,18 +33,16 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.JCheckBoxMenuItem;
 
 import controllers.BoardController;
 import controllers.TileController;
-import engine.communication.internal.menu.ItemComponent;
 import engine.core.factories.AbstractFactory;
 import engine.core.factories.ControllerFactory;
 import engine.core.mvc.view.PanelView;
+import engine.core.option.types.OptionItem;
 
 public class TileView extends PanelView {
 	
@@ -83,19 +81,10 @@ public class TileView extends PanelView {
 		_defaultBackgroundColor = _currentBackgroundColor = defaultBackgroundColor.color;
 	}
 	
-	@Override public void registerSignalListeners() {
-	}
-	
-	@Override public Map<String, ActionListener> getRegisteredOperations() {
-		return new HashMap<String, ActionListener>(){{
-			put("ToggleNeighborTiles", new ToggleNeighborTiles());
-		}};
-	}
-		
 	private class ToggleNeighborTiles extends MouseAdapter implements ActionListener {
 	
 		@Override public void mouseExited(MouseEvent event) {
-			TileController controller = getController(TileController.class);
+			TileController controller = getViewProperties().getController(TileController.class);
 			List<TileView> views = controller.getNeighbors();
 			for(TileView view : views) {
 				view.setBackground(view._defaultBackgroundColor);
@@ -103,7 +92,7 @@ public class TileView extends PanelView {
 		}
 		
 		@Override public void mouseEntered(MouseEvent event) {
-			TileController controller = getController(TileController.class);
+			TileController controller = getViewProperties().getController(TileController.class);
 			List<TileView> views = controller.getNeighbors();
 			for(TileView view : views) {
 				view.setBackground(TileBackgroundColor.NeighborColor.color);
@@ -111,7 +100,7 @@ public class TileView extends PanelView {
 		}
 		
 		@Override public void actionPerformed(ActionEvent actionEvent) {
-			ItemComponent itemComponent = (ItemComponent) actionEvent.getSource();
+			OptionItem itemComponent = (OptionItem) actionEvent.getSource();
 			JCheckBoxMenuItem item = (JCheckBoxMenuItem)itemComponent.getComponent();
 			if(item.isSelected()) {
 				addMouseListener(this);
@@ -125,8 +114,6 @@ public class TileView extends PanelView {
 			}
 		}		
 	}
-	
-
 	
 	@Override public void setBackground(Color backgroundColor) {
 		super.setBackground(backgroundColor);

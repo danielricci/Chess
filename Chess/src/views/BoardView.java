@@ -38,7 +38,6 @@ import controllers.TileController;
 import engine.core.factories.AbstractFactory;
 import engine.core.factories.ControllerFactory;
 import engine.core.factories.ViewFactory;
-import engine.core.mvc.controller.BaseController;
 import engine.core.mvc.view.PanelView;
 import views.TileView.TileBackgroundColor;
 
@@ -46,7 +45,7 @@ public class BoardView extends PanelView {
 	
 	private final JPanel _gamePanel = new JPanel(new GridBagLayout()); 	// TODO - cant we just make BoardView have this layout and add to this	
 		
-	public <T extends BaseController> BoardView() {
+	public BoardView() {
 		// Set the controller associated to this view
 		getViewProperties().setController(
 			AbstractFactory

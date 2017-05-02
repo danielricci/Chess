@@ -24,10 +24,10 @@
 
 package models;
 
-import engine.api.IReceiver;
-import engine.core.mvc.model.GameModel;
+import engine.communication.internal.signal.ISignalListener;
+import engine.core.mvc.model.BaseModel;
 
-public class TileModel extends GameModel {
+public class TileModel extends BaseModel {
     	
 	private static int IDENTIFIER;
 	private final int _identifier = ++IDENTIFIER;
@@ -39,7 +39,7 @@ public class TileModel extends GameModel {
 		None;
 	}
 	
-	public TileModel(IReceiver... receivers) {
+	public TileModel(ISignalListener... receivers) {
 		super(receivers);
 		doneUpdating();
 	}

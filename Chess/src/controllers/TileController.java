@@ -24,17 +24,11 @@
 
 package controllers;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
-import engine.core.factories.ControllerFactory;
+import engine.core.factories.AbstractFactory;
 import engine.core.factories.ViewFactory;
 import engine.core.mvc.controller.BaseController;
-import engine.core.mvc.view.BaseView;
 import models.TileModel;
 import views.BoardView;
 import views.TileView;
@@ -64,36 +58,17 @@ public class TileController extends BaseController {
 	 * 
 	 * @param viewClass The view to instantiate this controller with
 	 */
-	public <T extends BaseView> TileController(TileView viewClass) {
+	public TileController(TileView viewClass) {
 		super(viewClass);
 		
 		System.out.println("Tile Created: " + counter);
 		
 		// Create our model and assign to it the receivers
 		_tile = new TileModel(
-			getView(TileView.class), 
-			ViewFactory.instance().get(BoardView.class, true)
+			getControllerProperties().getView(TileView.class), 
+			AbstractFactory.getFactory(ViewFactory.class).get(BoardView.class, true)
 		);
 	}
-	
-	@Override public Map<String, ActionListener> getRegisteredOperations() {
-		return new HashMap<String, ActionListener>(){{
-			put("ToggleTileNeighbors", new NeighborTilesDebuggable());
-		}};
-	}
-
-	/**
-	 * Sets the tile up such that it can recieve events to be debugged 
-	 * @author danielricci
-	 *
-	 */
-	private class NeighborTilesDebuggable implements ActionListener {
-		@Override public void actionPerformed(ActionEvent actionEvent) {
-			
-		}		
-	}
-	
-	
 	
 	/**
 	 * Performs a highlight command on the surrounding cells
@@ -109,7 +84,8 @@ public class TileController extends BaseController {
 	}
 
 	public List<TileView> getNeighbors() {
-		List<TileController> neighbors = ControllerFactory.instance().get(BoardController.class, true).getNeighbors(this);
-		return neighbors.stream().map(z -> z.getView(TileView.class)).collect(Collectors.toList());
+		return null;
+		//List<TileController> neighbors = ControllerFactory.instance().get(BoardController.class, true).getNeighbors(this);
+		//return neighbors.stream().map(z -> z.getView(TileView.class)).collect(Collectors.toList());
 	}
 }
