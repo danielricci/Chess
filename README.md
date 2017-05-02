@@ -1,6 +1,9 @@
 # Chess 
 
-<img src="https://travis-ci.com/danielricci/Chess.svg?token=mMTpyEqHpouDpJNArzCm&branch=master" />
+<img src="https://travis-ci.org/danielricci/chess.svg?branch=master" />
+
+[![Stories in Ready](https://badge.waffle.io/danielricci/chess.png?label=ready&title=Ready)](http://waffle.io/danielricci/chess)
+
 
 <h3>Setup</h3>
 - Chess is played on a square board consisting of eight rows called ranks, and eight columns called files (a - h)
