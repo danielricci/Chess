@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/danielricci/chess.png?label=ready&title=Ready)](https://waffle.io/danielricci/chess)
 # Chess 
 
 <img src="https://travis-ci.com/danielricci/Chess.svg?token=mMTpyEqHpouDpJNArzCm&branch=master" />
