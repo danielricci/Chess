@@ -28,21 +28,11 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.List;
-
-import javax.swing.JCheckBoxMenuItem;
 
 import controllers.BoardController;
-import controllers.TileController;
 import engine.core.factories.AbstractFactory;
 import engine.core.factories.ControllerFactory;
 import engine.core.mvc.view.PanelView;
-import engine.core.option.types.OptionItem;
 
 public class TileView extends PanelView {
 	
@@ -70,10 +60,9 @@ public class TileView extends PanelView {
 	public TileView(TileBackgroundColor defaultBackgroundColor) {
 		
 		// Set the controller associated to this view
-		getViewProperties().setController(
-			AbstractFactory
+		getViewProperties().setController(AbstractFactory
 			.getFactory(ControllerFactory.class)
-			.get(BoardController.class, true, this)
+			.get(BoardController.class, true)
 		);	
 				
 		// Set the default background color, and set the currently active color which should
@@ -81,38 +70,12 @@ public class TileView extends PanelView {
 		_defaultBackgroundColor = _currentBackgroundColor = defaultBackgroundColor.color;
 	}
 	
-	private class ToggleNeighborTiles extends MouseAdapter implements ActionListener {
-	
-		@Override public void mouseExited(MouseEvent event) {
-			TileController controller = getViewProperties().getController(TileController.class);
-			List<TileView> views = controller.getNeighbors();
-			for(TileView view : views) {
-				view.setBackground(view._defaultBackgroundColor);
-			}
-		}
-		
-		@Override public void mouseEntered(MouseEvent event) {
-			TileController controller = getViewProperties().getController(TileController.class);
-			List<TileView> views = controller.getNeighbors();
-			for(TileView view : views) {
-				view.setBackground(TileBackgroundColor.NeighborColor.color);
-			}
-		}
-		
-		@Override public void actionPerformed(ActionEvent actionEvent) {
-			OptionItem itemComponent = (OptionItem) actionEvent.getSource();
-			JCheckBoxMenuItem item = (JCheckBoxMenuItem)itemComponent.getComponent();
-			if(item.isSelected()) {
-				addMouseListener(this);
-			}
-			else {
-				for(MouseListener listener : getMouseListeners()) {
-					if(listener instanceof ToggleNeighborTiles) {
-						removeMouseListener(listener);
-					}
-				}
-			}
-		}		
+	@Override public void initializeComponents() {
+		// TODO Auto-generated method stub
+	}
+
+	@Override public void initializeComponentBindings() {
+		// TODO Auto-generated method stub		
 	}
 	
 	@Override public void setBackground(Color backgroundColor) {
@@ -127,25 +90,9 @@ public class TileView extends PanelView {
 		repaint();
 	}
 	
-	@Override public void dispose() {
-		removeAll();
-	}
-	
 	@Override protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D)g;
         g2d.drawImage(_image, 10, 8, 48, 48, null, null);       
-	}
-	
-	@Override public String toString() {
-		return String.valueOf(_coordinate);
-	}
-
-	@Override public void initializeComponents() {
-		// TODO Auto-generated method stub
-	}
-
-	@Override public void initializeComponentBindings() {
-		// TODO Auto-generated method stub		
-	}
+	}	
 }

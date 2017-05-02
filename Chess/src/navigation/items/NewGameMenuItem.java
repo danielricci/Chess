@@ -35,7 +35,6 @@ public class NewGameMenuItem extends OptionItem {
 			// Validate the application to layout all contents
 			// onto the screen
 			MainApplication.instance().validate();
-			
 		}
 	}
 	

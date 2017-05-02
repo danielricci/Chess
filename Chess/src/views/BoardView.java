@@ -34,7 +34,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import controllers.BoardController;
-import controllers.TileController;
 import engine.core.factories.AbstractFactory;
 import engine.core.factories.ControllerFactory;
 import engine.core.factories.ViewFactory;
@@ -43,7 +42,7 @@ import views.TileView.TileBackgroundColor;
 
 public class BoardView extends PanelView {
 	
-	private final JPanel _gamePanel = new JPanel(new GridBagLayout()); 	// TODO - cant we just make BoardView have this layout and add to this	
+	private final JPanel _gamePanel = new JPanel(new GridBagLayout());
 		
 	public BoardView() {
 		// Set the controller associated to this view
@@ -78,7 +77,6 @@ public class BoardView extends PanelView {
 				TileView view = AbstractFactory.getFactory(ViewFactory.class).get(
 					TileView.class, 
 					false, 
-					TileController.class,
 					(col + row) % 2 == 0 ? TileBackgroundColor.FirstColor :  TileBackgroundColor.SecondColor
 				);
 
@@ -102,8 +100,8 @@ public class BoardView extends PanelView {
 			.stream().map(z -> z
 			.stream().map(a -> a.getController(TileController.class)).collect(Collectors.toList()))
 			.collect(Collectors.toList())
-		);
-		*/
+		);*/
+		
 			
 		add(_gamePanel);
 	}
