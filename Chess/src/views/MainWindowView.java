@@ -22,18 +22,29 @@
 * IN THE SOFTWARE.
 */
 
-package controllers;
+package views;
 
-import engine.core.mvc.controller.BaseController;
-import engine.core.mvc.view.BaseView;
-import views.MainView;
+import java.awt.BorderLayout;
 
-public class MainWindowController extends BaseController {
-	public MainWindowController(MainView view) {
-		super(view);
-	}
+import controllers.BoardController;
+import engine.core.factories.AbstractFactory;
+import engine.core.factories.ViewFactory;
+import engine.core.mvc.view.PanelView;
+
+public class MainWindowView extends PanelView {
 	
-	public <T extends BaseView> MainWindowController(Class<T> viewClass) {
-		super(viewClass, true);
+	@Override public void render() {
+		
+		BoardView boardView = AbstractFactory.getFactory(ViewFactory.class).get(BoardView.class, true, BoardController.class);
+		boardView.render();
+		
+		add(boardView);
+	}
+
+	@Override public void initializeComponents() {
+		setLayout(new BorderLayout());
+	}
+
+	@Override public void initializeComponentBindings() {
 	}
 }

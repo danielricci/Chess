@@ -5,14 +5,12 @@ import java.awt.event.ActionEvent;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 
-import engine.communication.internal.menu.ItemComponent;
-import engine.managers.LocalizationManager;
-import engine.managers.LocalizationManager.Resources;
+import engine.core.option.types.OptionItem;
 
-public class NewGameMenuItem extends ItemComponent {
+public class NewGameMenuItem extends OptionItem {
 
 	public NewGameMenuItem(JComponent parent) {
-		super(new JMenuItem(LocalizationManager.Get(Resources.NewGame)), parent);
+		super(new JMenuItem("New Game"), parent);
 	}
 	
 	@Override public void onExecute(ActionEvent actionEvent) {

@@ -5,11 +5,9 @@ import java.awt.event.KeyEvent;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
 
-import engine.communication.internal.menu.MenuComponent;
+import engine.core.option.types.OptionMenu;
 
-
-public class DeveloperMenuComponent extends MenuComponent {
-
+public class DeveloperMenuComponent extends OptionMenu {
 	public DeveloperMenuComponent(JComponent parent) {
 		super(new JMenu("Developer"), parent);
 		super.get(JMenu.class).setMnemonic(KeyEvent.VK_D);

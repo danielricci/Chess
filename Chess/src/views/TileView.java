@@ -39,11 +39,14 @@ import java.util.Map;
 
 import javax.swing.JCheckBoxMenuItem;
 
+import controllers.BoardController;
 import controllers.TileController;
 import engine.communication.internal.menu.ItemComponent;
-import engine.core.mvc.view.BaseView;
+import engine.core.factories.AbstractFactory;
+import engine.core.factories.ControllerFactory;
+import engine.core.mvc.view.PanelView;
 
-public class TileView extends BaseView {
+public class TileView extends PanelView {
 	
 	private static int _counter = 0; 
 	private int _coordinate = ++_counter;;
@@ -66,12 +69,21 @@ public class TileView extends BaseView {
 		}
 	}
 	
-	public TileView(Class<TileController> controller, TileBackgroundColor defaultBackgroundColor) {
-		super(controller, false);
+	public TileView(TileBackgroundColor defaultBackgroundColor) {
 		
+		// Set the controller associated to this view
+		getViewProperties().setController(
+			AbstractFactory
+			.getFactory(ControllerFactory.class)
+			.get(BoardController.class, true, this)
+		);	
+				
 		// Set the default background color, and set the currently active color which should
 		// be both the same when the initial render happens
 		_defaultBackgroundColor = _currentBackgroundColor = defaultBackgroundColor.color;
+	}
+	
+	@Override public void registerSignalListeners() {
 	}
 	
 	@Override public Map<String, ActionListener> getRegisteredOperations() {
@@ -140,5 +152,13 @@ public class TileView extends BaseView {
 	
 	@Override public String toString() {
 		return String.valueOf(_coordinate);
+	}
+
+	@Override public void initializeComponents() {
+		// TODO Auto-generated method stub
+	}
+
+	@Override public void initializeComponentBindings() {
+		// TODO Auto-generated method stub		
 	}
 }

@@ -5,14 +5,12 @@ import java.awt.event.ActionEvent;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 
-import engine.communication.internal.menu.ItemComponent;
-import engine.managers.LocalizationManager;
-import engine.managers.LocalizationManager.Resources;
+import engine.core.option.types.OptionItem;
 
-public class ExitGameMenuItem extends ItemComponent {
+public class ExitGameMenuItem extends OptionItem {
 	
 	public ExitGameMenuItem(JComponent parent) {
-		super(new JMenuItem(LocalizationManager.Get(Resources.ExitMenu)), parent);
+		super(new JMenuItem("Exit"), parent);
 	}
 	
 	@Override public void onExecute(ActionEvent actionEvent) {

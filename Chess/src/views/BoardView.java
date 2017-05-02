@@ -29,24 +29,30 @@ import java.awt.GridBagLayout;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
-import java.util.stream.Collectors;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import controllers.BoardController;
 import controllers.TileController;
+import engine.core.factories.AbstractFactory;
+import engine.core.factories.ControllerFactory;
 import engine.core.factories.ViewFactory;
 import engine.core.mvc.controller.BaseController;
-import engine.core.mvc.view.BaseView;
+import engine.core.mvc.view.PanelView;
 import views.TileView.TileBackgroundColor;
 
-public class BoardView extends BaseView {
+public class BoardView extends PanelView {
 	
 	private final JPanel _gamePanel = new JPanel(new GridBagLayout()); 	// TODO - cant we just make BoardView have this layout and add to this	
 		
-	public <T extends BaseController> BoardView(Class<T> controller) {
-		super(controller, true);
+	public <T extends BaseController> BoardView() {
+		// Set the controller associated to this view
+		getViewProperties().setController(
+			AbstractFactory
+			.getFactory(ControllerFactory.class)
+			.get(BoardController.class, true, this)
+		);	
 	}
 		
 	@Override public void render() {
@@ -70,7 +76,7 @@ public class BoardView extends BaseView {
 			for(int col =  0, dimensionsY = BoardController.Dimensions.height; col < dimensionsY; ++col) {		
 				
 				// Create a tile and add it to our board
-				TileView view = ViewFactory.instance().get(
+				TileView view = AbstractFactory.getFactory(ViewFactory.class).get(
 					TileView.class, 
 					false, 
 					TileController.class,
@@ -92,13 +98,26 @@ public class BoardView extends BaseView {
 		}
 		
 		// Link the views together logically
-		getController(BoardController.class).populateBoardNeighbors(
+		/*getViewProperties().getController(BoardController.class).populateBoardNeighbors(
 			tiles
 			.stream().map(z -> z
 			.stream().map(a -> a.getController(TileController.class)).collect(Collectors.toList()))
 			.collect(Collectors.toList())
 		);
+		*/
 			
 		add(_gamePanel);
+	}
+
+	@Override
+	public void initializeComponents() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void initializeComponentBindings() {
+		// TODO Auto-generated method stub
+		
 	}
 }

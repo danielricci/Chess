@@ -5,14 +5,12 @@ import java.awt.event.ActionEvent;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 
-import engine.communication.internal.menu.ItemComponent;
-import engine.managers.LocalizationManager;
-import engine.managers.LocalizationManager.Resources;
+import engine.core.option.types.OptionItem;
 
-public class WindowResetMenuItem extends ItemComponent {
+public class WindowResetMenuItem extends OptionItem {
 	
 	public WindowResetMenuItem(JComponent parent) {
-		super(new JMenuItem(LocalizationManager.Get(Resources.ResetPosition)), parent);
+		super(new JMenuItem("Reset Menu"), parent);
 	}
 	
 	@Override public void onExecute(ActionEvent actionEvent) {

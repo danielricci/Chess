@@ -6,14 +6,12 @@ import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
-import engine.communication.internal.menu.ItemComponent;
-import engine.managers.LocalizationManager;
-import engine.managers.LocalizationManager.Resources;
+import engine.core.option.types.OptionItem;
 
-public class AboutMenuItem extends ItemComponent {
+public class AboutMenuItem extends OptionItem {
 
 	public AboutMenuItem(JComponent parent) {
-		super(new JMenuItem(LocalizationManager.Get(Resources.AboutMenu)), parent);
+		super(new JMenuItem("About"), parent);
 	}
 	
 	@Override public void onExecute(ActionEvent actionEvent) {
