@@ -45,14 +45,29 @@ import resources.Resources.ResourceKeys;
 
 public class MainApplication extends Application {
 
+	/**
+	 * The singleton instance of this class type
+	 */
 	private static MainApplication _instance;
 	
-	public MainApplication() {
+	/**
+	 * Constructs a new instance of this class
+	 */
+	private MainApplication() {
+		
+		// Set the title
 		setTitle(Resources.instance().getLocalizedString(ResourceKeys.Title));
+		
+		// Set the size
         setSize(new Dimension(800, 800));
+        
+        // The user cannot resize the game
         setResizable(false);
+        
+        // Set the icon that will at the upper-left of the window
         setIconImage(new ImageIcon(Resources.instance().getLocalizedString(ResourceKeys.GameIcon)).getImage());
         
+        // Add the window listener to listen in on when there is a signal to exit the game
         addWindowListener(new WindowAdapter() {
 			/**
 			 * Catches a closing of this JFrame so we can handle it properly
@@ -60,13 +75,18 @@ public class MainApplication extends Application {
 			 * @param windowEvent The event that this window triggered
 			 */
 			@Override public void windowClosing(WindowEvent windowEvent) {
-				// Exit the application
+				// Exit the game
 				System.exit(0);
 			};		
 		});
         
 	}
 	
+	/**
+	 * Gets a singleton reference to this class type
+	 * 
+	 * @return A singleton reference to this class type
+	 */
 	public static MainApplication instance() {
 		if(_instance == null) {
 			_instance = new MainApplication();
@@ -74,8 +94,15 @@ public class MainApplication extends Application {
 		return _instance;
 	}
 	
+	/**
+	 * Main entry point of the application
+	 * 
+	 * @param args The arguments passed in to affect the game
+	 */
 	public static void main(String[] args) {
 		try {      	
+			// Call the event queue and invoke a new runnable
+			// object to execute our game.
         	EventQueue.invokeLater(new Runnable() {
         		@Override public void run() {
         			MainApplication.instance().setVisible(true);
@@ -88,14 +115,23 @@ public class MainApplication extends Application {
     }
 	
 	@Override protected void setEngineDefaults() {
+		
+		// Set the default locale for our engine to recognize our localization
 		Resources.instance().addLocale(ResourceBundle.getBundle("resources/Resources", Locale.CANADA), true);
 	}
 	
 	@Override protected void setWindowedInstanceMenu() {
+		
+		// Populate the file menu and its entries
 		PopulateFileMenu();
+		
+		// Populate the help menu and its entries
 		PopulateHelpMenu();
 	}
 
+	/**
+	 * Populate the file menu and its entries
+	 */
 	private void PopulateFileMenu() {
 		OptionBuilder.start(getJMenuBar())
 			.AddItem(FileMenuComponent.class)
@@ -104,6 +140,9 @@ public class MainApplication extends Application {
 			.AddItem(ExitGameMenuItem.class);
 	}
 
+	/**
+	 * Populate the help menu and its entries
+	 */
 	private void PopulateHelpMenu() {
 		OptionBuilder.start(getJMenuBar())
 			.AddItem(HelpMenuComponent.class)
