@@ -26,6 +26,8 @@ package application;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -50,6 +52,19 @@ public class MainApplication extends Application {
         setSize(new Dimension(800, 800));
         setResizable(false);
         setIconImage(new ImageIcon(Resources.instance().getLocalizedString(ResourceKeys.GameIcon)).getImage());
+        
+        addWindowListener(new WindowAdapter() {
+			/**
+			 * Catches a closing of this JFrame so we can handle it properly
+			 * 
+			 * @param windowEvent The event that this window triggered
+			 */
+			@Override public void windowClosing(WindowEvent windowEvent) {
+				// Exit the application
+				System.exit(0);
+			};		
+		});
+        
 	}
 	
 	public static MainApplication instance() {
