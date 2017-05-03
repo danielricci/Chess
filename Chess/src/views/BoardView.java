@@ -54,7 +54,10 @@ public class BoardView extends PanelView {
 	}
 		
 	@Override public void render() {
-
+		
+		super.render();
+		// TODO - we are rendering way too early, we defer rendering until after
+		// this is done AND this shouldnt even be here
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		// Set the constraints of views 
@@ -95,14 +98,12 @@ public class BoardView extends PanelView {
 		}
 		
 		// Link the views together logically
-		/*getViewProperties().getController(BoardController.class).populateBoardNeighbors(
-			tiles
-			.stream().map(z -> z
-			.stream().map(a -> a.getController(TileController.class)).collect(Collectors.toList()))
-			.collect(Collectors.toList())
-		);*/
-		
+		//getViewProperties().getController(BoardController.class).populateBoardNeighbors(
 			
+		//);
+			//tiles.stream().map(z -> z.stream().map(a -> a.getController(TileController.class)).collect(Collectors.toList())).collect(Collectors.toList());
+	//	);
+
 		add(_gamePanel);
 	}
 

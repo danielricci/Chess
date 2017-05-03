@@ -32,17 +32,19 @@ import engine.core.mvc.view.PanelView;
 
 public class MainWindowView extends PanelView {
 	
-	@Override public void render() {
-		BoardView boardView = AbstractFactory.getFactory(ViewFactory.class).get(BoardView.class, true);
-		boardView.render();
-		
-		add(boardView);
-	}
-
 	@Override public void initializeComponents() {
 		setLayout(new BorderLayout());
 	}
 
 	@Override public void initializeComponentBindings() {
+	}
+	
+	@Override public void render() {
+		super.render();
+		
+		BoardView boardView = AbstractFactory.getFactory(ViewFactory.class).get(BoardView.class, true);
+		add(boardView);
+		
+		boardView.render();
 	}
 }

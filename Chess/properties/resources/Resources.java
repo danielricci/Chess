@@ -34,8 +34,9 @@ public final class Resources extends Localisation<Resources.ResourceKeys> {
 	}
 	
 	public enum ResourceKeys {
-		Title("title");
-
+		Title("title"),
+		GameIcon("game_icon");
+		
 		private String _key;
 		ResourceKeys(String resourceKey) {
 			_key = resourceKey;

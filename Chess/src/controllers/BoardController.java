@@ -25,14 +25,10 @@
 package controllers;
 
 import java.awt.Dimension;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import engine.core.mvc.controller.BaseController;
-import models.TileModel;
 import views.BoardView;
 
 public class BoardController extends BaseController {
@@ -55,9 +51,6 @@ public class BoardController extends BaseController {
 	 * Specifies the interactions on the x-axis of neighbors 
 	 */
 	private enum NeighborXPosition {
-		/**
-		 * Note: Make sure that agnostic values follow non-agnostic ones
-		 */
 		LEFT	(1 << 0, false),
 		LEFT_AGNOSTIC(1 << 1, true),
 		
@@ -75,15 +68,12 @@ public class BoardController extends BaseController {
 			_agnostic = agnostic;
 		}
 	}
+
 	
 	/**
 	 * Specifies the interactions on the x-axis of neighbors
 	 */
 	private enum NeighborYPosition {
-		
-		/**
-		 * Note: Make sure that agnostic values follow non-agnostic ones
-		 */
 		TOP	(1 << 0, false),
 		TOP_AGNOSTIC(1 << 1, true),
 		
@@ -112,9 +102,6 @@ public class BoardController extends BaseController {
 			}
 		}
 		
-		/**
-		 * Normalizes a position by removing its agnostic value
-		 */
 		protected static NeighborYPosition fromAgnostic(NeighborYPosition position) {
 			switch(position) {
 				case BOTTOM_AGNOSTIC:
@@ -164,6 +151,7 @@ public class BoardController extends BaseController {
 		}
 	};
 	
+	
 	/**
 	 * Constructs a new instance of this class
 	 * 
@@ -178,6 +166,7 @@ public class BoardController extends BaseController {
 	 * 
 	 * @param tiles The list of tiles 
 	 */
+	/*
 	public void populateBoardNeighbors(List<List<TileController>> tiles) {
 		for(int i = 0; i < tiles.size(); ++i) {
 			link(
@@ -187,6 +176,7 @@ public class BoardController extends BaseController {
 			);
 		}
 	}
+	*/
 
 	/**
 	 * Links together the passed in rows with respect to a flood fill
@@ -195,6 +185,7 @@ public class BoardController extends BaseController {
 	 * @param neutral the neutral row
 	 * @param bottom The bottom row
 	 */
+	/*
 	private void link(List<TileController> topRow, List<TileController> neutralRow, List<TileController> bottomRow) {
 		
 		for(int i = 0, dim = Dimensions.width ; i < dim; ++i) {
@@ -224,13 +215,14 @@ public class BoardController extends BaseController {
 			_neighbors.put(neutralRow.get(i), neighbors);
 		}
 	}
-	
+	*/
 	
 	/**
 	 * Gets the list of neighbors
 	 * 
 	 * @return The list of neighbors 
 	 */
+	/*
 	public List<TileController> getNeighbors(TileController neutral) {
 		
 		List<TileController> controllers = new ArrayList<>();
@@ -240,6 +232,7 @@ public class BoardController extends BaseController {
 		}
 		return controllers;
 	}
+	*/
 	
 	/**
 	 * Gets all the neighbors associated to this controller
