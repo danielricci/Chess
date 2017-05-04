@@ -38,7 +38,6 @@ import engine.core.factories.AbstractFactory;
 import engine.core.factories.ControllerFactory;
 import engine.core.factories.ViewFactory;
 import engine.core.mvc.view.PanelView;
-import views.TileView.TileBackgroundColor;
 
 public class BoardView extends PanelView {
 	
@@ -79,8 +78,8 @@ public class BoardView extends PanelView {
 				// Create a tile and add it to our board
 				TileView view = AbstractFactory.getFactory(ViewFactory.class).get(
 					TileView.class, 
-					false, 
-					(col + row) % 2 == 0 ? TileBackgroundColor.FirstColor :  TileBackgroundColor.SecondColor
+					false,
+					(col + row) % 2 == 0 ? TileView.EVEN_FILES_COLOR : TileView.ODD_FILES_COLOR
 				);
 
 				tileRow.add(view);

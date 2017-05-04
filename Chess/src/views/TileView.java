@@ -25,74 +25,113 @@
 package views;
 
 import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+import javax.swing.BorderFactory;
+import javax.swing.border.Border;
 
 import controllers.BoardController;
 import engine.core.factories.AbstractFactory;
 import engine.core.factories.ControllerFactory;
 import engine.core.mvc.view.PanelView;
 
+/**
+ * This view represents the visual contents of a single tile in this game
+ * 
+ * @author Daniel Ricci <thedanny09@gmail.com>
+ *
+ */
 public class TileView extends PanelView {
 	
-	private static int _counter = 0; 
-	private int _coordinate = ++_counter;;
+	/**
+	 * The color of all the odd files
+	 */
+	public static final Color ODD_FILES_COLOR = new Color(209, 139, 71);
 	
-	private Image _image;
+	/**
+	 * The Color of all the even files
+	 */
+	public static final Color EVEN_FILES_COLOR = new Color(255, 205, 158);
 	
-	private Color _defaultBackgroundColor;
+	/**
+	 * Highlight border style of this view
+	 */
+	private static final Border HIGHLIGHT_BORDER = BorderFactory.createLineBorder(Color.BLUE, 2);
+	
+	/**
+	 * Normal border style of this view
+	 */
+	private final Border DEFAULT_BORDER_STYLE;
+	
+	/**
+	 * The default background color of this tile
+	 */
+	private final Color DEFAULT_BACKGROUND_COLOR;
+			
+	/**
+	 * The current background color of this tile
+	 */
 	private Color _currentBackgroundColor;
-	private Color _previousBackgroundColor;
-		
-	public enum TileBackgroundColor {
-		FirstColor(new Color(209, 139, 71)),
-		SecondColor(new Color(255, 205, 158)),
-		NeighborColor(Color.BLUE);
-		
-		public final Color color;
-		
-		TileBackgroundColor(Color color) {
-			this.color = color;
-		}
-	}
 	
-	public TileView(TileBackgroundColor defaultBackgroundColor) {
+	/**
+	 * Constructs a new instance of this class type
+	 */
+	public TileView(Color tileColor) {
 		
 		// Set the controller associated to this view
 		getViewProperties().setController(AbstractFactory
 			.getFactory(ControllerFactory.class)
 			.get(BoardController.class, true)
 		);	
-				
-		// Set the default background color, and set the currently active color which should
-		// be both the same when the initial render happens
-		_defaultBackgroundColor = _currentBackgroundColor = defaultBackgroundColor.color;
+		
+		// Set the color that has been specified
+		DEFAULT_BACKGROUND_COLOR = tileColor;
+		setBackground(DEFAULT_BACKGROUND_COLOR);
+		
+		// Set the default border color of this tile
+		// which should be the same color as the default 
+		// background color of the tile
+		//
+		// Note: By having a border, we avoid artifact issues with
+		// rendering an actual border on a particular tile when
+		// no other tile has a border drawn
+		DEFAULT_BORDER_STYLE = BorderFactory.createLineBorder(DEFAULT_BACKGROUND_COLOR, 2);
+		setBorder(DEFAULT_BORDER_STYLE);
 	}
 	
 	@Override public void initializeComponents() {
-		// TODO Auto-generated method stub
 	}
 
 	@Override public void initializeComponentBindings() {
-		// TODO Auto-generated method stub		
+		
+		// Add a mouse listener to handle when a mouse enters 
+		// and leaves this tile
+		this.addMouseListener(new MouseAdapter() {
+			
+			// Handle when the mouse enters this tile
+			@Override public void mouseEntered(MouseEvent event) {
+				setBorder(HIGHLIGHT_BORDER);
+			}
+			
+			// Handle when the mouse exits this tile
+			@Override public void mouseExited(MouseEvent event) {
+				setBorder(DEFAULT_BORDER_STYLE);
+			}
+		});
 	}
 	
 	@Override public void setBackground(Color backgroundColor) {
-		super.setBackground(backgroundColor);
-		_currentBackgroundColor = backgroundColor;
-		repaint();
-	}
 		
- 	@Override public void render() {
-		super.render();
-		setBackground(_currentBackgroundColor);
-		repaint();
+		// Before rendering a new background color, ensure that
+		// the background color isn't already set to the specified
+		// color
+		if(backgroundColor != _currentBackgroundColor) {
+			// Render the new background settings
+			super.setBackground(backgroundColor);
+			
+			// Record the new background color change 
+			_currentBackgroundColor = backgroundColor;
+		}
 	}
-	
-	@Override protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        Graphics2D g2d = (Graphics2D)g;
-        g2d.drawImage(_image, 10, 8, 48, 48, null, null);       
-	}	
 }
