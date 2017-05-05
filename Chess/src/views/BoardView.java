@@ -39,10 +39,22 @@ import engine.core.factories.ControllerFactory;
 import engine.core.factories.ViewFactory;
 import engine.core.mvc.view.PanelView;
 
+/**
+ * This view represents the entire board, it holds all the tiles of the board
+ * 
+ * @author Daniel Ricci <thedanny09@gmail.com>
+ *
+ */
 public class BoardView extends PanelView {
 	
+	/**
+	 * Holds the game panel as a grid
+	 */
 	private final JPanel _gamePanel = new JPanel(new GridBagLayout());
 		
+	/**
+	 * Constructs a new instance of this type
+	 */
 	public BoardView() {
 		// Set the controller associated to this view
 		getViewProperties().setController(
@@ -51,13 +63,19 @@ public class BoardView extends PanelView {
 			.get(BoardController.class, true, this)
 		);	
 	}
+	
+	@Override public void initializeComponents() {
+		
+		// Set the layout manager
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+	}
+
+	@Override public void initializeComponentBindings() {
+	}
 		
 	@Override public void render() {
 		
 		super.render();
-		// TODO - we are rendering way too early, we defer rendering until after
-		// this is done AND this shouldnt even be here
-		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		// Set the constraints of views 
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -82,6 +100,7 @@ public class BoardView extends PanelView {
 					(col + row) % 2 == 0 ? TileView.EVEN_FILES_COLOR : TileView.ODD_FILES_COLOR
 				);
 
+				// Add the tile to our current row
 				tileRow.add(view);
 				
 				// Make sure that dimensions are properly mapped
@@ -93,6 +112,7 @@ public class BoardView extends PanelView {
 				view.render();
 			}
 			
+			// Add the tile row to our list of rows
 			tiles.add(tileRow);
 		}
 		
@@ -103,18 +123,7 @@ public class BoardView extends PanelView {
 			//tiles.stream().map(z -> z.stream().map(a -> a.getController(TileController.class)).collect(Collectors.toList())).collect(Collectors.toList());
 	//	);
 
+		// Add the game panel to this view
 		add(_gamePanel);
-	}
-
-	@Override
-	public void initializeComponents() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void initializeComponentBindings() {
-		// TODO Auto-generated method stub
-		
 	}
 }

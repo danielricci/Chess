@@ -39,9 +39,11 @@ public class TileModel extends BaseModel {
 		None;
 	}
 	
-	public TileModel(ISignalListener... receivers) {
+	public TileModel() {
+	}
+	
+	public <T extends ISignalListener> TileModel(T... receivers) {
 		super(receivers);
-		doneUpdating();
 	}
 	
 	@Override public String toString() {

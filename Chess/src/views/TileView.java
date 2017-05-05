@@ -31,7 +31,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.BorderFactory;
 import javax.swing.border.Border;
 
-import controllers.BoardController;
+import controllers.TileController;
 import engine.core.factories.AbstractFactory;
 import engine.core.factories.ControllerFactory;
 import engine.core.mvc.view.PanelView;
@@ -82,7 +82,7 @@ public class TileView extends PanelView {
 		// Set the controller associated to this view
 		getViewProperties().setController(AbstractFactory
 			.getFactory(ControllerFactory.class)
-			.get(BoardController.class, true)
+			.get(TileController.class, false, this)
 		);	
 		
 		// Set the color that has been specified

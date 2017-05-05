@@ -24,34 +24,23 @@
 
 package controllers;
 
-import java.util.List;
-
-import engine.core.factories.AbstractFactory;
-import engine.core.factories.ViewFactory;
+import engine.api.IModel;
 import engine.core.mvc.controller.BaseController;
 import models.TileModel;
-import views.BoardView;
 import views.TileView;
 
 /**
- * TileController is the controller in charge of managing events fired from TileView actions 
+ * Manages a particular tile and all of its states
+ * 
+ * @author Daniel Ricci <thedanny09@gmail.com>
+ *
  */
 public class TileController extends BaseController {
 	
 	/**
-	 * Global counter
+	 * The tile model that represents a single tile in the game
 	 */
-	private static int counter = 0;
-	
-	/**
-	 * The identifier numeral of this controller
-	 */
-	private final int identifier = ++counter;
-	
-	/**
-	 * The Model associated to this controller
-	 */
-	private TileModel _tile;
+	private final TileModel _tile;
 	
 	/**
 	 * Constructs a new instance of this class
@@ -61,31 +50,10 @@ public class TileController extends BaseController {
 	public TileController(TileView viewClass) {
 		super(viewClass);
 		
-		System.out.println("Tile Created: " + counter);
+		// Create the instance of our tile model
+		_tile = IModel.MODEL_FACTORY.get(TileModel.class, false);
 		
-		// Create our model and assign to it the receivers
-		_tile = new TileModel(
-			getControllerProperties().getView(TileView.class), 
-			AbstractFactory.getFactory(ViewFactory.class).get(BoardView.class, true)
-		);
-	}
-	
-	/**
-	 * Performs a highlight command on the surrounding cells
-	 *  
-	 * @param enabled If it should be enabled or not
-	 */
-	public void highlightNeighbors(boolean enabled) {
-		//_tile.getAllNeighbors();
-	}
-	
-	@Override public String toString() {
-		return String.valueOf(identifier);
-	}
-
-	public List<TileView> getNeighbors() {
-		return null;
-		//List<TileController> neighbors = ControllerFactory.instance().get(BoardController.class, true).getNeighbors(this);
-		//return neighbors.stream().map(z -> z.getView(TileView.class)).collect(Collectors.toList());
+		// Assign the listeners to the newly created model
+		_tile.addListener(viewClass, CONTROLLER_FACTORY.get(BoardController.class));
 	}
 }
