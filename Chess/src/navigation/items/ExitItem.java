@@ -22,18 +22,26 @@
 * IN THE SOFTWARE.
 */
 
-package navigation.menus;
+package navigation.items;
 
-import java.awt.event.KeyEvent;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JComponent;
-import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 
-import engine.core.option.types.OptionMenu;
+import application.MainApplication;
+import engine.core.option.types.OptionItem;
 
-public class HelpMenuComponent extends OptionMenu {
-	public HelpMenuComponent(JComponent parent) {
-		super(new JMenu("Help"), parent);
-		super.get(JMenu.class).setMnemonic(KeyEvent.VK_H);
+public class ExitItem extends OptionItem {
+	
+	public ExitItem(JComponent parent) {
+		super(new JMenuItem("Exit"), parent);
+	}
+	
+	@Override public void onExecute(ActionEvent actionEvent) {
+		MainApplication.instance().dispatchEvent(
+			new WindowEvent(MainApplication.instance(), WindowEvent.WINDOW_CLOSING)
+		);
 	}
 }

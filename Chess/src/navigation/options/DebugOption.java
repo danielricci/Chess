@@ -22,45 +22,38 @@
 * IN THE SOFTWARE.
 */
 
-package resources;
+package navigation.options;
 
-import engine.utils.globalisation.Localisation;
+import java.awt.event.KeyEvent;
 
-public final class Resources extends Localisation<Resources.ResourceKeys> {
+import javax.swing.JComponent;
+import javax.swing.JMenu;
+
+import engine.core.option.types.OptionMenu;
+import resources.Resources;
+import resources.Resources.ResourceKeys;
+
+/**
+ * This option holds elements related to debugging
+ * 
+ * @author Daniel Ricci <thedanny09@gmail.com>
+ *
+ */
+public class DebugOption extends OptionMenu {
 	
-	private static Resources _instance;
-	
-	private Resources(){
-	}
-	
-	public enum ResourceKeys {
+	//--------------------------------------------------------------
+	/**
+	 * Constructs a new instance of this type
+	 * 
+	 * @param parent The parent representing this item
+	 */
+	//--------------------------------------------------------------
+	public DebugOption(JComponent parent) {
 		
-		// The title of the game
-		Title("title"),
-		
-		// The game icon path, this is the window icon
-		GameIcon("game_icon"), 
-		
-		// The debug menu title
-		Debug("debug"), 
-		
-		// This is the item in the debug option to display neighboring
-		// tiles
-		NeighborTiles("neighbor_tiles");
-		
-		private String _key;
-		ResourceKeys(String resourceKey) {
-			_key = resourceKey;
-		}
-		@Override public String toString() {
-			return _key;
-		}
-	}
-	
-	public static Resources instance(){
-		if(_instance == null) {
-			_instance = new Resources();
-		}
-		return _instance;
+		// Create a new menu entry
+		super(new JMenu(Resources.instance().getLocalizedString(ResourceKeys.Debug)), parent);
+
+		// Set mnemonic key to open this menu
+		super.get(JMenu.class).setMnemonic(KeyEvent.VK_D);
 	}
 }

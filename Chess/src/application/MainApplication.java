@@ -35,11 +35,13 @@ import javax.swing.ImageIcon;
 
 import engine.core.option.OptionBuilder;
 import engine.core.system.Application;
-import navigation.items.AboutMenuItem;
-import navigation.items.ExitGameMenuItem;
-import navigation.items.NewGameMenuItem;
-import navigation.menus.FileMenuComponent;
-import navigation.menus.HelpMenuComponent;
+import navigation.items.AboutItem;
+import navigation.items.ExitItem;
+import navigation.items.NeighboursItem;
+import navigation.items.NewGameItem;
+import navigation.options.DebugOption;
+import navigation.options.FileOption;
+import navigation.options.HelpOption;
 import resources.Resources;
 import resources.Resources.ResourceKeys;
 
@@ -125,6 +127,9 @@ public class MainApplication extends Application {
 		// Populate the file menu and its entries
 		PopulateFileMenu();
 		
+		// Populate the debug menu and its entries
+		PopulateDebugMenu();
+		
 		// Populate the help menu and its entries
 		PopulateHelpMenu();
 	}
@@ -134,19 +139,28 @@ public class MainApplication extends Application {
 	 */
 	private void PopulateFileMenu() {
 		OptionBuilder.start(getJMenuBar())
-			.AddItem(FileMenuComponent.class)
-			.AddItem(NewGameMenuItem.class)
+			.AddItem(FileOption.class)
+			.AddItem(NewGameItem.class)
 			.AddSeparator()
-			.AddItem(ExitGameMenuItem.class);
+			.AddItem(ExitItem.class);
 	}
 
+	/**
+	 * Populate the debug menu and its entries
+	 */
+	private void PopulateDebugMenu() {
+		OptionBuilder.start(getJMenuBar())
+			.AddItem(DebugOption.class)
+			.AddItem(NeighboursItem.class);
+	}
+	
 	/**
 	 * Populate the help menu and its entries
 	 */
 	private void PopulateHelpMenu() {
 		OptionBuilder.start(getJMenuBar())
-			.AddItem(HelpMenuComponent.class)
-			.AddItem(AboutMenuItem.class);
+			.AddItem(HelpOption.class)
+			.AddItem(AboutItem.class);
 	}
 
 	@Override public void flush() {

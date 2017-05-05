@@ -22,26 +22,18 @@
 * IN THE SOFTWARE.
 */
 
-package navigation.items;
+package navigation.options;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.WindowEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JComponent;
-import javax.swing.JMenuItem;
+import javax.swing.JMenu;
 
-import application.MainApplication;
-import engine.core.option.types.OptionItem;
+import engine.core.option.types.OptionMenu;
 
-public class ExitGameMenuItem extends OptionItem {
-	
-	public ExitGameMenuItem(JComponent parent) {
-		super(new JMenuItem("Exit"), parent);
-	}
-	
-	@Override public void onExecute(ActionEvent actionEvent) {
-		MainApplication.instance().dispatchEvent(
-			new WindowEvent(MainApplication.instance(), WindowEvent.WINDOW_CLOSING)
-		);
+public class FileOption extends OptionMenu {
+	public FileOption(JComponent parent) {
+		super(new JMenu("File"), parent);
+		super.get(JMenu.class).setMnemonic(KeyEvent.VK_F);
 	}
 }

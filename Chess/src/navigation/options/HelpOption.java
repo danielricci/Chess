@@ -22,7 +22,7 @@
 * IN THE SOFTWARE.
 */
 
-package navigation.menus;
+package navigation.options;
 
 import java.awt.event.KeyEvent;
 
@@ -31,9 +31,9 @@ import javax.swing.JMenu;
 
 import engine.core.option.types.OptionMenu;
 
-public class FileMenuComponent extends OptionMenu {
-	public FileMenuComponent(JComponent parent) {
-		super(new JMenu("File"), parent);
-		super.get(JMenu.class).setMnemonic(KeyEvent.VK_F);
+public class HelpOption extends OptionMenu {
+	public HelpOption(JComponent parent) {
+		super(new JMenu("Help"), parent);
+		super.get(JMenu.class).setMnemonic(KeyEvent.VK_H);
 	}
 }

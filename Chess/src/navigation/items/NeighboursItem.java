@@ -22,29 +22,39 @@
 * IN THE SOFTWARE.
 */
 
-
 package navigation.items;
 
 import java.awt.event.ActionEvent;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 
 import engine.core.option.types.OptionItem;
+import resources.Resources;
+import resources.Resources.ResourceKeys;
 
-public class AboutMenuItem extends OptionItem {
-
-	public AboutMenuItem(JComponent parent) {
-		super(new JMenuItem("About"), parent);
+/**
+ * The item for debugging neighboring tiles based
+ * 
+ * @author Daniel Ricci <thedanny09@gmail.com>
+ *
+ */
+public class NeighboursItem extends OptionItem {
+	
+	//--------------------------------------------------------------
+	/**
+	 * Constructs a new instance of this type
+	 * 
+	 * @param parent The parent representing this item
+	 */
+	//--------------------------------------------------------------
+	public NeighboursItem(JComponent parent) {
+		
+		// Create the menu item
+		super(new JCheckBoxMenuItem(Resources.instance().getLocalizedString(ResourceKeys.NeighborTiles)), parent);
 	}
 	
 	@Override public void onExecute(ActionEvent actionEvent) {
-		JOptionPane.showMessageDialog(
-			null,
-			"Chess\nVersion 1.0\n\nDaniel Ricci\nthedanny09@gmail.com\nhttps:/github.com/danielricci/Chess",
-			"About Chess",
-			JOptionPane.INFORMATION_MESSAGE
-		);
+		// TODO
 	}
 }

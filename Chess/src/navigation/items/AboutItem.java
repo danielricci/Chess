@@ -22,45 +22,29 @@
 * IN THE SOFTWARE.
 */
 
-package resources;
 
-import engine.utils.globalisation.Localisation;
+package navigation.items;
 
-public final class Resources extends Localisation<Resources.ResourceKeys> {
-	
-	private static Resources _instance;
-	
-	private Resources(){
+import java.awt.event.ActionEvent;
+
+import javax.swing.JComponent;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+
+import engine.core.option.types.OptionItem;
+
+public class AboutItem extends OptionItem {
+
+	public AboutItem(JComponent parent) {
+		super(new JMenuItem("About"), parent);
 	}
 	
-	public enum ResourceKeys {
-		
-		// The title of the game
-		Title("title"),
-		
-		// The game icon path, this is the window icon
-		GameIcon("game_icon"), 
-		
-		// The debug menu title
-		Debug("debug"), 
-		
-		// This is the item in the debug option to display neighboring
-		// tiles
-		NeighborTiles("neighbor_tiles");
-		
-		private String _key;
-		ResourceKeys(String resourceKey) {
-			_key = resourceKey;
-		}
-		@Override public String toString() {
-			return _key;
-		}
-	}
-	
-	public static Resources instance(){
-		if(_instance == null) {
-			_instance = new Resources();
-		}
-		return _instance;
+	@Override public void onExecute(ActionEvent actionEvent) {
+		JOptionPane.showMessageDialog(
+			null,
+			"Chess\nVersion 1.0\n\nDaniel Ricci\nthedanny09@gmail.com\nhttps:/github.com/danielricci/Chess",
+			"About Chess",
+			JOptionPane.INFORMATION_MESSAGE
+		);
 	}
 }

@@ -37,9 +37,9 @@ import engine.core.factories.ViewFactory;
 import engine.core.option.types.OptionItem;
 import views.MainWindowView;
 
-public class NewGameMenuItem extends OptionItem {
+public class NewGameItem extends OptionItem {
 
-	public NewGameMenuItem(JComponent parent) {
+	public NewGameItem(JComponent parent) {
 		super(new JMenuItem("New Game"), parent);
 		get(JMenuItem.class).setAccelerator(KeyStroke.getKeyStroke('N', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask()));
 	}
