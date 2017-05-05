@@ -27,26 +27,27 @@ package models;
 import engine.communication.internal.signal.ISignalListener;
 import engine.core.mvc.model.BaseModel;
 
+/**
+ * The model representation of a tile 
+ * 
+ * @author Daniel Ricci <thedanny09@gmail.com>
+ *
+ */
 public class TileModel extends BaseModel {
-    	
-	private static int IDENTIFIER;
-	private final int _identifier = ++IDENTIFIER;
-    
-	public enum Selection {
-		GuideSelected,
-		MoveSelected,
-		CaptureSelected,
-		None;
-	}
 	
+	/**
+	 * Constructs a new instance of this type
+	 */
 	public TileModel() {
 	}
 	
+	/**
+	 * Constructs a new instance of this type
+	 * 
+	 * @param receivers The array of receivers that will listen in on changes
+	 * 					made to this object
+	 */
 	public <T extends ISignalListener> TileModel(T... receivers) {
 		super(receivers);
-	}
-	
-	@Override public String toString() {
-		return Integer.toString(_identifier);
 	}
 }
