@@ -38,6 +38,7 @@ import engine.core.factories.AbstractFactory;
 import engine.core.factories.ControllerFactory;
 import engine.core.factories.ViewFactory;
 import engine.core.mvc.view.PanelView;
+import models.BoardModel;
 
 /**
  * This view represents the entire board, it holds all the tiles of the board
@@ -87,11 +88,11 @@ public class BoardView extends PanelView {
 		List<List<TileView>> tiles = new ArrayList<>();
 		
 		// Create the board view structure, row by row
-		for(int row = 0, dimensionsX = BoardController.Dimensions.width; row < dimensionsX; ++row) {
+		for(int row = 0, dimensionsX = BoardModel.DIMENSIONS.width; row < dimensionsX; ++row) {
 			
 			Vector<TileView> tileRow = new Vector<>();
 			// Create a row
-			for(int col =  0, dimensionsY = BoardController.Dimensions.height; col < dimensionsY; ++col) {		
+			for(int col =  0, dimensionsY = BoardModel.DIMENSIONS.height; col < dimensionsY; ++col) {		
 				
 				// Create a tile and add it to our board
 				TileView view = AbstractFactory.getFactory(ViewFactory.class).get(

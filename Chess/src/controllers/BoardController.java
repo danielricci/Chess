@@ -24,19 +24,30 @@
 
 package controllers;
 
-import java.awt.Dimension;
 import java.util.HashMap;
 import java.util.Map;
 
+import engine.api.IModel;
 import engine.core.mvc.controller.BaseController;
+import models.BoardModel;
+import models.TileModel;
 import views.BoardView;
 
+/**
+ * This controller is in charge of the overall board game.  As far as tiles are concerned, they
+ * do not know about their neighbors or the rules of the game, they just know that they want to
+ * go somewhere.  This is how a tile controller would differ from a board controller.
+ * 
+ * This controller should receive messages from tile models whenever there is a change in event, and
+ * based on that event, the board controller should intervene and do something with respect to the logic
+ * of the game rules.
+ * 
+ * @author Daniel Ricci <thedanny09@gmail.com>
+ *
+ */
 public class BoardController extends BaseController {
 	
-	/**
-	 * The dimensions of the board
-	 */
-	public static final Dimension Dimensions = new Dimension(8, 8);
+	private final BoardModel _boardModel;
 	
 	/**
 	 * The list of neighbors logically associated to a specified controller
@@ -45,7 +56,7 @@ public class BoardController extends BaseController {
 	 * Key2: The Y-Axis of the neighbor
 	 * Key3: The X-Axis of the neighbor
 	 */
-	private final Map<TileController, Map<NeighborYPosition, Map<NeighborXPosition, TileController>>> _neighbors = new HashMap<TileController, Map<NeighborYPosition, Map<NeighborXPosition, TileController>>>();
+	private final Map<TileModel, Map<NeighborYPosition, Map<NeighborXPosition, TileModel>>> _neighbors = new HashMap<>();
 	
 	/**
 	 * Specifies the interactions on the x-axis of neighbors 
@@ -69,7 +80,6 @@ public class BoardController extends BaseController {
 		}
 	}
 
-	
 	/**
 	 * Specifies the interactions on the x-axis of neighbors
 	 */
@@ -151,7 +161,6 @@ public class BoardController extends BaseController {
 		}
 	};
 	
-	
 	/**
 	 * Constructs a new instance of this class
 	 * 
@@ -159,7 +168,28 @@ public class BoardController extends BaseController {
 	 */
 	public BoardController(BoardView view) {
 		super(view);
+		
+		// Set the board model
+		_boardModel = IModel.MODEL_FACTORY.get(BoardModel.class, false);
 	}	
+	
+	@Override public void registerSignalListeners() {
+		//registerSignalListener()
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	/**
 	 * Populates the list of neighbors, logically attaching them
@@ -167,9 +197,11 @@ public class BoardController extends BaseController {
 	 * @param tiles The list of tiles 
 	 */
 	/*
-	public void populateBoardNeighbors(List<List<TileController>> tiles) {
+	public void generateLogicalTileLinks(List<List<TileController>> tiles) {
+		_neighbors.clear();
+		
 		for(int i = 0; i < tiles.size(); ++i) {
-			link(
+			linkTileRow(
 				i - 1 >= 0 ? tiles.get(i - 1) : null, 
 				tiles.get(i), 
 				i + 1 < tiles.size() ? tiles.get(i + 1) : null
@@ -177,7 +209,6 @@ public class BoardController extends BaseController {
 		}
 	}
 	*/
-
 	/**
 	 * Links together the passed in rows with respect to a flood fill
 	 *  
