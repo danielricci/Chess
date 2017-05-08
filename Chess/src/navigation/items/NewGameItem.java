@@ -49,20 +49,14 @@ public class NewGameItem extends OptionItem {
 		// Get a reference to the view factory 
 		ViewFactory factory = AbstractFactory.getFactory(ViewFactory.class);
 		
-		if(factory != null) {
-			// Get a reference to the main window to start application
-			MainWindowView view = factory.get(MainWindowView.class, true); 
+		// Get a reference to the main window to start application
+		MainWindowView view = factory.get(MainWindowView.class, true); 
 			
-			// Render the specified view
-			view.render();
-			
-			// Add the view to the application
-			MainApplication.instance().add(view);
-			
-			// Validate the application to layout all contents
-			// onto the screen
-			MainApplication.instance().validate();
-		}
+		// Add the view to the application
+		MainApplication.instance().add(view);
+		
+		// Render the specified view
+		view.render();
 	}
 	
 	@Override public boolean enabled() {

@@ -24,10 +24,14 @@
 
 package controllers;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
+import controllers.enums.NeighborXPosition;
+import controllers.enums.NeighborYPosition;
 import engine.api.IModel;
+import engine.communication.internal.signal.ISignalReceiver;
+import engine.communication.internal.signal.types.ModelEvent;
 import engine.core.mvc.controller.BaseController;
 import models.BoardModel;
 import models.TileModel;
@@ -56,110 +60,7 @@ public class BoardController extends BaseController {
 	 * Key2: The Y-Axis of the neighbor
 	 * Key3: The X-Axis of the neighbor
 	 */
-	private final Map<TileModel, Map<NeighborYPosition, Map<NeighborXPosition, TileModel>>> _neighbors = new HashMap<>();
-	
-	/**
-	 * Specifies the interactions on the x-axis of neighbors 
-	 */
-	private enum NeighborXPosition {
-		LEFT	(1 << 0, false),
-		LEFT_AGNOSTIC(1 << 1, true),
-		
-		RIGHT (1 << 2, false),
-		RIGHT_AGNOSTIC	(1 << 3, true),
-		
-		NEUTRAL(1 << 4, false),
-		NEUTRAL_AGNOSTIC(1 << 5, true);
-	
-		private final int _value;
-		private final boolean _agnostic;
-		
-		private NeighborXPosition(int value, boolean agnostic) {
-			_value = value;
-			_agnostic = agnostic;
-		}
-	}
-
-	/**
-	 * Specifies the interactions on the x-axis of neighbors
-	 */
-	private enum NeighborYPosition {
-		TOP	(1 << 0, false),
-		TOP_AGNOSTIC(1 << 1, true),
-		
-		BOTTOM (1 << 2, false),
-		BOTTOM_AGNOSTIC	(1 << 3, true),
-		
-		NEUTRAL(1 << 4, false),
-		NEUTRAL_AGNOSTIC(1 << 5, true);
-	
-		private final int _value;
-		private final boolean _agnostic;
-		
-		private NeighborYPosition(int value, boolean agnostic) {
-			_value = value;
-			_agnostic = agnostic;
-		}
-		
-		protected static NeighborYPosition flip(NeighborYPosition pos) {
-			switch(pos) {
-			case BOTTOM:
-				return TOP;
-			case TOP:
-				return BOTTOM;
-			default:
-				return pos;
-			}
-		}
-		
-		protected static NeighborYPosition fromAgnostic(NeighborYPosition position) {
-			switch(position) {
-				case BOTTOM_AGNOSTIC:
-				case TOP_AGNOSTIC:
-				case NEUTRAL_AGNOSTIC:
-				{
-					int val = position._value >> 1;
-					for(NeighborYPosition pos : NeighborYPosition.values()) {
-						if(pos._value == val) {
-							return pos;
-						}
-					}			
-					break;
-				}
-			}
-			System.out.println("Error with fromAgnostic");
-			System.out.println(java.util.Arrays.toString((new Throwable()).getStackTrace()));
-			return position;
-		}
-		
-		protected boolean isAgnostic() {
-			return _agnostic;
-		}
-		
-		protected static NeighborYPosition toAgnostic(NeighborYPosition position) {
-			switch(position) {
-			case BOTTOM:
-			case TOP:
-				int val = position._value << 1;
-				for(NeighborYPosition pos : NeighborYPosition.values()) {
-					if(pos._value == val) {
-						return pos;
-					}
-				}
-				break;
-			case BOTTOM_AGNOSTIC:
-				break;
-			case TOP_AGNOSTIC:
-				break;
-			default:
-				break;
-			}
-			
-			System.out.println("Error with toAgnostic");
-			System.out.println(java.util.Arrays.toString((new Throwable()).getStackTrace()));
-			return position;
-		}
-	};
+	private final Map<TileModel, Map<NeighborYPosition, Map<NeighborXPosition, TileModel>>> _neighbors;
 	
 	/**
 	 * Constructs a new instance of this class
@@ -171,25 +72,33 @@ public class BoardController extends BaseController {
 		
 		// Set the board model
 		_boardModel = IModel.MODEL_FACTORY.get(BoardModel.class, false);
+		
+		// Initialize the neighbor structure to the initial size of the board
+		_neighbors = new LinkedHashMap<>(BoardModel.DIMENSIONS.width * BoardModel.DIMENSIONS.height);
+		
+		// Register the signal listeners, we don't want to wait until rendering is done for this to occur
+		// because this class will miss important events before hand
+		registerSignalListeners();
 	}	
 	
 	@Override public void registerSignalListeners() {
-		//registerSignalListener()
+		
+		// Register to when this controller is added as a listener
+		// TODO - it would be nice if this would only be called iff the ISignalReceiver type were the same
+		registerSignalListener(IModel.EVENT_LISTENER_ADDED, new ISignalReceiver<ModelEvent<TileModel>>() {
+			@Override public void signalReceived(ModelEvent<TileModel> event) {
+				
+				// Get the tile model from the event object
+				TileModel tileModel = event.getSource();
+					
+				// If what are trying to insert has already been inserted then something went wrong
+				if(_neighbors.putIfAbsent(tileModel, null) != null) {
+					System.out.println("Error: Tile model already exists in the list... cannot add this one in");
+					System.out.println(java.util.Arrays.toString((new Throwable()).getStackTrace()));
+				}
+			}
+		});
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	/**
 	 * Populates the list of neighbors, logically attaching them

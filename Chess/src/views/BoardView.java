@@ -63,20 +63,12 @@ public class BoardView extends PanelView {
 			.getFactory(ControllerFactory.class)
 			.get(BoardController.class, true, this)
 		);	
-	}
-	
-	@Override public void initializeComponents() {
 		
 		// Set the layout manager
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 	}
-
-	@Override public void initializeComponentBindings() {
-	}
-		
-	@Override public void render() {
-		
-		super.render();
+	
+	@Override public void initializeComponents() {
 		
 		// Set the constraints of views 
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -117,14 +109,14 @@ public class BoardView extends PanelView {
 			tiles.add(tileRow);
 		}
 		
-		// Link the views together logically
-		//getViewProperties().getController(BoardController.class).populateBoardNeighbors(
-			
-		//);
-			//tiles.stream().map(z -> z.stream().map(a -> a.getController(TileController.class)).collect(Collectors.toList())).collect(Collectors.toList());
-	//	);
-
 		// Add the game panel to this view
-		add(_gamePanel);
+		 add(_gamePanel);
+	}
+
+	@Override public void initializeComponentBindings() {
+	}
+		
+	@Override public void render() {
+		super.render();
 	}
 }
