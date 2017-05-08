@@ -25,6 +25,7 @@
 package controllers;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import controllers.enums.NeighborXPosition;
@@ -96,28 +97,42 @@ public class BoardController extends BaseController {
 					System.out.println("Error: Tile model already exists in the list... cannot add this one in");
 					System.out.println(java.util.Arrays.toString((new Throwable()).getStackTrace()));
 				}
+
+				// If we have enough neighboring elements, then its time to link them (logically)
+				// together
+				if(BoardModel.AREA == _neighbors.size()) {
+					generateLogicalTileLinks();
+				}
 			}
 		});
 	}
 	
 	/**
-	 * Populates the list of neighbors, logically attaching them
-	 * 
-	 * @param tiles The list of tiles 
+	 * logically attaches the list of tiles together
 	 */
-	/*
-	public void generateLogicalTileLinks(List<List<TileController>> tiles) {
-		_neighbors.clear();
+	private void generateLogicalTileLinks() {
 		
+		TileModel[] tiles = _neighbors.keySet().toArray(new TileModel[0]);
+		
+		/*
+		for(int i = 0, rows = BoardModel.DIMENSIONS.height; i < rows; ++i) {
+			linkTileRow(
+					
+				i - 1 >= 0 ? tiles.get(i - 1) : null,
+				tiles.get(i),
+			)
+		}
+		*/
+		/*
 		for(int i = 0; i < tiles.size(); ++i) {
 			linkTileRow(
 				i - 1 >= 0 ? tiles.get(i - 1) : null, 
 				tiles.get(i), 
 				i + 1 < tiles.size() ? tiles.get(i + 1) : null
 			);
-		}
+		}*/
 	}
-	*/
+	
 	/**
 	 * Links together the passed in rows with respect to a flood fill
 	 *  
@@ -125,9 +140,8 @@ public class BoardController extends BaseController {
 	 * @param neutral the neutral row
 	 * @param bottom The bottom row
 	 */
-	/*
 	private void link(List<TileController> topRow, List<TileController> neutralRow, List<TileController> bottomRow) {
-		
+		/*
 		for(int i = 0, dim = Dimensions.width ; i < dim; ++i) {
 			
 			Map<NeighborYPosition, Map<NeighborXPosition, TileController>> neighbors = new HashMap<NeighborYPosition, Map<NeighborXPosition, TileController>>(){{
@@ -154,8 +168,9 @@ public class BoardController extends BaseController {
 			// Assign the mappings where we reference the neutral-neutral tile as the key
 			_neighbors.put(neutralRow.get(i), neighbors);
 		}
+		*/
 	}
-	*/
+	
 	
 	/**
 	 * Gets the list of neighbors

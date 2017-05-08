@@ -37,7 +37,26 @@ import engine.core.mvc.model.BaseModel;
  */
 public class BoardModel extends BaseModel {
 	
-	public static final Dimension DIMENSIONS = new Dimension(8, 8);
+	/**
+	 * Represents the dimensions of the board being played on
+	 */
+	public static final Dimension DIMENSIONS;
+	
+	/**
+	 * Represents the area of our dimensions
+	 */
+	public static final int AREA;
+	
+	/**
+	 * Static constructor to initialize our 
+	 */
+	static {
+		// Set the dimensions of the board model
+		DIMENSIONS = new Dimension(8, 8);
+		
+		// Set the area (as a helper) to the dimensions
+		AREA = DIMENSIONS.width * DIMENSIONS.height;
+	}
 	
 	/**
 	 * Constructs a new instance of this type

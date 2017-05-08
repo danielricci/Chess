@@ -36,6 +36,16 @@ import engine.core.mvc.model.BaseModel;
 public class TileModel extends BaseModel {
 	
 	/**
+	 * Index counter for all the created tiles
+	 */
+	private static int INDEX = 0;
+	
+	/**
+	 * Index of this tile
+	 */
+	private final int _index = ++INDEX;
+	
+	/**
 	 * Constructs a new instance of this type
 	 */
 	public TileModel() {
@@ -49,5 +59,9 @@ public class TileModel extends BaseModel {
 	 */
 	public <T extends ISignalListener> TileModel(T... receivers) {
 		super(receivers);
+	}
+	
+	@Override public String toString() {
+		return String.valueOf(_index);
 	}
 }

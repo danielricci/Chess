@@ -26,8 +26,6 @@ package views;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Vector;
 
 import javax.swing.BoxLayout;
@@ -76,9 +74,6 @@ public class BoardView extends PanelView {
 		gbc.weightx = 1.0;
 		gbc.weighty = 1.0;
 				
-		// Holds the list of tile views 
-		List<List<TileView>> tiles = new ArrayList<>();
-		
 		// Create the board view structure, row by row
 		for(int row = 0, dimensionsX = BoardModel.DIMENSIONS.width; row < dimensionsX; ++row) {
 			
@@ -104,9 +99,6 @@ public class BoardView extends PanelView {
 				// render the view
 				view.render();
 			}
-			
-			// Add the tile row to our list of rows
-			tiles.add(tileRow);
 		}
 		
 		// Add the game panel to this view
