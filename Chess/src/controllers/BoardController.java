@@ -108,7 +108,9 @@ public class BoardController extends BaseController {
 	}
 	
 	/**
-	 * logically attaches the list of tiles together
+	 * logically attaches the list of tiles together by sub-dividing the list of tiles.
+	 * Note: Order matters in cases such as this, which is why insertion order was important
+	 * 		 when I chose the data structure for the neighbors map 
 	 */
 	private void generateLogicalTileLinks() {
 		
@@ -118,6 +120,7 @@ public class BoardController extends BaseController {
 		//		 order at runtime which is what is important here.
 		TileModel[] tiles = _neighbors.keySet().toArray(new TileModel[0]);
 				
+		// For every row that exists within our setup model
 		for(int i = 0, rows = BoardModel.DIMENSIONS.height, columns = BoardModel.DIMENSIONS.width; i < rows; ++i) {
 			
 			// Link the tile rows together
