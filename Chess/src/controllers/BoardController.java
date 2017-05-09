@@ -24,8 +24,8 @@
 
 package controllers;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import controllers.enums.NeighborXPosition;
@@ -112,25 +112,25 @@ public class BoardController extends BaseController {
 	 */
 	private void generateLogicalTileLinks() {
 		
+		// Get the array representation of our tile models.
+		// Note: This is done because it is easier to get a subset of an array
+		// 		 and because the neighbor data structure tracks the insertion 
+		//		 order at runtime which is what is important here.
 		TileModel[] tiles = _neighbors.keySet().toArray(new TileModel[0]);
-		
-		/*
-		for(int i = 0, rows = BoardModel.DIMENSIONS.height; i < rows; ++i) {
-			linkTileRow(
-					
-				i - 1 >= 0 ? tiles.get(i - 1) : null,
-				tiles.get(i),
-			)
-		}
-		*/
-		/*
-		for(int i = 0; i < tiles.size(); ++i) {
-			linkTileRow(
-				i - 1 >= 0 ? tiles.get(i - 1) : null, 
-				tiles.get(i), 
-				i + 1 < tiles.size() ? tiles.get(i + 1) : null
+				
+		for(int i = 0, rows = BoardModel.DIMENSIONS.height, columns = BoardModel.DIMENSIONS.width; i < rows; ++i) {
+			
+			// Link the tile rows together
+			// TODO - some computation could be saved by re-using the rows
+			linkTiles(
+				// Previous row
+				i - 1 >= 0 ? Arrays.copyOfRange(tiles, (i - 1) * columns, ((i - 1) * columns) + columns) : null,
+				// Current Row
+				Arrays.copyOfRange(tiles, i * columns, (i * columns) + columns),
+				// Next Row
+				i + 1 >= 0 ? Arrays.copyOfRange(tiles, (i + 1) * columns, ((i + 1) * columns) + columns) : null
 			);
-		}*/
+		}
 	}
 	
 	/**
@@ -140,9 +140,9 @@ public class BoardController extends BaseController {
 	 * @param neutral the neutral row
 	 * @param bottom The bottom row
 	 */
-	private void link(List<TileController> topRow, List<TileController> neutralRow, List<TileController> bottomRow) {
+	private void linkTiles(TileModel[] topRow, TileModel[] neutralRow, TileModel[] bottomRow) {
 		/*
-		for(int i = 0, dim = Dimensions.width ; i < dim; ++i) {
+		for(int i = 0, width = _boardModel.DIMENSIONS.width; i < width; ++i) {
 			
 			Map<NeighborYPosition, Map<NeighborXPosition, TileController>> neighbors = new HashMap<NeighborYPosition, Map<NeighborXPosition, TileController>>(){{
 				put(NeighborYPosition.TOP, new HashMap<NeighborXPosition, TileController>());
