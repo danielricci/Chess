@@ -35,7 +35,7 @@ import views.TileView;
  * @author Daniel Ricci <thedanny09@gmail.com>
  *
  */
-public class TileController extends BaseController {
+public final class TileController extends BaseController {
 	
 	/**
 	 * The tile model that represents a single tile in the game
@@ -55,5 +55,19 @@ public class TileController extends BaseController {
 		
 		// Assign the listeners to the newly created model
 		_tile.addListener(viewClass, CONTROLLER_FACTORY.get(BoardController.class));
+	}
+	
+	/**
+	 * Sets the tile neighbors to a selected state, this is used for debugging
+	 * purposes
+	 * 
+	 * @param selected If the neighbors should be in a selected state or not
+	 */
+	public void showTileNeighborsDebug(boolean selected) {
+		
+		// Go through the list of tile model neighbors
+		for(TileModel tile : CONTROLLER_FACTORY.get(BoardController.class).getAllNeighbors(_tile)) {
+			tile.setSelected(selected);
+		}
 	}
 }

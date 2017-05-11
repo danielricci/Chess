@@ -29,9 +29,13 @@ import java.awt.event.ActionEvent;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 
+import engine.api.IView;
+import engine.communication.internal.signal.types.SignalEvent;
+import engine.core.factories.AbstractFactory;
 import engine.core.option.types.OptionItem;
 import resources.Resources;
 import resources.Resources.ResourceKeys;
+import views.TileView;
 
 /**
  * The item for debugging neighboring tiles based
@@ -55,6 +59,21 @@ public class NeighboursItem extends OptionItem {
 	}
 	
 	@Override public void onExecute(ActionEvent actionEvent) {
-		// TODO
+		
+		// Get the desired signal to be sent out
+		String signal = get(JCheckBoxMenuItem.class).isSelected() 
+				? TileView.EVENT_SHOW_NEIGHBORS 
+				: TileView.EVENT_HIDE_NEIGHBORS;
+		
+		// Send out a signal to all tile views to let them
+		// know what to do for this debug mode
+		IView.VIEW_FACTORY.multicastSignal(
+			TileView.class,
+			new SignalEvent(this, signal)
+		);
+	}
+	
+	@Override public boolean enabled() {
+		return AbstractFactory.isRunning();
 	}
 }

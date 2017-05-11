@@ -32,9 +32,12 @@ import javax.swing.BorderFactory;
 import javax.swing.border.Border;
 
 import controllers.TileController;
+import engine.communication.internal.signal.ISignalReceiver;
+import engine.communication.internal.signal.types.SignalEvent;
 import engine.core.factories.AbstractFactory;
 import engine.core.factories.ControllerFactory;
 import engine.core.mvc.view.PanelView;
+import models.TileModel;
 
 /**
  * This view represents the visual contents of a single tile in this game
@@ -43,6 +46,22 @@ import engine.core.mvc.view.PanelView;
  *
  */
 public class TileView extends PanelView {
+	
+	/**
+	 * This flag when set to true with perform a neighbor highlight on
+	 * this tile when you mouse over it
+	 */
+	private boolean _highlightNeighbors = false;
+	
+	/**
+	 * Event associated to show neighbors
+	 */
+	public static final String EVENT_SHOW_NEIGHBORS = "EVENT_SHOW_NEIGHBORS";
+	
+	/**
+	 * Event associated to hiding neighbors
+	 */
+	public static final String EVENT_HIDE_NEIGHBORS = "EVENT_HIDE_NEIGHBORS";
 	
 	/**
 	 * The color of all the odd files
@@ -105,8 +124,10 @@ public class TileView extends PanelView {
 
 	@Override public void initializeComponentBindings() {
 		
-		// Add a mouse listener to handle when a mouse enters 
-		// and leaves this tile
+		// Add a mouse listener to handle when mousing over
+		// a tile, this will highlight the highlight of the
+		// actual tile and properly displays the border of 
+		// the tile in the highlight effect
 		this.addMouseListener(new MouseAdapter() {
 			
 			// Handle when the mouse enters this tile
@@ -118,6 +139,40 @@ public class TileView extends PanelView {
 			@Override public void mouseExited(MouseEvent event) {
 				setBorder(DEFAULT_BORDER_STYLE);
 			}
+		});
+		
+		// Add a mouse listener to handle when mousing over
+		// a tile, this will perform the debug operation
+		// for showing neighboring tiles
+		this.addMouseListener(new MouseAdapter() {
+			@Override public void mouseEntered(MouseEvent e) {
+				if(_highlightNeighbors) {
+					getViewProperties().getController(TileController.class).showTileNeighborsDebug(true);
+				}
+			}
+			
+			@Override public void mouseExited(MouseEvent e) {
+				if(_highlightNeighbors) {
+					getViewProperties().getController(TileController.class).showTileNeighborsDebug(false);
+				}				
+			}
+		});
+	}
+	
+	@Override public void registerSignalListeners() {
+		
+		// Register the event for showing neighbors
+		registerSignalListener(EVENT_SHOW_NEIGHBORS, new ISignalReceiver<SignalEvent>() {
+			@Override public void signalReceived(SignalEvent event) {
+				_highlightNeighbors = true;
+			}			
+		});
+		
+		// Register the event for hiding neighbors
+		registerSignalListener(EVENT_HIDE_NEIGHBORS, new ISignalReceiver<SignalEvent>() {
+			@Override public void signalReceived(SignalEvent event) {
+				_highlightNeighbors = false;
+			}			
 		});
 	}
 	
@@ -133,5 +188,14 @@ public class TileView extends PanelView {
 			// Record the new background color change 
 			_currentBackgroundColor = backgroundColor;
 		}
+	}
+	
+	@Override public void update(SignalEvent signalEvent) {
+		if(!(signalEvent.getSource() instanceof TileModel)) {
+			return;
+		}
+		
+		TileModel tileModel = (TileModel) signalEvent.getSource();
+		setBorder(tileModel.getIsSelected() ? HIGHLIGHT_BORDER : DEFAULT_BORDER_STYLE);
 	}
 }

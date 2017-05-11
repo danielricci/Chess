@@ -24,9 +24,13 @@
 
 package controllers;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import controllers.enums.NeighborXPosition;
 import controllers.enums.NeighborYPosition;
@@ -85,7 +89,6 @@ public class BoardController extends BaseController {
 	@Override public void registerSignalListeners() {
 		
 		// Register to when this controller is added as a listener
-		// TODO - it would be nice if this would only be called iff the ISignalReceiver type were the same
 		registerSignalListener(IModel.EVENT_LISTENER_ADDED, new ISignalReceiver<ModelEvent<TileModel>>() {
 			@Override public void signalReceived(ModelEvent<TileModel> event) {
 				
@@ -98,8 +101,7 @@ public class BoardController extends BaseController {
 					System.out.println(java.util.Arrays.toString((new Throwable()).getStackTrace()));
 				}
 
-				// If we have enough neighboring elements, then its time to link them (logically)
-				// together
+				// If we have enough neighboring elements, then its time to link them together
 				if(BoardModel.AREA == _neighbors.size()) {
 					generateLogicalTileLinks();
 				}
@@ -144,88 +146,60 @@ public class BoardController extends BaseController {
 	 * @param bottom The bottom row
 	 */
 	private void linkTiles(TileModel[] topRow, TileModel[] neutralRow, TileModel[] bottomRow) {
-		/*
-		for(int i = 0, width = _boardModel.DIMENSIONS.width; i < width; ++i) {
+		
+		for(int i = 0, columns = BoardModel.DIMENSIONS.width; i < columns; ++i) {
 			
-			Map<NeighborYPosition, Map<NeighborXPosition, TileController>> neighbors = new HashMap<NeighborYPosition, Map<NeighborXPosition, TileController>>(){{
-				put(NeighborYPosition.TOP, new HashMap<NeighborXPosition, TileController>());
-				put(NeighborYPosition.NEUTRAL, new HashMap<NeighborXPosition, TileController>());
-				put(NeighborYPosition.BOTTOM, new HashMap<NeighborXPosition, TileController>());
+			// Represents the structural view of a particular tile
+			Map<NeighborYPosition, Map<NeighborXPosition, TileModel>> neighbors = new HashMap<NeighborYPosition, Map<NeighborXPosition, TileModel>>(){{
+				put(NeighborYPosition.TOP, new HashMap<NeighborXPosition, TileModel>());
+				put(NeighborYPosition.NEUTRAL, new HashMap<NeighborXPosition, TileModel>());
+				put(NeighborYPosition.BOTTOM, new HashMap<NeighborXPosition, TileModel>());
 			}};
 					
 			// Top Neighbors
-			neighbors.get(NeighborYPosition.TOP).put(NeighborXPosition.LEFT, i - 1 < 0 || topRow == null ? null : topRow.get(i - 1));
-			neighbors.get(NeighborYPosition.TOP).put(NeighborXPosition.NEUTRAL, topRow == null ? null : topRow.get(i));
-			neighbors.get(NeighborYPosition.TOP).put(NeighborXPosition.RIGHT, i + 1 >= dim || topRow == null ? null : topRow.get(i + 1));
+			neighbors.get(NeighborYPosition.TOP).put(NeighborXPosition.LEFT, i - 1 < 0 || topRow == null ? null : topRow[i - 1]);
+			neighbors.get(NeighborYPosition.TOP).put(NeighborXPosition.NEUTRAL, topRow == null ? null : topRow[i]);
+			neighbors.get(NeighborYPosition.TOP).put(NeighborXPosition.RIGHT, i + 1 >= columns || topRow == null ? null : topRow[i + 1]);
 			
 			// Neutral Neighbors
-			neighbors.get(NeighborYPosition.NEUTRAL).put(NeighborXPosition.LEFT, i - 1 < 0 ? null : neutralRow.get(i - 1));
-			neighbors.get(NeighborYPosition.NEUTRAL).put(NeighborXPosition.NEUTRAL, neutralRow.get(i));
-			neighbors.get(NeighborYPosition.NEUTRAL).put(NeighborXPosition.RIGHT, i + 1 >= dim ? null : neutralRow.get(i + 1));
+			neighbors.get(NeighborYPosition.NEUTRAL).put(NeighborXPosition.LEFT, i - 1 < 0 ? null : neutralRow[i - 1]);
+			neighbors.get(NeighborYPosition.NEUTRAL).put(NeighborXPosition.NEUTRAL, neutralRow[i]);
+			neighbors.get(NeighborYPosition.NEUTRAL).put(NeighborXPosition.RIGHT, i + 1 >= columns ? null : neutralRow[i + 1]);
 				
 			// Bottom Neighbors
-			neighbors.get(NeighborYPosition.BOTTOM).put(NeighborXPosition.LEFT, i - 1 < 0 || bottomRow == null ? null : bottomRow.get(i - 1));
-			neighbors.get(NeighborYPosition.BOTTOM).put(NeighborXPosition.NEUTRAL, bottomRow == null ? null : bottomRow.get(i));
-			neighbors.get(NeighborYPosition.BOTTOM).put(NeighborXPosition.RIGHT, i + 1 >= dim || bottomRow == null ? null : bottomRow.get(i + 1));
+			neighbors.get(NeighborYPosition.BOTTOM).put(NeighborXPosition.LEFT, i - 1 < 0 || bottomRow == null ? null : bottomRow[i - 1]);
+			neighbors.get(NeighborYPosition.BOTTOM).put(NeighborXPosition.NEUTRAL, bottomRow == null ? null : bottomRow[i]);
+			neighbors.get(NeighborYPosition.BOTTOM).put(NeighborXPosition.RIGHT, i + 1 >= columns || bottomRow == null ? null : bottomRow[i + 1]);
 			
 			// Assign the mappings where we reference the neutral-neutral tile as the key
-			_neighbors.put(neutralRow.get(i), neighbors);
+			_neighbors.put(neutralRow[i], neighbors);
 		}
-		*/
 	}
 	
-	
 	/**
-	 * Gets the list of neighbors
 	 * 
-	 * @return The list of neighbors 
+	 * Gets all the neighbors associated to the particular model
+	 * 
+	 * @param tileModel The tile model to use as a search for neighbors around it
+	 * 
+	 * @return The list of tile models that neighbor the passed in tile model
 	 */
-	/*
-	public List<TileController> getNeighbors(TileController neutral) {
+	public final List<TileModel> getAllNeighbors(TileModel tileModel) {
 		
-		List<TileController> controllers = new ArrayList<>();
-		Map<NeighborYPosition, Map<NeighborXPosition, TileController>> neighbors = _neighbors.get(neutral);
-		for(Map.Entry<NeighborYPosition, Map<NeighborXPosition, TileController>> entry : neighbors.entrySet()) {
-			controllers.addAll(entry.getValue().entrySet().stream().map(z -> z.getValue()).filter(a-> a != null).collect(Collectors.toList()));
+		// Get the list of neighbors associated to our tile model
+		Map<NeighborYPosition, Map<NeighborXPosition, TileModel>> tileModelNeighbors = _neighbors.get(tileModel);
+		
+		// This collection holds the list of all the neighbors
+		List<TileModel> allNeighbors = new ArrayList<>();
+		
+		// Go through every entry set in our structure
+		for(Map.Entry<NeighborYPosition, Map<NeighborXPosition, TileModel>> entry : tileModelNeighbors.entrySet()) {
+			
+			// Add all the neighbors in our entry set that does not have a null tile model
+			allNeighbors.addAll(entry.getValue().values().stream().filter(a -> a != null && a != tileModel).collect(Collectors.toList()));
 		}
-		return controllers;
+		
+		// return the list of neighbors
+		return allNeighbors;
 	}
-	*/
-	
-	/**
-	 * Gets all the neighbors associated to this controller
-	 */
-	/*
-	public SortedSet<TileController> getAllNeighbors() {
-		SortedSet<TileController> allNeighbours = new TreeSet<>(
-			getNeighbors(NeighborYPosition.TOP)
-		);
-		allNeighbours.addAll(getNeighbors(NeighborYPosition.NEUTRAL));
-		allNeighbours.addAll(getNeighbors(NeighborYPosition.BOTTOM));
-
-		return allNeighbours;
-	}*/
-	
-	/**
-	 * Sets the neighbors specified to this model
-	 * 
-	 * @param neighborYPosition The Y-Axis positioning of the neighbor, refer to documentation for this if need be
-	 * @param neighborTiles The neighboring tiles to add to this model
-	 * 
-	 */
-	//@SafeVarargs
-	/*public final void setNeighbors(NeighborYPosition neighborYPosition, Entry<NeighborXPosition, TileModel>... neighborTiles) {	
-
-		// Set the reference to the mappings for the neighbors to this model
-		if(_neighbors.containsKey(neighborYPosition)) {
-			_neighbors.get(neighborYPosition).clear();
-
-			// Go through the passed in contents and add use it to populate the neighbors of this model
-			for (Entry<NeighborXPosition, TileModel> neighborTile : neighborTiles)
-			{
-				_neighbors.get(neighborYPosition).put(neighborTile.getKey(), neighborTile.getValue());
-			}
-		}
-	}
-	*/
 }

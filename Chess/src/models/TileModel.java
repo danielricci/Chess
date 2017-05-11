@@ -46,6 +46,11 @@ public class TileModel extends BaseModel {
 	private final int _index = ++INDEX;
 	
 	/**
+	 * Property indicating if this tile is selected
+	 */
+	private boolean _selected = false;
+	
+	/**
 	 * Constructs a new instance of this type
 	 */
 	public TileModel() {
@@ -60,8 +65,29 @@ public class TileModel extends BaseModel {
 	public <T extends ISignalListener> TileModel(T... receivers) {
 		super(receivers);
 	}
-	
+		
 	@Override public String toString() {
 		return String.valueOf(_index);
 	}
-}
+
+	/**
+	 * Sets the selected state of this model
+	 * 
+	 * @param selected If the tile model is selected
+	 */
+	public void setSelected(boolean selected) {
+		_selected = selected;
+		
+		// Note: I do not set an operation status here
+		doneUpdating();
+	}
+	
+	/**
+	 * Gets if the tile model is in a selected state
+	 * 
+	 * @return If the tile model is selected
+	 */
+	public boolean getIsSelected() {
+		return _selected;
+	}
+} 
