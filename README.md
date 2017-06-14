@@ -2,6 +2,8 @@
 <!--<img src="https://travis-ci.org/danielricci/chess.svg?branch=master" />-->
 This is the repository for Chess, a two player board game.
 
+For the rules of the game, please see the wiki article.
+
 <h3>Version</h3>
 <p>There is a <b>weekly</b> window for new release and/or patch fixes when new feature/enhancement requests or bug fixes get approved. When there are no tasks to work on, there will not be any new versions released.</p>
 
