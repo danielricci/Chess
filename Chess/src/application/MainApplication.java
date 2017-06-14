@@ -33,6 +33,7 @@ import java.util.ResourceBundle;
 
 import javax.swing.ImageIcon;
 
+import engine.communication.internal.persistance.IXMLCodec;
 import engine.core.option.OptionBuilder;
 import engine.core.system.Application;
 import navigation.items.AboutItem;
@@ -45,7 +46,7 @@ import navigation.options.HelpOption;
 import resources.Resources;
 import resources.Resources.ResourceKeys;
 
-public class MainApplication extends Application {
+public class MainApplication extends Application implements IXMLCodec {
 
 	/**
 	 * The singleton instance of this class type
@@ -81,7 +82,6 @@ public class MainApplication extends Application {
 				System.exit(0);
 			};		
 		});
-        
 	}
 	
 	/**
@@ -102,7 +102,7 @@ public class MainApplication extends Application {
 	 * @param args The arguments passed in to affect the game
 	 */
 	public static void main(String[] args) {
-		try {      	
+		try {
 			// Call the event queue and invoke a new runnable
 			// object to execute our game.
         	EventQueue.invokeLater(new Runnable() {
