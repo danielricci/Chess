@@ -26,6 +26,7 @@ package application;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Locale;
@@ -61,12 +62,22 @@ public class MainApplication extends Application implements IXMLCodec {
 		// Set the title
 		setTitle(Resources.instance().getLocalizedString(ResourceKeys.Title));
 		
-		// Set the size
-        setSize(new Dimension(800, 800));
+		// Set the application dimensions
+		Dimension applicationDimensions = new Dimension(800, 800);
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		
+		// Set the size of application
+        setSize(applicationDimensions);
+        
+		// Set the location of the window to be in middle of the screen
+		setLocation(
+			screenSize.width / 2 - applicationDimensions.width / 2,
+			screenSize.height / 2 - applicationDimensions.height / 2
+		);
         
         // The user cannot resize the game
         setResizable(false);
-        
+              
         // Set the icon that will at the upper-left of the window
         setIconImage(new ImageIcon(Resources.instance().getLocalizedString(ResourceKeys.GameIcon)).getImage());
         
