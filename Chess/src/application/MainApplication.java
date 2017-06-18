@@ -173,8 +173,4 @@ public class MainApplication extends Application implements IXMLCodec {
 			.AddItem(HelpOption.class)
 			.AddItem(AboutItem.class);
 	}
-
-	@Override public void flush() {
-		// TODO Handle what happens when we perform a flush of the game
-	}
 }
