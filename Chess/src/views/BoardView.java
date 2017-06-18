@@ -32,7 +32,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import controllers.BoardController;
-import engine.core.factories.AbstractFactory;
+import engine.core.factories.AbstractSignalFactory;
 import engine.core.factories.ControllerFactory;
 import engine.core.factories.ViewFactory;
 import engine.core.mvc.view.PanelView;
@@ -57,7 +57,7 @@ public class BoardView extends PanelView {
 	public BoardView() {
 		// Set the controller associated to this view
 		getViewProperties().setController(
-			AbstractFactory
+			AbstractSignalFactory
 			.getFactory(ControllerFactory.class)
 			.get(BoardController.class, true, this)
 		);	
@@ -82,7 +82,7 @@ public class BoardView extends PanelView {
 			for(int col =  0, dimensionsY = BoardModel.DIMENSIONS.height; col < dimensionsY; ++col) {		
 				
 				// Create a tile and add it to our board
-				TileView view = AbstractFactory.getFactory(ViewFactory.class).get(
+				TileView view = AbstractSignalFactory.getFactory(ViewFactory.class).get(
 					TileView.class, 
 					false,
 					(col + row) % 2 == 0 ? TileView.EVEN_FILES_COLOR : TileView.ODD_FILES_COLOR

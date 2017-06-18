@@ -24,9 +24,9 @@
 
 package resources;
 
-import engine.utils.globalisation.Localisation;
+import engine.utils.globalisation.Localization;
 
-public final class Resources extends Localisation<Resources.ResourceKeys> {
+public final class Resources extends Localization<Resources.ResourceKeys> {
 	
 	private static Resources _instance;
 	

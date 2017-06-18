@@ -26,7 +26,7 @@ package views;
 
 import java.awt.BorderLayout;
 
-import engine.core.factories.AbstractFactory;
+import engine.core.factories.AbstractSignalFactory;
 import engine.core.factories.ViewFactory;
 import engine.core.mvc.view.PanelView;
 
@@ -42,7 +42,7 @@ public class MainWindowView extends PanelView {
 	@Override public void render() {
 		super.render();
 		
-		BoardView boardView = AbstractFactory.getFactory(ViewFactory.class).get(BoardView.class, true);
+		BoardView boardView = AbstractSignalFactory.getFactory(ViewFactory.class).get(BoardView.class, true);
 		add(boardView);
 		
 		boardView.render();

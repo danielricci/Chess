@@ -34,7 +34,7 @@ import javax.swing.border.Border;
 import controllers.TileController;
 import engine.communication.internal.signal.ISignalReceiver;
 import engine.communication.internal.signal.types.SignalEvent;
-import engine.core.factories.AbstractFactory;
+import engine.core.factories.AbstractSignalFactory;
 import engine.core.factories.ControllerFactory;
 import engine.core.mvc.view.PanelView;
 import models.TileModel;
@@ -99,7 +99,7 @@ public class TileView extends PanelView {
 	public TileView(Color tileColor) {
 		
 		// Set the controller associated to this view
-		getViewProperties().setController(AbstractFactory
+		getViewProperties().setController(AbstractSignalFactory
 			.getFactory(ControllerFactory.class)
 			.get(TileController.class, false, this)
 		);	

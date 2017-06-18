@@ -32,7 +32,7 @@ import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
 import application.MainApplication;
-import engine.core.factories.AbstractFactory;
+import engine.core.factories.AbstractSignalFactory;
 import engine.core.factories.ViewFactory;
 import engine.core.option.types.OptionItem;
 import views.MainWindowView;
@@ -47,7 +47,7 @@ public class NewGameItem extends OptionItem {
 	@Override public void onExecute(ActionEvent actionEvent) {
 		
 		// Get a reference to the view factory 
-		ViewFactory factory = AbstractFactory.getFactory(ViewFactory.class);
+		ViewFactory factory = AbstractSignalFactory.getFactory(ViewFactory.class);
 		
 		// Get a reference to the main window to start application
 		MainWindowView view = factory.get(MainWindowView.class, true); 

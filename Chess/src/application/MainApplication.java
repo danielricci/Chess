@@ -127,7 +127,7 @@ public class MainApplication extends Application implements IXMLCodec {
     	}
     }
 	
-	@Override protected void setEngineDefaults() {
+	@Override protected void initializeEngineResources() {
 		
 		// Set the default locale for our engine to recognize our localization
 		Resources.instance().addLocale(ResourceBundle.getBundle("resources/Resources", Locale.CANADA), true);

@@ -31,7 +31,7 @@ import javax.swing.JComponent;
 
 import engine.api.IView;
 import engine.communication.internal.signal.types.SignalEvent;
-import engine.core.factories.AbstractFactory;
+import engine.core.factories.AbstractSignalFactory;
 import engine.core.option.types.OptionItem;
 import resources.Resources;
 import resources.Resources.ResourceKeys;
@@ -74,6 +74,6 @@ public class NeighboursItem extends OptionItem {
 	}
 	
 	@Override public boolean enabled() {
-		return AbstractFactory.isRunning();
+		return AbstractSignalFactory.isRunning();
 	}
 }
