@@ -31,7 +31,7 @@ import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
-import application.MainApplication;
+import application.Application;
 import engine.core.factories.AbstractSignalFactory;
 import engine.core.factories.ViewFactory;
 import engine.core.option.types.OptionItem;
@@ -53,7 +53,7 @@ public class NewGameItem extends OptionItem {
 		MainWindowView view = factory.get(MainWindowView.class, true); 
 			
 		// Add the view to the application
-		MainApplication.instance().add(view);
+		Application.instance().add(view);
 		
 		// Render the specified view
 		view.render();

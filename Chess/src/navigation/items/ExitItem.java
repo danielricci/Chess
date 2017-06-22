@@ -30,7 +30,7 @@ import java.awt.event.WindowEvent;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 
-import application.MainApplication;
+import application.Application;
 import engine.core.option.types.OptionItem;
 
 public class ExitItem extends OptionItem {
@@ -40,8 +40,8 @@ public class ExitItem extends OptionItem {
 	}
 	
 	@Override public void onExecute(ActionEvent actionEvent) {
-		MainApplication.instance().dispatchEvent(
-			new WindowEvent(MainApplication.instance(), WindowEvent.WINDOW_CLOSING)
+		Application.instance().dispatchEvent(
+			new WindowEvent(Application.instance(), WindowEvent.WINDOW_CLOSING)
 		);
 	}
 }

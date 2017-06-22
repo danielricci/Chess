@@ -35,23 +35,17 @@ public final class Resources extends Localization<Resources.ResourceKeys> {
 	
 	public enum ResourceKeys {
 		
-		// The title of the game
-		Title("title"),
-		
-		// The game icon path, this is the window icon
-		GameIcon("game_icon"), 
-		
-		// The debug menu title
-		Debug("debug"), 
-		
-		// This is the item in the debug option to display neighboring
-		// tiles
-		NeighborTiles("neighbor_tiles");
-		
+		Debug("debug"),
+		GameIcon("game_icon"),
+		NeighborTiles("neighbor_tiles"),
+		Title("title");
+		 
 		private String _key;
+		
 		ResourceKeys(String resourceKey) {
 			_key = resourceKey;
 		}
+		
 		@Override public String toString() {
 			return _key;
 		}

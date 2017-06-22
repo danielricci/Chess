@@ -36,7 +36,9 @@ import javax.swing.ImageIcon;
 
 import engine.communication.internal.persistance.IXMLCodec;
 import engine.core.option.OptionBuilder;
-import engine.core.system.Application;
+import engine.core.system.AbstractApplication;
+import engine.core.system.EngineProperties;
+import engine.core.system.EngineProperties.Property;
 import navigation.items.AboutItem;
 import navigation.items.ExitItem;
 import navigation.items.NeighboursItem;
@@ -47,21 +49,13 @@ import navigation.options.HelpOption;
 import resources.Resources;
 import resources.Resources.ResourceKeys;
 
-public class MainApplication extends Application implements IXMLCodec {
+public final class Application extends AbstractApplication implements IXMLCodec {
 
-	/**
-	 * The singleton instance of this class type
-	 */
-	private static MainApplication _instance;
-	
 	/**
 	 * Constructs a new instance of this class
 	 */
-	private MainApplication() {
-		
-		// Set the title
-		setTitle(Resources.instance().getLocalizedString(ResourceKeys.Title));
-		
+	public Application() {
+
 		// Set the application dimensions
 		Dimension applicationDimensions = new Dimension(800, 800);
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -77,10 +71,7 @@ public class MainApplication extends Application implements IXMLCodec {
         
         // The user cannot resize the game
         setResizable(false);
-              
-        // Set the icon that will at the upper-left of the window
-        setIconImage(new ImageIcon(Resources.instance().getLocalizedString(ResourceKeys.GameIcon)).getImage());
-        
+                      
         // Add the window listener to listen in on when there is a signal to exit the game
         addWindowListener(new WindowAdapter() {
 			/**
@@ -96,18 +87,6 @@ public class MainApplication extends Application implements IXMLCodec {
 	}
 	
 	/**
-	 * Gets a singleton reference to this class type
-	 * 
-	 * @return A singleton reference to this class type
-	 */
-	public static MainApplication instance() {
-		if(_instance == null) {
-			_instance = new MainApplication();
-		}
-		return _instance;
-	}
-	
-	/**
 	 * Main entry point of the application
 	 * 
 	 * @param args The arguments passed in to affect the game
@@ -118,7 +97,12 @@ public class MainApplication extends Application implements IXMLCodec {
 			// object to execute our game.
         	EventQueue.invokeLater(new Runnable() {
         		@Override public void run() {
-        			MainApplication.instance().setVisible(true);
+        			try {
+        				Application.initialize(Application.class);
+        				Application.instance().setVisible(true);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
             	}
             });
     	} 
@@ -131,6 +115,12 @@ public class MainApplication extends Application implements IXMLCodec {
 		
 		// Set the default locale for our engine to recognize our localization
 		Resources.instance().addLocale(ResourceBundle.getBundle("resources/Resources", Locale.CANADA), true);
+		
+		// Set the title
+		setTitle(Resources.instance().getLocalizedString(ResourceKeys.Title));
+		
+		// Set the icon that will at the upper-left of the window
+        setIconImage(new ImageIcon(Resources.instance().getLocalizedString(ResourceKeys.GameIcon)).getImage());
 	}
 	
 	@Override protected void setWindowedInstanceMenu() {
@@ -172,5 +162,9 @@ public class MainApplication extends Application implements IXMLCodec {
 		OptionBuilder.start(getJMenuBar())
 			.AddItem(HelpOption.class)
 			.AddItem(AboutItem.class);
+	}
+
+	@Override protected void initializeEngineProperties() {
+		EngineProperties.instance().setProperty(Property.DATA_PATH_VALUE, "/generated/tilemap.xml");
 	}
 }
