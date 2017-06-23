@@ -34,7 +34,6 @@ import java.util.ResourceBundle;
 
 import javax.swing.ImageIcon;
 
-import engine.communication.internal.persistance.IXMLCodec;
 import engine.core.option.OptionBuilder;
 import engine.core.system.AbstractApplication;
 import engine.core.system.EngineProperties;
@@ -49,7 +48,7 @@ import navigation.options.HelpOption;
 import resources.Resources;
 import resources.Resources.ResourceKeys;
 
-public final class Application extends AbstractApplication implements IXMLCodec {
+public final class Application extends AbstractApplication {
 
 	/**
 	 * Constructs a new instance of this class
