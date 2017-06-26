@@ -164,6 +164,7 @@ public final class Application extends AbstractApplication {
 	}
 
 	@Override protected void initializeEngineProperties() {
-		EngineProperties.instance().setProperty(Property.DATA_PATH_VALUE, "/generated/tilemap.xml");
+		EngineProperties.instance().setProperty(Property.DATA_PATH_XML, "/generated/tilemap.xml");
+		EngineProperties.instance().setProperty(Property.DATA_PATH_SHEET, "/generated/tilemap.png");
 	}
 }

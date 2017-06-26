@@ -25,6 +25,8 @@
 package views;
 
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -92,6 +94,11 @@ public class TileView extends PanelView {
 	 * The current background color of this tile
 	 */
 	private Color _currentBackgroundColor;
+	
+	/**
+	 * The tile image that is rendered 
+	 */
+	private Image _tileImage;
 	
 	/**
 	 * Constructs a new instance of this class type
@@ -197,5 +204,12 @@ public class TileView extends PanelView {
 		
 		TileModel tileModel = (TileModel) signalEvent.getSource();
 		setBorder(tileModel.getIsSelected() ? HIGHLIGHT_BORDER : DEFAULT_BORDER_STYLE);
+		
+		repaint();
+	}
+	
+	@Override protected void paintComponent(Graphics graphics) {
+		super.paintComponent(graphics);
+		graphics.drawImage(_tileImage, 0, 0, getWidth(), getHeight(), this);
 	}
 }
