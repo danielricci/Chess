@@ -25,8 +25,6 @@
 package views;
 
 import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -56,16 +54,6 @@ public class TileView extends PanelView {
 	private boolean _highlightNeighbors = false;
 	
 	/**
-	 * Event associated to show neighbors
-	 */
-	public static final String EVENT_SHOW_NEIGHBORS = "EVENT_SHOW_NEIGHBORS";
-	
-	/**
-	 * Event associated to hiding neighbors
-	 */
-	public static final String EVENT_HIDE_NEIGHBORS = "EVENT_HIDE_NEIGHBORS";
-	
-	/**
 	 * The color of all the odd files
 	 */
 	public static final Color ODD_FILES_COLOR = new Color(209, 139, 71);
@@ -81,6 +69,16 @@ public class TileView extends PanelView {
 	private static final Border HIGHLIGHT_BORDER = BorderFactory.createLineBorder(Color.BLUE, 2);
 	
 	/**
+	 * Event associated to show neighbors
+	 */
+	public static final String EVENT_SHOW_NEIGHBORS = "EVENT_SHOW_NEIGHBORS";
+	
+	/**
+	 * Event associated to hiding neighbors
+	 */
+	public static final String EVENT_HIDE_NEIGHBORS = "EVENT_HIDE_NEIGHBORS";
+	
+	/**
 	 * Normal border style of this view
 	 */
 	private final Border DEFAULT_BORDER_STYLE;
@@ -94,11 +92,6 @@ public class TileView extends PanelView {
 	 * The current background color of this tile
 	 */
 	private Color _currentBackgroundColor;
-	
-	/**
-	 * The tile image that is rendered 
-	 */
-	private Image _tileImage;
 	
 	/**
 	 * Constructs a new instance of this class type
@@ -130,7 +123,6 @@ public class TileView extends PanelView {
 	}
 
 	@Override public void initializeComponentBindings() {
-		
 		// Add a mouse listener to handle when mousing over
 		// a tile, this will highlight the highlight of the
 		// actual tile and properly displays the border of 
@@ -167,7 +159,6 @@ public class TileView extends PanelView {
 	}
 	
 	@Override public void registerSignalListeners() {
-		
 		// Register the event for showing neighbors
 		registerSignalListener(EVENT_SHOW_NEIGHBORS, new ISignalReceiver<SignalEvent>() {
 			@Override public void signalReceived(SignalEvent event) {
@@ -184,7 +175,6 @@ public class TileView extends PanelView {
 	}
 	
 	@Override public void setBackground(Color backgroundColor) {
-		
 		// Before rendering a new background color, ensure that
 		// the background color isn't already set to the specified
 		// color
@@ -198,18 +188,23 @@ public class TileView extends PanelView {
 	}
 	
 	@Override public void update(SignalEvent signalEvent) {
-		if(!(signalEvent.getSource() instanceof TileModel)) {
-			return;
+		// Call the super implementation
+		super.update(signalEvent);
+		
+		// Some calls are not necessarily from tile models, so prevent this from causing damage
+		if(signalEvent.getSource() instanceof TileModel) {
+			
+			// Get the tile model of the source
+			TileModel tileModel = (TileModel) signalEvent.getSource();
+			
+			// Set the border state of the tile
+			setBorder(tileModel.getIsSelected() ? HIGHLIGHT_BORDER : DEFAULT_BORDER_STYLE);
+	
+			// Add the renderable content into the view
+			addRenderableContent(tileModel.getEntity());
 		}
 		
-		TileModel tileModel = (TileModel) signalEvent.getSource();
-		setBorder(tileModel.getIsSelected() ? HIGHLIGHT_BORDER : DEFAULT_BORDER_STYLE);
-		
+		// Repaint the view
 		repaint();
-	}
-	
-	@Override protected void paintComponent(Graphics graphics) {
-		super.paintComponent(graphics);
-		graphics.drawImage(_tileImage, 0, 0, getWidth(), getHeight(), this);
 	}
 }

@@ -26,6 +26,7 @@ package models;
 
 import engine.communication.internal.signal.ISignalListener;
 import engine.core.mvc.model.BaseModel;
+import game.AbstractEntity;
 
 /**
  * The model representation of a tile 
@@ -36,14 +37,9 @@ import engine.core.mvc.model.BaseModel;
 public class TileModel extends BaseModel {
 	
 	/**
-	 * Index counter for all the created tiles
+	 * The entity associated to the tile model
 	 */
-	private static int INDEX = 0;
-	
-	/**
-	 * Index of this tile
-	 */
-	private final int _index = ++INDEX;
+	private AbstractEntity _entity;
 	
 	/**
 	 * Property indicating if this tile is selected
@@ -65,10 +61,6 @@ public class TileModel extends BaseModel {
 	public <T extends ISignalListener> TileModel(T... receivers) {
 		super(receivers);
 	}
-		
-	@Override public String toString() {
-		return String.valueOf(_index);
-	}
 
 	/**
 	 * Sets the selected state of this model
@@ -89,5 +81,23 @@ public class TileModel extends BaseModel {
 	 */
 	public boolean getIsSelected() {
 		return _selected;
+	}
+
+	/**
+	 * Sets the entity of this tile model
+	 * 
+	 * @param entity The entity to associate to this tile model
+	 */
+	public void setEntity(AbstractEntity entity) {
+		_entity = entity;
+	}
+	
+	/**
+	 * Gets the entity associated to this tile model
+	 * 
+	 * @return The entity associated to this tile model
+	 */
+	public AbstractEntity getEntity() {
+		return _entity;
 	}
 } 

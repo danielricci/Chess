@@ -27,6 +27,7 @@ package controllers;
 import engine.api.IModel;
 import engine.core.mvc.controller.BaseController;
 import models.TileModel;
+import models.entities.PawnEntity;
 import views.TileView;
 
 /**
@@ -52,6 +53,9 @@ public final class TileController extends BaseController {
 		
 		// Create the instance of our tile model
 		_tile = IModel.MODEL_FACTORY.get(TileModel.class, false);
+		
+		// TODO - For now, inject a pawn entity, this will change
+		_tile.setEntity(new PawnEntity());
 		
 		// Assign the listeners to the newly created model
 		_tile.addListener(viewClass, CONTROLLER_FACTORY.get(BoardController.class));
