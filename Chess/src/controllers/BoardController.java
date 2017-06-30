@@ -24,6 +24,7 @@
 
 package controllers;
 
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -38,7 +39,6 @@ import engine.api.IModel;
 import engine.communication.internal.signal.ISignalReceiver;
 import engine.communication.internal.signal.types.ModelEvent;
 import engine.core.mvc.controller.BaseController;
-import models.BoardModel;
 import models.TileModel;
 import views.BoardView;
 
@@ -56,7 +56,10 @@ import views.BoardView;
  */
 public class BoardController extends BaseController {
 	
-	private final BoardModel _boardModel;
+	/**
+	 * The dimensions of the board game
+	 */
+	public final Dimension _dimensions;
 	
 	/**
 	 * The list of neighbors logically associated to a specified controller
@@ -75,40 +78,17 @@ public class BoardController extends BaseController {
 	public BoardController(BoardView view) {
 		super(view);
 		
-		// Set the board model
-		_boardModel = IModel.MODEL_FACTORY.get(BoardModel.class, false);
+		// Set the board dimensions of the board
+		_dimensions = new Dimension(8, 8);
 		
 		// Initialize the neighbor structure to the initial size of the board
-		_neighbors = new LinkedHashMap<>(BoardModel.DIMENSIONS.width * BoardModel.DIMENSIONS.height);
-		
+		_neighbors = new LinkedHashMap<>(_dimensions.width * _dimensions.height);
+
 		// Register the signal listeners, we don't want to wait until rendering is done for this to occur
 		// because this class will miss important events before hand
 		registerSignalListeners();
 	}	
-	
-	@Override public void registerSignalListeners() {
 		
-		// Register to when this controller is added as a listener
-		registerSignalListener(IModel.EVENT_LISTENER_ADDED, new ISignalReceiver<ModelEvent<TileModel>>() {
-			@Override public void signalReceived(ModelEvent<TileModel> event) {
-				
-				// Get the tile model from the event object
-				TileModel tileModel = event.getSource();
-					
-				// If what are trying to insert has already been inserted then something went wrong
-				if(_neighbors.putIfAbsent(tileModel, null) != null) {
-					System.out.println("Error: Tile model already exists in the list... cannot add this one in");
-					System.out.println(java.util.Arrays.toString((new Throwable()).getStackTrace()));
-				}
-
-				// If we have enough neighboring elements, then its time to link them together
-				if(BoardModel.AREA == _neighbors.size()) {
-					generateLogicalTileLinks();
-				}
-			}
-		});
-	}
-	
 	/**
 	 * logically attaches the list of tiles together by sub-dividing the list of tiles.
 	 * Note: Order matters in cases such as this, which is why insertion order was important
@@ -123,10 +103,9 @@ public class BoardController extends BaseController {
 		TileModel[] tiles = _neighbors.keySet().toArray(new TileModel[0]);
 				
 		// For every row that exists within our setup model
-		for(int i = 0, rows = BoardModel.DIMENSIONS.height, columns = BoardModel.DIMENSIONS.width; i < rows; ++i) {
+		for(int i = 0, rows = _dimensions.height, columns = _dimensions.width; i < rows; ++i) {
 			
 			// Link the tile rows together
-			// TODO - some computation could be saved by re-using the rows
 			linkTiles(
 				// Previous row
 				i - 1 >= 0 ? Arrays.copyOfRange(tiles, (i - 1) * columns, ((i - 1) * columns) + columns) : null,
@@ -147,7 +126,7 @@ public class BoardController extends BaseController {
 	 */
 	private void linkTiles(TileModel[] topRow, TileModel[] neutralRow, TileModel[] bottomRow) {
 		
-		for(int i = 0, columns = BoardModel.DIMENSIONS.width; i < columns; ++i) {
+		for(int i = 0, columns = _dimensions.width; i < columns; ++i) {
 			
 			// Represents the structural view of a particular tile
 			Map<NeighborYPosition, Map<NeighborXPosition, TileModel>> neighbors = new HashMap<NeighborYPosition, Map<NeighborXPosition, TileModel>>(){{
@@ -201,5 +180,37 @@ public class BoardController extends BaseController {
 		
 		// return the list of neighbors
 		return allNeighbors;
+	}
+	
+	/**
+	 * Gets the board dimensions of the game
+	 * 
+	 * @return The board game dimensions
+	 */
+	public Dimension getBoardDimensions() {
+		return _dimensions;
+	}
+	
+	@Override public void registerSignalListeners() {
+		
+		// Register to when this controller is added as a listener
+		registerSignalListener(IModel.EVENT_LISTENER_ADDED, new ISignalReceiver<ModelEvent<TileModel>>() {
+			@Override public void signalReceived(ModelEvent<TileModel> event) {
+				
+				// Get the tile model from the event object
+				TileModel tileModel = event.getSource();
+					
+				// If what are trying to insert has already been inserted then something went wrong
+				if(_neighbors.putIfAbsent(tileModel, null) != null) {
+					System.out.println("Error: Tile model already exists in the list... cannot add this one in");
+					System.out.println(java.util.Arrays.toString((new Throwable()).getStackTrace()));
+				}
+
+				// If we have enough neighboring elements, then its time to link them together
+				if(_dimensions.width * _dimensions.height == _neighbors.size()) {
+					generateLogicalTileLinks();
+				}
+			}
+		});
 	}
 }

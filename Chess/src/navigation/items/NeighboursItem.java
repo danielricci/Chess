@@ -29,9 +29,10 @@ import java.awt.event.ActionEvent;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 
-import engine.api.IView;
 import engine.communication.internal.signal.types.SignalEvent;
+import engine.core.factories.AbstractFactory;
 import engine.core.factories.AbstractSignalFactory;
+import engine.core.factories.ViewFactory;
 import engine.core.option.types.OptionItem;
 import resources.Resources;
 import resources.Resources.ResourceKeys;
@@ -67,7 +68,7 @@ public class NeighboursItem extends OptionItem {
 		
 		// Send out a signal to all tile views to let them
 		// know what to do for this debug mode
-		IView.VIEW_FACTORY.multicastSignal(
+		AbstractFactory.getFactory(ViewFactory.class).multicastSignal(
 			TileView.class,
 			new SignalEvent(this, signal)
 		);

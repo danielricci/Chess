@@ -24,10 +24,11 @@
 
 package controllers;
 
-import engine.api.IModel;
+import engine.core.factories.AbstractFactory;
+import engine.core.factories.ControllerFactory;
+import engine.core.factories.ModelFactory;
 import engine.core.mvc.controller.BaseController;
 import models.TileModel;
-import models.entities.PawnEntity;
 import views.TileView;
 
 /**
@@ -50,15 +51,12 @@ public final class TileController extends BaseController {
 	 */
 	public TileController(TileView viewClass) {
 		super(viewClass);
-		
+
 		// Create the instance of our tile model
-		_tile = IModel.MODEL_FACTORY.get(TileModel.class, false);
-		
-		// TODO - For now, inject a pawn entity, this will change
-		_tile.setEntity(new PawnEntity());
+		_tile = AbstractFactory.getFactory(ModelFactory.class).get(TileModel.class, false);
 		
 		// Assign the listeners to the newly created model
-		_tile.addListener(viewClass, CONTROLLER_FACTORY.get(BoardController.class));
+		_tile.addListener(viewClass, AbstractFactory.getFactory(ControllerFactory.class).get(BoardController.class));
 	}
 	
 	/**
@@ -70,7 +68,7 @@ public final class TileController extends BaseController {
 	public void showTileNeighborsDebug(boolean selected) {
 		
 		// Go through the list of tile model neighbors
-		for(TileModel tile : CONTROLLER_FACTORY.get(BoardController.class).getAllNeighbors(_tile)) {
+		for(TileModel tile : AbstractFactory.getFactory(ControllerFactory.class).get(BoardController.class).getAllNeighbors(_tile)) {
 			tile.setSelected(selected);
 		}
 	}

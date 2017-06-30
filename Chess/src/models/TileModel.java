@@ -26,7 +26,7 @@ package models;
 
 import engine.communication.internal.signal.ISignalListener;
 import engine.core.mvc.model.BaseModel;
-import game.AbstractEntity;
+import game.core.AbstractEntity;
 
 /**
  * The model representation of a tile 
