@@ -22,18 +22,44 @@
 * IN THE SOFTWARE.
 */
 
-package navigation.options;
+package menu;
 
-import java.awt.event.KeyEvent;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
 
 import javax.swing.JComponent;
-import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.KeyStroke;
 
-import engine.core.option.types.OptionMenu;
+import application.Application;
+import engine.core.factories.AbstractSignalFactory;
+import engine.core.factories.ViewFactory;
+import engine.core.menu.types.MenuItem;
+import views.MainWindowView;
 
-public class FileOption extends OptionMenu {
-	public FileOption(JComponent parent) {
-		super(new JMenu("File"), parent);
-		super.get(JMenu.class).setMnemonic(KeyEvent.VK_F);
+public class NewGameItem extends MenuItem {
+
+	public NewGameItem(JComponent parent) {
+		super(new JMenuItem("New Game"), parent);
+		get(JMenuItem.class).setAccelerator(KeyStroke.getKeyStroke('N', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask()));
+	}
+	
+	@Override public void onExecute(ActionEvent actionEvent) {
+		
+		// Get a reference to the view factory 
+		ViewFactory factory = AbstractSignalFactory.getFactory(ViewFactory.class);
+		
+		// Get a reference to the main window to start application
+		MainWindowView view = factory.get(MainWindowView.class, true); 
+			
+		// Add the view to the application
+		Application.instance().add(view);
+		
+		// Render the specified view
+		view.render();
+	}
+	
+	@Override public boolean enabled() {
+		return true;
 	}
 }

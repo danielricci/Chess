@@ -99,7 +99,7 @@ public class TileView extends PanelView {
 	public TileView(Color tileColor) {
 		
 		// Set the controller associated to this view
-		getViewProperties().setController(AbstractSignalFactory
+		getViewProperties().setListener(AbstractSignalFactory
 			.getFactory(ControllerFactory.class)
 			.get(TileController.class, false, this)
 		);	
@@ -146,13 +146,13 @@ public class TileView extends PanelView {
 		this.addMouseListener(new MouseAdapter() {
 			@Override public void mouseEntered(MouseEvent e) {
 				if(_highlightNeighbors) {
-					getViewProperties().getController(TileController.class).showTileNeighborsDebug(true);
+					getViewProperties().getListener(TileController.class).showTileNeighborsDebug(true);
 				}
 			}
 			
 			@Override public void mouseExited(MouseEvent e) {
 				if(_highlightNeighbors) {
-					getViewProperties().getController(TileController.class).showTileNeighborsDebug(false);
+					getViewProperties().getListener(TileController.class).showTileNeighborsDebug(false);
 				}				
 			}
 		});

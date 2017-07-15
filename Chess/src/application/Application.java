@@ -34,17 +34,14 @@ import java.util.ResourceBundle;
 
 import javax.swing.ImageIcon;
 
-import engine.core.option.OptionBuilder;
+import engine.core.menu.MenuBuilder;
 import engine.core.system.AbstractApplication;
 import engine.core.system.EngineProperties;
 import engine.core.system.EngineProperties.Property;
-import navigation.items.AboutItem;
-import navigation.items.ExitItem;
-import navigation.items.NeighboursItem;
-import navigation.items.NewGameItem;
-import navigation.options.DebugOption;
-import navigation.options.FileOption;
-import navigation.options.HelpOption;
+import menu.AboutItem;
+import menu.ExitItem;
+import menu.NeighboursItem;
+import menu.NewGameItem;
 import resources.Resources;
 import resources.Resources.ResourceKeys;
 
@@ -138,29 +135,29 @@ public final class Application extends AbstractApplication {
 	 * Populate the file menu and its entries
 	 */
 	private void PopulateFileMenu() {
-		OptionBuilder.start(getJMenuBar())
-			.AddItem(FileOption.class)
-			.AddItem(NewGameItem.class)
+		MenuBuilder.start(getJMenuBar())
+			.AddMenu("File")
+				.AddMenuItem(NewGameItem.class)
 			.AddSeparator()
-			.AddItem(ExitItem.class);
+				.AddMenuItem(ExitItem.class);
 	}
 
 	/**
 	 * Populate the debug menu and its entries
 	 */
 	private void PopulateDebugMenu() {
-		OptionBuilder.start(getJMenuBar())
-			.AddItem(DebugOption.class)
-			.AddItem(NeighboursItem.class);
+		MenuBuilder.start(getJMenuBar())
+			.AddMenu(Resources.instance().getLocalizedString(ResourceKeys.Debug))
+				.AddMenuItem(NeighboursItem.class);
 	}
 	
 	/**
 	 * Populate the help menu and its entries
 	 */
 	private void PopulateHelpMenu() {
-		OptionBuilder.start(getJMenuBar())
-			.AddItem(HelpOption.class)
-			.AddItem(AboutItem.class);
+		MenuBuilder.start(getJMenuBar())
+			.AddMenu("Help")
+				.AddMenuItem(AboutItem.class);
 	}
 
 	@Override protected void initializeEngineProperties() {

@@ -22,26 +22,29 @@
 * IN THE SOFTWARE.
 */
 
-package navigation.items;
+
+package menu;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.WindowEvent;
 
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
-import application.Application;
-import engine.core.option.types.OptionItem;
+import engine.core.menu.types.MenuItem;
 
-public class ExitItem extends OptionItem {
-	
-	public ExitItem(JComponent parent) {
-		super(new JMenuItem("Exit"), parent);
+public class AboutItem extends MenuItem {
+
+	public AboutItem(JComponent parent) {
+		super(new JMenuItem("About"), parent);
 	}
 	
 	@Override public void onExecute(ActionEvent actionEvent) {
-		Application.instance().dispatchEvent(
-			new WindowEvent(Application.instance(), WindowEvent.WINDOW_CLOSING)
+		JOptionPane.showMessageDialog(
+			null,
+			"Chess\nVersion 1.0\n\nDaniel Ricci\nthedanny09@gmail.com\nhttps:/github.com/danielricci/Chess",
+			"About Chess",
+			JOptionPane.INFORMATION_MESSAGE
 		);
 	}
 }

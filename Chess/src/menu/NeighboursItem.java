@@ -22,44 +22,59 @@
 * IN THE SOFTWARE.
 */
 
-package navigation.items;
+package menu;
 
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
-import javax.swing.JMenuItem;
-import javax.swing.KeyStroke;
 
-import application.Application;
+import engine.communication.internal.signal.types.SignalEvent;
+import engine.core.factories.AbstractFactory;
 import engine.core.factories.AbstractSignalFactory;
 import engine.core.factories.ViewFactory;
-import engine.core.option.types.OptionItem;
-import views.MainWindowView;
+import engine.core.menu.types.MenuItem;
+import resources.Resources;
+import resources.Resources.ResourceKeys;
+import views.TileView;
 
-public class NewGameItem extends OptionItem {
-
-	public NewGameItem(JComponent parent) {
-		super(new JMenuItem("New Game"), parent);
-		get(JMenuItem.class).setAccelerator(KeyStroke.getKeyStroke('N', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask()));
+/**
+ * The item for debugging neighboring tiles based
+ * 
+ * @author Daniel Ricci <thedanny09@gmail.com>
+ *
+ */
+public class NeighboursItem extends MenuItem {
+	
+	//--------------------------------------------------------------
+	/**
+	 * Constructs a new instance of this type
+	 * 
+	 * @param parent The parent representing this item
+	 */
+	//--------------------------------------------------------------
+	public NeighboursItem(JComponent parent) {
+		
+		// Create the menu item
+		super(new JCheckBoxMenuItem(Resources.instance().getLocalizedString(ResourceKeys.NeighborTiles)), parent);
 	}
 	
 	@Override public void onExecute(ActionEvent actionEvent) {
 		
-		// Get a reference to the view factory 
-		ViewFactory factory = AbstractSignalFactory.getFactory(ViewFactory.class);
+		// Get the desired signal to be sent out
+		String signal = get(JCheckBoxMenuItem.class).isSelected() 
+				? TileView.EVENT_SHOW_NEIGHBORS 
+				: TileView.EVENT_HIDE_NEIGHBORS;
 		
-		// Get a reference to the main window to start application
-		MainWindowView view = factory.get(MainWindowView.class, true); 
-			
-		// Add the view to the application
-		Application.instance().add(view);
-		
-		// Render the specified view
-		view.render();
+		// Send out a signal to all tile views to let them
+		// know what to do for this debug mode
+		AbstractFactory.getFactory(ViewFactory.class).multicastSignal(
+			TileView.class,
+			new SignalEvent(this, signal)
+		);
 	}
 	
 	@Override public boolean enabled() {
-		return true;
+		return AbstractSignalFactory.isRunning();
 	}
 }

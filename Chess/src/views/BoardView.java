@@ -55,7 +55,7 @@ public class BoardView extends PanelView {
 	 */
 	public BoardView() {
 		// Set the controller associated to this view
-		getViewProperties().setController(
+		getViewProperties().setListener(
 			AbstractSignalFactory
 			.getFactory(ControllerFactory.class)
 			.get(BoardController.class, true, this)
@@ -74,7 +74,7 @@ public class BoardView extends PanelView {
 		gbc.weighty = 1.0;
 		
 		// Get a reference to the board controller in this view
-		BoardController boardController = getViewProperties().getController(BoardController.class);
+		BoardController boardController = getViewProperties().getListener(BoardController.class);
 				
 		// Create the board view structure, row by row
 		for(int row = 0, dimensionsX = boardController.getBoardDimensions().width; row < dimensionsX; ++row) {
