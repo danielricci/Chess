@@ -66,7 +66,6 @@ public final class TileController extends BaseController {
 	 * @param selected If the neighbors should be in a selected state or not
 	 */
 	public void showTileNeighborsDebug(boolean selected) {
-		
 		// Go through the list of tile model neighbors
 		for(TileModel tile : AbstractFactory.getFactory(ControllerFactory.class).get(BoardController.class).getAllNeighbors(_tile)) {
 			tile.setSelected(selected);

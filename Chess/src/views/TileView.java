@@ -146,13 +146,13 @@ public class TileView extends PanelView {
 		this.addMouseListener(new MouseAdapter() {
 			@Override public void mouseEntered(MouseEvent e) {
 				if(_highlightNeighbors) {
-					getViewProperties().getListener(TileController.class).showTileNeighborsDebug(true);
+					getViewProperties().getEntity(TileController.class).showTileNeighborsDebug(true);
 				}
 			}
 			
 			@Override public void mouseExited(MouseEvent e) {
 				if(_highlightNeighbors) {
-					getViewProperties().getListener(TileController.class).showTileNeighborsDebug(false);
+					getViewProperties().getEntity(TileController.class).showTileNeighborsDebug(false);
 				}				
 			}
 		});

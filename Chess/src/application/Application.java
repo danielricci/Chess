@@ -76,8 +76,8 @@ public final class Application extends AbstractApplication {
 			 * @param windowEvent The event that this window triggered
 			 */
 			@Override public void windowClosing(WindowEvent windowEvent) {
-				// Exit the game
-				System.exit(0);
+				// Exit the game and Dispose the window
+				Application.shutdown();
 			};		
 		});
 	}

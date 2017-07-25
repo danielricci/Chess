@@ -26,6 +26,7 @@ package models;
 
 import engine.communication.internal.signal.ISignalListener;
 import engine.core.mvc.model.BaseModel;
+import game.ChessEntity;
 import game.core.AbstractEntity;
 
 /**
@@ -39,7 +40,7 @@ public class TileModel extends BaseModel {
 	/**
 	 * The entity associated to the tile model
 	 */
-	private AbstractEntity _entity;
+	private ChessEntity _entity;
 	
 	/**
 	 * Property indicating if this tile is selected
@@ -88,7 +89,7 @@ public class TileModel extends BaseModel {
 	 * 
 	 * @param entity The entity to associate to this tile model
 	 */
-	public void setEntity(AbstractEntity entity) {
+	public void setEntity(ChessEntity entity) {
 		_entity = entity;
 	}
 	

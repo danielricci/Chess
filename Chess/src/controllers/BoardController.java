@@ -38,7 +38,11 @@ import controllers.enums.NeighborYPosition;
 import engine.api.IModel;
 import engine.communication.internal.signal.ISignalReceiver;
 import engine.communication.internal.signal.types.ModelEvent;
+import engine.core.factories.AbstractFactory;
+import engine.core.factories.ControllerFactory;
 import engine.core.mvc.controller.BaseController;
+import game.player.Player;
+import generated.DataLookup;
 import models.TileModel;
 import views.BoardView;
 
@@ -51,15 +55,10 @@ import views.BoardView;
  * based on that event, the board controller should intervene and do something with respect to the logic
  * of the game rules.
  * 
- * @author Daniel Ricci <thedanny09@gmail.com>
+ * @author Daniel Ricci {@literal <thedanny09@gmail.com>}
  *
  */
-public class BoardController extends BaseController {
-	
-	/**
-	 * The dimensions of the board game
-	 */
-	public final Dimension _dimensions;
+public final class BoardController extends BaseController {
 	
 	/**
 	 * The list of neighbors logically associated to a specified controller
@@ -71,6 +70,11 @@ public class BoardController extends BaseController {
 	private final Map<TileModel, Map<NeighborYPosition, Map<NeighborXPosition, TileModel>>> _neighbors;
 	
 	/**
+	 * The dimensions of the board game
+	 */
+	private final Dimension _dimensions = new Dimension(8, 8);
+	
+	/**
 	 * Constructs a new instance of this class
 	 * 
 	 * @param view The view to link with this controller
@@ -78,17 +82,55 @@ public class BoardController extends BaseController {
 	public BoardController(BoardView view) {
 		super(view);
 		
-		// Set the board dimensions of the board
-		_dimensions = new Dimension(8, 8);
-		
 		// Initialize the neighbor structure to the initial size of the board
 		_neighbors = new LinkedHashMap<>(_dimensions.width * _dimensions.height);
+		
+		PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true); 
+
+		// Create the players and register them with the game
+		playerController.addPlayer(Player.PlayerTeam.WHITE, DataLookup.DataLayerWhite.values());
+		playerController.addPlayer(Player.PlayerTeam.BLACK, DataLookup.DataLayerBlack.values());
 
 		// Register the signal listeners, we don't want to wait until rendering is done for this to occur
 		// because this class will miss important events before hand
 		registerSignalListeners();
 	}	
 		
+	/**
+	 * Gets all the neighbors associated to the particular model
+	 * 
+	 * @param tileModel The tile model to use as a search for neighbors around it
+	 * 
+	 * @return The list of tile models that neighbor the passed in tile model
+	 */
+	public List<TileModel> getAllNeighbors(TileModel tileModel) {
+		
+		// Get the list of neighbors associated to our tile model
+		Map<NeighborYPosition, Map<NeighborXPosition, TileModel>> tileModelNeighbors = _neighbors.get(tileModel);
+		
+		// This collection holds the list of all the neighbors
+		List<TileModel> allNeighbors = new ArrayList<>();
+		
+		// Go through every entry set in our structure
+		for(Map.Entry<NeighborYPosition, Map<NeighborXPosition, TileModel>> entry : tileModelNeighbors.entrySet()) {
+			
+			// Add all the neighbors in our entry set that does not have a null tile model
+			allNeighbors.addAll(entry.getValue().values().stream().filter(a -> a != null && a != tileModel).collect(Collectors.toList()));
+		}
+		
+		// return the list of neighbors
+		return allNeighbors;
+	}
+	
+	/**
+	 * Gets the board dimensions of the game
+	 * 
+	 * @return The board game dimensions
+	 */
+	public Dimension getBoardDimensions() {
+		return _dimensions;
+	}
+	
 	/**
 	 * logically attaches the list of tiles together by sub-dividing the list of tiles.
 	 * Note: Order matters in cases such as this, which is why insertion order was important
@@ -116,7 +158,7 @@ public class BoardController extends BaseController {
 			);
 		}
 	}
-	
+
 	/**
 	 * Links together the passed in rows with respect to a flood fill
 	 *  
@@ -154,43 +196,7 @@ public class BoardController extends BaseController {
 			_neighbors.put(neutralRow[i], neighbors);
 		}
 	}
-	
-	/**
-	 * 
-	 * Gets all the neighbors associated to the particular model
-	 * 
-	 * @param tileModel The tile model to use as a search for neighbors around it
-	 * 
-	 * @return The list of tile models that neighbor the passed in tile model
-	 */
-	public final List<TileModel> getAllNeighbors(TileModel tileModel) {
-		
-		// Get the list of neighbors associated to our tile model
-		Map<NeighborYPosition, Map<NeighborXPosition, TileModel>> tileModelNeighbors = _neighbors.get(tileModel);
-		
-		// This collection holds the list of all the neighbors
-		List<TileModel> allNeighbors = new ArrayList<>();
-		
-		// Go through every entry set in our structure
-		for(Map.Entry<NeighborYPosition, Map<NeighborXPosition, TileModel>> entry : tileModelNeighbors.entrySet()) {
-			
-			// Add all the neighbors in our entry set that does not have a null tile model
-			allNeighbors.addAll(entry.getValue().values().stream().filter(a -> a != null && a != tileModel).collect(Collectors.toList()));
-		}
-		
-		// return the list of neighbors
-		return allNeighbors;
-	}
-	
-	/**
-	 * Gets the board dimensions of the game
-	 * 
-	 * @return The board game dimensions
-	 */
-	public Dimension getBoardDimensions() {
-		return _dimensions;
-	}
-	
+
 	@Override public void registerSignalListeners() {
 		
 		// Register to when this controller is added as a listener
