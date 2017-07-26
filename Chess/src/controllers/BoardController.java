@@ -88,8 +88,8 @@ public final class BoardController extends BaseController {
 		PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true); 
 
 		// Create the players and register them with the game
-		playerController.addPlayer(Player.PlayerTeam.WHITE, DataLookup.DataLayerWhite.values());
-		playerController.addPlayer(Player.PlayerTeam.BLACK, DataLookup.DataLayerBlack.values());
+		playerController.addPlayer(Player.PlayerTeam.WHITE, Arrays.asList(DataLookup.DataLayerWhite.values()));
+		playerController.addPlayer(Player.PlayerTeam.BLACK, Arrays.asList(DataLookup.DataLayerBlack.values()));
 
 		// Register the signal listeners, we don't want to wait until rendering is done for this to occur
 		// because this class will miss important events before hand

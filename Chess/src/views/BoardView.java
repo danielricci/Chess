@@ -27,7 +27,6 @@ package views;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BoxLayout;
@@ -35,14 +34,15 @@ import javax.swing.JPanel;
 
 import controllers.BoardController;
 import controllers.PlayerController;
+import controllers.TileController;
 import engine.core.factories.AbstractFactory;
 import engine.core.factories.AbstractSignalFactory;
 import engine.core.factories.ControllerFactory;
 import engine.core.factories.ViewFactory;
 import engine.core.mvc.view.PanelView;
-import game.ChessEntity;
-import game.PawnEntity;
+import game.entities.ChessEntity;
 import game.player.Player.PlayerTeam;
+import generated.DataLookup;
 
 /**
  * This view represents the entire board, it holds all the tiles of the board
@@ -88,31 +88,72 @@ public class BoardView extends PanelView {
 		
 		// Create the board view structure, row by row
 		for(int row = 0, dimensionsX = boardDimensions.width; row < dimensionsX; ++row) {
-			
-			List<ChessEntity> playerPieces = new ArrayList();
-			
-			// If we are on the first two rows
-			if(row == 0 || row == 1) {
-				List<PawnEntity> pawns = playerController.getEntities(PlayerTeam.BLACK, PawnEntity.class);
-			}
-			// If we are on the last two rows
-			else if(row == dimensionsX - 1 || row == dimensionsX - 2) {
-				List<PawnEntity> entities = playerController.getEntities(PlayerTeam.WHITE, PawnEntity.class);
-				
-			}
-			
-			
+
+						
 			// Create a row
 			for(int col =  0, dimensionsY = boardDimensions.height; col < dimensionsY; ++col) {		
 
-				//TileController tileController = view.getViewProperties().getEntity(TileController.class);
-					
 				// Create a tile and add it to our board
 				TileView view = AbstractSignalFactory.getFactory(ViewFactory.class).get(
 					TileView.class, 
 					false,
 					(col + row) % 2 == 0 ? TileView.EVEN_FILES_COLOR : TileView.ODD_FILES_COLOR
 				);
+				
+				// If we are on the first or last row on the board, inject the proper chess pieces
+				if(row == 0 || row == dimensionsX - 1) {
+					TileController tileController = view.getViewProperties().getEntity(TileController.class);
+					PlayerTeam team = row == 0 ? PlayerTeam.BLACK : PlayerTeam.WHITE;
+					
+					switch(col) {
+						case 0: {
+							List<ChessEntity> entities = playerController.getEntities(team, DataLookup.DataLayerName.ROOK.toString());
+							tileController.setChessEntity(entities.get(0));
+							break;
+						}
+						case 1: {
+							List<ChessEntity> entities = playerController.getEntities(team, DataLookup.DataLayerName.KNIGHT.toString());
+							tileController.setChessEntity(entities.get(0));
+							break;
+						}
+						case 2: {
+							List<ChessEntity> entities = playerController.getEntities(team, DataLookup.DataLayerName.BISHOP.toString());
+							tileController.setChessEntity(entities.get(0));
+							break;
+						}
+						case 3: {
+							List<ChessEntity> entities = playerController.getEntities(team, DataLookup.DataLayerName.QUEEN.toString());
+							tileController.setChessEntity(entities.get(0));
+							break;
+						}
+						case 4: {
+							List<ChessEntity> entities = playerController.getEntities(team, DataLookup.DataLayerName.KING.toString());
+							tileController.setChessEntity(entities.get(0));
+							break;
+						}
+						case 5: {
+							List<ChessEntity> entities = playerController.getEntities(team, DataLookup.DataLayerName.BISHOP.toString());
+							tileController.setChessEntity(entities.get(1));
+							break;
+						}
+						case 6: {
+							List<ChessEntity> entities = playerController.getEntities(team, DataLookup.DataLayerName.KNIGHT.toString());
+							tileController.setChessEntity(entities.get(1));
+							break;
+						}
+						case 7: {
+							List<ChessEntity> entities = playerController.getEntities(team, DataLookup.DataLayerName.ROOK.toString());
+							tileController.setChessEntity(entities.get(1));
+							break;
+						}
+					};	
+				}
+				// If we are on the second row or second to last row, then inject the proper pieces
+				else if(row == 1 || row == dimensionsX - 2) {
+					TileController tileController = view.getViewProperties().getEntity(TileController.class);
+					List<ChessEntity> entities = playerController.getEntities(row == 1 ? PlayerTeam.BLACK : PlayerTeam.WHITE, DataLookup.DataLayerName.PAWN.toString());
+					tileController.setChessEntity(entities.get(col));
+				}
 				
 				// Make sure that dimensions are properly mapped
 				gbc.gridx = col;

@@ -26,8 +26,8 @@ package models;
 
 import engine.communication.internal.signal.ISignalListener;
 import engine.core.mvc.model.BaseModel;
-import game.ChessEntity;
 import game.core.AbstractEntity;
+import game.entities.ChessEntity;
 
 /**
  * The model representation of a tile 
@@ -91,6 +91,7 @@ public class TileModel extends BaseModel {
 	 */
 	public void setEntity(ChessEntity entity) {
 		_entity = entity;
+		doneUpdating();
 	}
 	
 	/**

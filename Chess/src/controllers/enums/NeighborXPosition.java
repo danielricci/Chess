@@ -10,11 +10,11 @@ public enum NeighborXPosition {
 	NEUTRAL(1 << 4, false),
 	NEUTRAL_AGNOSTIC(1 << 5, true);
 
-	private final int _value;
-	private final boolean _agnostic;
+	//private final int _value;
+	//private final boolean _agnostic;
 	
 	private NeighborXPosition(int value, boolean agnostic) {
-		_value = value;
-		_agnostic = agnostic;
+		//_value = value;
+		//_agnostic = agnostic;
 	}
 }

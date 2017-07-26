@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import engine.core.mvc.model.BaseModel;
-import game.ChessEntity;
-import game.PawnEntity;
+import game.entities.ChessEntity;
+import generated.DataLookup;
 
 /**
  * Player class for the game 
@@ -56,7 +56,7 @@ public class Player extends BaseModel {
 	/**
 	 * The data values associated to the player
 	 */
-	private final Enum[] _dataValues;
+	private final List<Enum> _dataValues;
 	
 	/**
 	 * The list of entities owned by the player
@@ -69,20 +69,47 @@ public class Player extends BaseModel {
 	 * @param team The team of the player
 	 * @param dataValues The data values associated to the player
 	 */
-	public Player(PlayerTeam team, Enum[] dataValues) {
+	public Player(PlayerTeam team, List<Enum> dataValues) {
 		_team = team;
-		_dataValues = dataValues;
+		_dataValues = new ArrayList(dataValues);
+		
+		// Load the list of items that this player owns
+		loadItems();
 	}
 	
 	/**
 	 * Loads the chess piece items that the player owns
 	 */
-	public void loadItems() {
-		for(int i = 0; i < 16; ++i) {
-			ChessEntity entity = new PawnEntity();
-			entity.LinkData(this);
-			_entities.add(entity);
+	private void loadItems() {
+		
+		// PAWN
+		for(int i = 0, width = 8; i < width; ++i) {
+			createEntity(DataLookup.DataLayerName.PAWN.toString());
 		}
+
+		// BISHOP, KNIGHT, ROOK
+		for(int i = 0; i < 2; ++i) {
+			createEntity(DataLookup.DataLayerName.BISHOP.toString());
+			createEntity(DataLookup.DataLayerName.KNIGHT.toString());
+			createEntity(DataLookup.DataLayerName.ROOK.toString());
+		}
+		
+		// KING
+		createEntity(DataLookup.DataLayerName.QUEEN.toString());
+		
+		// QUEEN
+		createEntity(DataLookup.DataLayerName.KING.toString());
+	}
+	
+	/**
+	 * Create a method with the specified entity name
+	 * 
+	 * @param entityName The name of the entity
+	 */
+	private void createEntity(String entityName) {
+		ChessEntity entity = new ChessEntity(entityName);
+		entity.LinkData(this);
+		_entities.add(entity);
 	}
 	
 	/**
@@ -92,8 +119,8 @@ public class Player extends BaseModel {
 	 * 
 	 * @return A list of entities
 	 */
-	public <T extends ChessEntity> List<T> getEntities(Class<T> entityClass) {
-		return (List<T>) _entities.stream().filter(z -> z.getClass() == entityClass).collect(Collectors.toList());
+	public <T extends ChessEntity> List<T> getEntities(String layerName) {
+		return (List<T>) _entities.stream().filter(z -> z.getlayerName().equalsIgnoreCase(layerName)).collect(Collectors.toList());
 	}
 	
 	/**
@@ -101,7 +128,7 @@ public class Player extends BaseModel {
 	 * 
 	 * @return The data values associated to the player
 	 */
-	public Enum[] getDataValues() {
+	public List<Enum> getDataValues() {
 		return _dataValues;
 	}
 

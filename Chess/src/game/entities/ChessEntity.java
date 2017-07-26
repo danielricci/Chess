@@ -22,21 +22,59 @@
 * IN THE SOFTWARE.
 */
 
-package game;
+package game.entities;
 
-import generated.DataLookup;
+import java.util.List;
+
+import game.IEntityLink;
+import game.core.AbstractEntity;
+import game.player.Player;
 
 /**
- * Represents a pawn within the game
+ * Abstract class for all chess pieces in the game
  * 
  * @author Daniel Ricci {@literal <thedanny09@gmail.com>}
  */
-public class PawnEntity extends ChessEntity {
-
+public class ChessEntity extends AbstractEntity implements IEntityLink<Player> {
+	
+	private final String _layerName;
+	
+	/**
+	 * The player that owns this entity
+	 */
+	private Player _player;
+	
 	/**
 	 * Constructs a new instance of this class type
+	 * 
+	 * @param layerName The name of the layer
 	 */
-	public PawnEntity() {
-		super(DataLookup.DataLayerName.PAWN.toString());
+	public ChessEntity(String layerName) {
+		super(layerName);
+		
+		_layerName = layerName;
+	}
+	
+	/**
+	 * Gets the layer name of this chess entity
+	 * 
+	 * @return The layer name of this chess entity
+	 */
+	public String getlayerName() {
+		return _layerName;
+	}
+	
+	@Override public void LinkData(Player player) {
+		if(player != _player) {
+			_player = player;
+			
+			List<String> names = getDataNames();
+			for(String name : names) {
+				if(player.getDataValues().stream().anyMatch(z -> z.toString().equalsIgnoreCase(name))) {
+					setActiveData(name);
+					break;
+				}
+			}
+		}
 	}
 }

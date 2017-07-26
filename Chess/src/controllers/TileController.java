@@ -28,6 +28,7 @@ import engine.core.factories.AbstractFactory;
 import engine.core.factories.ControllerFactory;
 import engine.core.factories.ModelFactory;
 import engine.core.mvc.controller.BaseController;
+import game.entities.ChessEntity;
 import models.TileModel;
 import views.TileView;
 
@@ -38,7 +39,7 @@ import views.TileView;
  *
  */
 public final class TileController extends BaseController {
-	
+
 	/**
 	 * The tile model that represents a single tile in the game
 	 */
@@ -51,7 +52,7 @@ public final class TileController extends BaseController {
 	 */
 	public TileController(TileView viewClass) {
 		super(viewClass);
-
+		
 		// Create the instance of our tile model
 		_tile = AbstractFactory.getFactory(ModelFactory.class).get(TileModel.class, false);
 		
@@ -70,5 +71,14 @@ public final class TileController extends BaseController {
 		for(TileModel tile : AbstractFactory.getFactory(ControllerFactory.class).get(BoardController.class).getAllNeighbors(_tile)) {
 			tile.setSelected(selected);
 		}
+	}
+	
+	/**
+	 * Sets the specifies chess entity to the this controller
+	 * 
+	 * @param entity The chess entity to add
+	 */
+	public void setChessEntity(ChessEntity entity) {
+		_tile.setEntity(entity);
 	}
 }
