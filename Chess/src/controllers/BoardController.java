@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import controllers.enums.NeighborXPosition;
@@ -41,6 +42,7 @@ import engine.communication.internal.signal.types.ModelEvent;
 import engine.core.factories.AbstractFactory;
 import engine.core.factories.ControllerFactory;
 import engine.core.mvc.controller.BaseController;
+import engine.utils.io.logging.Tracelog;
 import game.player.Player;
 import generated.DataLookup;
 import models.TileModel;
@@ -59,6 +61,11 @@ import views.BoardView;
  *
  */
 public final class BoardController extends BaseController {
+	
+	/**
+	 * This flag indicates if the game is running
+	 */
+	private boolean _isGameRunning;
 	
 	/**
 	 * The list of neighbors logically associated to a specified controller
@@ -95,6 +102,22 @@ public final class BoardController extends BaseController {
 		// because this class will miss important events before hand
 		registerSignalListeners();
 	}	
+	
+	/**
+	 * 
+	 * @return If the game is running
+	 */
+	public boolean IsGameRunning() {
+		return _isGameRunning;
+	}
+	
+	/**
+	 * Starts the board game
+	 */
+	public void startGame() {
+		_isGameRunning = true;
+		Tracelog.log(Level.INFO, true, "The game is now running");
+	}
 		
 	/**
 	 * Gets all the neighbors associated to the particular model

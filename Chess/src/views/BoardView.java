@@ -27,6 +27,8 @@ package views;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.List;
 
 import javax.swing.BoxLayout;
@@ -170,9 +172,12 @@ public class BoardView extends PanelView {
 	}
 
 	@Override public void initializeComponentBindings() {
-	}
-		
-	@Override public void render() {
-		super.render();
-	}
+		addComponentListener(new ComponentAdapter() {
+			@Override public void componentShown(ComponentEvent e) {
+				// Start the game
+				BoardController controller = AbstractFactory.getFactory(ControllerFactory.class).get(BoardController.class);
+				controller.startGame();
+			}
+		});
+	}		
 }

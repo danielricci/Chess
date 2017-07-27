@@ -29,6 +29,7 @@ import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -163,5 +164,11 @@ public final class Application extends AbstractApplication {
 	@Override protected void initializeEngineProperties() {
 		EngineProperties.instance().setProperty(Property.DATA_PATH_XML, "/generated/tilemap.xml");
 		EngineProperties.instance().setProperty(Property.DATA_PATH_SHEET, "/generated/tilemap.png");
+		EngineProperties.instance().setProperty(Property.ENGINE_OUTPUT, "true");
+		
+		EngineProperties.instance().setProperty(
+			Property.LOG_DIRECTORY, 
+			System.getProperty("user.home") + File.separator + "desktop" + File.separator
+		);
 	}
 }

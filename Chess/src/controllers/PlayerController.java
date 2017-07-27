@@ -28,8 +28,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.logging.Level;
 
 import engine.core.mvc.controller.BaseController;
+import engine.utils.io.logging.Tracelog;
 import game.entities.ChessEntity;
 import game.player.Player;
 import game.player.Player.PlayerTeam;
@@ -57,6 +59,12 @@ public final class PlayerController extends BaseController {
 	 */
 	public PlayerController() {
 		super(null);
+	}
+	
+	public void nextPlayer() {
+		// Swap the players
+		_playerTurnQueue.add(_playerTurnQueue.poll());
+		Tracelog.log(Level.INFO, true, "Player " + _playerTurnQueue.peek().toString() + " is now playing");
 	}
 	
 	/**
