@@ -124,7 +124,7 @@ public class TileView extends PanelView {
 
 	@Override public void initializeComponentBindings() {
 		// Add a mouse listener to handle when mousing over
-		// a tile, this will highlight the highlight of the
+		// a tile, this will highlight the 
 		// actual tile and properly displays the border of 
 		// the tile in the highlight effect
 		this.addMouseListener(new MouseAdapter() {
@@ -170,6 +170,10 @@ public class TileView extends PanelView {
 		registerSignalListener(EVENT_HIDE_NEIGHBORS, new ISignalReceiver<SignalEvent>() {
 			@Override public void signalReceived(SignalEvent event) {
 				_highlightNeighbors = false;
+				
+				// Force the tile to hide its debug selection in case the mouse is already highlighting
+				// some of the tiles
+				getViewProperties().getEntity(TileController.class).showTileNeighborsDebug(false);
 			}			
 		});
 	}

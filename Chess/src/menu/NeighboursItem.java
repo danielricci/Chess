@@ -46,13 +46,11 @@ import views.TileView;
  */
 public class NeighboursItem extends MenuItem {
 	
-	//--------------------------------------------------------------
 	/**
 	 * Constructs a new instance of this type
 	 * 
 	 * @param parent The parent representing this item
 	 */
-	//--------------------------------------------------------------
 	public NeighboursItem(JComponent parent) {
 		
 		// Create the menu item
