@@ -38,7 +38,11 @@ public final class Resources extends Localization<Resources.ResourceKeys> {
 		Debug("debug"),
 		GameIcon("game_icon"),
 		NeighborTiles("neighbor_tiles"),
-		Title("title");
+		NewGame("new_game"),
+		NewGameDebug("new_game_debug"),
+		Title("title"),
+		Quit("quit"),
+		QuitMessage("quit_question");
 		 
 		private String _key;
 		

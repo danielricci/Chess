@@ -51,7 +51,7 @@ public class TileView extends PanelView {
 	 * This flag when set to true with perform a neighbor highlight on
 	 * this tile when you mouse over it
 	 */
-	private boolean _highlightNeighbors = false;
+	private boolean _highlightNeighbors;
 	
 	/**
 	 * The color of all the odd files
@@ -129,33 +129,27 @@ public class TileView extends PanelView {
 		// the tile in the highlight effect
 		this.addMouseListener(new MouseAdapter() {
 			
-			// Handle when the mouse enters this tile
 			@Override public void mouseEntered(MouseEvent event) {
 				setBorder(HIGHLIGHT_BORDER);
-			}
-			
-			// Handle when the mouse exits this tile
-			@Override public void mouseExited(MouseEvent event) {
-				setBorder(DEFAULT_BORDER_STYLE);
-			}
-		});
-		
-		// Add a mouse listener to handle when mousing over
-		// a tile, this will perform the debug operation
-		// for showing neighboring tiles
-		this.addMouseListener(new MouseAdapter() {
-			@Override public void mouseEntered(MouseEvent e) {
+				
 				if(_highlightNeighbors) {
 					getViewProperties().getEntity(TileController.class).showTileNeighborsDebug(true);
 				}
 			}
 			
-			@Override public void mouseExited(MouseEvent e) {
+			@Override public void mouseExited(MouseEvent event) {
+				setBorder(DEFAULT_BORDER_STYLE);
+				
 				if(_highlightNeighbors) {
 					getViewProperties().getEntity(TileController.class).showTileNeighborsDebug(false);
-				}				
+				}
 			}
-		});
+			
+			@Override public void mouseReleased(MouseEvent event) {
+				TileController controller = getViewProperties().getEntity(TileController.class);
+				controller.performSelect();
+			}
+		});		
 	}
 	
 	@Override public void registerSignalListeners() {
@@ -201,10 +195,7 @@ public class TileView extends PanelView {
 			// Get the tile model of the source
 			TileModel tileModel = (TileModel) signalEvent.getSource();
 			
-			// Set the border state of the tile
-			setBorder(tileModel.getIsSelected() ? HIGHLIGHT_BORDER : DEFAULT_BORDER_STYLE);
-	
-			// Add the renderable content into the view
+			// Add any renderable content
 			addRenderableContent(tileModel.getEntity());
 		}
 		

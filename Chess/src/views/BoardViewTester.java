@@ -24,49 +24,57 @@
 
 package views;
 
-import java.awt.BorderLayout;
-import java.util.logging.Level;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
 
-import engine.api.IView;
+import controllers.BoardController;
 import engine.core.factories.AbstractSignalFactory;
 import engine.core.factories.ViewFactory;
-import engine.core.mvc.view.PanelView;
-import engine.utils.io.logging.Tracelog;
-import game.GameMode;
 
-public class MainWindowView extends PanelView {
+/**
+ * @author Daniel Ricci <thedanny09@gmail.com>
+ */
+public class BoardViewTester extends BoardView {
 	
-	private final GameMode _gameMode;
-	
-	public MainWindowView(GameMode gameMode) {
-		_gameMode = gameMode;
+	public BoardViewTester()
+	{
 	}
 	
 	@Override public void initializeComponents() {
-		setLayout(new BorderLayout());
-	}
-
-	@Override public void initializeComponentBindings() {
-	}
-	
-	@Override public void render() {
-		super.render();
 		
-		ViewFactory viewFactory = AbstractSignalFactory.getFactory(ViewFactory.class);
-		IView boardView = null;
-		if(_gameMode == GameMode.GAME) {
-			boardView = viewFactory.get(BoardView.class, true);
+		// Set the constraints of views 
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 1.0;
+		gbc.weighty = 1.0;
+		
+		// Get the board dimensions
+		Dimension boardDimensions = getViewProperties().getEntity(BoardController.class).getBoardDimensions();
+		
+		// Create the board view structure, row by row
+		for(int row = 0, dimensionsX = boardDimensions.width; row < dimensionsX; ++row) {
+						
+			// Create a row
+			for(int col =  0, dimensionsY = boardDimensions.height; col < dimensionsY; ++col) {		
+
+				// Create a tile and add it to our board
+				TileView view = AbstractSignalFactory.getFactory(ViewFactory.class).get(
+					TileView.class, 
+					false,
+					(col + row) % 2 == 0 ? TileView.EVEN_FILES_COLOR : TileView.ODD_FILES_COLOR
+				);
+				
+				// Make sure that dimensions are properly mapped
+				gbc.gridx = col;
+				gbc.gridy = row;
+				_gamePanel.add(view, gbc);
+				
+				// render the view
+				view.render();
+			}			
 		}
-		else if(_gameMode == GameMode.DEBUG){
-			boardView = viewFactory.get(BoardViewTester.class, true);
-		}
-			
-		if(boardView != null) {
-			add(boardView.getContainerClass());
-			boardView.render();	
-		}
-		else {
-			Tracelog.log(Level.SEVERE, true, "Cannot load the game because the board view could not be created.");
-		}
+		
+		// Add the game panel to this view
+		add(_gamePanel);
 	}
 }

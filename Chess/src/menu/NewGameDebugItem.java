@@ -24,12 +24,10 @@
 
 package menu;
 
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
-import javax.swing.KeyStroke;
 
 import application.Application;
 import engine.core.factories.AbstractSignalFactory;
@@ -40,11 +38,21 @@ import resources.Resources;
 import resources.Resources.ResourceKeys;
 import views.MainWindowView;
 
-public class NewGameItem extends MenuItem {
+/**
+ * The new game menu item for the debugger
+ * 
+ * @author Daniel Ricci {@literal <thedanny09@gmail.com>}
+ *
+ */
+public class NewGameDebugItem extends MenuItem {
 
-	public NewGameItem(JComponent parent) {
-		super(new JMenuItem(Resources.instance().getLocalizedString(ResourceKeys.NewGame)), parent);
-		get(JMenuItem.class).setAccelerator(KeyStroke.getKeyStroke('N', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask()));
+	/**
+	 * Constructs a new instance of this class type
+	 * 
+	 * @param parent The parent of this menu item
+	 */
+	public NewGameDebugItem(JComponent parent) {
+		super(new JMenuItem(Resources.instance().getLocalizedString(ResourceKeys.NewGameDebug)), parent);
 	}
 	
 	@Override public void onExecute(ActionEvent actionEvent) {
@@ -53,12 +61,13 @@ public class NewGameItem extends MenuItem {
 		if(!Application.instance().flush()) {
 			return;
 		}
+
 		
 		// Get a reference to the view factory 
 		ViewFactory factory = AbstractSignalFactory.getFactory(ViewFactory.class);
 		
 		// Get a reference to the main window to start application
-		MainWindowView view = factory.get(MainWindowView.class, true, GameMode.GAME); 
+		MainWindowView view = factory.get(MainWindowView.class, true, GameMode.DEBUG); 
 			
 		// Add the view to the application
 		Application.instance().add(view);

@@ -27,6 +27,7 @@ package application;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -34,7 +35,9 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 
+import engine.core.factories.AbstractSignalFactory;
 import engine.core.menu.MenuBuilder;
 import engine.core.system.AbstractApplication;
 import engine.core.system.EngineProperties;
@@ -42,12 +45,13 @@ import engine.core.system.EngineProperties.Property;
 import menu.AboutItem;
 import menu.ExitItem;
 import menu.NeighboursItem;
+import menu.NewGameDebugItem;
 import menu.NewGameItem;
 import resources.Resources;
 import resources.Resources.ResourceKeys;
 
 public final class Application extends AbstractApplication {
-
+	
 	/**
 	 * Constructs a new instance of this class
 	 */
@@ -149,6 +153,8 @@ public final class Application extends AbstractApplication {
 	private void PopulateDebugMenu() {
 		MenuBuilder.start(getJMenuBar())
 			.AddMenu(Resources.instance().getLocalizedString(ResourceKeys.Debug))
+				.AddMenuItem(NewGameDebugItem.class)
+				.AddSeparator()
 				.AddMenuItem(NeighboursItem.class);
 	}
 	
@@ -161,6 +167,48 @@ public final class Application extends AbstractApplication {
 				.AddMenuItem(AboutItem.class);
 	}
 
+	@Override public boolean flush() {
+		
+		// Before loading make sure to save content if it needs
+		// to be saved
+		if(AbstractSignalFactory.isRunning())  {
+			// Show a save dialog confirmation
+			int result = JOptionPane.showConfirmDialog(
+				this,
+				Resources.instance().getLocalizedString(ResourceKeys.QuitMessage), 
+				Resources.instance().getLocalizedString(ResourceKeys.Quit),
+				JOptionPane.YES_NO_OPTION,
+				JOptionPane.QUESTION_MESSAGE
+			);
+			
+			// If the user clicks on the close (x) button, then it cancels the operation
+			if(result != JOptionPane.YES_OPTION) {
+				return false;
+			}
+		}
+		
+		// Go through every window owned by this window and close it
+		for(Window window : getOwnedWindows()) {
+			if(window != this) {
+				window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
+			}
+		}
+		
+		this.getContentPane().removeAll();
+		
+		// Clear the factory
+		AbstractSignalFactory.reset();
+		
+		// validate this container and all of the sub-components
+		validate();
+		
+		// Repaint everything to apply the changes made
+		repaint();
+		
+		return true;
+	}
+	
+	
 	@Override protected void initializeEngineProperties() {
 		EngineProperties.instance().setProperty(Property.DATA_PATH_XML, "/generated/tilemap.xml");
 		EngineProperties.instance().setProperty(Property.DATA_PATH_SHEET, "/generated/tilemap.png");

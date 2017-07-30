@@ -57,18 +57,17 @@ public class BoardView extends PanelView {
 	/**
 	 * Holds the game panel as a grid
 	 */
-	private final JPanel _gamePanel = new JPanel(new GridBagLayout());
+	protected final JPanel _gamePanel = new JPanel(new GridBagLayout());
 		
 	/**
 	 * Constructs a new instance of this type
 	 */
 	public BoardView() {
+		
+		BoardController controller = AbstractSignalFactory.getFactory(ControllerFactory.class).get(BoardController.class, true, this);
+		
 		// Set the controller associated to this view
-		getViewProperties().setListener(
-			AbstractSignalFactory
-			.getFactory(ControllerFactory.class)
-			.get(BoardController.class, true, this)
-		);	
+		getViewProperties().setListener(controller);	
 		
 		// Set the layout manager
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));

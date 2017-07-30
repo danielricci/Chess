@@ -68,6 +68,11 @@ public final class BoardController extends BaseController {
 	private boolean _isGameRunning;
 	
 	/**
+	 * The tile model associated to the most recently selected tilemodel
+	 */
+	private TileModel _lastSelectedTile;
+	
+	/**
 	 * The list of neighbors logically associated to a specified controller
 	 * 
 	 * Key1: A Controller that maps to its association of neighbors
@@ -81,6 +86,10 @@ public final class BoardController extends BaseController {
 	 */
 	private final Dimension _dimensions = new Dimension(8, 8);
 	
+//	public BoardController(BoardViewTester view) {
+//		this((BoardView)view);
+//	}
+	
 	/**
 	 * Constructs a new instance of this class
 	 * 
@@ -92,6 +101,7 @@ public final class BoardController extends BaseController {
 		// Initialize the neighbor structure to the initial size of the board
 		_neighbors = new LinkedHashMap<>(_dimensions.width * _dimensions.height);
 		
+		// Get the player controller
 		PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true); 
 
 		// Create the players and register them with the game
@@ -103,8 +113,16 @@ public final class BoardController extends BaseController {
 		registerSignalListeners();
 	}	
 	
+
+	
 	/**
-	 * 
+	 * @return The currently selected tile
+	 */
+	public TileModel getSelectedTile() {
+		return _lastSelectedTile;
+	}
+	
+	/**
 	 * @return If the game is running
 	 */
 	public boolean IsGameRunning() {
@@ -241,5 +259,34 @@ public final class BoardController extends BaseController {
 				}
 			}
 		});
+	
+		// Register to when a tile is selected
+		registerSignalListener(TileModel.EVENT_SELECTION_CHANGED, new ISignalReceiver<ModelEvent<TileModel>>() {
+			@Override public void signalReceived(ModelEvent<TileModel> event) {
+				// Unregister this controller from listening to this event, to prevent 
+				// an event from being re-fired back here
+				String signalName = unregisterSignalListener(this);
+				
+				Tracelog.log(Level.INFO, true, "Tile Selected");
+				
+				// Set the currently selected tile and deselect the other selected tile (if applicable)
+				if(_lastSelectedTile != null && _lastSelectedTile.getSelected()) {
+					_lastSelectedTile.setSelected(false);
+				}  
+				
+				// If what we just selected was previously selected then we clear
+				// the reference, or we take what was just newly selected and use that
+				if(_lastSelectedTile == event.getSource()) {
+					_lastSelectedTile = null;
+				}
+				else {
+					_lastSelectedTile = event.getSource();				
+				}
+				
+				// Register back the original listener so that we can continue to receive signals
+				registerSignalListener(signalName, this);
+			}			
+		});
+	
 	}
 }

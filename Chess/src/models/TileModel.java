@@ -24,6 +24,8 @@
 
 package models;
 
+import java.util.UUID;
+
 import engine.communication.internal.signal.ISignalListener;
 import engine.core.mvc.model.BaseModel;
 import game.core.AbstractEntity;
@@ -38,6 +40,16 @@ import game.entities.ChessEntity;
 public class TileModel extends BaseModel {
 	
 	/**
+	 * Signal name indicating that this model's selection state has changed
+	 */
+	public static final String EVENT_SELECTION_CHANGED = UUID.randomUUID().toString();
+	
+	/**
+	 * The selection state of this tile
+	 */
+	private boolean _selectionState = false;
+	
+	/**
 	 * The entity associated to the tile model
 	 */
 	private ChessEntity _entity;
@@ -48,7 +60,7 @@ public class TileModel extends BaseModel {
 	private boolean _selected = false;
 	
 	/**
-	 * Constructs a new instance of this type
+	 * Constructs a new instance of this class type
 	 */
 	public TileModel() {
 	}
@@ -64,14 +76,22 @@ public class TileModel extends BaseModel {
 	}
 
 	/**
+	 * Gets the selection state of this tile
+	 * 
+	 * @return If this tile is selected
+	 */
+	public boolean getSelected() {
+		return _selectionState;
+	}
+	
+	/**
 	 * Sets the selected state of this model
 	 * 
 	 * @param selected If the tile model is selected
 	 */
 	public void setSelected(boolean selected) {
 		_selected = selected;
-		
-		// Note: I do not set an operation status here
+		setOperation(EVENT_SELECTION_CHANGED);
 		doneUpdating();
 	}
 	

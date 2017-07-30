@@ -57,7 +57,10 @@ public final class TileController extends BaseController {
 		_tile = AbstractFactory.getFactory(ModelFactory.class).get(TileModel.class, false);
 		
 		// Assign the listeners to the newly created model
-		_tile.addListener(viewClass, AbstractFactory.getFactory(ControllerFactory.class).get(BoardController.class));
+		_tile.addListener(
+			viewClass, 
+			AbstractFactory.getFactory(ControllerFactory.class).get(BoardController.class)
+		);
 	}
 	
 	/**
@@ -80,5 +83,13 @@ public final class TileController extends BaseController {
 	 */
 	public void setChessEntity(ChessEntity entity) {
 		_tile.setEntity(entity);
+	}
+
+	/**
+	 * Performs a selection on the tile
+	 */
+	public void performSelect() {
+		boolean selected = !_tile.getSelected();
+		_tile.setSelected(selected);
 	}
 }
