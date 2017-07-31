@@ -86,10 +86,6 @@ public final class BoardController extends BaseController {
 	 */
 	private final Dimension _dimensions = new Dimension(8, 8);
 	
-//	public BoardController(BoardViewTester view) {
-//		this((BoardView)view);
-//	}
-	
 	/**
 	 * Constructs a new instance of this class
 	 * 
