@@ -29,6 +29,7 @@ import java.util.List;
 import game.IEntityLink;
 import game.core.AbstractEntity;
 import game.player.Player;
+import game.player.Player.PlayerTeam;
 
 /**
  * Abstract class for all chess pieces in the game
@@ -62,6 +63,13 @@ public class ChessEntity extends AbstractEntity implements IEntityLink<Player> {
 	 */
 	public String getlayerName() {
 		return _layerName;
+	}
+	
+	/**
+	 * @return The team of the player associated to this chess entity 
+	 */
+	public PlayerTeam getTeam() {
+		return _player.getTeam();
 	}
 	
 	@Override public void LinkData(Player player) {

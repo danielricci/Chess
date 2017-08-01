@@ -42,7 +42,7 @@ public class AboutItem extends MenuItem {
 	@Override public void onExecute(ActionEvent actionEvent) {
 		JOptionPane.showMessageDialog(
 			null,
-			"Chess\nVersion 1.0\n\nDaniel Ricci\nthedanny09@gmail.com\nhttps:/github.com/danielricci/Chess",
+			"https:/github.com/danielricci/Chess",
 			"About Chess",
 			JOptionPane.INFORMATION_MESSAGE
 		);

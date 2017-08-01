@@ -259,28 +259,19 @@ public final class BoardController extends BaseController {
 		// Register to when a tile is selected
 		registerSignalListener(TileModel.EVENT_SELECTION_CHANGED, new ISignalReceiver<ModelEvent<TileModel>>() {
 			@Override public void signalReceived(ModelEvent<TileModel> event) {
-				// Unregister this controller from listening to this event, to prevent 
-				// an event from being re-fired back here
-				String signalName = unregisterSignalListener(this);
-				
-				Tracelog.log(Level.INFO, true, "Tile Selected");
-				
-				// Set the currently selected tile and deselect the other selected tile (if applicable)
-				if(_lastSelectedTile != null && _lastSelectedTile.getSelected()) {
-					_lastSelectedTile.setSelected(false);
-				}  
-				
-				// If what we just selected was previously selected then we clear
-				// the reference, or we take what was just newly selected and use that
-				if(_lastSelectedTile == event.getSource()) {
+				// If there is something previously there then it means it was considered as selected
+				if(_lastSelectedTile != null) {
+					Tracelog.log(Level.INFO, true, _lastSelectedTile.toString() + " is now deselected");
 					_lastSelectedTile = null;
 				}
-				else {
-					_lastSelectedTile = event.getSource();				
+
+				// Get the tile model that fired the event, and if it's status is set to selected then
+				// store a reference to it
+				TileModel tile = event.getSource();
+				if(tile.getIsSelected()) {
+					_lastSelectedTile = tile;
+					Tracelog.log(Level.INFO, true, _lastSelectedTile.toString() + " is now selected");
 				}
-				
-				// Register back the original listener so that we can continue to receive signals
-				registerSignalListener(signalName, this);
 			}			
 		});
 	

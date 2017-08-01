@@ -61,12 +61,6 @@ public final class PlayerController extends BaseController {
 		super(null);
 	}
 	
-	public void nextPlayer() {
-		// Swap the players
-		_playerTurnQueue.add(_playerTurnQueue.poll());
-		Tracelog.log(Level.INFO, true, "Player " + _playerTurnQueue.peek().toString() + " is now playing");
-	}
-	
 	/**
 	 * Adds a new player to the game
 	 * 
@@ -84,6 +78,35 @@ public final class PlayerController extends BaseController {
 		_playerTurnQueue.add(player);
 	}
 	
+	public void nextPlayer() {
+		// Swap the players
+		_playerTurnQueue.add(_playerTurnQueue.poll());
+		Tracelog.log(Level.INFO, true, "Player " + _playerTurnQueue.peek().toString() + " is now playing");
+	}
+
+
+	
+	/**
+	 * @return The team of the player currently playing
+	 */
+	public PlayerTeam getCurrentPlayerTeam() {
+		return _playerTurnQueue.peek().getTeam();
+	}
+
+	/**
+	 * Gets the entities of the specified layer name
+	 * 
+	 * @param team The player team
+	 * @param layerName The name of the layer
+	 * 
+	 * @return The list of entities associated to the specified layer that the player still owns
+	 */
+	public List<ChessEntity> getEntities(PlayerTeam team, String layerName) {
+		
+		// Get the list of entities associated to the player of the specified layer name
+		return getPlayer(team).getEntities(layerName);
+	}
+
 	/**
 	 * Gets the specified player
 	 * 
@@ -102,19 +125,5 @@ public final class PlayerController extends BaseController {
 		}
 		
 		return null;
-	}
-
-	/**
-	 * Gets the entities of the specified layer name
-	 * 
-	 * @param team The player team
-	 * @param layerName The name of the layer
-	 * 
-	 * @return The list of entities associated to the specified layer that the player still owns
-	 */
-	public List<ChessEntity> getEntities(PlayerTeam team, String layerName) {
-		
-		// Get the list of entities associated to the player of the specified layer name
-		return getPlayer(team).getEntities(layerName);
 	}
 }
