@@ -43,6 +43,7 @@ import engine.core.system.AbstractApplication;
 import engine.core.system.EngineProperties;
 import engine.core.system.EngineProperties.Property;
 import menu.AboutItem;
+import menu.ChessPiecesItem;
 import menu.ExitItem;
 import menu.NeighboursItem;
 import menu.NewGameDebugItem;
@@ -154,6 +155,8 @@ public final class Application extends AbstractApplication {
 		MenuBuilder.start(getJMenuBar())
 			.AddMenu(Resources.instance().getLocalizedString(ResourceKeys.Debug))
 				.AddMenuItem(NewGameDebugItem.class)
+				.AddSeparator()
+				.AddMenuItem(ChessPiecesItem.class)
 				.AddSeparator()
 				.AddMenuItem(NeighboursItem.class);
 	}
