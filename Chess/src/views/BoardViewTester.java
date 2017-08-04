@@ -26,10 +26,19 @@ package views;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.List;
 
 import controllers.BoardController;
+import controllers.ChessPiecesController;
+import controllers.PlayerController;
+import controllers.TileController;
+import engine.core.factories.AbstractFactory;
 import engine.core.factories.AbstractSignalFactory;
+import engine.core.factories.ControllerFactory;
 import engine.core.factories.ViewFactory;
+import game.entities.ChessEntity;
 
 /**
  * @author Daniel Ricci <thedanny09@gmail.com>
@@ -63,6 +72,21 @@ public class BoardViewTester extends BoardView {
 					false,
 					(col + row) % 2 == 0 ? TileView.EVEN_FILES_COLOR : TileView.ODD_FILES_COLOR
 				);
+				
+				view.addMouseListener(new MouseAdapter() {
+					@Override public void mouseReleased(MouseEvent e) {
+						ChessPiecesController chessPiecesController = AbstractFactory.getFactory(ControllerFactory.class).get(ChessPiecesController.class);
+						if(chessPiecesController != null) {
+							PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class);
+							
+							List<ChessEntity> entities = playerController.getEntities(chessPiecesController.getSelectedTeam(), chessPiecesController.getSelectedPieceDebug().toString());
+							if(entities.size() > 0) {
+								TileController tileController = view.getViewProperties().getEntity(TileController.class);
+								tileController.setChessEntity(entities.get(0));
+							}
+						}
+					}
+				});
 				
 				// Make sure that dimensions are properly mapped
 				gbc.gridx = col;

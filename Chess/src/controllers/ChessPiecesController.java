@@ -24,17 +24,33 @@
 
 package controllers;
 
+import javax.swing.DefaultComboBoxModel;
+
 import engine.core.mvc.controller.BaseController;
+import game.player.Player;
+import game.player.Player.PlayerTeam;
+import generated.DataLookup;
+import generated.DataLookup.DataLayerName;
 import views.ChessPiecesView;
 
 /**
- * The properties controller
+ * The chess pieces debugger controller
  * 
  * @author Daniel Ricci {@literal <thedanny09@gmail.com>}
  *
  */
 public final class ChessPiecesController extends BaseController {
-		
+	
+	/**
+	 * The model of the list of available pieces
+	 */
+	public final DefaultComboBoxModel<DataLayerName> _piecesListModel = new DefaultComboBoxModel(DataLookup.DataLayerName.values());
+
+	/**
+	 * The model of the list of available player teams
+	 */
+	public final DefaultComboBoxModel<PlayerTeam> _teamListModel = new DefaultComboBoxModel(Player.PlayerTeam.values());
+
 	/**
 	 * Constructs a new instance of this class type
 	 * 
@@ -42,5 +58,35 @@ public final class ChessPiecesController extends BaseController {
 	 */
 	public ChessPiecesController(ChessPiecesView view) {
 		super(view);
+	}
+	
+	/**
+	 * @return A reference to the pieces model
+	 */
+	public DefaultComboBoxModel getPiecesModel() {
+		return _piecesListModel;
+	}
+	
+	/**
+	 * @return A reference to the teams model
+	 */
+	public DefaultComboBoxModel getTeamsModel() {
+		return _teamListModel;
+	}
+	
+	/** 
+	 * @return The currently selected piece in the debugger
+	 */
+	public DataLayerName getSelectedPieceDebug() {
+		Object selectedItem = _piecesListModel.getSelectedItem();
+		return selectedItem != null ? (DataLayerName)selectedItem : null;	
+	}
+	
+	/**
+	 * @return The currently selected team in the debugger
+	 */
+	public PlayerTeam getSelectedTeam() {
+		Object selectedItem = _teamListModel.getSelectedItem();
+		return selectedItem != null ? (PlayerTeam)selectedItem : null;
 	}
 }

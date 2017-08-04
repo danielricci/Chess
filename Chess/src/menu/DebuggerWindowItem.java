@@ -30,9 +30,11 @@ import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 
 import engine.api.IView;
+import engine.core.factories.AbstractFactory;
 import engine.core.factories.AbstractSignalFactory;
 import engine.core.factories.ViewFactory;
 import engine.core.menu.types.MenuItem;
+import views.BoardViewTester;
 import views.ChessPiecesView;
 
 /**
@@ -41,14 +43,14 @@ import views.ChessPiecesView;
  * @author {@literal Daniel Ricci <thedanny09@gmail.com>}
  *
  */
-public class ChessPiecesItem extends MenuItem {
+public class DebuggerWindowItem extends MenuItem {
 	
 	/**
 	 * Constructs a new instance of this class type
 	 * 
 	 * @param parent The parent component to this menu entity
 	 */
-	public ChessPiecesItem(JComponent parent) {
+	public DebuggerWindowItem(JComponent parent) {
 		super(new JMenuItem("Debugger Window"), parent);
 	}
 	
@@ -60,6 +62,6 @@ public class ChessPiecesItem extends MenuItem {
 	}
 	
 	@Override public boolean enabled() {
-		return AbstractSignalFactory.isRunning();
+		return AbstractSignalFactory.isRunning() && AbstractFactory.getFactory(ViewFactory.class).get(BoardViewTester.class) != null;
 	}
 }

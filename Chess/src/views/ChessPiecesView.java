@@ -25,35 +25,43 @@
 package views;
 
 import java.awt.Dimension;
-import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JTextField;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import application.Application;
 import controllers.ChessPiecesController;
 import engine.core.factories.AbstractSignalFactory;
 import engine.core.factories.ControllerFactory;
 import engine.core.mvc.view.DialogView;
+import game.player.Player;
+import generated.DataLookup;
 
 /**
+ * The view associated to the chess debugger
+ * 
  * @author {@literal Daniel Ricci <thedanny09@gmail.com>}
  */
 public class ChessPiecesView extends DialogView {
-
-	private JTextField _pieceTextField = new JTextField("Piece");
-
-	private JTextField _teamTextField = new JTextField("Team");
+	
+	private JComboBox<DataLookup.DataLayerName> _piecesList = new JComboBox();
+	
+	private JComboBox<Player.PlayerTeam> _teamList = new JComboBox();
 	
 	private JButton _startButton = new JButton("Start");
 	
-	private JButton _stoptButton = new JButton("Stop");
+	private JButton _stopButton = new JButton("Stop");
 	
 	/**
 	 * Constructs a new instance of this class type
 	 */
 	public ChessPiecesView() {
-		super(Application.instance(), "Debugger Window", 350, 600);
+		super(Application.instance(), "Debugger Window", 200, 300);
 		
 		// Prevent the properties window from being resized
 		this.setResizable(false);
@@ -63,16 +71,65 @@ public class ChessPiecesView extends DialogView {
 		
 		// Specify the controller of this dialog
 		getViewProperties().setListener(AbstractSignalFactory.getFactory(ControllerFactory.class).get(ChessPiecesController.class, true, this));
-
+		
 		// Set the layout manager of this dialog to be a grid-like layout
-		getContentPane().setLayout(new GridLayout(3, 2, 0, 0));
+		getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 	}
 	
 	@Override public void initializeComponents() {
 		
+		// Populate the models held by the controller into the combo boxes.
+		// Note: This needs to happen before setting the maximum size of each box
+		//       or the vertical spacing will not be done properly
+		ChessPiecesController controller = getViewProperties().getEntity(ChessPiecesController.class);
+		
+		// Teams label and the list of teams
+		JPanel teamsPanel = new JPanel();
+		JLabel teamsLabel = new JLabel("Teams");
+		teamsPanel.add(teamsLabel);
+		teamsPanel.add(_teamList);
+		_teamList.setModel(controller.getTeamsModel());
+		getContentPane().add(teamsPanel);
+		teamsPanel.setMaximumSize(teamsPanel.getPreferredSize());
+		
+		// Pieces label and the list of pieces
+		JPanel piecesPanel = new JPanel();
+		JLabel piecesLabel = new JLabel("Pieces");
+		piecesPanel.add(piecesLabel);
+		piecesPanel.add(_piecesList);
+		_piecesList.setModel(controller.getPiecesModel());
+		getContentPane().add(piecesPanel);
+		piecesPanel.setMaximumSize(piecesPanel.getPreferredSize());
+		
+		// Action buttons and other related actions
+		// for controlling the debugging scene
+		JPanel actionPanel = new JPanel();
+		actionPanel.add(_startButton);
+		actionPanel.add(_stopButton);
+		getContentPane().add(actionPanel);
+		
+		// Set the states of the action buttons
+		_startButton.setEnabled(true);
+		_stopButton.setEnabled(false);
 	}
 	
 	@Override public void initializeComponentBindings() {
+		_startButton.addActionListener(new ActionListener() {
+			@Override public void actionPerformed(ActionEvent event) {
+				_startButton.setEnabled(false);
+				_piecesList.setEnabled(false);
+				_teamList.setEnabled(false);
+				_stopButton.setEnabled(true);
+			}
+		});
+		_stopButton.addActionListener(new ActionListener() {
+			@Override public void actionPerformed(ActionEvent event) {
+				_startButton.setEnabled(true);
+				_piecesList.setEnabled(true);
+				_teamList.setEnabled(true);
+				_stopButton.setEnabled(false);
+			}
+		});
 
 	}
 	

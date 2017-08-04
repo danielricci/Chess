@@ -89,7 +89,9 @@ public final class TileController extends BaseController {
 	 * Performs a selection on the tile
 	 */
 	public void performSelect() {
-		boolean selected = !_tile.getIsSelected();
-		_tile.setSelected(selected);
+		if(AbstractFactory.getFactory(ControllerFactory.class).get(BoardController.class).IsGameRunning()) {
+			boolean selected = !_tile.getIsSelected();
+			_tile.setSelected(selected);
+		}
 	}
 }

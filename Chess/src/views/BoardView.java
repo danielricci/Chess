@@ -174,8 +174,8 @@ public class BoardView extends PanelView {
 		addComponentListener(new ComponentAdapter() {
 			@Override public void componentShown(ComponentEvent e) {
 				// Start the game
-				BoardController controller = AbstractFactory.getFactory(ControllerFactory.class).get(BoardController.class);
-				controller.startGame();
+				//BoardController controller = AbstractFactory.getFactory(ControllerFactory.class).get(BoardController.class);
+				//controller.startGame();
 			}
 		});
 	}		

@@ -36,6 +36,7 @@ import engine.core.factories.ViewFactory;
 import engine.core.menu.types.MenuItem;
 import resources.Resources;
 import resources.Resources.ResourceKeys;
+import views.BoardViewTester;
 import views.TileView;
 
 /**
@@ -73,6 +74,6 @@ public class NeighboursItem extends MenuItem {
 	}
 	
 	@Override public boolean enabled() {
-		return AbstractSignalFactory.isRunning();
+		return AbstractSignalFactory.isRunning() && AbstractFactory.getFactory(ViewFactory.class).get(BoardViewTester.class) != null;
 	}
 }

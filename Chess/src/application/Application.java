@@ -30,7 +30,6 @@ import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -43,7 +42,7 @@ import engine.core.system.AbstractApplication;
 import engine.core.system.EngineProperties;
 import engine.core.system.EngineProperties.Property;
 import menu.AboutItem;
-import menu.ChessPiecesItem;
+import menu.DebuggerWindowItem;
 import menu.ExitItem;
 import menu.NeighboursItem;
 import menu.NewGameDebugItem;
@@ -156,7 +155,7 @@ public final class Application extends AbstractApplication {
 			.AddMenu(Resources.instance().getLocalizedString(ResourceKeys.Debug))
 				.AddMenuItem(NewGameDebugItem.class)
 				.AddSeparator()
-				.AddMenuItem(ChessPiecesItem.class)
+				.AddMenuItem(DebuggerWindowItem.class)
 				.AddSeparator()
 				.AddMenuItem(NeighboursItem.class);
 	}
@@ -217,9 +216,9 @@ public final class Application extends AbstractApplication {
 		EngineProperties.instance().setProperty(Property.DATA_PATH_SHEET, "/generated/tilemap.png");
 		EngineProperties.instance().setProperty(Property.ENGINE_OUTPUT, "true");
 		
-		EngineProperties.instance().setProperty(
-			Property.LOG_DIRECTORY, 
-			System.getProperty("user.home") + File.separator + "desktop" + File.separator
-		);
+//		EngineProperties.instance().setProperty(
+//			Property.LOG_DIRECTORY, 
+//			System.getProperty("user.home") + File.separator + "desktop" + File.separator
+//		);
 	}
 }
