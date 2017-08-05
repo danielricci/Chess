@@ -31,7 +31,7 @@ import game.player.Player;
 import game.player.Player.PlayerTeam;
 import generated.DataLookup;
 import generated.DataLookup.DataLayerName;
-import views.ChessPiecesView;
+import views.DebuggerView;
 
 /**
  * The chess pieces debugger controller
@@ -39,7 +39,7 @@ import views.ChessPiecesView;
  * @author Daniel Ricci {@literal <thedanny09@gmail.com>}
  *
  */
-public final class ChessPiecesController extends BaseController {
+public final class DebuggerController extends BaseController {
 	
 	/**
 	 * The model of the list of available pieces
@@ -56,7 +56,7 @@ public final class ChessPiecesController extends BaseController {
 	 * 
 	 * @param view The view associated to this controller
 	 */
-	public ChessPiecesController(ChessPiecesView view) {
+	public DebuggerController(DebuggerView view) {
 		super(view);
 	}
 	
@@ -85,7 +85,7 @@ public final class ChessPiecesController extends BaseController {
 	/**
 	 * @return The currently selected team in the debugger
 	 */
-	public PlayerTeam getSelectedTeam() {
+	public PlayerTeam getSelectedTeamDebug() {
 		Object selectedItem = _teamListModel.getSelectedItem();
 		return selectedItem != null ? (PlayerTeam)selectedItem : null;
 	}

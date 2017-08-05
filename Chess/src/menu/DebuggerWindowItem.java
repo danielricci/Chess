@@ -35,7 +35,7 @@ import engine.core.factories.AbstractSignalFactory;
 import engine.core.factories.ViewFactory;
 import engine.core.menu.types.MenuItem;
 import views.BoardViewTester;
-import views.ChessPiecesView;
+import views.DebuggerView;
 
 /**
  * The properties menu item
@@ -55,7 +55,7 @@ public class DebuggerWindowItem extends MenuItem {
 	}
 	
 	@Override public void onExecute(ActionEvent actionEvent) {
-		IView view = AbstractSignalFactory.getFactory(ViewFactory.class).get(ChessPiecesView.class, true);
+		IView view = AbstractSignalFactory.getFactory(ViewFactory.class).get(DebuggerView.class, true);
 		if(view != null) {
 			view.render();
 		}

@@ -28,19 +28,22 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.List;
+import java.util.logging.Level;
 
 import controllers.BoardController;
-import controllers.ChessPiecesController;
+import controllers.DebuggerController;
 import controllers.PlayerController;
 import controllers.TileController;
 import engine.core.factories.AbstractFactory;
 import engine.core.factories.AbstractSignalFactory;
 import engine.core.factories.ControllerFactory;
 import engine.core.factories.ViewFactory;
+import engine.utils.io.logging.Tracelog;
 import game.entities.ChessEntity;
 
 /**
+ * The board view for testing the game, it uses similar functionality to that of our board view
+ * 
  * @author Daniel Ricci <thedanny09@gmail.com>
  */
 public class BoardViewTester extends BoardView {
@@ -75,15 +78,30 @@ public class BoardViewTester extends BoardView {
 				
 				view.addMouseListener(new MouseAdapter() {
 					@Override public void mouseReleased(MouseEvent e) {
-						ChessPiecesController chessPiecesController = AbstractFactory.getFactory(ControllerFactory.class).get(ChessPiecesController.class);
-						if(chessPiecesController != null) {
-							PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class);
+						
+						// If the debugger window is not visible then do not go any further.
+						DebuggerController debuggerController = AbstractFactory.getFactory(ControllerFactory.class).get(DebuggerController.class);
+						if(debuggerController == null || !debuggerController.getControllerProperties().isViewVisible()) {
+							Tracelog.log(Level.WARNING, true, "Cannot create an entity without the debugger window.");
+							return;
+						}
+						
+						// If the tile already has an entity then do not create a new one on it
+						TileController tileController = view.getViewProperties().getEntity(TileController.class);
+						if(tileController.hasEntity()) {
+							Tracelog.log(Level.WARNING, true, "Cannot create an entity on a tile that already has an entity.");
+							return;
+						}
 							
-							List<ChessEntity> entities = playerController.getEntities(chessPiecesController.getSelectedTeam(), chessPiecesController.getSelectedPieceDebug().toString());
-							if(entities.size() > 0) {
-								TileController tileController = view.getViewProperties().getEntity(TileController.class);
-								tileController.setChessEntity(entities.get(0));
-							}
+						// Get a reference to the player controller
+						PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class);
+						
+						// Get a reference to the new entity based on the options selected in the debugger
+						ChessEntity entity = playerController.createEntity(debuggerController.getSelectedTeamDebug(), debuggerController.getSelectedPieceDebug().toString());
+						
+						// If we got back a valid entity then add it
+						if(entity != null) {
+							tileController.setChessEntity(entity);
 						}
 					}
 				});

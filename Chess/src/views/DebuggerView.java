@@ -35,32 +35,44 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import application.Application;
-import controllers.ChessPiecesController;
+import controllers.DebuggerController;
 import engine.core.factories.AbstractSignalFactory;
 import engine.core.factories.ControllerFactory;
 import engine.core.mvc.view.DialogView;
-import game.player.Player;
-import generated.DataLookup;
+import game.player.Player.PlayerTeam;
+import generated.DataLookup.DataLayerName;
 
 /**
  * The view associated to the chess debugger
  * 
  * @author {@literal Daniel Ricci <thedanny09@gmail.com>}
  */
-public class ChessPiecesView extends DialogView {
+public class DebuggerView extends DialogView {
 	
-	private JComboBox<DataLookup.DataLayerName> _piecesList = new JComboBox();
+	/**
+	 * The list of pieces to select from on the UI
+	 */
+	private JComboBox<DataLayerName> _piecesList = new JComboBox();
 	
-	private JComboBox<Player.PlayerTeam> _teamList = new JComboBox();
+	/**
+	 * The list of players to select from on the UI
+	 */
+	private JComboBox<PlayerTeam> _teamList = new JComboBox();
 	
+	/**
+	 * The start button that starts the debugging session
+	 */
 	private JButton _startButton = new JButton("Start");
 	
+	/**
+	 * The stop button that stops the debugging session
+	 */
 	private JButton _stopButton = new JButton("Stop");
 	
 	/**
 	 * Constructs a new instance of this class type
 	 */
-	public ChessPiecesView() {
+	public DebuggerView() {
 		super(Application.instance(), "Debugger Window", 200, 300);
 		
 		// Prevent the properties window from being resized
@@ -70,7 +82,7 @@ public class ChessPiecesView extends DialogView {
 		setAlwaysOnTop(true);
 		
 		// Specify the controller of this dialog
-		getViewProperties().setListener(AbstractSignalFactory.getFactory(ControllerFactory.class).get(ChessPiecesController.class, true, this));
+		getViewProperties().setListener(AbstractSignalFactory.getFactory(ControllerFactory.class).get(DebuggerController.class, true, this));
 		
 		// Set the layout manager of this dialog to be a grid-like layout
 		getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
@@ -81,7 +93,7 @@ public class ChessPiecesView extends DialogView {
 		// Populate the models held by the controller into the combo boxes.
 		// Note: This needs to happen before setting the maximum size of each box
 		//       or the vertical spacing will not be done properly
-		ChessPiecesController controller = getViewProperties().getEntity(ChessPiecesController.class);
+		DebuggerController controller = getViewProperties().getEntity(DebuggerController.class);
 		
 		// Teams label and the list of teams
 		JPanel teamsPanel = new JPanel();

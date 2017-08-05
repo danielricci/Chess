@@ -26,7 +26,6 @@ package game.entities;
 
 import java.util.List;
 
-import game.IEntityLink;
 import game.core.AbstractEntity;
 import game.player.Player;
 import game.player.Player.PlayerTeam;
@@ -36,7 +35,7 @@ import game.player.Player.PlayerTeam;
  * 
  * @author Daniel Ricci {@literal <thedanny09@gmail.com>}
  */
-public class ChessEntity extends AbstractEntity implements IEntityLink<Player> {
+public class ChessEntity extends AbstractEntity {
 	
 	private final String _layerName;
 	
@@ -72,7 +71,12 @@ public class ChessEntity extends AbstractEntity implements IEntityLink<Player> {
 		return _player.getTeam();
 	}
 	
-	@Override public void LinkData(Player player) {
+	/**
+	 * Adds the specified player to this entity
+	 * 
+	 * @param player The player to add to this entity
+	 */
+	public void addPlayer(Player player) {
 		if(player != _player) {
 			_player = player;
 			

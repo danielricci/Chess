@@ -50,6 +50,12 @@ import menu.NewGameItem;
 import resources.Resources;
 import resources.Resources.ResourceKeys;
 
+/**
+ * This is the main application, the main method resides within this class
+ * 
+ * @author Daniel Ricci {@literal <thedanny09@gmail.com>}
+ *
+ */
 public final class Application extends AbstractApplication {
 	
 	/**
@@ -112,30 +118,6 @@ public final class Application extends AbstractApplication {
     	}
     }
 	
-	@Override protected void initializeEngineResources() {
-		
-		// Set the default locale for our engine to recognize our localization
-		Resources.instance().addLocale(ResourceBundle.getBundle("resources/Resources", Locale.CANADA), true);
-		
-		// Set the title
-		setTitle(Resources.instance().getLocalizedString(ResourceKeys.Title));
-		
-		// Set the icon that will at the upper-left of the window
-        setIconImage(new ImageIcon(Resources.instance().getLocalizedString(ResourceKeys.GameIcon)).getImage());
-	}
-	
-	@Override protected void setWindowedInstanceMenu() {
-		
-		// Populate the file menu and its entries
-		PopulateFileMenu();
-		
-		// Populate the debug menu and its entries
-		PopulateDebugMenu();
-		
-		// Populate the help menu and its entries
-		PopulateHelpMenu();
-	}
-
 	/**
 	 * Populate the file menu and its entries
 	 */
@@ -167,6 +149,30 @@ public final class Application extends AbstractApplication {
 		MenuBuilder.start(getJMenuBar())
 			.AddMenu("Help")
 				.AddMenuItem(AboutItem.class);
+	}
+
+	@Override protected void setWindowedInstanceMenu() {
+		
+		// Populate the file menu and its entries
+		PopulateFileMenu();
+		
+		// Populate the debug menu and its entries
+		PopulateDebugMenu();
+		
+		// Populate the help menu and its entries
+		PopulateHelpMenu();
+	}
+
+	@Override protected void initializeEngineResources() {
+		
+		// Set the default locale for our engine to recognize our localization
+		Resources.instance().addLocale(ResourceBundle.getBundle("resources/Resources", Locale.CANADA), true);
+		
+		// Set the title
+		setTitle(Resources.instance().getLocalizedString(ResourceKeys.Title));
+		
+		// Set the icon that will at the upper-left of the window
+	    setIconImage(new ImageIcon(Resources.instance().getLocalizedString(ResourceKeys.GameIcon)).getImage());
 	}
 
 	@Override public boolean flush() {
@@ -209,7 +215,6 @@ public final class Application extends AbstractApplication {
 		
 		return true;
 	}
-	
 	
 	@Override protected void initializeEngineProperties() {
 		EngineProperties.instance().setProperty(Property.DATA_PATH_XML, "/generated/tilemap.xml");

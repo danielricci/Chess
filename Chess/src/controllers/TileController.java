@@ -94,4 +94,11 @@ public final class TileController extends BaseController {
 			_tile.setSelected(selected);
 		}
 	}
+
+	/**
+	 * @return If a chess entity occupies this tile
+	 */
+	public boolean hasEntity() {
+		return _tile.getEntity() != null;
+	}
 }

@@ -64,13 +64,15 @@ public final class PlayerController extends BaseController {
 	/**
 	 * Adds a new player to the game
 	 * 
-	 * @param team The team of the player
-	 * @param dataValues The data values of the player
+	 * @param player The player to add
+	 * 
 	 */
-	public void addPlayer(PlayerTeam team, List<Enum> dataValues) {
+	public void addPlayer(Player player) {
 		
-		// Create a new player
-		Player player = new Player(team, dataValues);
+		if(_players.contains(player)) {
+			Tracelog.log(Level.WARNING, true, "Attempting to add a player to the player controller that already exists.");
+			return;
+		}
 		
 		// Add the player to both the player turn queue
 		// and the regular player list
@@ -78,13 +80,26 @@ public final class PlayerController extends BaseController {
 		_playerTurnQueue.add(player);
 	}
 	
+	/**
+	 * Creates a chess entity for the specified player
+	 * 
+	 * @param team The team of the player
+	 * @param name The name of the entity
+	 * @return The newly created entity
+	 */
+	public ChessEntity createEntity(PlayerTeam team, String name) {
+		Player player = getPlayer(team);
+		return player.createEntity(name);
+	}
+	
+	/**
+	 * Finishes the current players turns and gives the turn to the next player
+	 */
 	public void nextPlayer() {
 		// Swap the players
 		_playerTurnQueue.add(_playerTurnQueue.poll());
 		Tracelog.log(Level.INFO, true, "Player " + _playerTurnQueue.peek().toString() + " is now playing");
 	}
-
-
 	
 	/**
 	 * @return The team of the player currently playing
@@ -106,7 +121,7 @@ public final class PlayerController extends BaseController {
 		// Get the list of entities associated to the player of the specified layer name
 		return getPlayer(team).getEntities(layerName);
 	}
-
+	
 	/**
 	 * Gets the specified player
 	 * 

@@ -68,19 +68,21 @@ public class Player extends BaseModel {
 	 * 
 	 * @param team The team of the player
 	 * @param dataValues The data values associated to the player
+	 * @param generatePlayerEntities indicates if the chess pieces should be generated using the preset values or done manually
 	 */
-	public Player(PlayerTeam team, List<Enum> dataValues) {
+	public Player(PlayerTeam team, List<Enum> dataValues, boolean generatePlayerEntities) {
 		_team = team;
 		_dataValues = new ArrayList(dataValues);
 		
-		// Load the list of items that this player owns
-		loadItems();
+		if(generatePlayerEntities) {
+			generatePlayerEntities();
+		}
 	}
 	
 	/**
-	 * Loads the chess piece items that the player owns
+	 * Generates the chess piece items that the player owns by default
 	 */
-	private void loadItems() {
+	private void generatePlayerEntities() {
 		
 		// PAWN
 		for(int i = 0, width = 8; i < width; ++i) {
@@ -105,11 +107,15 @@ public class Player extends BaseModel {
 	 * Create a method with the specified entity name
 	 * 
 	 * @param entityName The name of the entity
+	 * 
+	 * @return The newly created entity
 	 */
-	private void createEntity(String entityName) {
+	public ChessEntity createEntity(String entityName) {
 		ChessEntity entity = new ChessEntity(entityName);
-		entity.LinkData(this);
+		entity.addPlayer(this);
 		_entities.add(entity);
+		
+		return entity;
 	}
 	
 	/**
@@ -140,8 +146,18 @@ public class Player extends BaseModel {
 	public PlayerTeam getTeam() {
 		return _team;
 	}
+
+	/**
+	 * Removes the specified entity from the player
+	 * 
+	 * @param entity The entity to remove
+	 */
+	public void removeEntity(ChessEntity entity) {
+		_entities.remove(entity);
+	}
 	
 	@Override public String toString() {
 		return _team.toString();
 	}
+
 }

@@ -37,6 +37,7 @@ import java.util.stream.Collectors;
 import controllers.enums.NeighborXPosition;
 import controllers.enums.NeighborYPosition;
 import engine.api.IModel;
+import engine.api.IView;
 import engine.communication.internal.signal.ISignalReceiver;
 import engine.communication.internal.signal.types.ModelEvent;
 import engine.core.factories.AbstractFactory;
@@ -47,6 +48,7 @@ import game.player.Player;
 import generated.DataLookup;
 import models.TileModel;
 import views.BoardView;
+import views.BoardViewTester;
 
 /**
  * This controller is in charge of the overall board game.  As far as tiles are concerned, they
@@ -85,6 +87,22 @@ public final class BoardController extends BaseController {
 	 * The dimensions of the board game
 	 */
 	private final Dimension _dimensions = new Dimension(8, 8);
+
+	/**
+	 * Constructs a new instance of this class type
+	 *
+	 * @param view The view to link with this controller
+	 */
+	private BoardController(IView view) {
+		super(view);
+		
+		// Initialize the neighbor structure to the initial size of the board
+		_neighbors = new LinkedHashMap<>(_dimensions.width * _dimensions.height);
+		
+		// Register the signal listeners, we don't want to wait until rendering is done for this to occur
+		// because this class will miss important events before hand
+		registerSignalListeners();	
+	}
 	
 	/**
 	 * Constructs a new instance of this class
@@ -92,24 +110,39 @@ public final class BoardController extends BaseController {
 	 * @param view The view to link with this controller
 	 */
 	public BoardController(BoardView view) {
-		super(view);
 		
-		// Initialize the neighbor structure to the initial size of the board
-		_neighbors = new LinkedHashMap<>(_dimensions.width * _dimensions.height);
-		
+		// Call the specified constructor
+		this((IView)view);
+			
 		// Get the player controller
 		PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true); 
 
-		// Create the players and register them with the game
-		playerController.addPlayer(Player.PlayerTeam.WHITE, Arrays.asList(DataLookup.DataLayerWhite.values()));
-		playerController.addPlayer(Player.PlayerTeam.BLACK, Arrays.asList(DataLookup.DataLayerBlack.values()));
-
-		// Register the signal listeners, we don't want to wait until rendering is done for this to occur
-		// because this class will miss important events before hand
-		registerSignalListeners();
-	}	
+		// Create player white and populate its pieces
+		playerController.addPlayer(new Player(Player.PlayerTeam.WHITE, Arrays.asList(DataLookup.DataLayerWhite.values()), true));
+		
+		// Create player black and populate its pieces
+		playerController.addPlayer(new Player(Player.PlayerTeam.BLACK, Arrays.asList(DataLookup.DataLayerBlack.values()), true));
+	}
 	
+	/**
+	 * Constructs a new instance of this class type
+	 *
+	 * @param view The view to link with this controller
+	 */
+	public BoardController(BoardViewTester view) {
 
+		// Call the specified constructor
+		this((IView)view);
+		
+		// Get the player controller
+		PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true); 
+		
+		// Create player white
+		playerController.addPlayer(new Player(Player.PlayerTeam.WHITE, Arrays.asList(DataLookup.DataLayerWhite.values()), false));
+		
+		// Create player black 
+		playerController.addPlayer(new Player(Player.PlayerTeam.BLACK, Arrays.asList(DataLookup.DataLayerBlack.values()), false));
+	}
 	
 	/**
 	 * @return The currently selected tile
