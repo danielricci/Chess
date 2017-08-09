@@ -119,4 +119,9 @@ public class BoardViewTester extends BoardView {
 		// Add the game panel to this view
 		add(_gamePanel);
 	}
+	
+	@Override public void initializeComponentBindings() {
+		// override this method to avoid our super class from
+		// starting the game earlier than we want it to
+	}
 }

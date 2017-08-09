@@ -24,11 +24,15 @@
 
 package controllers;
 
+import java.util.logging.Level;
+
 import engine.core.factories.AbstractFactory;
 import engine.core.factories.ControllerFactory;
 import engine.core.factories.ModelFactory;
 import engine.core.mvc.controller.BaseController;
+import engine.utils.io.logging.Tracelog;
 import game.entities.ChessEntity;
+import game.player.Player.PlayerTeam;
 import models.TileModel;
 import views.TileView;
 
@@ -89,10 +93,39 @@ public final class TileController extends BaseController {
 	 * Performs a selection on the tile
 	 */
 	public void performSelect() {
-		if(AbstractFactory.getFactory(ControllerFactory.class).get(BoardController.class).IsGameRunning()) {
-			boolean selected = !_tile.getIsSelected();
-			_tile.setSelected(selected);
+		
+		// Get a reference to the board controller
+		BoardController boardController = AbstractFactory.getFactory(ControllerFactory.class).get(BoardController.class);
+		
+		// Make sure that the game is running before continuing
+		if(!boardController.IsGameRunning()) {
+			Tracelog.log(Level.WARNING, true, "Game is not running yet, cannot select any tiles");
+			return;
 		}
+		
+		/*
+		 	1. Player clicks on their piece first 
+		 		1. Player clicks on the same piece (unselects their piece)
+		 		2. Player clicks on one of their other pieces (unselect old, select new)
+		 		3. Player clicks on an empty tile
+		 		4. Player clicks on an enemy piece
+		 */
+		
+		
+		// Get a reference to the player controller
+		PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class);
+		
+		// 1. Player clicks on their piece first
+		if(boardController.getSelectedTile() == null && playerController.getCurrentPlayerTeam() == getTileTeam()) {
+			
+		}
+		//
+			
+		
+		
+		
+		//boolean selected = !_tile.getIsSelected();
+		//_tile.setSelected(selected);
 	}
 
 	/**
@@ -100,5 +133,10 @@ public final class TileController extends BaseController {
 	 */
 	public boolean hasEntity() {
 		return _tile.getEntity() != null;
+	}
+	
+	public PlayerTeam getTileTeam() {
+		ChessEntity entity = _tile.getEntity();
+		return entity != null ? entity.getTeam() : null;
 	}
 }
