@@ -24,6 +24,7 @@
 
 package controllers;
 
+import java.util.Objects;
 import java.util.logging.Level;
 
 import engine.core.factories.AbstractFactory;
@@ -117,15 +118,18 @@ public final class TileController extends BaseController {
 		
 		// 1. Player clicks on their piece first
 		if(boardController.getSelectedTile() == null && playerController.getCurrentPlayerTeam() == getTileTeam()) {
-			
+		    _tile.setSelected(true);
 		}
-		//
-			
-		
-		
-		
-		//boolean selected = !_tile.getIsSelected();
-		//_tile.setSelected(selected);
+		// 2. Player clicks on the same piece, so unselect it
+		else if(Objects.equals(boardController.getSelectedTile(), this._tile) && playerController.getCurrentPlayerTeam() == getTileTeam()) {
+            _tile.setSelected(false);
+        }
+        // 3. Player clicks on one of their other pieces, so unselect the selected one and 
+        //    make this tile selected
+        else if(!Objects.equals(boardController.getSelectedTile(), this._tile) && playerController.getCurrentPlayerTeam() == getTileTeam()) {
+            boardController.getSelectedTile().setSelected(false);
+            _tile.setSelected(true);
+        }
 	}
 
 	/**

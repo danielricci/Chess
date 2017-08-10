@@ -62,7 +62,17 @@ public class TileView extends PanelView {
 	 * The Color of all the even files
 	 */
 	public static final Color EVEN_FILES_COLOR = new Color(255, 205, 158);
+
+	/**
+     * The color used when a tile is considered selected 
+     */
+    private static final Color SELECTED_COLOR = Color.LIGHT_GRAY;
 	
+    /**
+     * Highlight border style of this view
+     */
+    private static final Border SELECTED_BORDER_COLOR = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 2);
+    
 	/**
 	 * Highlight border style of this view
 	 */
@@ -185,6 +195,10 @@ public class TileView extends PanelView {
 		}
 	}
 	
+	@Override public void setBorder(Border border) {
+	    super.setBorder(getBackground() == SELECTED_COLOR ? SELECTED_BORDER_COLOR : DEFAULT_BORDER_STYLE);
+	}
+	
 	@Override public void update(SignalEvent signalEvent) {
 		// Call the super implementation
 		super.update(signalEvent);
@@ -194,6 +208,15 @@ public class TileView extends PanelView {
 			
 			// Get the tile model of the source
 			TileModel tileModel = (TileModel) signalEvent.getSource();
+
+			// If the tile model is in a selected state then update the 
+			// background accordingly
+			if(tileModel.getIsSelected()) {
+			    this.setBackground(SELECTED_COLOR);
+			}
+			else {
+			    this.setBackground(DEFAULT_BACKGROUND_COLOR);
+			}
 			
 			// Add any renderable content
 			addRenderableContent(tileModel.getEntity());
