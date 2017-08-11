@@ -52,12 +52,72 @@ public final class TileController extends BaseController {
 	 *
 	 */
 	public enum BoardMovement {
+		/**
+		 * An invalid move
+		 */
 		INVALID,
+		/**
+		 * The first piece of the current player is being selected
+		 */
 		MOVE_1_SELECT,
+		/**
+		 * Another piece of the current player is being selected
+		 */
 		MOVE_2_SELECT,
+		/**
+		 * The first piece that was last selected is being selected again
+		 */
 		MOVE_2_UNSELECT,
+		/**
+		 * The piece that was selected last is trying to move to an empty tile
+		 */
 		MOVE_2_EMPTY,
-		MOVE_2_CAPTURE
+		/**
+		 * The piece that was selected last is trying to move to a tile that has an enemy piece
+		 */
+		MOVE_2_CAPTURE;
+		/**
+		 * Gets the board movement position of the tile specified
+		 * 
+		 * @param tile The tile that is attempting to perform the board movement
+		 * 
+		 * @return The board movement being attempted
+		 */
+		public static BoardMovement getBoardMovement(TileModel tile) {
+
+			// Get a reference to the board controller
+			BoardController boardController = AbstractFactory.getFactory(ControllerFactory.class).get(BoardController.class);
+			
+			// Make sure that the game is running before continuing
+			if(!boardController.IsGameRunning()) {
+				Tracelog.log(Level.WARNING, true, "Game is not running yet, cannot select any tiles");
+				return BoardMovement.INVALID; 
+			}
+					
+			// If the tile belongs to the current player playing
+			if(isTileMine(tile)) {
+				// If there is no currently selected tile
+				if(boardController.getSelectedTile() == null) {
+					return BoardMovement.MOVE_1_SELECT;
+				}
+				// If the currently selected tile was selected again
+				else if(Objects.equals(boardController.getSelectedTile(), tile)) {
+					return BoardMovement.MOVE_2_UNSELECT;
+				}
+				// If the currently selected is also mine (then both selected and this one are mine)
+				else if(isTileMine(boardController.getSelectedTile())){
+					return BoardMovement.MOVE_2_SELECT;
+				}
+			}
+			else if(getTileTeam(tile) == null) {
+				
+			}
+			else if(isTileTheirs(tile)) {
+			
+			}
+			
+			return BoardMovement.INVALID;
+		}
 	}
 	
 	/**
@@ -89,6 +149,7 @@ public final class TileController extends BaseController {
 	 * 
 	 * @param selected If the neighbors should be in a selected state or not
 	 */
+	// TODO - can we make this private and remove the view dependency
 	public void showTileNeighborsDebug(boolean selected) {
 		// Go through the list of tile model neighbors
 		for(TileModel tile : AbstractFactory.getFactory(ControllerFactory.class).get(BoardController.class).getAllNeighbors(_tile)) {
@@ -101,6 +162,7 @@ public final class TileController extends BaseController {
 	 * 
 	 * @param entity The chess entity to add
 	 */
+	// TODO - can we make this private and remove the view dependency
 	public void setChessEntity(ChessEntity entity) {
 		_tile.setEntity(entity);
 	}
@@ -112,63 +174,27 @@ public final class TileController extends BaseController {
 		
 		// Get a reference to the board controller
 		BoardController boardController = AbstractFactory.getFactory(ControllerFactory.class).get(BoardController.class);
-		
-		// Make sure that the game is running before continuing
-		if(!boardController.IsGameRunning()) {
-			Tracelog.log(Level.WARNING, true, "Game is not running yet, cannot select any tiles");
-			return;
+
+		// Based on what the current movement is, perform the desired operation
+		switch(BoardMovement.getBoardMovement(_tile)) {
+		case INVALID:
+			break;
+		case MOVE_1_SELECT:
+			_tile.setSelected(true);
+			break;
+		case MOVE_2_CAPTURE:
+			break;
+		case MOVE_2_EMPTY:
+			break;
+		case MOVE_2_SELECT:
+			boardController.getSelectedTile().setSelected(false);
+			_tile.setSelected(true);
+			break;
+		case MOVE_2_UNSELECT:
+			_tile.setSelected(false);
+			break;
 		}
     }
-	
-	public BoardMovement getBoardMovement() {
-		
-		// Get a reference to the board controller
-		BoardController boardController = AbstractFactory.getFactory(ControllerFactory.class).get(BoardController.class);
-		
-		
-
-//		
-//		// Get a reference to the player controller
-//		PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class);
-//		
-
-//		else 
-//			
-		if(isTileMine(_tile)) {
-			// 1. Player clicks on their piece first
-			if(boardController.getSelectedTile() == null) {
-				return BoardMovement.MOVE_1_SELECT;
-				//_tile.setSelected(true);	
-			}
-			// 2. Player clicks on the same piece, so deselect it
-			else if(Objects.equals(boardController.getSelectedTile(), this._tile)) {
-				return BoardMovement.MOVE_2_UNSELECT;
-				//_tile.setSelected(false);
-			}
-	        // 3. Player clicks on one of their other pieces, so deselect the selected one and make this tile selected
-			else {
-	            boardController.getSelectedTile().setSelected(false);
-	            return BoardMovement.MOVE_2_SELECT;
-	            //_tile.setSelected(true);
-	        }
-		}
-		else if(getTileTeam(_tile) == null) {
-			
-		}
-		else if(isTileTheirs(_tile)) {
-		
-		}
-		
-		return null;
-	}
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	/**
 	 * @return If a chess entity occupies this tile
@@ -182,6 +208,7 @@ public final class TileController extends BaseController {
 	 * Indicates if the specified tile belongs to the person currently playing
 	 * 
 	 * @param tile The tile
+	 * 
 	 * @return If the tile is that of the person currently playing
 	 */
 	private static boolean isTileMine(TileModel tile) {
@@ -193,6 +220,7 @@ public final class TileController extends BaseController {
 	 * Indicates if the specified tile belongs to an opposing player
 	 * 
 	 * @param tile The tile
+	 * 
 	 * @return If the tile belongs to an opposing player
 	 */
 	private static boolean isTileTheirs(TileModel tile) {
@@ -205,6 +233,7 @@ public final class TileController extends BaseController {
 	 * Gets the team associated to the specified tile model
 	 * 
 	 * @param model The tile model
+	 *
 	 * @return The team associated to the tile model if any
 	 */
 	private static PlayerTeam getTileTeam(TileModel model) {
