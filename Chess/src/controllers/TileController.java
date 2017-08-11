@@ -40,11 +40,26 @@ import views.TileView;
 /**
  * Manages a particular tile and all of its states
  * 
- * @author Daniel Ricci <thedanny09@gmail.com>
+ * @author Daniel Ricci {@literal <thedanny09@gmail.com>}
  *
  */
 public final class TileController extends BaseController {
 
+	/**
+	 * The list of available board movements
+	 * 
+	 * @author Daniel Ricci {@literal <thedanny09@gmail.com>}
+	 *
+	 */
+	public enum BoardMovement {
+		INVALID,
+		MOVE_1_SELECT,
+		MOVE_2_SELECT,
+		MOVE_2_UNSELECT,
+		MOVE_2_EMPTY,
+		MOVE_2_CAPTURE
+	}
+	
 	/**
 	 * The tile model that represents a single tile in the game
 	 */
@@ -103,44 +118,97 @@ public final class TileController extends BaseController {
 			Tracelog.log(Level.WARNING, true, "Game is not running yet, cannot select any tiles");
 			return;
 		}
+    }
+	
+	public BoardMovement getBoardMovement() {
 		
-		/*
-		 	1. Player clicks on their piece first 
-		 		1. Player clicks on the same piece (unselects their piece)
-		 		2. Player clicks on one of their other pieces (unselect old, select new)
-		 		3. Player clicks on an empty tile
-		 		4. Player clicks on an enemy piece
-		 */
+		// Get a reference to the board controller
+		BoardController boardController = AbstractFactory.getFactory(ControllerFactory.class).get(BoardController.class);
 		
 		
-		// Get a reference to the player controller
-		PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class);
-		
-		// 1. Player clicks on their piece first
-		if(boardController.getSelectedTile() == null && playerController.getCurrentPlayerTeam() == getTileTeam()) {
-		    _tile.setSelected(true);
-		}
-		// 2. Player clicks on the same piece, so unselect it
-		else if(Objects.equals(boardController.getSelectedTile(), this._tile) && playerController.getCurrentPlayerTeam() == getTileTeam()) {
-            _tile.setSelected(false);
-        }
-        // 3. Player clicks on one of their other pieces, so unselect the selected one and 
-        //    make this tile selected
-        else if(!Objects.equals(boardController.getSelectedTile(), this._tile) && playerController.getCurrentPlayerTeam() == getTileTeam()) {
-            boardController.getSelectedTile().setSelected(false);
-            _tile.setSelected(true);
-        }
-	}
 
+//		
+//		// Get a reference to the player controller
+//		PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class);
+//		
+
+//		else 
+//			
+		if(isTileMine(_tile)) {
+			// 1. Player clicks on their piece first
+			if(boardController.getSelectedTile() == null) {
+				return BoardMovement.MOVE_1_SELECT;
+				//_tile.setSelected(true);	
+			}
+			// 2. Player clicks on the same piece, so deselect it
+			else if(Objects.equals(boardController.getSelectedTile(), this._tile)) {
+				return BoardMovement.MOVE_2_UNSELECT;
+				//_tile.setSelected(false);
+			}
+	        // 3. Player clicks on one of their other pieces, so deselect the selected one and make this tile selected
+			else {
+	            boardController.getSelectedTile().setSelected(false);
+	            return BoardMovement.MOVE_2_SELECT;
+	            //_tile.setSelected(true);
+	        }
+		}
+		else if(getTileTeam(_tile) == null) {
+			
+		}
+		else if(isTileTheirs(_tile)) {
+		
+		}
+		
+		return null;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * @return If a chess entity occupies this tile
 	 */
+	// TODO - can we make this private and remove the view dependency
 	public boolean hasEntity() {
 		return _tile.getEntity() != null;
 	}
 	
-	public PlayerTeam getTileTeam() {
-		ChessEntity entity = _tile.getEntity();
+	/**
+	 * Indicates if the specified tile belongs to the person currently playing
+	 * 
+	 * @param tile The tile
+	 * @return If the tile is that of the person currently playing
+	 */
+	private static boolean isTileMine(TileModel tile) {
+		PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class);
+		return playerController.getCurrentPlayerTeam() == getTileTeam(tile);
+	}
+
+	/**
+	 * Indicates if the specified tile belongs to an opposing player
+	 * 
+	 * @param tile The tile
+	 * @return If the tile belongs to an opposing player
+	 */
+	private static boolean isTileTheirs(TileModel tile) {
+		PlayerTeam team = getTileTeam(tile);
+		PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class);
+		return team != null && team != playerController.getCurrentPlayerTeam();
+	}
+	
+	/**
+	 * Gets the team associated to the specified tile model
+	 * 
+	 * @param model The tile model
+	 * @return The team associated to the tile model if any
+	 */
+	private static PlayerTeam getTileTeam(TileModel model) {
+		ChessEntity entity = model.getEntity();
 		return entity != null ? entity.getTeam() : null;
 	}
 }
