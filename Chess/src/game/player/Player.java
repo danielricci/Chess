@@ -26,11 +26,14 @@ package game.player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import engine.core.mvc.model.BaseModel;
-import game.entities.ChessEntity;
+import engine.utils.io.logging.Tracelog;
+import game.entities.concrete.AbstractChessEntity;
 import generated.DataLookup;
+import generated.DataLookup.DataLayerName;
 
 /**
  * Player class for the game 
@@ -61,7 +64,7 @@ public class Player extends BaseModel {
 	/**
 	 * The list of entities owned by the player
 	 */
-	private final List<ChessEntity> _entities = new ArrayList();
+	private final List<AbstractChessEntity> _entities = new ArrayList();
 	
 	/**
 	 * Constructs a new instance of this class type
@@ -86,21 +89,21 @@ public class Player extends BaseModel {
 		
 		// PAWN
 		for(int i = 0, width = 8; i < width; ++i) {
-			createEntity(DataLookup.DataLayerName.PAWN.toString());
+			createEntity(DataLookup.DataLayerName.PAWN);
 		}
 
 		// BISHOP, KNIGHT, ROOK
 		for(int i = 0; i < 2; ++i) {
-			createEntity(DataLookup.DataLayerName.BISHOP.toString());
-			createEntity(DataLookup.DataLayerName.KNIGHT.toString());
-			createEntity(DataLookup.DataLayerName.ROOK.toString());
+			createEntity(DataLookup.DataLayerName.BISHOP);
+			createEntity(DataLookup.DataLayerName.KNIGHT);
+			createEntity(DataLookup.DataLayerName.ROOK);
 		}
 		
 		// KING
-		createEntity(DataLookup.DataLayerName.QUEEN.toString());
+		createEntity(DataLookup.DataLayerName.QUEEN);
 		
 		// QUEEN
-		createEntity(DataLookup.DataLayerName.KING.toString());
+		createEntity(DataLookup.DataLayerName.KING);
 	}
 	
 	/**
@@ -110,11 +113,24 @@ public class Player extends BaseModel {
 	 * 
 	 * @return The newly created entity
 	 */
-	public ChessEntity createEntity(String entityName) {
-		ChessEntity entity = new ChessEntity(entityName);
-		entity.addPlayer(this);
+	public AbstractChessEntity createEntity(DataLayerName layerName) {
+	    
+	    // Create the chess entity based on the layer name
+		AbstractChessEntity entity = AbstractChessEntity.createEntity(layerName);
+		
+		// If there was an invalid entry then log it
+		if(entity == null) {
+		    Tracelog.log(Level.SEVERE, true, "Invalid chess entity specified");
+		    return null;
+		}
+		
+		// Set the entity to this player
+		entity.setPlayer(this);
+		
+		// Add the entity into the list of entities for this player
 		_entities.add(entity);
 		
+		// return the created entity
 		return entity;
 	}
 	
@@ -125,8 +141,8 @@ public class Player extends BaseModel {
 	 * 
 	 * @return A list of entities
 	 */
-	public <T extends ChessEntity> List<T> getEntities(String layerName) {
-		return (List<T>) _entities.stream().filter(z -> z.getlayerName().equalsIgnoreCase(layerName)).collect(Collectors.toList());
+	public <T extends AbstractChessEntity> List<T> getEntities(String layerName) {
+		return (List<T>) _entities.stream().filter(z -> z.getLayerName().equalsIgnoreCase(layerName)).collect(Collectors.toList());
 	}
 	
 	/**
@@ -152,7 +168,7 @@ public class Player extends BaseModel {
 	 * 
 	 * @param entity The entity to remove
 	 */
-	public void removeEntity(ChessEntity entity) {
+	public void removeEntity(AbstractChessEntity entity) {
 		_entities.remove(entity);
 	}
 	

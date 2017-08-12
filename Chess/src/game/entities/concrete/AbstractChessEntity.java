@@ -22,23 +22,23 @@
 * IN THE SOFTWARE.
 */
 
-package game.entities;
+package game.entities.concrete;
 
 import java.util.List;
 
 import game.core.AbstractEntity;
+import game.entities.interfaces.IChessEntity;
 import game.player.Player;
 import game.player.Player.PlayerTeam;
+import generated.DataLookup.DataLayerName;
 
 /**
- * Abstract class for all chess pieces in the game
+ * This class represents the abstract functionality of a chess piece in the game
  * 
  * @author Daniel Ricci {@literal <thedanny09@gmail.com>}
  */
-public class ChessEntity extends AbstractEntity {
-	
-	private final String _layerName;
-	
+public abstract class AbstractChessEntity extends AbstractEntity implements IChessEntity {
+    
 	/**
 	 * The player that owns this entity
 	 */
@@ -49,34 +49,32 @@ public class ChessEntity extends AbstractEntity {
 	 * 
 	 * @param layerName The name of the layer
 	 */
-	public ChessEntity(String layerName) {
-		super(layerName);
-		
-		_layerName = layerName;
-	}
-	
-	/**
-	 * Gets the layer name of this chess entity
-	 * 
-	 * @return The layer name of this chess entity
-	 */
-	public String getlayerName() {
-		return _layerName;
+	protected AbstractChessEntity(DataLayerName dataLayerName) {
+		super(dataLayerName.toString());
 	}
 	
 	/**
 	 * @return The team of the player associated to this chess entity 
 	 */
-	public PlayerTeam getTeam() {
+	public final PlayerTeam getTeam() {
 		return _player.getTeam();
+	}
+
+	/**
+	 * Gets the data layer name of this entity
+	 * 
+	 * @return The data layer name from the data lookup table
+	 */
+	public final DataLayerName getDataLayerName() {
+	    return DataLayerName.valueOf(getLayerName());
 	}
 	
 	/**
-	 * Adds the specified player to this entity
+	 * Sets the specified player to this entity
 	 * 
-	 * @param player The player to add to this entity
+	 * @param player The player to set to this entity
 	 */
-	public void addPlayer(Player player) {
+	public void setPlayer(Player player) {
 		if(player != _player) {
 			_player = player;
 			
@@ -88,5 +86,31 @@ public class ChessEntity extends AbstractEntity {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Creates an instance of a chess entity with respect to the provided data layer name
+	 * 
+	 * @param dataLayerName The data layer name lookup
+	 * 
+	 * @return A chess entity
+	 */
+	public static AbstractChessEntity createEntity(DataLayerName dataLayerName) {
+	    switch(dataLayerName) {
+        case BISHOP:
+            return new BishopEntity();
+        case KING:
+            return new KingEntity();
+        case KNIGHT:
+            return new KnightEntity();
+        case PAWN:
+            return new PawnEntity();
+        case QUEEN:
+            return new QueenEntity();
+        case ROOK:
+            return new RookEntity();
+        default:
+            return null;	    
+	    }
 	}
 }

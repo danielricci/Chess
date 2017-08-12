@@ -220,7 +220,7 @@ public class TileView extends PanelView {
 
 			// If the tile model is in a selected state then update the 
 			// background accordingly
-			if(tileModel.getIsSelected()) {
+			if(tileModel.getIsSelected() || tileModel.getIsHighlighted()) {
 				
 				// Set the background, and then set the border
 				// because we want it to be selected

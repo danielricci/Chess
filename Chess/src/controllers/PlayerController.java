@@ -32,9 +32,10 @@ import java.util.logging.Level;
 
 import engine.core.mvc.controller.BaseController;
 import engine.utils.io.logging.Tracelog;
-import game.entities.ChessEntity;
+import game.entities.concrete.AbstractChessEntity;
 import game.player.Player;
 import game.player.Player.PlayerTeam;
+import generated.DataLookup.DataLayerName;
 
 /**
  * Handles interactions will all controllable players in the game
@@ -84,12 +85,13 @@ public final class PlayerController extends BaseController {
 	 * Creates a chess entity for the specified player
 	 * 
 	 * @param team The team of the player
-	 * @param name The name of the entity
+	 * @param dataLayerName The name of the entity
+	 * 
 	 * @return The newly created entity
 	 */
-	public ChessEntity createEntity(PlayerTeam team, String name) {
+	public AbstractChessEntity createEntity(PlayerTeam team, DataLayerName dataLayerName) {
 		Player player = getPlayer(team);
-		return player.createEntity(name);
+		return player.createEntity(dataLayerName);
 	}
 	
 	/**
@@ -116,7 +118,7 @@ public final class PlayerController extends BaseController {
 	 * 
 	 * @return The list of entities associated to the specified layer that the player still owns
 	 */
-	public List<ChessEntity> getEntities(PlayerTeam team, String layerName) {
+	public List<AbstractChessEntity> getEntities(PlayerTeam team, String layerName) {
 		
 		// Get the list of entities associated to the player of the specified layer name
 		return getPlayer(team).getEntities(layerName);

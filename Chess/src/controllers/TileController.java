@@ -31,7 +31,7 @@ import engine.core.factories.ControllerFactory;
 import engine.core.factories.ModelFactory;
 import engine.core.mvc.controller.BaseController;
 import engine.utils.io.logging.Tracelog;
-import game.entities.ChessEntity;
+import game.entities.concrete.AbstractChessEntity;
 import models.TileModel;
 import views.TileView;
 
@@ -67,16 +67,16 @@ public final class TileController extends BaseController {
 	}
 	
 	/**
-	 * Sets the tile neighbors to a selected state, this is used for debugging
+	 * Sets the tile neighbors to a highlighted state, this is used for debugging
 	 * purposes
 	 * 
-	 * @param selected If the neighbors should be in a selected state or not
+	 * @param highlighted If the neighbors should be in a highlighted state or not
 	 */
 	// TODO - can we make this private and remove the view dependency
-	public void showTileNeighborsDebug(boolean selected) {
+	public void showTileNeighborsDebug(boolean highlighted) {
 		// Go through the list of tile model neighbors
 		for(TileModel tile : AbstractFactory.getFactory(ControllerFactory.class).get(BoardController.class).getAllNeighbors(_tile)) {
-			tile.setSelected(selected);
+			tile.setHighlighted(highlighted);
 		}
 	}
 	
@@ -86,7 +86,7 @@ public final class TileController extends BaseController {
 	 * @param entity The chess entity to add
 	 */
 	// TODO - can we make this private and remove the view dependency
-	public void setChessEntity(ChessEntity entity) {
+	public void setChessEntity(AbstractChessEntity entity) {
 		_tile.setEntity(entity);
 	}
 

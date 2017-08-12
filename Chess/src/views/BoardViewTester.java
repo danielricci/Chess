@@ -39,7 +39,7 @@ import engine.core.factories.AbstractSignalFactory;
 import engine.core.factories.ControllerFactory;
 import engine.core.factories.ViewFactory;
 import engine.utils.io.logging.Tracelog;
-import game.entities.ChessEntity;
+import game.entities.concrete.AbstractChessEntity;
 
 /**
  * The board view for testing the game, it uses similar functionality to that of our board view
@@ -97,7 +97,7 @@ public class BoardViewTester extends BoardView {
 						PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class);
 						
 						// Get a reference to the new entity based on the options selected in the debugger
-						ChessEntity entity = playerController.createEntity(debuggerController.getSelectedTeamDebug(), debuggerController.getSelectedPieceDebug().toString());
+						AbstractChessEntity entity = playerController.createEntity(debuggerController.getSelectedTeamDebug(), debuggerController.getSelectedPieceDebug());
 						
 						// If we got back a valid entity then add it
 						if(entity != null) {

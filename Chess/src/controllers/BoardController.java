@@ -25,18 +25,11 @@
 package controllers;
 
 import java.awt.Dimension;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
-import controllers.enums.NeighborXPosition;
-import controllers.enums.NeighborYPosition;
 import engine.api.IModel;
 import engine.communication.internal.signal.ISignalReceiver;
 import engine.communication.internal.signal.types.ModelEvent;
@@ -44,7 +37,8 @@ import engine.core.factories.AbstractFactory;
 import engine.core.factories.ControllerFactory;
 import engine.core.mvc.controller.BaseController;
 import engine.utils.io.logging.Tracelog;
-import game.entities.ChessEntity;
+import game.entities.concrete.AbstractChessEntity;
+import game.player.BoardMovementBlueprint;
 import game.player.Player;
 import game.player.Player.PlayerTeam;
 import generated.DataLookup;
@@ -65,7 +59,17 @@ import views.BoardViewTester;
  *
  */
 public final class BoardController extends BaseController {
-	
+
+    /**
+     * The dimensions of the board game
+     */
+    private final Dimension _dimensions = new Dimension(8, 8);
+    
+    /**
+     * The board movement blueprint
+     */
+    private final BoardMovementBlueprint _boardMovementBP = new BoardMovementBlueprint(_dimensions);
+    
 	/**
 	 * This flag indicates if the game is running
 	 */
@@ -79,26 +83,12 @@ public final class BoardController extends BaseController {
 	private TileModel _previouslySelectedTile;
 	
 	/**
-	 * The list of neighbors logically associated to a specified controller
-	 * 
-	 * Key1: A Controller that maps to its association of neighbors
-	 * Key2: The Y-Axis of the neighbor
-	 * Key3: The X-Axis of the neighbor
-	 */
-	private final Map<TileModel, Map<NeighborYPosition, Map<NeighborXPosition, TileModel>>> _neighbors;
-	
-	/**
-	 * The dimensions of the board game
-	 */
-	private final Dimension _dimensions = new Dimension(8, 8);
-
-	/**
 	 * The list of available board movements
 	 * 
 	 * @author Daniel Ricci {@literal <thedanny09@gmail.com>}
 	 *
 	 */
-	public enum BoardMovement {
+	public enum PlayerMovements {
 		/**
 		 * An invalid move
 		 */
@@ -133,11 +123,8 @@ public final class BoardController extends BaseController {
 	public BoardController(BoardView view) {
 		
 		super(view);
-		
-		// Initialize the neighbor structure to the initial size of the board
-		_neighbors = new LinkedHashMap<>(_dimensions.width * _dimensions.height);
-		
-		// Register the signal listeners, we don't want to wait until rendering is done for this to occur
+	    
+	    // Register the signal listeners, we don't want to wait until rendering is done for this to occur
 		// because this class will miss important events before hand
 		registerSignalListeners();	
 			
@@ -159,9 +146,6 @@ public final class BoardController extends BaseController {
 	public BoardController(BoardViewTester view) {
 
 		super(view);
-		
-		// Initialize the neighbor structure to the initial size of the board
-		_neighbors = new LinkedHashMap<>(_dimensions.width * _dimensions.height);
 		
 		// Register the signal listeners, we don't want to wait until rendering is done for this to occur
 		// because this class will miss important events before hand
@@ -207,22 +191,7 @@ public final class BoardController extends BaseController {
 	 * @return The list of tile models that neighbor the passed in tile model
 	 */
 	public List<TileModel> getAllNeighbors(TileModel tileModel) {
-		
-		// Get the list of neighbors associated to our tile model
-		Map<NeighborYPosition, Map<NeighborXPosition, TileModel>> tileModelNeighbors = _neighbors.get(tileModel);
-		
-		// This collection holds the list of all the neighbors
-		List<TileModel> allNeighbors = new ArrayList<>();
-		
-		// Go through every entry set in our structure
-		for(Map.Entry<NeighborYPosition, Map<NeighborXPosition, TileModel>> entry : tileModelNeighbors.entrySet()) {
-			
-			// Add all the neighbors in our entry set that does not have a null tile model
-			allNeighbors.addAll(entry.getValue().values().stream().filter(a -> a != null && a != tileModel).collect(Collectors.toList()));
-		}
-		
-		// return the list of neighbors
-		return allNeighbors;
+		return _boardMovementBP.getAllNeighbors(tileModel);
 	}
 	
 	/**
@@ -241,27 +210,27 @@ public final class BoardController extends BaseController {
 	 * 
 	 * @return The board movement
 	 */
-	public BoardMovement getBoardMovement(TileModel newlySelectedTile) {
+	private PlayerMovements getBoardMovement(TileModel newlySelectedTile) {
 	
 		// Make sure that the game is running before continuing
 		if(!IsGameRunning()) {
 			Tracelog.log(Level.WARNING, true, "Game is not running yet, cannot select any tiles");
-			return BoardMovement.INVALID; 
+			return PlayerMovements.INVALID; 
 		}
 				
 		// If the tile belongs to the current player playing
 		if(isTileCurrentPlayer(newlySelectedTile)) {
 			// If there is no currently selected tile
 			if(getPreviouslySelectedTile() == null) {
-				return BoardMovement.MOVE_1_SELECT;
+				return PlayerMovements.MOVE_1_SELECT;
 			}
 			// If the currently selected tile was selected again
 			else if(Objects.equals(getPreviouslySelectedTile(), newlySelectedTile)) {
-				return BoardMovement.MOVE_2_UNSELECT;
+				return PlayerMovements.MOVE_2_UNSELECT;
 			}
 			// If the currently selected is also mine (then both selected and this one are mine)
 			else if(isTileCurrentPlayer(getPreviouslySelectedTile())){
-				return BoardMovement.MOVE_2_SELECT;
+				return PlayerMovements.MOVE_2_SELECT;
 			}
 		}
 		else if(getTileTeam(newlySelectedTile) == null) {
@@ -271,73 +240,7 @@ public final class BoardController extends BaseController {
 		
 		}
 		
-		return BoardMovement.INVALID;
-	}
-
-	/**
-	 * Logically attaches the list of tiles together by sub-dividing the list of tiles.
-	 * Note: Order matters in cases such as this, which is why insertion order was important
-	 * 		 when I chose the data structure for the neighbors map 
-	 */
-	private void generateLogicalTileLinks() {
-		
-		// Get the array representation of our tile models.
-		// Note: This is done because it is easier to get a subset of an array
-		// 		 and because the neighbor data structure tracks the insertion 
-		//		 order at runtime which is what is important here.
-		TileModel[] tiles = _neighbors.keySet().toArray(new TileModel[0]);
-				
-		// For every row that exists within our setup model
-		for(int i = 0, rows = _dimensions.height, columns = _dimensions.width; i < rows; ++i) {
-			
-			// Link the tile rows together
-			linkTiles(
-				// Previous row
-				i - 1 >= 0 ? Arrays.copyOfRange(tiles, (i - 1) * columns, ((i - 1) * columns) + columns) : null,
-				// Current Row
-				Arrays.copyOfRange(tiles, i * columns, (i * columns) + columns),
-				// Next Row
-				i + 1 >= 0 ? Arrays.copyOfRange(tiles, (i + 1) * columns, ((i + 1) * columns) + columns) : null
-			);
-		}
-	}
-
-	/**
-	 * Links together the passed in rows
-	 *  
-	 * @param top The top row
-	 * @param neutral the neutral row
-	 * @param bottom The bottom row
-	 */
-	private void linkTiles(TileModel[] topRow, TileModel[] neutralRow, TileModel[] bottomRow) {
-		
-		for(int i = 0, columns = _dimensions.width; i < columns; ++i) {
-			
-			// Represents the structural view of a particular tile
-			Map<NeighborYPosition, Map<NeighborXPosition, TileModel>> neighbors = new HashMap<NeighborYPosition, Map<NeighborXPosition, TileModel>>(){{
-				put(NeighborYPosition.TOP, new HashMap<NeighborXPosition, TileModel>());
-				put(NeighborYPosition.NEUTRAL, new HashMap<NeighborXPosition, TileModel>());
-				put(NeighborYPosition.BOTTOM, new HashMap<NeighborXPosition, TileModel>());
-			}};
-					
-			// Top Neighbors
-			neighbors.get(NeighborYPosition.TOP).put(NeighborXPosition.LEFT, i - 1 < 0 || topRow == null ? null : topRow[i - 1]);
-			neighbors.get(NeighborYPosition.TOP).put(NeighborXPosition.NEUTRAL, topRow == null ? null : topRow[i]);
-			neighbors.get(NeighborYPosition.TOP).put(NeighborXPosition.RIGHT, i + 1 >= columns || topRow == null ? null : topRow[i + 1]);
-			
-			// Neutral Neighbors
-			neighbors.get(NeighborYPosition.NEUTRAL).put(NeighborXPosition.LEFT, i - 1 < 0 ? null : neutralRow[i - 1]);
-			neighbors.get(NeighborYPosition.NEUTRAL).put(NeighborXPosition.NEUTRAL, neutralRow[i]);
-			neighbors.get(NeighborYPosition.NEUTRAL).put(NeighborXPosition.RIGHT, i + 1 >= columns ? null : neutralRow[i + 1]);
-				
-			// Bottom Neighbors
-			neighbors.get(NeighborYPosition.BOTTOM).put(NeighborXPosition.LEFT, i - 1 < 0 || bottomRow == null ? null : bottomRow[i - 1]);
-			neighbors.get(NeighborYPosition.BOTTOM).put(NeighborXPosition.NEUTRAL, bottomRow == null ? null : bottomRow[i]);
-			neighbors.get(NeighborYPosition.BOTTOM).put(NeighborXPosition.RIGHT, i + 1 >= columns || bottomRow == null ? null : bottomRow[i + 1]);
-			
-			// Assign the mappings where we reference the neutral-neutral tile as the key
-			_neighbors.put(neutralRow[i], neighbors);
-		}
+		return PlayerMovements.INVALID;
 	}
 
 	/**
@@ -373,7 +276,7 @@ public final class BoardController extends BaseController {
 	 * @return The team associated to the tile model if any
 	 */
 	private PlayerTeam getTileTeam(TileModel model) {
-		ChessEntity entity = model.getEntity();
+		AbstractChessEntity entity = model.getEntity();
 		return entity != null ? entity.getTeam() : null;
 	}
 	
@@ -382,20 +285,8 @@ public final class BoardController extends BaseController {
 		// Register to when this controller is added as a listener
 		registerSignalListener(IModel.EVENT_LISTENER_ADDED, new ISignalReceiver<ModelEvent<TileModel>>() {
 			@Override public void signalReceived(ModelEvent<TileModel> event) {
-				
-				// Get the tile model from the event object
-				TileModel tileModel = event.getSource();
-					
-				// If what are trying to insert has already been inserted then something went wrong
-				if(_neighbors.putIfAbsent(tileModel, null) != null) {
-					System.out.println("Error: Tile model already exists in the list... cannot add this one in");
-					System.out.println(java.util.Arrays.toString((new Throwable()).getStackTrace()));
-				}
-
-				// If we have enough neighboring elements, then its time to link them together
-				if(_dimensions.width * _dimensions.height == _neighbors.size()) {
-					generateLogicalTileLinks();
-				}
+			    // Add the received entity to the board movement blueprint
+				_boardMovementBP.addTileEntity(event.getSource());
 			}
 		});
 	

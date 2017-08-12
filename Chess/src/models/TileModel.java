@@ -28,12 +28,12 @@ import java.util.UUID;
 
 import engine.communication.internal.signal.ISignalListener;
 import engine.core.mvc.model.BaseModel;
-import game.entities.ChessEntity;
+import game.entities.concrete.AbstractChessEntity;
 
 /**
  * The model representation of a tile 
  * 
- * @author Daniel Ricci <thedanny09@gmail.com>
+ * @author Daniel Ricci {@literal <thedanny09@gmail.com>}
  *
  */
 public class TileModel extends BaseModel {
@@ -44,14 +44,24 @@ public class TileModel extends BaseModel {
 	public static final String EVENT_SELECTION_CHANGED = UUID.randomUUID().toString();
 	
 	/**
+	 * Signal name indicating that this model's highlight state has changed
+	 */
+	public static final String EVENT_HIGHLIGHT_CHANGED = UUID.randomUUID().toString();
+	
+	/**
 	 * The entity associated to the tile model
 	 */
-	private ChessEntity _entity;
+	private AbstractChessEntity _entity;
 	
 	/**
 	 * Property indicating if this tile is selected
 	 */
 	private boolean _selected;
+
+	/**
+	 * Property indicating this tile is highlighted
+	 */
+    private boolean _highlighted;
 	
 	/**
 	 * Constructs a new instance of this class type
@@ -72,7 +82,7 @@ public class TileModel extends BaseModel {
 	/**
 	 * Sets the selected state of this model
 	 * 
-	 * @param selected If the tile model is selected
+	 * @param selected If the tile model should be selected
 	 */
 	public void setSelected(boolean selected) {
 		_selected = selected;
@@ -80,6 +90,17 @@ public class TileModel extends BaseModel {
 		doneUpdating();
 	}
 	
+	/**
+	 * Sets the highlight state of this model
+	 * 
+	 * @param highlighted If the tile model should be highlighted
+	 */
+	public void setHighlighted(boolean highlighted) {
+	    _highlighted = highlighted;
+        setOperation(EVENT_HIGHLIGHT_CHANGED);
+        doneUpdating();
+	}
+		
 	/**
 	 * Gets if the tile model is in a selected state
 	 * 
@@ -90,11 +111,20 @@ public class TileModel extends BaseModel {
 	}
 	
 	/**
+	 * Gets if the tile model is in a highlighted state
+	 * 
+	 * @return If the tile model is highlighted
+	 */
+	public boolean getIsHighlighted() {
+	    return _highlighted;
+	}
+	
+	/**
 	 * Sets the entity of this tile model
 	 * 
 	 * @param entity The entity to associate to this tile model
 	 */
-	public void setEntity(ChessEntity entity) {
+	public void setEntity(AbstractChessEntity entity) {
 		_entity = entity;
 		doneUpdating();
 	}
@@ -104,11 +134,11 @@ public class TileModel extends BaseModel {
 	 * 
 	 * @return The entity associated to this tile model
 	 */
-	public ChessEntity getEntity() {
+	public AbstractChessEntity getEntity() {
 		return _entity;
 	}
 	
 	@Override public String toString() {
-		return _entity == null ? super.toString() : _entity.getlayerName();
+		return _entity == null ? super.toString() : _entity.getLayerName();
 	}
 } 
