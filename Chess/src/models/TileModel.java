@@ -51,7 +51,7 @@ public class TileModel extends BaseModel {
 	/**
 	 * Property indicating if this tile is selected
 	 */
-	private boolean _selected = false;
+	private boolean _selected;
 	
 	/**
 	 * Constructs a new instance of this class type

@@ -24,7 +24,6 @@
 
 package controllers;
 
-import java.util.Objects;
 import java.util.logging.Level;
 
 import engine.core.factories.AbstractFactory;
@@ -33,7 +32,6 @@ import engine.core.factories.ModelFactory;
 import engine.core.mvc.controller.BaseController;
 import engine.utils.io.logging.Tracelog;
 import game.entities.ChessEntity;
-import game.player.Player.PlayerTeam;
 import models.TileModel;
 import views.TileView;
 
@@ -44,81 +42,6 @@ import views.TileView;
  *
  */
 public final class TileController extends BaseController {
-
-	/**
-	 * The list of available board movements
-	 * 
-	 * @author Daniel Ricci {@literal <thedanny09@gmail.com>}
-	 *
-	 */
-	public enum BoardMovement {
-		/**
-		 * An invalid move
-		 */
-		INVALID,
-		/**
-		 * The first piece of the current player is being selected
-		 */
-		MOVE_1_SELECT,
-		/**
-		 * Another piece of the current player is being selected
-		 */
-		MOVE_2_SELECT,
-		/**
-		 * The first piece that was last selected is being selected again
-		 */
-		MOVE_2_UNSELECT,
-		/**
-		 * The piece that was selected last is trying to move to an empty tile
-		 */
-		MOVE_2_EMPTY,
-		/**
-		 * The piece that was selected last is trying to move to a tile that has an enemy piece
-		 */
-		MOVE_2_CAPTURE;
-		/**
-		 * Gets the board movement position of the tile specified
-		 * 
-		 * @param tile The tile that is attempting to perform the board movement
-		 * 
-		 * @return The board movement being attempted
-		 */
-		public static BoardMovement getBoardMovement(TileModel tile) {
-
-			// Get a reference to the board controller
-			BoardController boardController = AbstractFactory.getFactory(ControllerFactory.class).get(BoardController.class);
-			
-			// Make sure that the game is running before continuing
-			if(!boardController.IsGameRunning()) {
-				Tracelog.log(Level.WARNING, true, "Game is not running yet, cannot select any tiles");
-				return BoardMovement.INVALID; 
-			}
-					
-			// If the tile belongs to the current player playing
-			if(isTileMine(tile)) {
-				// If there is no currently selected tile
-				if(boardController.getSelectedTile() == null) {
-					return BoardMovement.MOVE_1_SELECT;
-				}
-				// If the currently selected tile was selected again
-				else if(Objects.equals(boardController.getSelectedTile(), tile)) {
-					return BoardMovement.MOVE_2_UNSELECT;
-				}
-				// If the currently selected is also mine (then both selected and this one are mine)
-				else if(isTileMine(boardController.getSelectedTile())){
-					return BoardMovement.MOVE_2_SELECT;
-				}
-			}
-			else if(getTileTeam(tile) == null) {
-				
-			}
-			else if(isTileTheirs(tile)) {
-			
-			}
-			
-			return BoardMovement.INVALID;
-		}
-	}
 	
 	/**
 	 * The tile model that represents a single tile in the game
@@ -174,27 +97,16 @@ public final class TileController extends BaseController {
 		
 		// Get a reference to the board controller
 		BoardController boardController = AbstractFactory.getFactory(ControllerFactory.class).get(BoardController.class);
-
-		// Based on what the current movement is, perform the desired operation
-		switch(BoardMovement.getBoardMovement(_tile)) {
-		case INVALID:
-			break;
-		case MOVE_1_SELECT:
-			_tile.setSelected(true);
-			break;
-		case MOVE_2_CAPTURE:
-			break;
-		case MOVE_2_EMPTY:
-			break;
-		case MOVE_2_SELECT:
-			boardController.getSelectedTile().setSelected(false);
-			_tile.setSelected(true);
-			break;
-		case MOVE_2_UNSELECT:
-			_tile.setSelected(false);
-			break;
+		
+		// Make sure that the game is running before continuing
+		if(!boardController.IsGameRunning()) {
+			Tracelog.log(Level.WARNING, true, "Game is not running yet, cannot select any tiles");
+			return;
 		}
-    }
+		
+		// Toggle the tile
+		_tile.setSelected(!_tile.getIsSelected());	
+	}
 	
 	/**
 	 * @return If a chess entity occupies this tile
@@ -202,42 +114,5 @@ public final class TileController extends BaseController {
 	// TODO - can we make this private and remove the view dependency
 	public boolean hasEntity() {
 		return _tile.getEntity() != null;
-	}
-	
-	/**
-	 * Indicates if the specified tile belongs to the person currently playing
-	 * 
-	 * @param tile The tile
-	 * 
-	 * @return If the tile is that of the person currently playing
-	 */
-	private static boolean isTileMine(TileModel tile) {
-		PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class);
-		return playerController.getCurrentPlayerTeam() == getTileTeam(tile);
-	}
-
-	/**
-	 * Indicates if the specified tile belongs to an opposing player
-	 * 
-	 * @param tile The tile
-	 * 
-	 * @return If the tile belongs to an opposing player
-	 */
-	private static boolean isTileTheirs(TileModel tile) {
-		PlayerTeam team = getTileTeam(tile);
-		PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class);
-		return team != null && team != playerController.getCurrentPlayerTeam();
-	}
-	
-	/**
-	 * Gets the team associated to the specified tile model
-	 * 
-	 * @param model The tile model
-	 *
-	 * @return The team associated to the tile model if any
-	 */
-	private static PlayerTeam getTileTeam(TileModel model) {
-		ChessEntity entity = model.getEntity();
-		return entity != null ? entity.getTeam() : null;
 	}
 }

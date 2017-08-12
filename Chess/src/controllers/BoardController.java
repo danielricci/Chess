@@ -31,20 +31,22 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import controllers.enums.NeighborXPosition;
 import controllers.enums.NeighborYPosition;
 import engine.api.IModel;
-import engine.api.IView;
 import engine.communication.internal.signal.ISignalReceiver;
 import engine.communication.internal.signal.types.ModelEvent;
 import engine.core.factories.AbstractFactory;
 import engine.core.factories.ControllerFactory;
 import engine.core.mvc.controller.BaseController;
 import engine.utils.io.logging.Tracelog;
+import game.entities.ChessEntity;
 import game.player.Player;
+import game.player.Player.PlayerTeam;
 import generated.DataLookup;
 import models.TileModel;
 import views.BoardView;
@@ -70,9 +72,11 @@ public final class BoardController extends BaseController {
 	private boolean _isGameRunning;
 	
 	/**
-	 * The tile model associated to the most recently selected tilemodel
+	 * The tile model associated to the previously selected tile
+	 * 
+	 * Note: This tile gets updated when a new tile is selected (when the {@link TileModel#setSelected(boolean)} method is called
 	 */
-	private TileModel _lastSelectedTile;
+	private TileModel _previouslySelectedTile;
 	
 	/**
 	 * The list of neighbors logically associated to a specified controller
@@ -89,19 +93,36 @@ public final class BoardController extends BaseController {
 	private final Dimension _dimensions = new Dimension(8, 8);
 
 	/**
-	 * Constructs a new instance of this class type
+	 * The list of available board movements
+	 * 
+	 * @author Daniel Ricci {@literal <thedanny09@gmail.com>}
 	 *
-	 * @param view The view to link with this controller
 	 */
-	private BoardController(IView view) {
-		super(view);
-		
-		// Initialize the neighbor structure to the initial size of the board
-		_neighbors = new LinkedHashMap<>(_dimensions.width * _dimensions.height);
-		
-		// Register the signal listeners, we don't want to wait until rendering is done for this to occur
-		// because this class will miss important events before hand
-		registerSignalListeners();	
+	public enum BoardMovement {
+		/**
+		 * An invalid move
+		 */
+		INVALID,
+		/**
+		 * The first piece of the current player is being selected
+		 */
+		MOVE_1_SELECT,
+		/**
+		 * Another piece of the current player is being selected
+		 */
+		MOVE_2_SELECT,
+		/**
+		 * The first piece that was last selected is being selected again
+		 */
+		MOVE_2_UNSELECT,
+		/**
+		 * The piece that was selected last is trying to move to an empty tile
+		 */
+		MOVE_2_EMPTY,
+		/**
+		 * The piece that was selected last is trying to move to a tile that has an enemy piece
+		 */
+		MOVE_2_CAPTURE;
 	}
 	
 	/**
@@ -111,8 +132,14 @@ public final class BoardController extends BaseController {
 	 */
 	public BoardController(BoardView view) {
 		
-		// Call the specified constructor
-		this((IView)view);
+		super(view);
+		
+		// Initialize the neighbor structure to the initial size of the board
+		_neighbors = new LinkedHashMap<>(_dimensions.width * _dimensions.height);
+		
+		// Register the signal listeners, we don't want to wait until rendering is done for this to occur
+		// because this class will miss important events before hand
+		registerSignalListeners();	
 			
 		// Get the player controller
 		PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true); 
@@ -131,8 +158,14 @@ public final class BoardController extends BaseController {
 	 */
 	public BoardController(BoardViewTester view) {
 
-		// Call the specified constructor
-		this((IView)view);
+		super(view);
+		
+		// Initialize the neighbor structure to the initial size of the board
+		_neighbors = new LinkedHashMap<>(_dimensions.width * _dimensions.height);
+		
+		// Register the signal listeners, we don't want to wait until rendering is done for this to occur
+		// because this class will miss important events before hand
+		registerSignalListeners();	
 		
 		// Get the player controller
 		PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true); 
@@ -145,10 +178,10 @@ public final class BoardController extends BaseController {
 	}
 	
 	/**
-	 * @return The currently selected tile
+	 * @return The previously selected tile
 	 */
-	public TileModel getSelectedTile() {
-		return _lastSelectedTile;
+	public TileModel getPreviouslySelectedTile() {
+		return _previouslySelectedTile;
 	}
 	
 	/**
@@ -200,11 +233,49 @@ public final class BoardController extends BaseController {
 	public Dimension getBoardDimensions() {
 		return _dimensions;
 	}
-	
-	
-	
+		
 	/**
-	 * logically attaches the list of tiles together by sub-dividing the list of tiles.
+	 * Gets the current board movement based on the 
+	 * 
+	 * @param newlySelectedTile The newly selected tile
+	 * 
+	 * @return The board movement
+	 */
+	public BoardMovement getBoardMovement(TileModel newlySelectedTile) {
+	
+		// Make sure that the game is running before continuing
+		if(!IsGameRunning()) {
+			Tracelog.log(Level.WARNING, true, "Game is not running yet, cannot select any tiles");
+			return BoardMovement.INVALID; 
+		}
+				
+		// If the tile belongs to the current player playing
+		if(isTileCurrentPlayer(newlySelectedTile)) {
+			// If there is no currently selected tile
+			if(getPreviouslySelectedTile() == null) {
+				return BoardMovement.MOVE_1_SELECT;
+			}
+			// If the currently selected tile was selected again
+			else if(Objects.equals(getPreviouslySelectedTile(), newlySelectedTile)) {
+				return BoardMovement.MOVE_2_UNSELECT;
+			}
+			// If the currently selected is also mine (then both selected and this one are mine)
+			else if(isTileCurrentPlayer(getPreviouslySelectedTile())){
+				return BoardMovement.MOVE_2_SELECT;
+			}
+		}
+		else if(getTileTeam(newlySelectedTile) == null) {
+			
+		}
+		else if(isTileEnemyPlayer(newlySelectedTile)) {
+		
+		}
+		
+		return BoardMovement.INVALID;
+	}
+
+	/**
+	 * Logically attaches the list of tiles together by sub-dividing the list of tiles.
 	 * Note: Order matters in cases such as this, which is why insertion order was important
 	 * 		 when I chose the data structure for the neighbors map 
 	 */
@@ -232,7 +303,7 @@ public final class BoardController extends BaseController {
 	}
 
 	/**
-	 * Links together the passed in rows with respect to a flood fill
+	 * Links together the passed in rows
 	 *  
 	 * @param top The top row
 	 * @param neutral the neutral row
@@ -269,6 +340,43 @@ public final class BoardController extends BaseController {
 		}
 	}
 
+	/**
+	 * Indicates if the specified tile belongs to the person currently playing
+	 * 
+	 * @param tile The tile
+	 * 
+	 * @return If the tile is that of the person currently playing
+	 */
+	private boolean isTileCurrentPlayer(TileModel tile) {
+		PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class);
+		return playerController.getCurrentPlayerTeam() == getTileTeam(tile);
+	}
+
+	/**
+	 * Indicates if the specified tile belongs to an opposing player
+	 * 
+	 * @param tile The tile
+	 * 
+	 * @return If the tile belongs to an opposing player
+	 */
+	private boolean isTileEnemyPlayer(TileModel tile) {
+		PlayerTeam team = getTileTeam(tile);
+		PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class);
+		return team != null && team != playerController.getCurrentPlayerTeam();
+	}
+	
+	/**
+	 * Gets the team associated to the specified tile model
+	 * 
+	 * @param model The tile model
+	 *
+	 * @return The team associated to the tile model if any
+	 */
+	private PlayerTeam getTileTeam(TileModel model) {
+		ChessEntity entity = model.getEntity();
+		return entity != null ? entity.getTeam() : null;
+	}
+	
 	@Override public void registerSignalListeners() {
 		
 		// Register to when this controller is added as a listener
@@ -294,21 +402,40 @@ public final class BoardController extends BaseController {
 		// Register to when a tile is selected
 		registerSignalListener(TileModel.EVENT_SELECTION_CHANGED, new ISignalReceiver<ModelEvent<TileModel>>() {
 			@Override public void signalReceived(ModelEvent<TileModel> event) {
-				// If there is something previously there then it means it was considered as selected
-				if(_lastSelectedTile != null) {
-					Tracelog.log(Level.INFO, true, _lastSelectedTile.toString() + " is now deselected");
-					_lastSelectedTile = null;
-				}
-
-				// Get the tile model that fired the event, and if it's status is set to selected then
-				// store a reference to it
+				
+				// Unregister the listener to avoid cyclic loops when deselecting a tile
+				String listenerIdentifier = unregisterSignalListener(this);
+				
+				// Get the tile model that fired the event
 				TileModel tile = event.getSource();
-				if(tile.getIsSelected()) {
-					_lastSelectedTile = tile;
-					Tracelog.log(Level.INFO, true, _lastSelectedTile.toString() + " is now selected");
+				
+				switch(getBoardMovement(tile)) {
+				case INVALID:
+					Tracelog.log(Level.WARNING, true, "Invalid board move, cannot perform a move using that tile");
+					tile.setSelected(false);
+					break;
+				case MOVE_1_SELECT:
+					_previouslySelectedTile = tile;
+					Tracelog.log(Level.INFO, true, _previouslySelectedTile.toString() + " is now selected");
+					break;
+				case MOVE_2_SELECT:
+					_previouslySelectedTile.setSelected(false);
+					Tracelog.log(Level.INFO, true, _previouslySelectedTile.toString() + " is now deselected");
+					_previouslySelectedTile = tile;
+					Tracelog.log(Level.INFO, true, _previouslySelectedTile.toString() + " is now selected");
+					break;
+				case MOVE_2_CAPTURE:
+					break;
+				case MOVE_2_UNSELECT:
+					_previouslySelectedTile.setSelected(false);
+					Tracelog.log(Level.INFO, true, _previouslySelectedTile.toString() + " is now deselected");
+					_previouslySelectedTile = null;
+					break;
 				}
+				
+				// Register back this listener
+				registerSignalListener(listenerIdentifier, this);
 			}			
 		});
-	
 	}
 }
