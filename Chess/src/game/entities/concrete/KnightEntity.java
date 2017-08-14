@@ -24,6 +24,10 @@
 
 package game.entities.concrete;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import game.compositions.MovementComposition.EntityMovements;
 import generated.DataLookup.DataLayerName;
 
 /**
@@ -32,11 +36,31 @@ import generated.DataLookup.DataLayerName;
  * @author Daniel Ricci {@literal <thedanny09@gmail.com>}
  */
 class KnightEntity extends AbstractChessEntity {
-    
+
     /**
      * Constructs a new instance of this class type
      */
     public KnightEntity() {
         super(DataLayerName.KNIGHT);
+    }
+    
+    @Override public List<EntityMovements[]> getMovements() {
+        return new ArrayList<EntityMovements[]>() {{
+            add(new EntityMovements[] { EntityMovements.TOP, EntityMovements.LEFT, EntityMovements.LEFT});
+            add(new EntityMovements[] { EntityMovements.TOP, EntityMovements.RIGHT, EntityMovements.RIGHT});           
+
+            add(new EntityMovements[] { EntityMovements.BOTTOM, EntityMovements.LEFT, EntityMovements.LEFT});
+            add(new EntityMovements[] { EntityMovements.BOTTOM, EntityMovements.RIGHT, EntityMovements.RIGHT});
+            
+            add(new EntityMovements[] { EntityMovements.LEFT, EntityMovements.TOP, EntityMovements.TOP});
+            add(new EntityMovements[] { EntityMovements.RIGHT, EntityMovements.TOP, EntityMovements.TOP});
+            
+            add(new EntityMovements[] { EntityMovements.LEFT, EntityMovements.BOTTOM, EntityMovements.BOTTOM});
+            add(new EntityMovements[] { EntityMovements.RIGHT, EntityMovements.BOTTOM, EntityMovements.BOTTOM});
+        }};
+    }
+
+    @Override public boolean isMovementContinuous() {
+        return false;
     }
 }

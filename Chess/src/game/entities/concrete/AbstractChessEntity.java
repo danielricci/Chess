@@ -28,9 +28,9 @@ import java.util.List;
 
 import game.core.AbstractEntity;
 import game.entities.interfaces.IChessEntity;
-import game.player.Player;
-import game.player.Player.PlayerTeam;
 import generated.DataLookup.DataLayerName;
+import models.PlayerModel;
+import models.PlayerModel.PlayerTeam;
 
 /**
  * This class represents the abstract functionality of a chess piece in the game
@@ -42,7 +42,7 @@ public abstract class AbstractChessEntity extends AbstractEntity implements IChe
 	/**
 	 * The player that owns this entity
 	 */
-	private Player _player;
+	private PlayerModel _player;
 	
 	/**
 	 * Constructs a new instance of this class type
@@ -74,7 +74,7 @@ public abstract class AbstractChessEntity extends AbstractEntity implements IChe
 	 * 
 	 * @param player The player to set to this entity
 	 */
-	public void setPlayer(Player player) {
+	public void setPlayer(PlayerModel player) {
 		if(player != _player) {
 			_player = player;
 			

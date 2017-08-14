@@ -39,8 +39,8 @@ import controllers.DebuggerController;
 import engine.core.factories.AbstractSignalFactory;
 import engine.core.factories.ControllerFactory;
 import engine.core.mvc.view.DialogView;
-import game.player.Player.PlayerTeam;
 import generated.DataLookup.DataLayerName;
+import models.PlayerModel.PlayerTeam;
 
 /**
  * The view associated to the chess debugger

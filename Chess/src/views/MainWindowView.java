@@ -32,7 +32,7 @@ import engine.core.factories.AbstractSignalFactory;
 import engine.core.factories.ViewFactory;
 import engine.core.mvc.view.PanelView;
 import engine.utils.io.logging.Tracelog;
-import game.GameMode;
+import game.structure.GameMode;
 
 public class MainWindowView extends PanelView {
 	

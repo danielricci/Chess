@@ -28,6 +28,7 @@ import java.util.UUID;
 
 import engine.communication.internal.signal.ISignalListener;
 import engine.core.mvc.model.BaseModel;
+import game.compositions.MovementComposition;
 import game.entities.concrete.AbstractChessEntity;
 
 /**
@@ -52,6 +53,11 @@ public class TileModel extends BaseModel {
 	 * The entity associated to the tile model
 	 */
 	private AbstractChessEntity _entity;
+	
+	/**
+	 * The movement composition of this tile model
+	 */
+	private final MovementComposition _movementComposition = new MovementComposition(this);
 	
 	/**
 	 * Property indicating if this tile is selected
@@ -127,6 +133,13 @@ public class TileModel extends BaseModel {
 	public void setEntity(AbstractChessEntity entity) {
 		_entity = entity;
 		doneUpdating();
+	}
+	
+	/**
+	 * @return The movement composition of this tile model
+	 */
+	public MovementComposition getMovementComposition() {
+	    return _movementComposition;
 	}
 	
 	/**

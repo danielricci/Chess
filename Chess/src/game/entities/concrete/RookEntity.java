@@ -24,6 +24,10 @@
 
 package game.entities.concrete;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import game.compositions.MovementComposition.EntityMovements;
 import generated.DataLookup.DataLayerName;
 
 /**
@@ -38,5 +42,18 @@ class RookEntity extends AbstractChessEntity {
      */
     public RookEntity() {
         super(DataLayerName.ROOK);
+    }
+
+    @Override public List<EntityMovements[]> getMovements() {
+        return new ArrayList<EntityMovements[]>() {{
+            add(new EntityMovements[] { EntityMovements.TOP});
+            add(new EntityMovements[] { EntityMovements.BOTTOM});
+            add(new EntityMovements[] { EntityMovements.LEFT});
+            add(new EntityMovements[] { EntityMovements.RIGHT});
+        }};
+    }
+
+    @Override public boolean isMovementContinuous() {
+        return true;
     }
 }

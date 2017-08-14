@@ -23,6 +23,10 @@
 */
 package game.entities.interfaces;
 
+import java.util.List;
+
+import game.compositions.MovementComposition.EntityMovements;
+
 /**
  * This interface defines functionality that must be implemented 
  * by all chess pieces in the game
@@ -31,5 +35,17 @@ package game.entities.interfaces;
  *
  */
 public interface IChessEntity {
-
+    
+    /**
+     * Gets the list of available movements
+     * 
+     * @return The list of movements
+     */
+    public List<EntityMovements[]> getMovements();
+    
+    /**
+     * Indicates if the entity moves in a continuous manner
+     * @return
+     */
+    public boolean isMovementContinuous();
 }

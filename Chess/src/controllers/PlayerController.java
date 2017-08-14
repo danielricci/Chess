@@ -33,9 +33,9 @@ import java.util.logging.Level;
 import engine.core.mvc.controller.BaseController;
 import engine.utils.io.logging.Tracelog;
 import game.entities.concrete.AbstractChessEntity;
-import game.player.Player;
-import game.player.Player.PlayerTeam;
 import generated.DataLookup.DataLayerName;
+import models.PlayerModel;
+import models.PlayerModel.PlayerTeam;
 
 /**
  * Handles interactions will all controllable players in the game
@@ -48,12 +48,12 @@ public final class PlayerController extends BaseController {
 	/**
 	 * The list of players within the game
 	 */
-	private final List<Player> _players = new ArrayList();
+	private final List<PlayerModel> _players = new ArrayList();
 	
 	/**
 	 * The player queue of the game
 	 */
-	private final Queue<Player> _playerTurnQueue = new LinkedList();
+	private final Queue<PlayerModel> _playerTurnQueue = new LinkedList();
 	
 	/**
 	 * Constructs a new instance of this class type
@@ -68,7 +68,7 @@ public final class PlayerController extends BaseController {
 	 * @param player The player to add
 	 * 
 	 */
-	public void addPlayer(Player player) {
+	public void addPlayer(PlayerModel player) {
 		
 		if(_players.contains(player)) {
 			Tracelog.log(Level.WARNING, true, "Attempting to add a player to the player controller that already exists.");
@@ -90,7 +90,7 @@ public final class PlayerController extends BaseController {
 	 * @return The newly created entity
 	 */
 	public AbstractChessEntity createEntity(PlayerTeam team, DataLayerName dataLayerName) {
-		Player player = getPlayer(team);
+		PlayerModel player = getPlayer(team);
 		return player.createEntity(dataLayerName);
 	}
 	
@@ -131,7 +131,7 @@ public final class PlayerController extends BaseController {
 	 * 
 	 * @return The player of the specified team
 	 */
-	private Player getPlayer(PlayerTeam team) {
+	private PlayerModel getPlayer(PlayerTeam team) {
 		
 		// Go through the list of player and find the 
 		// player that matches the specified player team

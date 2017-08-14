@@ -43,8 +43,8 @@ import engine.core.factories.ControllerFactory;
 import engine.core.factories.ViewFactory;
 import engine.core.mvc.view.PanelView;
 import game.entities.concrete.AbstractChessEntity;
-import game.player.Player.PlayerTeam;
 import generated.DataLookup;
+import models.PlayerModel.PlayerTeam;
 
 /**
  * This view represents the entire board, it holds all the tiles of the board

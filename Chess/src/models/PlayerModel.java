@@ -22,7 +22,7 @@
 * IN THE SOFTWARE.
 */
 
-package game.player;
+package models;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ import generated.DataLookup.DataLayerName;
  * @author Daniel Ricci <thedanny09@gmail.com>
  *
  */
-public class Player extends BaseModel {
+public class PlayerModel extends BaseModel {
 
 	/**
 	 * The enumeration of teams available to all players 
@@ -73,7 +73,7 @@ public class Player extends BaseModel {
 	 * @param dataValues The data values associated to the player
 	 * @param generatePlayerEntities indicates if the chess pieces should be generated using the preset values or done manually
 	 */
-	public Player(PlayerTeam team, List<Enum> dataValues, boolean generatePlayerEntities) {
+	public PlayerModel(PlayerTeam team, List<Enum> dataValues, boolean generatePlayerEntities) {
 		_team = team;
 		_dataValues = new ArrayList(dataValues);
 		

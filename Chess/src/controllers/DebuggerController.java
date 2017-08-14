@@ -27,10 +27,10 @@ package controllers;
 import javax.swing.DefaultComboBoxModel;
 
 import engine.core.mvc.controller.BaseController;
-import game.player.Player;
-import game.player.Player.PlayerTeam;
 import generated.DataLookup;
 import generated.DataLookup.DataLayerName;
+import models.PlayerModel;
+import models.PlayerModel.PlayerTeam;
 import views.DebuggerView;
 
 /**
@@ -49,7 +49,7 @@ public final class DebuggerController extends BaseController {
 	/**
 	 * The model of the list of available player teams
 	 */
-	public final DefaultComboBoxModel<PlayerTeam> _teamListModel = new DefaultComboBoxModel(Player.PlayerTeam.values());
+	public final DefaultComboBoxModel<PlayerTeam> _teamListModel = new DefaultComboBoxModel(PlayerModel.PlayerTeam.values());
 
 	/**
 	 * Constructs a new instance of this class type

@@ -24,6 +24,10 @@
 
 package game.entities.concrete;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import game.compositions.MovementComposition.EntityMovements;
 import generated.DataLookup.DataLayerName;
 
 /**
@@ -38,5 +42,18 @@ class BishopEntity extends AbstractChessEntity {
      */
     public BishopEntity() {
         super(DataLayerName.BISHOP);
+    }
+
+    @Override public List<EntityMovements[]> getMovements() {
+        return new ArrayList<EntityMovements[]>() {{
+            add(new EntityMovements[] { EntityMovements.TOP, EntityMovements.LEFT});
+            add(new EntityMovements[] { EntityMovements.TOP, EntityMovements.RIGHT });
+            add(new EntityMovements[] { EntityMovements.BOTTOM, EntityMovements.LEFT });
+            add(new EntityMovements[] { EntityMovements.BOTTOM, EntityMovements.RIGHT });
+        }};
+    }
+
+    @Override public boolean isMovementContinuous() {
+        return true;
     }
 }

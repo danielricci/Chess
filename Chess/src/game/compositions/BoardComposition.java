@@ -22,26 +22,29 @@
 * IN THE SOFTWARE.
 */
 
-package game.player;
+package game.compositions;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Set;
 
+import game.compositions.MovementComposition.EntityMovements;
+import game.entities.interfaces.IChessEntity;
 import models.TileModel;
 
 /**
- * This class represents the instructions for how a particular chess piece should move
+ * This class represents the instructions for how the board game should operate
  *
  * @author Daniel Ricci <thedanny09@gmail.com>
  *
  */
-public class BoardMovementBlueprint {
+public class BoardComposition {
  
     /**
      * The dimensions of the board game
@@ -51,43 +54,17 @@ public class BoardMovementBlueprint {
     /**
      * The list of neighbors logically associated to a specified controller
      * 
-     * Key1: A Controller that maps to its association of neighbors
-     * Key2: The Y-Axis of the neighbor
-     * Key3: The X-Axis of the neighbor
+     * Key1: The tile model center
+     * Key2: The TOP, BOTTOM, LEFT, RIGHT neighboring tiles of the specified key1
      */
-    private final Map<TileModel, Map<EntityMovements, Map<EntityMovements, TileModel>>> _neighbors = new LinkedHashMap();
-    
-    /**
-     * Represents the available movement positions
-     * 
-     * @author Daniel Ricci <thedanny09@gmail.com>
-     *
-     */
-    public enum EntityMovements {
-        /**
-         * Movement is done towards the left
-         */
-        LEFT,
-        /**
-         * Movement is done towards the right
-         */
-        RIGHT,
-        /**
-         * Movement is done towards the top
-         */
-        TOP,
-        /**
-         * Movement is done towards the bottom
-         */
-        BOTTOM
-    }
+    private final Map<TileModel, Map<EntityMovements, TileModel>> _neighbors = new LinkedHashMap();
     
     /**
      * Constructs a new instance of this class type
      * 
      * @param dimensions The board game dimensions
      */
-    public BoardMovementBlueprint(Dimension dimensions) {
+    public BoardComposition(Dimension dimensions) {
         _dimensions = dimensions;
     }
     
@@ -109,6 +86,48 @@ public class BoardMovementBlueprint {
         }
     }
     
+    
+    public List<TileModel> getBoardPositions(TileModel tileModel) {
+        
+        List<TileModel> tiles = new ArrayList();
+
+        IChessEntity entity = tileModel.getEntity();
+        if(entity == null) {
+            return tiles;
+        }
+        
+            
+            Set<TileModel> positions = new HashSet();
+            
+            for(EntityMovements[] position : entity.getMovements()) {
+            
+            
+                for(Map.Entry<EntityMovements, TileModel> entry : _neighbors.get(tileModel).entrySet()) {
+                    
+                }
+            
+            }
+//                Map<EntityMovements, Map<EntityMovements, TileModel>> tileModelPositions = _neighbors.get(tileModel);
+//                for(EntityMovements movement : position) {
+//                    tileModelPositions.get(movement)
+//
+//                    
+//                    
+//                    
+//                    
+//                    
+//
+//
+//                }
+//                for(Map.Entry<EntityMovements, Map<EntityMovements, TileModel>> entry : tileModelPositions.entrySet()) {
+//                    entry.get
+//                }
+//            }
+
+        
+        return tiles;
+    }
+    
     /**
      * Gets all the neighbors associated to the particular model
      * 
@@ -119,16 +138,40 @@ public class BoardMovementBlueprint {
     public List<TileModel> getAllNeighbors(TileModel tileModel) {
         
         // Get the list of neighbors associated to our tile model
-        Map<EntityMovements, Map<EntityMovements, TileModel>> tileModelNeighbors = _neighbors.get(tileModel);
+        Map<EntityMovements, TileModel> tileModelNeighbors = _neighbors.get(tileModel);
         
         // This collection holds the list of all the neighbors
         List<TileModel> allNeighbors = new ArrayList();
         
         // Go through every entry set in our structure
-        for(Map.Entry<EntityMovements, Map<EntityMovements, TileModel>> entry : tileModelNeighbors.entrySet()) {
+        for(Map.Entry<EntityMovements, TileModel> entry : tileModelNeighbors.entrySet()) {
             
-            // Add all the neighbors in our entry set that does not have a null tile model
-            allNeighbors.addAll(entry.getValue().values().stream().filter(a -> a != null && a != tileModel).collect(Collectors.toList()));
+            // Get the tile model
+            TileModel tile = entry.getValue();
+            if(tile == null) {
+                continue;
+            }
+            
+            // Add our tile to the list
+            allNeighbors.add(tile);
+            
+            // To get the diagonals, make sure that if we are on the top or bottom tile
+            // that we fetch their respective tiles, and provided that they are valid
+            // add them to our list.
+            switch(entry.getKey()) {
+            case TOP:
+            case BOTTOM:
+                TileModel left = _neighbors.get(tile).get(EntityMovements.LEFT);
+                if(left != null) {
+                    allNeighbors.add(left);
+                }
+                
+                TileModel right = _neighbors.get(tile).get(EntityMovements.RIGHT);
+                if(right != null) {
+                    allNeighbors.add(right);
+                }
+                break;
+            }
         }
         
         // return the list of neighbors
@@ -171,31 +214,18 @@ public class BoardMovementBlueprint {
      * @param bottom The bottom row
      */
     private void linkTiles(TileModel[] topRow, TileModel[] neutralRow, TileModel[] bottomRow) {
-        
         for(int i = 0, columns = _dimensions.width; i < columns; ++i) {
             
             // Represents the structural view of a particular tile
-            Map<EntityMovements, Map<EntityMovements, TileModel>> neighbors = new HashMap<EntityMovements, Map<EntityMovements, TileModel>>(){{
-                put(EntityMovements.TOP, new HashMap<EntityMovements, TileModel>());
-                put(null, new HashMap<EntityMovements, TileModel>());
-                put(EntityMovements.BOTTOM, new HashMap<EntityMovements, TileModel>());
-            }};
+            Map<EntityMovements, TileModel> neighbors = new HashMap<EntityMovements, TileModel>();
                     
-            // Top Neighbors
-            neighbors.get(EntityMovements.TOP).put(EntityMovements.LEFT, i - 1 < 0 || topRow == null ? null : topRow[i - 1]);
-            neighbors.get(EntityMovements.TOP).put(null, topRow == null ? null : topRow[i]);
-            neighbors.get(EntityMovements.TOP).put(EntityMovements.RIGHT, i + 1 >= columns || topRow == null ? null : topRow[i + 1]);
-            
-            // Neutral Neighbors
-            neighbors.get(null).put(EntityMovements.LEFT, i - 1 < 0 ? null : neutralRow[i - 1]);
-            neighbors.get(null).put(null, neutralRow[i]);
-            neighbors.get(null).put(EntityMovements.RIGHT, i + 1 >= columns ? null : neutralRow[i + 1]);
-                
-            // Bottom Neighbors
-            neighbors.get(EntityMovements.BOTTOM).put(EntityMovements.LEFT, i - 1 < 0 || bottomRow == null ? null : bottomRow[i - 1]);
-            neighbors.get(EntityMovements.BOTTOM).put(null, bottomRow == null ? null : bottomRow[i]);
-            neighbors.get(EntityMovements.BOTTOM).put(EntityMovements.RIGHT, i + 1 >= columns || bottomRow == null ? null : bottomRow[i + 1]);
-            
+            // Populate the neighbors structure with the movement elements
+            // Note: Diagonals can be fetched using these primites
+            neighbors.put(EntityMovements.TOP, topRow == null ? null : topRow[i]);
+            neighbors.put(EntityMovements.LEFT, i - 1 < 0 ? null : neutralRow[i - 1]);
+            neighbors.put(EntityMovements.RIGHT, i + 1 >= columns ? null : neutralRow[i + 1]);
+            neighbors.put(EntityMovements.BOTTOM, bottomRow == null ? null : bottomRow[i]);
+                       
             // Assign the mappings where we reference the neutral-neutral tile as the key
             _neighbors.put(neutralRow[i], neighbors);
         }

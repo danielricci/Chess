@@ -27,7 +27,6 @@ package controllers;
 import java.awt.Dimension;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.logging.Level;
 
 import engine.api.IModel;
@@ -37,11 +36,9 @@ import engine.core.factories.AbstractFactory;
 import engine.core.factories.ControllerFactory;
 import engine.core.mvc.controller.BaseController;
 import engine.utils.io.logging.Tracelog;
-import game.entities.concrete.AbstractChessEntity;
-import game.player.BoardMovementBlueprint;
-import game.player.Player;
-import game.player.Player.PlayerTeam;
+import game.compositions.BoardComposition;
 import generated.DataLookup;
+import models.PlayerModel;
 import models.TileModel;
 import views.BoardView;
 import views.BoardViewTester;
@@ -66,9 +63,9 @@ public final class BoardController extends BaseController {
     private final Dimension _dimensions = new Dimension(8, 8);
     
     /**
-     * The board movement blueprint
+     * The board composition of the board game 
      */
-    private final BoardMovementBlueprint _boardMovementBP = new BoardMovementBlueprint(_dimensions);
+    private final BoardComposition _boardComposition = new BoardComposition(_dimensions);
     
 	/**
 	 * This flag indicates if the game is running
@@ -81,39 +78,6 @@ public final class BoardController extends BaseController {
 	 * Note: This tile gets updated when a new tile is selected (when the {@link TileModel#setSelected(boolean)} method is called
 	 */
 	private TileModel _previouslySelectedTile;
-	
-	/**
-	 * The list of available board movements
-	 * 
-	 * @author Daniel Ricci {@literal <thedanny09@gmail.com>}
-	 *
-	 */
-	public enum PlayerMovements {
-		/**
-		 * An invalid move
-		 */
-		INVALID,
-		/**
-		 * The first piece of the current player is being selected
-		 */
-		MOVE_1_SELECT,
-		/**
-		 * Another piece of the current player is being selected
-		 */
-		MOVE_2_SELECT,
-		/**
-		 * The first piece that was last selected is being selected again
-		 */
-		MOVE_2_UNSELECT,
-		/**
-		 * The piece that was selected last is trying to move to an empty tile
-		 */
-		MOVE_2_EMPTY,
-		/**
-		 * The piece that was selected last is trying to move to a tile that has an enemy piece
-		 */
-		MOVE_2_CAPTURE;
-	}
 	
 	/**
 	 * Constructs a new instance of this class
@@ -132,10 +96,10 @@ public final class BoardController extends BaseController {
 		PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true); 
 
 		// Create player white and populate its pieces
-		playerController.addPlayer(new Player(Player.PlayerTeam.WHITE, Arrays.asList(DataLookup.DataLayerWhite.values()), true));
+		playerController.addPlayer(new PlayerModel(PlayerModel.PlayerTeam.WHITE, Arrays.asList(DataLookup.DataLayerWhite.values()), true));
 		
 		// Create player black and populate its pieces
-		playerController.addPlayer(new Player(Player.PlayerTeam.BLACK, Arrays.asList(DataLookup.DataLayerBlack.values()), true));
+		playerController.addPlayer(new PlayerModel(PlayerModel.PlayerTeam.BLACK, Arrays.asList(DataLookup.DataLayerBlack.values()), true));
 	}
 	
 	/**
@@ -155,10 +119,10 @@ public final class BoardController extends BaseController {
 		PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true); 
 		
 		// Create player white
-		playerController.addPlayer(new Player(Player.PlayerTeam.WHITE, Arrays.asList(DataLookup.DataLayerWhite.values()), false));
+		playerController.addPlayer(new PlayerModel(PlayerModel.PlayerTeam.WHITE, Arrays.asList(DataLookup.DataLayerWhite.values()), false));
 		
 		// Create player black 
-		playerController.addPlayer(new Player(Player.PlayerTeam.BLACK, Arrays.asList(DataLookup.DataLayerBlack.values()), false));
+		playerController.addPlayer(new PlayerModel(PlayerModel.PlayerTeam.BLACK, Arrays.asList(DataLookup.DataLayerBlack.values()), false));
 	}
 	
 	/**
@@ -191,7 +155,7 @@ public final class BoardController extends BaseController {
 	 * @return The list of tile models that neighbor the passed in tile model
 	 */
 	public List<TileModel> getAllNeighbors(TileModel tileModel) {
-		return _boardMovementBP.getAllNeighbors(tileModel);
+		return _boardComposition.getAllNeighbors(tileModel);
 	}
 	
 	/**
@@ -203,82 +167,6 @@ public final class BoardController extends BaseController {
 		return _dimensions;
 	}
 		
-	/**
-	 * Gets the current board movement based on the 
-	 * 
-	 * @param newlySelectedTile The newly selected tile
-	 * 
-	 * @return The board movement
-	 */
-	private PlayerMovements getBoardMovement(TileModel newlySelectedTile) {
-	
-		// Make sure that the game is running before continuing
-		if(!IsGameRunning()) {
-			Tracelog.log(Level.WARNING, true, "Game is not running yet, cannot select any tiles");
-			return PlayerMovements.INVALID; 
-		}
-				
-		// If the tile belongs to the current player playing
-		if(isTileCurrentPlayer(newlySelectedTile)) {
-			// If there is no currently selected tile
-			if(getPreviouslySelectedTile() == null) {
-				return PlayerMovements.MOVE_1_SELECT;
-			}
-			// If the currently selected tile was selected again
-			else if(Objects.equals(getPreviouslySelectedTile(), newlySelectedTile)) {
-				return PlayerMovements.MOVE_2_UNSELECT;
-			}
-			// If the currently selected is also mine (then both selected and this one are mine)
-			else if(isTileCurrentPlayer(getPreviouslySelectedTile())){
-				return PlayerMovements.MOVE_2_SELECT;
-			}
-		}
-		else if(getTileTeam(newlySelectedTile) == null) {
-			
-		}
-		else if(isTileEnemyPlayer(newlySelectedTile)) {
-		
-		}
-		
-		return PlayerMovements.INVALID;
-	}
-
-	/**
-	 * Indicates if the specified tile belongs to the person currently playing
-	 * 
-	 * @param tile The tile
-	 * 
-	 * @return If the tile is that of the person currently playing
-	 */
-	private boolean isTileCurrentPlayer(TileModel tile) {
-		PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class);
-		return playerController.getCurrentPlayerTeam() == getTileTeam(tile);
-	}
-
-	/**
-	 * Indicates if the specified tile belongs to an opposing player
-	 * 
-	 * @param tile The tile
-	 * 
-	 * @return If the tile belongs to an opposing player
-	 */
-	private boolean isTileEnemyPlayer(TileModel tile) {
-		PlayerTeam team = getTileTeam(tile);
-		PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class);
-		return team != null && team != playerController.getCurrentPlayerTeam();
-	}
-	
-	/**
-	 * Gets the team associated to the specified tile model
-	 * 
-	 * @param model The tile model
-	 *
-	 * @return The team associated to the tile model if any
-	 */
-	private PlayerTeam getTileTeam(TileModel model) {
-		AbstractChessEntity entity = model.getEntity();
-		return entity != null ? entity.getTeam() : null;
-	}
 	
 	@Override public void registerSignalListeners() {
 		
@@ -286,7 +174,7 @@ public final class BoardController extends BaseController {
 		registerSignalListener(IModel.EVENT_LISTENER_ADDED, new ISignalReceiver<ModelEvent<TileModel>>() {
 			@Override public void signalReceived(ModelEvent<TileModel> event) {
 			    // Add the received entity to the board movement blueprint
-				_boardMovementBP.addTileEntity(event.getSource());
+				_boardComposition.addTileEntity(event.getSource());
 			}
 		});
 	
@@ -300,13 +188,17 @@ public final class BoardController extends BaseController {
 				// Get the tile model that fired the event
 				TileModel tile = event.getSource();
 				
-				switch(getBoardMovement(tile)) {
+				switch(tile.getMovementComposition().getBoardMovement(_previouslySelectedTile)) {
 				case INVALID:
 					Tracelog.log(Level.WARNING, true, "Invalid board move, cannot perform a move using that tile");
 					tile.setSelected(false);
 					break;
 				case MOVE_1_SELECT:
-					_previouslySelectedTile = tile;
+				    // 
+				    _boardComposition.getBoardPositions(tile);
+				    _previouslySelectedTile = tile;
+                    
+				    
 					Tracelog.log(Level.INFO, true, _previouslySelectedTile.toString() + " is now selected");
 					break;
 				case MOVE_2_SELECT:

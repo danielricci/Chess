@@ -24,6 +24,10 @@
 
 package game.entities.concrete;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import game.compositions.MovementComposition.EntityMovements;
 import generated.DataLookup.DataLayerName;
 
 /**
@@ -39,6 +43,15 @@ class PawnEntity extends AbstractChessEntity {
     public PawnEntity() {
         super(DataLayerName.PAWN);
     }
-    
-    
+
+    @Override public List<EntityMovements[]> getMovements() {
+        return new ArrayList<EntityMovements[]>() {{
+            add(new EntityMovements[] { EntityMovements.TOP });
+            add(new EntityMovements[] { EntityMovements.TOP, EntityMovements.TOP });
+        }};
+    }
+
+    @Override public boolean isMovementContinuous() {
+        return false;
+    }
 }

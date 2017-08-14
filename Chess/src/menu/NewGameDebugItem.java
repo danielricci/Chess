@@ -33,7 +33,7 @@ import application.Application;
 import engine.core.factories.AbstractSignalFactory;
 import engine.core.factories.ViewFactory;
 import engine.core.menu.types.MenuItem;
-import game.GameMode;
+import game.structure.GameMode;
 import resources.Resources;
 import resources.Resources.ResourceKeys;
 import views.MainWindowView;

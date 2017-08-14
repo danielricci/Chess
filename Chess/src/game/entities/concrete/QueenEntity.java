@@ -24,6 +24,10 @@
 
 package game.entities.concrete;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import game.compositions.MovementComposition.EntityMovements;
 import generated.DataLookup.DataLayerName;
 
 /**
@@ -38,5 +42,23 @@ class QueenEntity extends AbstractChessEntity {
      */
     public QueenEntity() {
         super(DataLayerName.QUEEN);
+    }
+
+    @Override public List<EntityMovements[]> getMovements() {
+        return new ArrayList<EntityMovements[]>() {{
+            add(new EntityMovements[] { EntityMovements.TOP });
+            add(new EntityMovements[] { EntityMovements.BOTTOM });
+            add(new EntityMovements[] { EntityMovements.LEFT });
+            add(new EntityMovements[] { EntityMovements.RIGHT });
+            
+            add(new EntityMovements[] { EntityMovements.TOP, EntityMovements.LEFT});
+            add(new EntityMovements[] { EntityMovements.TOP, EntityMovements.RIGHT });
+            add(new EntityMovements[] { EntityMovements.BOTTOM, EntityMovements.LEFT });
+            add(new EntityMovements[] { EntityMovements.BOTTOM, EntityMovements.RIGHT });
+        }};
+    }
+
+    @Override public boolean isMovementContinuous() {
+        return true;
     }
 }
