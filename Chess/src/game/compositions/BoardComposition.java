@@ -86,7 +86,7 @@ public class BoardComposition {
         }
     }
     
-    
+    // -- TODO --
     public List<TileModel> getBoardPositions(TileModel tileModel) {
         
         List<TileModel> tiles = new ArrayList();
@@ -96,34 +96,12 @@ public class BoardComposition {
             return tiles;
         }
         
-            
-            Set<TileModel> positions = new HashSet();
-            
-            for(EntityMovements[] position : entity.getMovements()) {
-            
-            
-                for(Map.Entry<EntityMovements, TileModel> entry : _neighbors.get(tileModel).entrySet()) {
-                    
-                }
-            
-            }
-//                Map<EntityMovements, Map<EntityMovements, TileModel>> tileModelPositions = _neighbors.get(tileModel);
-//                for(EntityMovements movement : position) {
-//                    tileModelPositions.get(movement)
-//
-//                    
-//                    
-//                    
-//                    
-//                    
-//
-//
-//                }
-//                for(Map.Entry<EntityMovements, Map<EntityMovements, TileModel>> entry : tileModelPositions.entrySet()) {
-//                    entry.get
-//                }
-//            }
-
+        Set<TileModel> positions = new HashSet();
+        for(EntityMovements[] position : entity.getMovements()) {
+        	for(EntityMovements movement : position) {
+        		
+        	}
+        }
         
         return tiles;
     }
