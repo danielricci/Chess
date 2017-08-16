@@ -34,11 +34,14 @@ import engine.communication.internal.signal.ISignalReceiver;
 import engine.communication.internal.signal.types.ModelEvent;
 import engine.core.factories.AbstractFactory;
 import engine.core.factories.ControllerFactory;
+import engine.core.factories.ModelFactory;
 import engine.core.mvc.controller.BaseController;
 import engine.utils.io.logging.Tracelog;
 import game.compositions.BoardComposition;
+import game.events.EntityEvent;
 import generated.DataLookup;
 import models.PlayerModel;
+import models.PlayerModel.PlayerTeam;
 import models.TileModel;
 import views.BoardView;
 import views.BoardViewTester;
@@ -140,11 +143,39 @@ public final class BoardController extends BaseController {
 	}
 	
 	/**
+	 *	Clears the board of all chess pieces
+	 */
+	private void clearBoard() {
+		AbstractFactory.getFactory(ModelFactory.class).multicastSignal(
+			TileModel.class, new EntityEvent(this, TileModel.EVENT_SELECTION_CHANGED, null)
+		);
+		
+		// Clear the previously selected tile if any
+		_previouslySelectedTile = null;
+
+		// Clear all the entity references held by all the players
+		PlayerController player = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class);
+		for(PlayerTeam team : PlayerTeam.values()) {
+			player.getPlayer(team).clearEntities();
+		}
+	}
+	
+	/**
 	 * Starts the board game
 	 */
 	public void startGame() {
 		_isGameRunning = true;
 		Tracelog.log(Level.INFO, true, "The game is now running");
+	}
+	
+	/**
+	 * Stops the board game
+	 */
+	public void stopGame() {
+		_isGameRunning = false;
+		Tracelog.log(Level.INFO, true, "The game is now stopped");
+		
+		clearBoard();
 	}
 		
 	/**
@@ -167,7 +198,6 @@ public final class BoardController extends BaseController {
 		return _dimensions;
 	}
 		
-	
 	@Override public void registerSignalListeners() {
 		
 		// Register to when this controller is added as a listener
@@ -194,12 +224,14 @@ public final class BoardController extends BaseController {
 					tile.setSelected(false);
 					break;
 				case MOVE_1_SELECT:
-				    // 
-				    _boardComposition.getBoardPositions(tile);
 				    _previouslySelectedTile = tile;
+                    Tracelog.log(Level.INFO, true, _previouslySelectedTile.toString() + " is now selected");
                     
+                    // Go through each path and mark the tiles as highlighted
+                    for(TileModel moveableTile : _boardComposition.getBoardPositions(tile)) {
+                		moveableTile.setHighlighted(true);
+                    }
 				    
-					Tracelog.log(Level.INFO, true, _previouslySelectedTile.toString() + " is now selected");
 					break;
 				case MOVE_2_SELECT:
 					_previouslySelectedTile.setSelected(false);
@@ -210,8 +242,15 @@ public final class BoardController extends BaseController {
 				case MOVE_2_CAPTURE:
 					break;
 				case MOVE_2_UNSELECT:
+					
+					// Unselect the previously selected tile
 					_previouslySelectedTile.setSelected(false);
 					Tracelog.log(Level.INFO, true, _previouslySelectedTile.toString() + " is now deselected");
+					
+					// Go through each path and mark the tiles as highlighted
+                    for(TileModel moveableTile : _boardComposition.getBoardPositions(tile)) {
+                		moveableTile.setHighlighted(false);
+                    }
 					_previouslySelectedTile = null;
 					break;
 				}
@@ -220,5 +259,5 @@ public final class BoardController extends BaseController {
 				registerSignalListener(listenerIdentifier, this);
 			}			
 		});
-	}
+	}	
 }

@@ -28,7 +28,6 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.logging.Level;
 
 import controllers.BoardController;
 import controllers.DebuggerController;
@@ -38,7 +37,6 @@ import engine.core.factories.AbstractFactory;
 import engine.core.factories.AbstractSignalFactory;
 import engine.core.factories.ControllerFactory;
 import engine.core.factories.ViewFactory;
-import engine.utils.io.logging.Tracelog;
 import game.entities.concrete.AbstractChessEntity;
 
 /**
@@ -82,22 +80,20 @@ public class BoardViewTester extends BoardView {
 						// If the debugger window is not visible then do not go any further.
 						DebuggerController debuggerController = AbstractFactory.getFactory(ControllerFactory.class).get(DebuggerController.class);
 						if(debuggerController == null || !debuggerController.getControllerProperties().isViewVisible()) {
-							Tracelog.log(Level.WARNING, true, "Cannot create an entity without the debugger window.");
 							return;
 						}
 						
 						// If the tile already has an entity then do not create a new one on it
 						TileController tileController = view.getViewProperties().getEntity(TileController.class);
 						if(tileController.hasEntity()) {
-							Tracelog.log(Level.WARNING, true, "Cannot create an entity on a tile that already has an entity.");
 							return;
 						}
-							
-						// Get a reference to the player controller
-						PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class);
 						
 						// Get a reference to the new entity based on the options selected in the debugger
-						AbstractChessEntity entity = playerController.createEntity(debuggerController.getSelectedTeamDebug(), debuggerController.getSelectedPieceDebug());
+						AbstractChessEntity entity = AbstractFactory
+								.getFactory(ControllerFactory.class)
+								.get(PlayerController.class)
+								.createEntity(debuggerController.getSelectedTeamDebug(), debuggerController.getSelectedPieceDebug());
 						
 						// If we got back a valid entity then add it
 						if(entity != null) {

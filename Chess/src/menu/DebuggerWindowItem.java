@@ -29,7 +29,6 @@ import java.awt.event.ActionEvent;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 
-import engine.api.IView;
 import engine.core.factories.AbstractFactory;
 import engine.core.factories.AbstractSignalFactory;
 import engine.core.factories.ViewFactory;
@@ -55,9 +54,9 @@ public class DebuggerWindowItem extends MenuItem {
 	}
 	
 	@Override public void onExecute(ActionEvent actionEvent) {
-		IView view = AbstractSignalFactory.getFactory(ViewFactory.class).get(DebuggerView.class, true);
-		if(view != null) {
-			view.render();
+		DebuggerView debugger = AbstractSignalFactory.getFactory(ViewFactory.class).get(DebuggerView.class, true);
+		if(debugger != null) {
+			debugger.render();
 		}
 	}
 	

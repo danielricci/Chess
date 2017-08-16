@@ -141,8 +141,8 @@ public class PlayerModel extends BaseModel {
 	 * 
 	 * @return A list of entities
 	 */
-	public <T extends AbstractChessEntity> List<T> getEntities(String layerName) {
-		return (List<T>) _entities.stream().filter(z -> z.getLayerName().equalsIgnoreCase(layerName)).collect(Collectors.toList());
+	public <T extends AbstractChessEntity> List<T> getEntities(DataLayerName layerName) {
+		return (List<T>) _entities.stream().filter(z -> z.getDataLayerName() == layerName).collect(Collectors.toList());
 	}
 	
 	/**
@@ -170,6 +170,13 @@ public class PlayerModel extends BaseModel {
 	 */
 	public void removeEntity(AbstractChessEntity entity) {
 		_entities.remove(entity);
+	}
+	
+	/**
+	 * Clears all the entities from the player
+	 */
+	public void clearEntities() {
+		_entities.clear();
 	}
 	
 	@Override public String toString() {

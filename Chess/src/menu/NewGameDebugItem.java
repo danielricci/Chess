@@ -36,6 +36,7 @@ import engine.core.menu.types.MenuItem;
 import game.structure.GameMode;
 import resources.Resources;
 import resources.Resources.ResourceKeys;
+import views.DebuggerView;
 import views.MainWindowView;
 
 /**
@@ -62,7 +63,6 @@ public class NewGameDebugItem extends MenuItem {
 			return;
 		}
 
-		
 		// Get a reference to the view factory 
 		ViewFactory factory = AbstractSignalFactory.getFactory(ViewFactory.class);
 		
@@ -74,6 +74,11 @@ public class NewGameDebugItem extends MenuItem {
 		
 		// Render the specified view
 		view.render();
+		
+		DebuggerView debugger = AbstractSignalFactory.getFactory(ViewFactory.class).get(DebuggerView.class, true);
+		if(debugger != null) {
+			debugger.render();
+		}
 	}
 	
 	@Override public boolean enabled() {

@@ -28,11 +28,9 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import game.compositions.MovementComposition.EntityMovements;
 import game.entities.interfaces.IChessEntity;
@@ -86,24 +84,39 @@ public class BoardComposition {
         }
     }
     
-    // -- TODO --
     public List<TileModel> getBoardPositions(TileModel tileModel) {
         
-        List<TileModel> tiles = new ArrayList();
+    	// The list of all movements. The end position within each sub-list is the 
+    	// final destination
+        List<TileModel> allMoves = new ArrayList();
 
+        // If tile model does not has a chess entity then
+        // there are no moves to get
         IChessEntity entity = tileModel.getEntity();
         if(entity == null) {
-            return tiles;
+            return allMoves;
         }
         
-        Set<TileModel> positions = new HashSet();
+        // Go through the list of movements for the specified entity
+        // and store it's path provided that it does not intersect
+        // into an area outside the board's dimensions
         for(EntityMovements[] position : entity.getMovements()) {
+        	List<TileModel> tiles = new ArrayList();
+        	TileModel traverser = tileModel;
         	for(EntityMovements movement : position) {
-        		
+        		traverser = _neighbors.get(traverser).get(movement);
+        		if(traverser == null) {
+        			tiles.clear();
+        			break;
+        		}
+        		tiles.add(traverser);
+        	}
+        	if(!tiles.isEmpty()) {
+        		allMoves.add(tiles.get(tiles.size() - 1));
         	}
         }
         
-        return tiles;
+        return allMoves;
     }
     
     /**

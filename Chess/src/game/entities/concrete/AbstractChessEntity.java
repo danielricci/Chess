@@ -51,6 +51,7 @@ public abstract class AbstractChessEntity extends AbstractEntity implements IChe
 	 */
 	protected AbstractChessEntity(DataLayerName dataLayerName) {
 		super(dataLayerName.toString());
+		
 	}
 	
 	/**
@@ -87,7 +88,7 @@ public abstract class AbstractChessEntity extends AbstractEntity implements IChe
 			}
 		}
 	}
-	
+		
 	/**
 	 * Creates an instance of a chess entity with respect to the provided data layer name
 	 * 

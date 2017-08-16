@@ -27,9 +27,11 @@ package models;
 import java.util.UUID;
 
 import engine.communication.internal.signal.ISignalListener;
+import engine.communication.internal.signal.ISignalReceiver;
 import engine.core.mvc.model.BaseModel;
 import game.compositions.MovementComposition;
 import game.entities.concrete.AbstractChessEntity;
+import game.events.EntityEvent;
 
 /**
  * The model representation of a tile 
@@ -40,15 +42,15 @@ import game.entities.concrete.AbstractChessEntity;
 public class TileModel extends BaseModel {
 	
 	/**
-	 * Signal name indicating that this model's selection state has changed
+	 * Signal indicating that this model's selection state has changed
 	 */
 	public static final String EVENT_SELECTION_CHANGED = UUID.randomUUID().toString();
 	
 	/**
-	 * Signal name indicating that this model's highlight state has changed
+	 * Signal indicating that this model's highlight state has changed
 	 */
 	public static final String EVENT_HIGHLIGHT_CHANGED = UUID.randomUUID().toString();
-	
+
 	/**
 	 * The entity associated to the tile model
 	 */
@@ -151,7 +153,14 @@ public class TileModel extends BaseModel {
 		return _entity;
 	}
 	
-	@Override public String toString() {
-		return _entity == null ? super.toString() : _entity.getLayerName();
+	@Override public void registerSignalListeners() {
+		super.registerSignalListeners();
+		
+		// Listen to the remove layer event
+		registerSignalListener(TileModel.EVENT_SELECTION_CHANGED, new ISignalReceiver<EntityEvent<AbstractChessEntity>>() {
+			@Override public void signalReceived(EntityEvent<AbstractChessEntity> event) {
+				setEntity(event.entity);
+			}
+		});
 	}
-} 
+}

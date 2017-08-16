@@ -108,42 +108,42 @@ public class BoardView extends PanelView {
 					
 					switch(col) {
 						case 0: {
-							List<AbstractChessEntity> entities = playerController.getEntities(team, DataLookup.DataLayerName.ROOK.toString());
+							List<AbstractChessEntity> entities = playerController.getEntities(team, DataLookup.DataLayerName.ROOK);
 							tileController.setChessEntity(entities.get(0));
 							break;
 						}
 						case 1: {
-							List<AbstractChessEntity> entities = playerController.getEntities(team, DataLookup.DataLayerName.KNIGHT.toString());
+							List<AbstractChessEntity> entities = playerController.getEntities(team, DataLookup.DataLayerName.KNIGHT);
 							tileController.setChessEntity(entities.get(0));
 							break;
 						}
 						case 2: {
-							List<AbstractChessEntity> entities = playerController.getEntities(team, DataLookup.DataLayerName.BISHOP.toString());
+							List<AbstractChessEntity> entities = playerController.getEntities(team, DataLookup.DataLayerName.BISHOP);
 							tileController.setChessEntity(entities.get(0));
 							break;
 						}
 						case 3: {
-							List<AbstractChessEntity> entities = playerController.getEntities(team, DataLookup.DataLayerName.QUEEN.toString());
+							List<AbstractChessEntity> entities = playerController.getEntities(team, DataLookup.DataLayerName.QUEEN);
 							tileController.setChessEntity(entities.get(0));
 							break;
 						}
 						case 4: {
-							List<AbstractChessEntity> entities = playerController.getEntities(team, DataLookup.DataLayerName.KING.toString());
+							List<AbstractChessEntity> entities = playerController.getEntities(team, DataLookup.DataLayerName.KING);
 							tileController.setChessEntity(entities.get(0));
 							break;
 						}
 						case 5: {
-							List<AbstractChessEntity> entities = playerController.getEntities(team, DataLookup.DataLayerName.BISHOP.toString());
+							List<AbstractChessEntity> entities = playerController.getEntities(team, DataLookup.DataLayerName.BISHOP);
 							tileController.setChessEntity(entities.get(1));
 							break;
 						}
 						case 6: {
-							List<AbstractChessEntity> entities = playerController.getEntities(team, DataLookup.DataLayerName.KNIGHT.toString());
+							List<AbstractChessEntity> entities = playerController.getEntities(team, DataLookup.DataLayerName.KNIGHT);
 							tileController.setChessEntity(entities.get(1));
 							break;
 						}
 						case 7: {
-							List<AbstractChessEntity> entities = playerController.getEntities(team, DataLookup.DataLayerName.ROOK.toString());
+							List<AbstractChessEntity> entities = playerController.getEntities(team, DataLookup.DataLayerName.ROOK);
 							tileController.setChessEntity(entities.get(1));
 							break;
 						}
@@ -152,7 +152,7 @@ public class BoardView extends PanelView {
 				// If we are on the second row or second to last row, then inject the proper pieces
 				else if(row == 1 || row == dimensionsX - 2) {
 					TileController tileController = view.getViewProperties().getEntity(TileController.class);
-					List<AbstractChessEntity> entities = playerController.getEntities(row == 1 ? PlayerTeam.BLACK : PlayerTeam.WHITE, DataLookup.DataLayerName.PAWN.toString());
+					List<AbstractChessEntity> entities = playerController.getEntities(row == 1 ? PlayerTeam.BLACK : PlayerTeam.WHITE, DataLookup.DataLayerName.PAWN);
 					tileController.setChessEntity(entities.get(col));
 				}
 				

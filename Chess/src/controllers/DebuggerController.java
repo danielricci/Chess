@@ -58,6 +58,11 @@ public final class DebuggerController extends BaseController {
 	 */
 	public DebuggerController(DebuggerView view) {
 		super(view);
+		
+		// TODO - Is there a way to make this more kosher?
+		_piecesListModel.removeElement(DataLayerName.WHITE);
+		_piecesListModel.removeElement(DataLayerName.BLACK);
+		
 	}
 	
 	/**

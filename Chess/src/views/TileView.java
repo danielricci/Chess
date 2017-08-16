@@ -67,7 +67,7 @@ public class TileView extends PanelView {
      * The color used when a tile is considered selected 
      */
     private static final Color SELECTED_COLOR = Color.LIGHT_GRAY;
-	
+		
 	/**
 	 * The default background color of this tile
 	 */
@@ -78,16 +78,7 @@ public class TileView extends PanelView {
 	 */
 	private Color _currentBackgroundColor;
     
-    /**
-     * Selected border style of this view
-     */
-    private static final Border SELECTED_BORDER_COLOR = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 2);
     
-	/**
-	 * Highlight border style of this view
-	 */
-	private static final Border HIGHLIGHT_BORDER = BorderFactory.createLineBorder(Color.BLUE, 2);
-	
 	/**
 	 * Normal border style of this view
 	 */
@@ -141,16 +132,12 @@ public class TileView extends PanelView {
 		this.addMouseListener(new MouseAdapter() {
 			
 			@Override public void mouseEntered(MouseEvent event) {
-				setBorder(HIGHLIGHT_BORDER);
-				
 				if(_highlightNeighbors) {
 					getViewProperties().getEntity(TileController.class).showTileNeighborsDebug(true);
 				}
 			}
 			
-			@Override public void mouseExited(MouseEvent event) {
-				setBorder(getBackground() == SELECTED_COLOR ? SELECTED_BORDER_COLOR : DEFAULT_BORDER_STYLE);
-				
+			@Override public void mouseExited(MouseEvent event) {				
 				if(_highlightNeighbors) {
 					getViewProperties().getEntity(TileController.class).showTileNeighborsDebug(false);
 				}
@@ -193,18 +180,6 @@ public class TileView extends PanelView {
 			
 			// Record the new background color change 
 			_currentBackgroundColor = backgroundColor;
-			
-			// Set the border based on the background
-			if(backgroundColor == SELECTED_COLOR) {
-				setBorder(SELECTED_BORDER_COLOR);
-			}
-			else if(backgroundColor == DEFAULT_BACKGROUND_COLOR) {
-				setBorder(DEFAULT_BORDER_STYLE);
-			}
-			else {
-				setBorder(HIGHLIGHT_BORDER);
-			}
-		
 		}
 	}
 	
@@ -217,19 +192,16 @@ public class TileView extends PanelView {
 			
 			// Get the tile model of the source
 			TileModel tileModel = (TileModel) signalEvent.getSource();
-
+			
 			// If the tile model is in a selected state then update the 
 			// background accordingly
-			if(tileModel.getIsSelected() || tileModel.getIsHighlighted()) {
-				
+			if(tileModel.getIsSelected() || tileModel.getIsHighlighted()) {				
 				// Set the background, and then set the border
 				// because we want it to be selected
 			    this.setBackground(SELECTED_COLOR);
-			    this.setBorder(HIGHLIGHT_BORDER);
 			}
 			else {
-				
-				// Set the background back to the defualt
+				// Set the background back to the default state
 			    this.setBackground(DEFAULT_BACKGROUND_COLOR);			    
 			}
 			

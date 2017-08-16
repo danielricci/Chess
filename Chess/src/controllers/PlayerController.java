@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Queue;
 import java.util.logging.Level;
 
+import engine.core.factories.AbstractFactory;
+import engine.core.factories.ControllerFactory;
 import engine.core.mvc.controller.BaseController;
 import engine.utils.io.logging.Tracelog;
 import game.entities.concrete.AbstractChessEntity;
@@ -90,7 +92,18 @@ public final class PlayerController extends BaseController {
 	 * @return The newly created entity
 	 */
 	public AbstractChessEntity createEntity(PlayerTeam team, DataLayerName dataLayerName) {
+	
+		// If the game is running then no more entities should be created
+		// Note: This might not be good, since there are scenarios in the game 
+		//		 where we might want to create new chess pieces. (Pawns reaching the end of the board)
+		if(AbstractFactory.getFactory(ControllerFactory.class).get(BoardController.class).IsGameRunning()) {
+			return null;
+		}
+	
+		// Get the player model of the specified team
 		PlayerModel player = getPlayer(team);
+		
+		// Create the specified entity and return it
 		return player.createEntity(dataLayerName);
 	}
 	
@@ -118,12 +131,11 @@ public final class PlayerController extends BaseController {
 	 * 
 	 * @return The list of entities associated to the specified layer that the player still owns
 	 */
-	public List<AbstractChessEntity> getEntities(PlayerTeam team, String layerName) {
-		
+	public List<AbstractChessEntity> getEntities(PlayerTeam team, DataLayerName layerName) {
 		// Get the list of entities associated to the player of the specified layer name
 		return getPlayer(team).getEntities(layerName);
 	}
-	
+		
 	/**
 	 * Gets the specified player
 	 * 
@@ -131,7 +143,7 @@ public final class PlayerController extends BaseController {
 	 * 
 	 * @return The player of the specified team
 	 */
-	private PlayerModel getPlayer(PlayerTeam team) {
+	public PlayerModel getPlayer(PlayerTeam team) {
 		
 		// Go through the list of player and find the 
 		// player that matches the specified player team

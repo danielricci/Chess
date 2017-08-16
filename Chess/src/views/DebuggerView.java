@@ -35,7 +35,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import application.Application;
+import controllers.BoardController;
 import controllers.DebuggerController;
+import engine.core.factories.AbstractFactory;
 import engine.core.factories.AbstractSignalFactory;
 import engine.core.factories.ControllerFactory;
 import engine.core.mvc.view.DialogView;
@@ -126,12 +128,19 @@ public class DebuggerView extends DialogView {
 	}
 	
 	@Override public void initializeComponentBindings() {
+		
+		// Start the game
+		BoardController controller = AbstractFactory.getFactory(ControllerFactory.class).get(BoardController.class);
+		
 		_startButton.addActionListener(new ActionListener() {
 			@Override public void actionPerformed(ActionEvent event) {
 				_startButton.setEnabled(false);
 				_piecesList.setEnabled(false);
 				_teamList.setEnabled(false);
 				_stopButton.setEnabled(true);
+				
+				// Start the game
+				controller.startGame();
 			}
 		});
 		_stopButton.addActionListener(new ActionListener() {
@@ -140,6 +149,9 @@ public class DebuggerView extends DialogView {
 				_piecesList.setEnabled(true);
 				_teamList.setEnabled(true);
 				_stopButton.setEnabled(false);
+				
+				// Stop the game
+				controller.stopGame();
 			}
 		});
 
