@@ -36,7 +36,7 @@ import models.TileModel;
 /**
  * This class represents the instructions for how a particular chess piece should move
  *
- * @author Daniel Ricci <thedanny09@gmail.com>
+ * @author Daniel Ricci {@literal <thedanny09@gmail.com>}
  *
  */
 public class MovementComposition {

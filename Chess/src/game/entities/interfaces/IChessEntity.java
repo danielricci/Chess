@@ -21,6 +21,7 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 * IN THE SOFTWARE.
 */
+
 package game.entities.interfaces;
 
 import java.util.List;
@@ -31,7 +32,7 @@ import game.compositions.MovementComposition.EntityMovements;
  * This interface defines functionality that must be implemented 
  * by all chess pieces in the game
  *
- * @author Daniel Ricci <thedanny09@gmail.com>
+ * @author Daniel Ricci {@literal <thedanny09@gmail.com>}
  *
  */
 public interface IChessEntity {
@@ -45,7 +46,8 @@ public interface IChessEntity {
     
     /**
      * Indicates if the entity moves in a continuous manner
-     * @return
+     * 
+     * @return If the movement of this entity is continuous
      */
     public boolean isMovementContinuous();
 }

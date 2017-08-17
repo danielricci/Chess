@@ -39,7 +39,7 @@ import models.TileModel;
 /**
  * This class represents the instructions for how the board game should operate
  *
- * @author Daniel Ricci <thedanny09@gmail.com>
+ * @author Daniel Ricci {@literal <thedanny09@gmail.com>}
  *
  */
 public class BoardComposition {
@@ -84,6 +84,13 @@ public class BoardComposition {
         }
     }
     
+    /**
+     * Gets the board position available to the tile model specified
+     * 
+     * @param tileModel The tile model
+     * 
+     * @return The list of tiles that can be reached based on the specified tile model
+     */
     public List<TileModel> getBoardPositions(TileModel tileModel) {
         
     	// The list of all movements. The end position within each sub-list is the 
@@ -97,25 +104,51 @@ public class BoardComposition {
             return allMoves;
         }
         
-        // Go through the list of movements for the specified entity
-        // and store it's path provided that it does not intersect
-        // into an area outside the board's dimensions
-        for(EntityMovements[] position : entity.getMovements()) {
-        	List<TileModel> tiles = new ArrayList();
+        for(int i = 0, iSize = entity.getMovements().size(); i < iSize; ++i) {
+
         	TileModel traverser = tileModel;
-        	for(EntityMovements movement : position) {
-        		traverser = _neighbors.get(traverser).get(movement);
-        		if(traverser == null) {
-        			tiles.clear();
+        	do {
+        		// Temporary list to hold our entire path, and from there I 
+        		// pick the last element
+	        	List<TileModel> tiles = new ArrayList();
+	        	
+	        	// Get the list of movements for one particular destination
+	        	EntityMovements[] movements = entity.getMovements().get(i);
+	        	
+	        	// Go through the movements and make sure that it is a valid movement
+	        	for(int j = 0, jSize = movements.length; j < jSize; ++j) {
+	        	
+	        		// Get the movements of the tile from our position
+	        		traverser = _neighbors.get(traverser).get(movements[j]);
+	        		
+	        		// If the position is outside the board dimensions then clear the movement to get 
+	        		// to that location and exit the loop
+	        		if(traverser == null) {
+	        			tiles.clear();
+	        			break;
+	        		}
+	        		
+	        		// Add the traversed tile to our constructed path
+	        		tiles.add(traverser);
+	        	}
+	        	
+	        	// If there is nothing to add then stop regardless of any other conditions
+	        	if(tiles.isEmpty()) {
+	        		break;
+	        	}
+	        	
+	        	// Add the last tile into our list of valid tiles
+	        	allMoves.add(tiles.get(tiles.size() - 1));
+	        		
+        		// If our entity has continuous movement, then exhaust this
+        		// movement until it can no longer be valid
+        		if(!entity.isMovementContinuous()) {
         			break;
-        		}
-        		tiles.add(traverser);
-        	}
-        	if(!tiles.isEmpty()) {
-        		allMoves.add(tiles.get(tiles.size() - 1));
-        	}
+        		}	        	
+        		
+        	} while(true);
         }
-        
+            
         return allMoves;
     }
     
