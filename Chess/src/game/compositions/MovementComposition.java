@@ -25,10 +25,12 @@
 package game.compositions;
 
 import java.util.Objects;
+import java.util.logging.Level;
 
 import controllers.PlayerController;
 import engine.core.factories.AbstractFactory;
 import engine.core.factories.ControllerFactory;
+import engine.utils.io.logging.Tracelog;
 import game.entities.concrete.AbstractChessEntity;
 import models.PlayerModel.PlayerTeam;
 import models.TileModel;
@@ -103,9 +105,16 @@ public class MovementComposition {
     
     /**
      * Constructs a new instance of this class type
+     * 
+     * @param tile The tile associated to the movement
      */
     public MovementComposition(TileModel tile) {
-        _tile = tile;
+    	if(tile == null) {
+    		IllegalArgumentException exception = new IllegalArgumentException("Null tile");
+    		Tracelog.log(Level.SEVERE, true, exception);
+    		throw exception;
+    	}
+    	_tile = tile;
     }
     
     /**
@@ -132,11 +141,12 @@ public class MovementComposition {
                 return PlayerMovements.MOVE_2_SELECT;
             }
         }
+        // If the tile has no team then it is an empty tile
         else if(getTileTeam(_tile) == null) {
-            
+            System.out.println("Empty tile");
         }
         else if(isTileEnemyPlayer(_tile)) {
-        
+            System.out.println("Enemy tile");
         }
         
         return PlayerMovements.INVALID;
