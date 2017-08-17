@@ -210,8 +210,9 @@ public final class BoardController extends BaseController {
 	
 		// Register to when a tile is selected
 		registerSignalListener(TileModel.EVENT_SELECTION_CHANGED, new ISignalReceiver<ModelEvent<TileModel>>() {
+			
 			@Override public void signalReceived(ModelEvent<TileModel> event) {
-				
+		
 				// Unregister the listener to avoid cyclic loops when deselecting a tile
 				String listenerIdentifier = unregisterSignalListener(this);
 				
@@ -221,7 +222,6 @@ public final class BoardController extends BaseController {
 				switch(tile.getMovementComposition().getBoardMovement(_previouslySelectedTile)) {
 				case INVALID:
 					Tracelog.log(Level.WARNING, true, "Invalid board move, cannot perform a move using that tile");
-					tile.setSelected(false);
 					break;
 				case MOVE_1_SELECT:
 				    _previouslySelectedTile = tile;
@@ -234,10 +234,22 @@ public final class BoardController extends BaseController {
 				    
 					break;
 				case MOVE_2_SELECT:
+					
 					_previouslySelectedTile.setSelected(false);
 					Tracelog.log(Level.INFO, true, _previouslySelectedTile.toString() + " is now deselected");
+					
+					// Go through each path and mark the tiles as not highlighted
+                    for(TileModel moveableTile : _boardComposition.getBoardPositions(_previouslySelectedTile)) {
+                		moveableTile.setHighlighted(false);
+                    }
+                	
+                    // Go through each path and mark the tiles as highlighted
+                    for(TileModel moveableTile : _boardComposition.getBoardPositions(tile)) {
+                		moveableTile.setHighlighted(true);
+                    }
 					_previouslySelectedTile = tile;
 					Tracelog.log(Level.INFO, true, _previouslySelectedTile.toString() + " is now selected");
+					
 					break;
 				case MOVE_2_CAPTURE:
 					break;
