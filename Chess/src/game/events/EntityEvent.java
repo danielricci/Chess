@@ -42,14 +42,20 @@ public class EntityEvent<T extends ISignalListener> extends SignalEvent<T> {
 	public final AbstractChessEntity entity;
 	
 	/**
+	 * Indicates if the entity is to be highlighted
+	 */
+	public final boolean isHighlighted;
+	
+	/**
 	 * Constructs a new instance of this class type
 	 * 
 	 * @param sender The sender source
 	 * @param operationName The name of the operation being performed
 	 * @param entity The entity
 	 */
-	public EntityEvent(T sender, String operationName, AbstractChessEntity entity) {
+	public EntityEvent(T sender, String operationName, AbstractChessEntity entity, boolean isHighlighted) {
 		super(sender, operationName);
 		this.entity = entity;
+		this.isHighlighted = isHighlighted;
 	}
 }

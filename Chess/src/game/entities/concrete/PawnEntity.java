@@ -27,7 +27,7 @@ package game.entities.concrete;
 import java.util.ArrayList;
 import java.util.List;
 
-import game.compositions.MovementComposition.EntityMovements;
+import game.components.MovementComponent.EntityMovements;
 import generated.DataLookup.DataLayerName;
 
 /**

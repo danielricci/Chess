@@ -72,6 +72,11 @@ public class DebuggerView extends DialogView {
 	private JButton _stopButton = new JButton("Stop");
 	
 	/**
+	 * The clear button that clears the board
+	 */
+	private JButton _clearButton = new JButton("Clear");
+	
+	/**
 	 * Constructs a new instance of this class type
 	 */
 	public DebuggerView() {
@@ -120,11 +125,13 @@ public class DebuggerView extends DialogView {
 		JPanel actionPanel = new JPanel();
 		actionPanel.add(_startButton);
 		actionPanel.add(_stopButton);
+		actionPanel.add(_clearButton);
 		getContentPane().add(actionPanel);
 		
 		// Set the states of the action buttons
 		_startButton.setEnabled(true);
 		_stopButton.setEnabled(false);
+		_clearButton.setEnabled(true);
 	}
 	
 	@Override public void initializeComponentBindings() {
@@ -138,6 +145,7 @@ public class DebuggerView extends DialogView {
 				_piecesList.setEnabled(false);
 				_teamList.setEnabled(false);
 				_stopButton.setEnabled(true);
+				_clearButton.setEnabled(false);
 				
 				// Start the game
 				controller.startGame();
@@ -149,9 +157,16 @@ public class DebuggerView extends DialogView {
 				_piecesList.setEnabled(true);
 				_teamList.setEnabled(true);
 				_stopButton.setEnabled(false);
+				_clearButton.setEnabled(true);
 				
 				// Stop the game
 				controller.stopGame();
+			}
+		});
+		_clearButton.addActionListener(new ActionListener() {
+			@Override public void actionPerformed(ActionEvent event) {
+				// Clear the board
+				controller.clearBoard();
 			}
 		});
 

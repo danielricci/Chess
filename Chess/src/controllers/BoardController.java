@@ -37,7 +37,8 @@ import engine.core.factories.ControllerFactory;
 import engine.core.factories.ModelFactory;
 import engine.core.mvc.controller.BaseController;
 import engine.utils.io.logging.Tracelog;
-import game.compositions.BoardComposition;
+import game.components.BoardComponent;
+import game.entities.concrete.AbstractChessEntity;
 import game.events.EntityEvent;
 import generated.DataLookup;
 import models.PlayerModel;
@@ -66,9 +67,9 @@ public final class BoardController extends BaseController {
     private final Dimension _dimensions = new Dimension(8, 8);
     
     /**
-     * The board composition of the board game 
+     * The board component of the board game 
      */
-    private final BoardComposition _boardComposition = new BoardComposition(_dimensions);
+    private final BoardComponent _boardComposition = new BoardComponent(_dimensions);
     
 	/**
 	 * This flag indicates if the game is running
@@ -145,9 +146,11 @@ public final class BoardController extends BaseController {
 	/**
 	 *	Clears the board of all chess pieces
 	 */
-	private void clearBoard() {
+	public void clearBoard() {
+		
+		// Send a signal to all tile models and set their 
 		AbstractFactory.getFactory(ModelFactory.class).multicastSignal(
-			TileModel.class, new EntityEvent(this, TileModel.EVENT_SELECTION_CHANGED, null)
+			TileModel.class, new EntityEvent(this, TileModel.EVENT_ENTITY_CHANGED, null, false)
 		);
 		
 		// Clear the previously selected tile if any
@@ -158,6 +161,29 @@ public final class BoardController extends BaseController {
 		for(PlayerTeam team : PlayerTeam.values()) {
 			player.getPlayer(team).clearEntities();
 		}
+	}
+	
+	/**
+	 * Clears the board of the specified tile
+	 * 
+	 * @param tile The tile to clear
+	 */
+	public void clearBoard(TileModel tile) {
+		
+		// Get the tile's entity
+		AbstractChessEntity entity = tile.getEntity();
+		if(entity == null) {
+			return;
+		}
+		// Clear the entity from the model
+		tile.setEntity(null);
+		
+		// Clear the entity from the player
+		PlayerController player = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class);
+		player.getPlayer(entity.getTeam()).removeEntity(entity);
+		
+		// Clear the previously selected tile if any
+		_previouslySelectedTile = null;
 	}
 	
 	/**
@@ -175,7 +201,15 @@ public final class BoardController extends BaseController {
 		_isGameRunning = false;
 		Tracelog.log(Level.INFO, true, "The game is now stopped");
 		
-		clearBoard();
+		// Send a message to all the tile models to stop highlighting themselves
+		AbstractFactory.getFactory(ModelFactory.class).multicastSignal(
+			TileModel.class, new EntityEvent(this, TileModel.EVENT_HIGHLIGHT_CHANGED, null, false)
+		);
+		
+		// If there is a previously set tile then remove it's selection 
+		if(_previouslySelectedTile != null) {
+			_previouslySelectedTile.setSelected(false);
+		}
 	}
 		
 	/**
@@ -221,6 +255,7 @@ public final class BoardController extends BaseController {
 				
 				switch(tile.getMovementComposition().getBoardMovement(_previouslySelectedTile)) {
 				case INVALID:
+					tile.setSelected(false);
 					Tracelog.log(Level.WARNING, true, "Invalid board move, cannot perform a move using that tile");
 					break;
 				case MOVE_1_SELECT:
@@ -252,6 +287,25 @@ public final class BoardController extends BaseController {
 					
 					break;
 				case MOVE_2_CAPTURE:
+					_previouslySelectedTile = null;
+					tile.setSelected(false);
+					break;
+				case MOVE_2_EMPTY:
+					
+					List<TileModel> availablePositions = _boardComposition.getBoardPositions(_previouslySelectedTile);
+					if(availablePositions.contains(tile)) {
+						_previouslySelectedTile.setSelected(false);
+						for(TileModel moveableTile : availablePositions) {
+	                		moveableTile.setHighlighted(false);
+						}
+						AbstractChessEntity entity = _previouslySelectedTile.getEntity();
+						_previouslySelectedTile.setEntity(null);
+						_previouslySelectedTile = null;
+						
+						tile.setEntity(entity);
+					}
+
+					tile.setSelected(false);
 					break;
 				case MOVE_2_UNSELECT:
 					

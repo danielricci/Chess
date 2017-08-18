@@ -22,7 +22,7 @@
 * IN THE SOFTWARE.
 */
 
-package game.compositions;
+package game.components;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
@@ -32,8 +32,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import game.compositions.MovementComposition.EntityMovements;
-import game.entities.interfaces.IChessEntity;
+import game.components.MovementComponent.EntityMovements;
+import game.entities.concrete.AbstractChessEntity;
 import models.TileModel;
 
 /**
@@ -42,7 +42,7 @@ import models.TileModel;
  * @author Daniel Ricci {@literal <thedanny09@gmail.com>}
  *
  */
-public class BoardComposition {
+public class BoardComponent {
  
     /**
      * The dimensions of the board game
@@ -62,7 +62,7 @@ public class BoardComposition {
      * 
      * @param dimensions The board game dimensions
      */
-    public BoardComposition(Dimension dimensions) {
+    public BoardComponent(Dimension dimensions) {
         _dimensions = dimensions;
     }
     
@@ -84,13 +84,6 @@ public class BoardComposition {
         }
     }
     
-    /**
-     * Gets the board position available to the tile model specified
-     * 
-     * @param tileModel The tile model
-     * 
-     * @return The list of tiles that can be reached based on the specified tile model
-     */
     public List<TileModel> getBoardPositions(TileModel tileModel) {
         
     	// The list of all movements. The end position within each sub-list is the 
@@ -99,13 +92,13 @@ public class BoardComposition {
 
         // If tile model does not has a chess entity then
         // there are no moves to get
-        IChessEntity entity = tileModel.getEntity();
+        AbstractChessEntity entity = tileModel.getEntity();
         if(entity == null) {
             return allMoves;
         }
         
         for(int i = 0, iSize = entity.getMovements().size(); i < iSize; ++i) {
-
+        	
         	TileModel traverser = tileModel;
         	do {
         		// Temporary list to hold our entire path, and from there I 
@@ -137,15 +130,22 @@ public class BoardComposition {
 	        		break;
 	        	}
 	        	
+	        	TileModel destinationTile = tiles.get(tiles.size() - 1);
+	        	
+	        	// if the end tile is ourselves then do not consider it and stop
+	        	if(MovementComponent.isTileCurrentPlayer(destinationTile)) {
+	        		break;
+	        	}
+
 	        	// Add the last tile into our list of valid tiles
-	        	allMoves.add(tiles.get(tiles.size() - 1));
-	        		
-        		// If our entity has continuous movement, then exhaust this
-        		// movement until it can no longer be valid
-        		if(!entity.isMovementContinuous()) {
-        			break;
-        		}	        	
-        		
+	        	allMoves.add(destinationTile);
+	        	
+	        	// If the tile has an enemy player on it then stop here
+	        	// If the tile is not continuous then we do not need to 
+	        	// continue with the same move
+	        	if(MovementComponent.isTileEnemyPlayer(destinationTile) || !entity.isMovementContinuous()) {
+	        		break;
+	        	}
         	} while(true);
         }
             

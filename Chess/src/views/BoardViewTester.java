@@ -29,6 +29,8 @@ import java.awt.GridBagConstraints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.SwingUtilities;
+
 import controllers.BoardController;
 import controllers.DebuggerController;
 import controllers.PlayerController;
@@ -75,7 +77,7 @@ public class BoardViewTester extends BoardView {
 				);
 				
 				view.addMouseListener(new MouseAdapter() {
-					@Override public void mouseReleased(MouseEvent e) {
+					@Override public void mouseReleased(MouseEvent event) {
 						
 						// If the debugger window is not visible then do not go any further.
 						DebuggerController debuggerController = AbstractFactory.getFactory(ControllerFactory.class).get(DebuggerController.class);
@@ -83,21 +85,30 @@ public class BoardViewTester extends BoardView {
 							return;
 						}
 						
-						// If the tile already has an entity then do not create a new one on it
-						TileController tileController = view.getViewProperties().getEntity(TileController.class);
-						if(tileController.hasEntity()) {
+						// If the game is running then go no futher
+						if(AbstractFactory.getFactory(ControllerFactory.class).get(BoardController.class).IsGameRunning()) {
 							return;
 						}
 						
-						// Get a reference to the new entity based on the options selected in the debugger
-						AbstractChessEntity entity = AbstractFactory
-								.getFactory(ControllerFactory.class)
-								.get(PlayerController.class)
-								.createEntity(debuggerController.getSelectedTeamDebug(), debuggerController.getSelectedPieceDebug());
+						// If the tile already has an entity then do not create a new one on it
+						TileController tileController = view.getViewProperties().getEntity(TileController.class);
 						
-						// If we got back a valid entity then add it
-						if(entity != null) {
-							tileController.setChessEntity(entity);
+						if(SwingUtilities.isLeftMouseButton(event)) {
+							if(!tileController.hasEntity()) {
+								// Get a reference to the new entity based on the options selected in the debugger
+								AbstractChessEntity entity = AbstractFactory
+										.getFactory(ControllerFactory.class)
+										.get(PlayerController.class)
+										.createEntity(debuggerController.getSelectedTeamDebug(), debuggerController.getSelectedPieceDebug());
+								
+								// If we got back a valid entity then add it
+								if(entity != null) {
+									tileController.setChessEntity(entity);
+								}
+							}
+						}
+						else if(SwingUtilities.isRightMouseButton(event)) {
+							tileController.setChessEntity(null);
 						}
 					}
 				});

@@ -184,6 +184,9 @@ public class TileView extends PanelView {
 	}
 	
 	@Override public void update(SignalEvent signalEvent) {
+		
+		System.out.println("TileView::update");
+		
 		// Call the super implementation
 		super.update(signalEvent);
 		

@@ -29,7 +29,7 @@ import java.util.UUID;
 import engine.communication.internal.signal.ISignalListener;
 import engine.communication.internal.signal.ISignalReceiver;
 import engine.core.mvc.model.BaseModel;
-import game.compositions.MovementComposition;
+import game.components.MovementComponent;
 import game.entities.concrete.AbstractChessEntity;
 import game.events.EntityEvent;
 
@@ -40,6 +40,11 @@ import game.events.EntityEvent;
  *
  */
 public class TileModel extends BaseModel {
+	
+	/**
+	 * Signal indicating that this model's entity has changed
+	 */
+	public static final String EVENT_ENTITY_CHANGED = UUID.randomUUID().toString();
 	
 	/**
 	 * Signal indicating that this model's selection state has changed
@@ -59,7 +64,7 @@ public class TileModel extends BaseModel {
 	/**
 	 * The movement composition of this tile model
 	 */
-	private final MovementComposition _movementComposition = new MovementComposition(this);
+	private final MovementComponent _movementComposition = new MovementComponent(this);
 	
 	/**
 	 * Property indicating if this tile is selected
@@ -134,13 +139,16 @@ public class TileModel extends BaseModel {
 	 */
 	public void setEntity(AbstractChessEntity entity) {
 		_entity = entity;
+		if(_entity == null) {
+			setHighlighted(false);
+		}
 		doneUpdating();
 	}
 	
 	/**
 	 * @return The movement composition of this tile model
 	 */
-	public MovementComposition getMovementComposition() {
+	public MovementComponent getMovementComposition() {
 	    return _movementComposition;
 	}
 	
@@ -153,13 +161,21 @@ public class TileModel extends BaseModel {
 		return _entity;
 	}
 	
+	public void reset() {
+		
+	}
+	
 	@Override public void registerSignalListeners() {
 		super.registerSignalListeners();
 		
-		// Listen to the remove layer event
-		registerSignalListener(TileModel.EVENT_SELECTION_CHANGED, new ISignalReceiver<EntityEvent<AbstractChessEntity>>() {
+		registerSignalListener(TileModel.EVENT_ENTITY_CHANGED, new ISignalReceiver<EntityEvent<AbstractChessEntity>>() {
 			@Override public void signalReceived(EntityEvent<AbstractChessEntity> event) {
 				setEntity(event.entity);
+			}
+		});
+		registerSignalListener(TileModel.EVENT_HIGHLIGHT_CHANGED, new ISignalReceiver<EntityEvent<AbstractChessEntity>>() {
+			@Override public void signalReceived(EntityEvent<AbstractChessEntity> event) {
+				setHighlighted(event.isHighlighted);
 			}
 		});
 	}

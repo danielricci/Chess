@@ -30,8 +30,6 @@ import java.util.List;
 import java.util.Queue;
 import java.util.logging.Level;
 
-import engine.core.factories.AbstractFactory;
-import engine.core.factories.ControllerFactory;
 import engine.core.mvc.controller.BaseController;
 import engine.utils.io.logging.Tracelog;
 import game.entities.concrete.AbstractChessEntity;
@@ -92,13 +90,6 @@ public final class PlayerController extends BaseController {
 	 * @return The newly created entity
 	 */
 	public AbstractChessEntity createEntity(PlayerTeam team, DataLayerName dataLayerName) {
-	
-		// If the game is running then no more entities should be created
-		// Note: This might not be good, since there are scenarios in the game 
-		//		 where we might want to create new chess pieces. (Pawns reaching the end of the board)
-		if(AbstractFactory.getFactory(ControllerFactory.class).get(BoardController.class).IsGameRunning()) {
-			return null;
-		}
 	
 		// Get the player model of the specified team
 		PlayerModel player = getPlayer(team);

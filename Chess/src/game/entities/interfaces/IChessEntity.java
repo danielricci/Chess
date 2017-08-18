@@ -26,7 +26,7 @@ package game.entities.interfaces;
 
 import java.util.List;
 
-import game.compositions.MovementComposition.EntityMovements;
+import game.components.MovementComponent.EntityMovements;
 
 /**
  * This interface defines functionality that must be implemented 

@@ -22,7 +22,7 @@
 * IN THE SOFTWARE.
 */
 
-package game.compositions;
+package game.components;
 
 import java.util.Objects;
 import java.util.logging.Level;
@@ -41,8 +41,11 @@ import models.TileModel;
  * @author Daniel Ricci {@literal <thedanny09@gmail.com>}
  *
  */
-public class MovementComposition {
+public class MovementComponent {
  
+	/**
+	 * The tile model of this movement component
+	 */
     private final TileModel _tile;
     
     /**
@@ -108,7 +111,7 @@ public class MovementComposition {
      * 
      * @param tile The tile associated to the movement
      */
-    public MovementComposition(TileModel tile) {
+    public MovementComponent(TileModel tile) {
     	if(tile == null) {
     		IllegalArgumentException exception = new IllegalArgumentException("Null tile");
     		Tracelog.log(Level.SEVERE, true, exception);
@@ -143,10 +146,14 @@ public class MovementComposition {
         }
         // If the tile has no team then it is an empty tile
         else if(getTileTeam(_tile) == null) {
-            System.out.println("Empty tile");
+        	if(previouslySelectedTile != null && isTileCurrentPlayer(previouslySelectedTile)) {
+        		return PlayerMovements.MOVE_2_EMPTY;
+        	}
         }
         else if(isTileEnemyPlayer(_tile)) {
-            System.out.println("Enemy tile");
+            if(isTileCurrentPlayer(previouslySelectedTile)) {
+            	return PlayerMovements.MOVE_2_CAPTURE;
+            }
         }
         
         return PlayerMovements.INVALID;
@@ -159,7 +166,7 @@ public class MovementComposition {
      * 
      * @return If the tile is that of the person currently playing
      */
-    private static boolean isTileCurrentPlayer(TileModel tile) {
+    public static boolean isTileCurrentPlayer(TileModel tile) {
         PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class);
         return playerController.getCurrentPlayerTeam() == getTileTeam(tile);
     }
@@ -171,7 +178,7 @@ public class MovementComposition {
      * 
      * @return If the tile belongs to an opposing player
      */
-    private static boolean isTileEnemyPlayer(TileModel tile) {
+    public static boolean isTileEnemyPlayer(TileModel tile) {
         PlayerTeam team = getTileTeam(tile);
         PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class);
         return team != null && team != playerController.getCurrentPlayerTeam();
@@ -184,7 +191,7 @@ public class MovementComposition {
      *
      * @return The team associated to the tile model if any
      */
-    private static PlayerTeam getTileTeam(TileModel model) {
+    public static PlayerTeam getTileTeam(TileModel model) {
         AbstractChessEntity entity = model.getEntity();
         return entity != null ? entity.getTeam() : null;
     }  
