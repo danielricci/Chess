@@ -102,8 +102,15 @@ public final class PlayerController extends BaseController {
 	 */
 	public void nextPlayer() {
 		// Swap the players
-		_playerTurnQueue.add(_playerTurnQueue.poll());
-		Tracelog.log(Level.INFO, true, "Player " + _playerTurnQueue.peek().toString() + " is now playing");
+	    PlayerModel player = _playerTurnQueue.poll();
+		_playerTurnQueue.add(player);
+		
+		// Log player turn swapping taking place
+		Tracelog.log(
+	        Level.INFO, 
+	        true, 
+	        String.format("Player %s has stopped playing and it is now %s's turn", player.toString(), _playerTurnQueue.peek().toString())
+        );
 	}
 	
 	/**

@@ -24,13 +24,10 @@
 
 package controllers;
 
-import java.util.logging.Level;
-
 import engine.core.factories.AbstractFactory;
 import engine.core.factories.ControllerFactory;
 import engine.core.factories.ModelFactory;
 import engine.core.mvc.controller.BaseController;
-import engine.utils.io.logging.Tracelog;
 import game.entities.concrete.AbstractChessEntity;
 import models.TileModel;
 import views.TileView;
@@ -100,7 +97,6 @@ public final class TileController extends BaseController {
 		
 		// Make sure that the game is running before continuing
 		if(!boardController.IsGameRunning()) {
-			Tracelog.log(Level.WARNING, true, "Game is not running yet, cannot select any tiles");
 			return;
 		}
 		

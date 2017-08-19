@@ -31,7 +31,7 @@ import java.util.logging.Level;
 
 import engine.api.IModel;
 import engine.communication.internal.signal.ISignalReceiver;
-import engine.communication.internal.signal.types.ModelEvent;
+import engine.communication.internal.signal.arguments.ModelEventArgs;
 import engine.core.factories.AbstractFactory;
 import engine.core.factories.ControllerFactory;
 import engine.core.factories.ModelFactory;
@@ -239,17 +239,17 @@ public final class BoardController extends BaseController {
 	@Override public void registerSignalListeners() {
 		
 		// Register to when this controller is added as a listener
-		registerSignalListener(IModel.EVENT_LISTENER_ADDED, new ISignalReceiver<ModelEvent<TileModel>>() {
-			@Override public void signalReceived(ModelEvent<TileModel> event) {
+		registerSignalListener(IModel.EVENT_LISTENER_ADDED, new ISignalReceiver<ModelEventArgs<TileModel>>() {
+			@Override public void signalReceived(ModelEventArgs<TileModel> event) {
 			    // Add the received entity to the board movement blueprint
 				_boardComposition.addTileEntity(event.getSource());
 			}
 		});
 	
 		// Register to when a tile is selected
-		registerSignalListener(TileModel.EVENT_SELECTION_CHANGED, new ISignalReceiver<ModelEvent<TileModel>>() {
+		registerSignalListener(TileModel.EVENT_SELECTION_CHANGED, new ISignalReceiver<ModelEventArgs<TileModel>>() {
 			
-			@Override public void signalReceived(ModelEvent<TileModel> event) {
+			@Override public void signalReceived(ModelEventArgs<TileModel> event) {
 		
 				// Unregister the listener to avoid cyclic loops when deselecting a tile
 				String listenerIdentifier = unregisterSignalListener(this);
@@ -257,11 +257,15 @@ public final class BoardController extends BaseController {
 				// Get the tile model that fired the event
 				TileModel tile = event.getSource();
 				
+				// Get the list of current movements for the previously selected tile
 				PlayerMovements currentMovement = tile.getMovementComposition().getBoardMovement(_previouslySelectedTile);
+				
+				// Set a flag to indicate if the operation being done below was successful
+				boolean moveSuccessful = false;
+				
 				switch(currentMovement) {
 				case INVALID:
 					tile.setSelected(false);
-					Tracelog.log(Level.WARNING, true, "Invalid board move, cannot perform a move using that tile");
 					break;
 				case MOVE_1_SELECT:
 				    _previouslySelectedTile = tile;
@@ -271,6 +275,9 @@ public final class BoardController extends BaseController {
                     for(TileModel moveableTile : _boardComposition.getBoardPositions(tile)) {
                 		moveableTile.setHighlighted(true);
                     }
+                    
+                    // Indicate that this movement was successful in its operation
+                    moveSuccessful = true;
 				    
 					break;
 				case MOVE_2_SELECT:
@@ -288,30 +295,89 @@ public final class BoardController extends BaseController {
                 		moveableTile.setHighlighted(true);
                     }
 					_previouslySelectedTile = tile;
+
+					// Indicate that this movement was successful in its operation
+                    moveSuccessful = true;
+
 					Tracelog.log(Level.INFO, true, _previouslySelectedTile.toString() + " is now selected");
 					
 					break;
-				case MOVE_2_CAPTURE:
-					_previouslySelectedTile = null;
-					tile.setSelected(false);
-					break;
-				case MOVE_2_EMPTY:
+				case MOVE_2_CAPTURE: {
+				    
+				    // Get the list of available board positions of the previously selected tile
+				    List<TileModel> availablePositions = _boardComposition.getBoardPositions(_previouslySelectedTile);
+				    
+				    // If our capture occurs on one of these positions
+				    // Note: It is assumed here that because we identify as a capture move
+				    //       that the said position contains the entity in question to be captured
+                    if(availablePositions.contains(tile)) {
+                 
+                        // Get the entities of the player and the enemy
+                        AbstractChessEntity playerEntity = _previouslySelectedTile.getEntity();
+                        AbstractChessEntity enemyEntity = tile.getEntity();
+                        
+                        // Remove the entity from the previous tile
+                        _previouslySelectedTile.setEntity(null);
+                        
+                        // Remove the enemy entity from it's current tile
+                        // and remove it from the player
+                        tile.setEntity(playerEntity);
+                        PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true); 
+                        playerController.getPlayer(enemyEntity.getTeam()).removeEntity(enemyEntity);
+                        
+                        // Go through the list of positions available and remove their highlight guides
+                        for(TileModel moveableTile : availablePositions) {
+                            moveableTile.setHighlighted(false);
+                        }
+                        
+                        // Remove the selection from tiles selected in this operation
+                        tile.setSelected(false);
+                        _previouslySelectedTile.setSelected(false);
+                        _previouslySelectedTile = null;
+                        
+                        // Indicate that this movement was successful in its operation
+                        moveSuccessful = true;
+                    }
+				    tile.setSelected(false);
 					
+					break;
+				}
+				case MOVE_2_EMPTY: {
+				
+				    // Get the list of available positions from the previously selected tile
 					List<TileModel> availablePositions = _boardComposition.getBoardPositions(_previouslySelectedTile);
+					
+					// If the tile that was selected is an available position
 					if(availablePositions.contains(tile)) {
-						_previouslySelectedTile.setSelected(false);
-						for(TileModel moveableTile : availablePositions) {
-	                		moveableTile.setHighlighted(false);
-						}
+					    
+					    // Get the previously selected entity and remove the piece
+					    // from that tile and place it at the new, empty tile location
 						AbstractChessEntity entity = _previouslySelectedTile.getEntity();
 						_previouslySelectedTile.setEntity(null);
-						_previouslySelectedTile = null;
-						
 						tile.setEntity(entity);
-					}
+						
+						// Remove the selection from the previous selection and 
+						// the current selection
+						_previouslySelectedTile.setSelected(false);
+						tile.setSelected(false);
+						
+                        // Go through the list of positions available and remove their highlight guides
+						for(TileModel moveableTile : availablePositions) {
+						    moveableTile.setHighlighted(false);
+	                    }
 
-					tile.setSelected(false);
+						// The move is over so indicate that everything went well and clean
+						// up the variables
+						_previouslySelectedTile = null;
+                        moveSuccessful = true;
+					} else {
+					    
+					    // The empty tile was not within the list of available moves
+					    // so remove the selection from the current tile
+					    tile.setSelected(false);
+					}
 					break;
+				}
 				case MOVE_2_UNSELECT:
 					
 					// Unselect the previously selected tile
@@ -323,10 +389,22 @@ public final class BoardController extends BaseController {
                 		moveableTile.setHighlighted(false);
                     }
 					_previouslySelectedTile = null;
+					
+                    // Indicate that this movement was successful in its operation
+                    moveSuccessful = true;
+
 					break;
 				}
 				
-				if(currentMovement.isMoveFinal) {
+				// Log the movement event that just occurred
+				Tracelog.log(Level.INFO, true, currentMovement.toString());
+				
+				// If there is no previous tile selected and 
+				if(moveSuccessful && currentMovement.isMoveFinal) {
+				    
+				    // Indicate that the tile has moved at least once
+				    tile.getEntity().setHasMoved(true);
+				    
 					// Get the player controller
 					PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true); 
 					playerController.nextPlayer();

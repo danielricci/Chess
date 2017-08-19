@@ -166,7 +166,8 @@ public class MovementComponent {
         }
         // If the tile occupied by the opposing team
         else if(isTileEnemyPlayer(_tile)) {
-            if(isTileCurrentPlayer(previouslySelectedTile)) {
+            // If the previously selected tile exists
+            if(previouslySelectedTile != null && isTileCurrentPlayer(previouslySelectedTile)) {
             	return PlayerMovements.MOVE_2_CAPTURE;
             }
         }

@@ -33,7 +33,7 @@ import javax.swing.border.Border;
 
 import controllers.TileController;
 import engine.communication.internal.signal.ISignalReceiver;
-import engine.communication.internal.signal.types.SignalEvent;
+import engine.communication.internal.signal.arguments.SignalEventArgs;
 import engine.core.factories.AbstractSignalFactory;
 import engine.core.factories.ControllerFactory;
 import engine.core.mvc.view.PanelView;
@@ -152,15 +152,15 @@ public class TileView extends PanelView {
 	
 	@Override public void registerSignalListeners() {
 		// Register the event for showing neighbors
-		registerSignalListener(EVENT_SHOW_NEIGHBORS, new ISignalReceiver<SignalEvent>() {
-			@Override public void signalReceived(SignalEvent event) {
+		registerSignalListener(EVENT_SHOW_NEIGHBORS, new ISignalReceiver<SignalEventArgs>() {
+			@Override public void signalReceived(SignalEventArgs event) {
 				_highlightNeighbors = true;
 			}			
 		});
 		
 		// Register the event for hiding neighbors
-		registerSignalListener(EVENT_HIDE_NEIGHBORS, new ISignalReceiver<SignalEvent>() {
-			@Override public void signalReceived(SignalEvent event) {
+		registerSignalListener(EVENT_HIDE_NEIGHBORS, new ISignalReceiver<SignalEventArgs>() {
+			@Override public void signalReceived(SignalEventArgs event) {
 				_highlightNeighbors = false;
 				
 				// Force the tile to hide its debug selection in case the mouse is already highlighting
@@ -183,7 +183,7 @@ public class TileView extends PanelView {
 		}
 	}
 	
-	@Override public void update(SignalEvent signalEvent) {
+	@Override public void update(SignalEventArgs signalEvent) {
 		
 		System.out.println("TileView::update");
 		

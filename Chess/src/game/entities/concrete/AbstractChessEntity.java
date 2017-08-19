@@ -44,6 +44,11 @@ public abstract class AbstractChessEntity extends AbstractEntity implements IChe
 	 */
 	private PlayerModel _player;
 	
+    /**
+     * Indicates if the pawn has moved at least once
+     */
+    private boolean _hasMovedOnce = false;
+	
 	/**
 	 * Constructs a new instance of this class type
 	 * 
@@ -51,7 +56,6 @@ public abstract class AbstractChessEntity extends AbstractEntity implements IChe
 	 */
 	protected AbstractChessEntity(DataLayerName dataLayerName) {
 		super(dataLayerName.toString());
-		
 	}
 	
 	/**
@@ -88,7 +92,29 @@ public abstract class AbstractChessEntity extends AbstractEntity implements IChe
 			}
 		}
 	}
-		
+	
+    /**
+     * Gets if the chess entity has moved at least once
+     * 
+     * @return If the chess entity has moved at least once
+     */
+    public final boolean hasMovedOnce() {
+        return _hasMovedOnce;
+    }
+
+    /**
+     * Sets if the chess piece has moved at least once.  Once this is set to true
+     * it can no longer be set back to false
+     * 
+     * @param hasMovedOnce If the chess entity has moved at least once
+     * 
+     */
+    public final void setHasMoved(boolean hasMovedOnce) {
+        if(!_hasMovedOnce) {
+            _hasMovedOnce = hasMovedOnce;    
+        }
+    }
+	
 	/**
 	 * Creates an instance of a chess entity with respect to the provided data layer name
 	 * 

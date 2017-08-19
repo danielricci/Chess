@@ -29,7 +29,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 
-import engine.communication.internal.signal.types.SignalEvent;
+import engine.communication.internal.signal.arguments.SignalEventArgs;
 import engine.core.factories.AbstractFactory;
 import engine.core.factories.AbstractSignalFactory;
 import engine.core.factories.ViewFactory;
@@ -68,7 +68,7 @@ public class NeighboursItem extends MenuItem {
 		// know what to do for this debug mode
 		AbstractFactory.getFactory(ViewFactory.class).multicastSignal(
 			TileView.class,
-			new SignalEvent(this, signal)
+			new SignalEventArgs(this, signal)
 		);
 	}
 	

@@ -25,7 +25,7 @@
 package game.events;
 
 import engine.communication.internal.signal.ISignalListener;
-import engine.communication.internal.signal.types.SignalEvent;
+import engine.communication.internal.signal.arguments.SignalEventArgs;
 import game.entities.concrete.AbstractChessEntity;
 
 /**
@@ -34,7 +34,7 @@ import game.entities.concrete.AbstractChessEntity;
  * @author Daniel Ricci {@literal <thedanny09@gmail.com>}
  *
  */
-public class EntityEvent<T extends ISignalListener> extends SignalEvent<T> {
+public class EntityEvent<T extends ISignalListener> extends SignalEventArgs<T> {
 
 	/**
 	 * The chess entity for this event
