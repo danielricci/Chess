@@ -74,11 +74,10 @@ public final class PlayerController extends BaseController {
 			Tracelog.log(Level.WARNING, true, "Attempting to add a player to the player controller that already exists.");
 			return;
 		}
-		
-		// Add the player to both the player turn queue
-		// and the regular player list
+
+		// Add the player to the list of players that are playing
+		// Note: Do not add the players into the queue until the game starts
 		_players.add(player);
-		_playerTurnQueue.add(player);
 	}
 	
 	/**
@@ -99,7 +98,7 @@ public final class PlayerController extends BaseController {
 	}
 	
 	/**
-	 * Finishes the current players turns and gives the turn to the next player
+	 * Finishes the current players turn and gives the turn to the next player
 	 */
 	public void nextPlayer() {
 		// Swap the players
@@ -145,5 +144,22 @@ public final class PlayerController extends BaseController {
 		}
 		
 		return null;
+	}
+
+	/**
+	 * Queue's the list of players in the game
+	 */
+	public void queuePlayers() {
+		
+		// Clear the current list of players from the queue
+		_playerTurnQueue.clear();
+		
+		// Note: Add player white first before black
+		_playerTurnQueue.add(getPlayer(PlayerTeam.WHITE));
+		_playerTurnQueue.add(getPlayer(PlayerTeam.BLACK));
+		
+		for(PlayerModel player : _playerTurnQueue) {
+			Tracelog.log(Level.INFO, true, "Adding " + player.toString() + " to the queue");
+		}
 	}
 }

@@ -38,6 +38,7 @@ import engine.core.factories.ModelFactory;
 import engine.core.mvc.controller.BaseController;
 import engine.utils.io.logging.Tracelog;
 import game.components.BoardComponent;
+import game.components.MovementComponent.PlayerMovements;
 import game.entities.concrete.AbstractChessEntity;
 import game.events.EntityEvent;
 import generated.DataLookup;
@@ -192,6 +193,9 @@ public final class BoardController extends BaseController {
 	public void startGame() {
 		_isGameRunning = true;
 		Tracelog.log(Level.INFO, true, "The game is now running");
+		
+		PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true); 
+		playerController.queuePlayers();
 	}
 	
 	/**
@@ -253,7 +257,8 @@ public final class BoardController extends BaseController {
 				// Get the tile model that fired the event
 				TileModel tile = event.getSource();
 				
-				switch(tile.getMovementComposition().getBoardMovement(_previouslySelectedTile)) {
+				PlayerMovements currentMovement = tile.getMovementComposition().getBoardMovement(_previouslySelectedTile);
+				switch(currentMovement) {
 				case INVALID:
 					tile.setSelected(false);
 					Tracelog.log(Level.WARNING, true, "Invalid board move, cannot perform a move using that tile");
@@ -319,6 +324,12 @@ public final class BoardController extends BaseController {
                     }
 					_previouslySelectedTile = null;
 					break;
+				}
+				
+				if(currentMovement.isMoveFinal) {
+					// Get the player controller
+					PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true); 
+					playerController.nextPlayer();
 				}
 				
 				// Register back this listener

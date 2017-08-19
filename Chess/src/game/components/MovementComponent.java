@@ -83,27 +83,41 @@ public class MovementComponent {
         /**
          * An invalid move
          */
-        INVALID,
+        INVALID(false),
         /**
          * The first piece of the current player is being selected
          */
-        MOVE_1_SELECT,
+        MOVE_1_SELECT(false),
         /**
          * Another piece of the current player is being selected
          */
-        MOVE_2_SELECT,
+        MOVE_2_SELECT(false),
         /**
          * The first piece that was last selected is being selected again
          */
-        MOVE_2_UNSELECT,
+        MOVE_2_UNSELECT(false),
         /**
          * The piece that was selected last is trying to move to an empty tile
          */
-        MOVE_2_EMPTY,
+        MOVE_2_EMPTY(true),
         /**
          * The piece that was selected last is trying to move to a tile that has an enemy piece
          */
-        MOVE_2_CAPTURE;
+        MOVE_2_CAPTURE(true);
+    	
+    	/**
+    	 * Indicates if the movement is a 'finishing move' where the player is done their turn
+    	 */
+    	public final boolean isMoveFinal;
+    	
+    	/**
+    	 * Constructs a new instance of this type
+    	 * 
+    	 * @param isMoveFinal if the movement is a 'finishing move' where the player is done their turn
+    	 */
+    	PlayerMovements(boolean isMoveFinal) {
+    		this.isMoveFinal = isMoveFinal;
+    	}
     }
     
     /**
@@ -150,6 +164,7 @@ public class MovementComponent {
         		return PlayerMovements.MOVE_2_EMPTY;
         	}
         }
+        // If the tile occupied by the opposing team
         else if(isTileEnemyPlayer(_tile)) {
             if(isTileCurrentPlayer(previouslySelectedTile)) {
             	return PlayerMovements.MOVE_2_CAPTURE;
