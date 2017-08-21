@@ -103,15 +103,30 @@ public class BoardComponent {
         if(entity == null) {
             return allMoves;
         }
+
+        if(!entity.isMovementCapturable()){
+        
+        }
         
         // The flag indicating if the entity can capture enemy pieces with the same
         // movement as their allowed list of movements or if they have a separate list for that
         final boolean isMovementCapturable = entity.isMovementCapturable();
+
+        // Holds the list of regular movements and capturable movements which
+        // are movements outside the general scope of a normal movement
+        List<EntityMovements[]> movements = entity.getMovements();
+        List<EntityMovements[]> capturableMovements = new ArrayList();
         
-        for(int i = 0, iSize = entity.getMovements().size(); i < iSize; ++i) {
-        	
-            // Get the list of movements for one particular destination
-            EntityMovements[] movements = entity.getMovements().get(i);
+        // If this entity is an entity where its movements are different
+        // from it's actual capture movements then add those into a separate 
+        // list so we can differentiate between both of them
+        if(!isMovementCapturable) {
+        	capturableMovements.addAll(entity.getCapturableBoardMovements());
+        	movements.addAll(capturableMovements);
+        }
+        
+        // Go through the list of path movements for the entity
+        for(EntityMovements[] movementPath : movements) {
             
         	TileModel traverser = tileModel;
         	
@@ -120,11 +135,10 @@ public class BoardComponent {
         		// pick the last element
 	        	List<TileModel> tiles = new ArrayList();
 	        	
-	        	// Go through the movements and make sure that it is a valid movement
-	        	for(int j = 0, jSize = movements.length; j < jSize; ++j) {
+	        	for(EntityMovements movement : movementPath) {
 	        	
 	        		// Get the movements of the tile from our position
-	        		traverser = _neighbors.get(traverser).get(movements[j]);
+	        		traverser = _neighbors.get(traverser).get(movement);
 	        		
 	        		// If the position is outside the board dimensions then clear the movement to get 
 	        		// to that location and exit the loop
@@ -132,13 +146,14 @@ public class BoardComponent {
 	        			tiles.clear();
 	        			break;
 	        		}
-
-	        		// If the chess piece cannot capture enemy pieces with the same
-	        		// movements as their general movement list then do not consider
-	        		// this path valid
-	        		if(!isMovementCapturable && MovementComponent.isTileEnemyPlayer(traverser)) {
-	        		    tiles.clear();
-                        break;
+	        		
+	        		// If the entity contains movements that differ from their capture movements
+	        		// and we are trying to use a regular movement then this is not legal.  
+	        		// As an example, without this code a pawn could do a capture on it's two move
+	        		// movement, or it could hop over another enemy pawn
+	        		if(!isMovementCapturable && MovementComponent.isTileEnemyPlayer(traverser) && !capturableMovements.contains(movementPath)) {
+	        			tiles.clear();
+	        			break;
 	        		}
 	        		
 	        		// Add the traversed tile to our constructed path
@@ -152,6 +167,17 @@ public class BoardComponent {
 	        	
 	        	// Get the last tile within our path (the endpoint)
 	        	TileModel destinationTile = tiles.get(tiles.size() - 1);
+	        	
+        		// If the entity contains movements that differ from their capture movements
+	        	// then ensure that if we are trying to capture an enemy player that it only
+	        	// ever is allowed if the movement is within the capture movement list 
+	        	// that the entity holds
+	        	// Note: This line of code looks a little similar to the one above in the second for-each, however
+	        	// they both do completely different things however they are both related to differences of 
+	        	// how a piece moves and captures
+	            if(!isMovementCapturable && !MovementComponent.isTileEnemyPlayer(destinationTile) && capturableMovements.contains(movementPath)) {
+	        		break;
+	        	}
 	        	
 	        	// if the end tile is ourselves then do not consider it and stop
 	        	if(MovementComponent.isTileCurrentPlayer(destinationTile)) {
