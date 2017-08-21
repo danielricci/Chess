@@ -56,8 +56,20 @@ class PawnEntity extends AbstractChessEntity {
             }
         }};
     }
-
+    
+    @Override public List<EntityMovements[]> getCapturableBoardMovements() {
+        return new ArrayList<EntityMovements[]>() {{
+            // This is the unit movement that all pawns support
+            add(new EntityMovements[] { EntityMovements.TOP, EntityMovements.RIGHT  });
+            add(new EntityMovements[] { EntityMovements.TOP, EntityMovements.LEFT  });
+        }};
+    }
+    
     @Override public boolean isMovementContinuous() {
+        return false;
+    }
+
+    @Override public boolean isMovementCapturable() {
         return false;
     }
 }

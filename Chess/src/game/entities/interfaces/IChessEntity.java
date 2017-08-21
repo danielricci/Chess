@@ -45,9 +45,26 @@ public interface IChessEntity {
     public List<EntityMovements[]> getMovements();
     
     /**
+     * Gets the list of board movements with results in captures
+     * 
+     * Note: For almost all chess pieces this method call is identical to {@link #getMovements()}
+     * 
+     * @return All the capturable board movements of this chess entity
+     */
+    public List<EntityMovements[]> getCapturableBoardMovements();
+    
+    /**
      * Indicates if the entity moves in a continuous manner
      * 
-     * @return If the movement of this entity is continuous
+     * @return TRUE If the movement of this entity is continuous
      */
     public boolean isMovementContinuous();
+    
+    /**
+     * Indicates if the moves performed by the entity are also used 
+     * to capture opponent pieces
+     * 
+     * @return TRUE if the movements performed by this piece results in a capture
+     */
+    public boolean isMovementCapturable();
 }

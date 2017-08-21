@@ -26,6 +26,7 @@ package game.entities.concrete;
 
 import java.util.List;
 
+import game.components.MovementComponent.EntityMovements;
 import game.core.AbstractEntity;
 import game.entities.interfaces.IChessEntity;
 import generated.DataLookup.DataLayerName;
@@ -114,7 +115,7 @@ public abstract class AbstractChessEntity extends AbstractEntity implements IChe
             _hasMovedOnce = hasMovedOnce;    
         }
     }
-	
+    
 	/**
 	 * Creates an instance of a chess entity with respect to the provided data layer name
 	 * 
@@ -139,5 +140,14 @@ public abstract class AbstractChessEntity extends AbstractEntity implements IChe
         default:
             return null;	    
 	    }
+	}
+    
+	@Override public boolean isMovementCapturable() {
+        return true;
+    }
+	
+	@Override public List<EntityMovements[]> getCapturableBoardMovements() {
+	    // By default this returns the board movements of this piece
+	    return getMovements();
 	}
 }

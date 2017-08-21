@@ -135,11 +135,11 @@ public class MovementComponent {
     }
     
     /**
-     * Gets the current board movement based on the 
+     * Gets the current board movement based on the specified tile
      * 
-     * @param newlySelectedTile The newly selected tile
+     * @param newlySelectedTile The previously selected tile (the one first clicked)
      * 
-     * @return The board movement
+     * @return The board movement that is being done
      */
     public PlayerMovements getBoardMovement(TileModel previouslySelectedTile) {
         

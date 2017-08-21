@@ -84,6 +84,13 @@ public class BoardComponent {
         }
     }
     
+    /**
+     * Gets the list of board positions that the specified tile can move on
+     * 
+     * @param tileModel The tile model being played
+     * 
+     * @return The list of tiles to move towards
+     */
     public List<TileModel> getBoardPositions(TileModel tileModel) {
         
     	// The list of all movements. The end position within each sub-list is the 
@@ -97,16 +104,21 @@ public class BoardComponent {
             return allMoves;
         }
         
+        // The flag indicating if the entity can capture enemy pieces with the same
+        // movement as their allowed list of movements or if they have a separate list for that
+        final boolean isMovementCapturable = entity.isMovementCapturable();
+        
         for(int i = 0, iSize = entity.getMovements().size(); i < iSize; ++i) {
         	
+            // Get the list of movements for one particular destination
+            EntityMovements[] movements = entity.getMovements().get(i);
+            
         	TileModel traverser = tileModel;
+        	
         	do {
         		// Temporary list to hold our entire path, and from there I 
         		// pick the last element
 	        	List<TileModel> tiles = new ArrayList();
-	        	
-	        	// Get the list of movements for one particular destination
-	        	EntityMovements[] movements = entity.getMovements().get(i);
 	        	
 	        	// Go through the movements and make sure that it is a valid movement
 	        	for(int j = 0, jSize = movements.length; j < jSize; ++j) {
@@ -120,6 +132,14 @@ public class BoardComponent {
 	        			tiles.clear();
 	        			break;
 	        		}
+
+	        		// If the chess piece cannot capture enemy pieces with the same
+	        		// movements as their general movement list then do not consider
+	        		// this path valid
+	        		if(!isMovementCapturable && MovementComponent.isTileEnemyPlayer(traverser)) {
+	        		    tiles.clear();
+                        break;
+	        		}
 	        		
 	        		// Add the traversed tile to our constructed path
 	        		tiles.add(traverser);
@@ -130,6 +150,7 @@ public class BoardComponent {
 	        		break;
 	        	}
 	        	
+	        	// Get the last tile within our path (the endpoint)
 	        	TileModel destinationTile = tiles.get(tiles.size() - 1);
 	        	
 	        	// if the end tile is ourselves then do not consider it and stop
@@ -146,6 +167,7 @@ public class BoardComponent {
 	        	if(MovementComponent.isTileEnemyPlayer(destinationTile) || !entity.isMovementContinuous()) {
 	        		break;
 	        	}
+	        	
         	} while(true);
         }
             
