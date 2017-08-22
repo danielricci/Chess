@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 import game.components.MovementComponent.EntityMovements;
+import game.components.MovementComponent.PlayerDirection;
 import game.entities.concrete.AbstractChessEntity;
 import models.TileModel;
 
@@ -103,10 +104,6 @@ public class BoardComponent {
         if(entity == null) {
             return allMoves;
         }
-
-        if(!entity.isMovementCapturable()){
-        
-        }
         
         // The flag indicating if the entity can capture enemy pieces with the same
         // movement as their allowed list of movements or if they have a separate list for that
@@ -136,7 +133,10 @@ public class BoardComponent {
 	        	List<TileModel> tiles = new ArrayList();
 	        	
 	        	for(EntityMovements movement : movementPath) {
-	        	
+	        		
+	        		// Normalize the movement w.r.t the player of the entity
+	        		movement = PlayerDirection.getNormalizedMovement(entity.getTeam().direction, movement);
+	        		
 	        		// Get the movements of the tile from our position
 	        		traverser = _neighbors.get(traverser).get(movement);
 	        		
@@ -231,8 +231,8 @@ public class BoardComponent {
             // that we fetch their respective tiles, and provided that they are valid
             // add them to our list.
             switch(entry.getKey()) {
-            case TOP:
-            case BOTTOM:
+            case UP:
+            case DOWN:
                 TileModel left = _neighbors.get(tile).get(EntityMovements.LEFT);
                 if(left != null) {
                     allNeighbors.add(left);
@@ -293,10 +293,10 @@ public class BoardComponent {
                     
             // Populate the neighbors structure with the movement elements
             // Note: Diagonals can be fetched using these primites
-            neighbors.put(EntityMovements.TOP, topRow == null ? null : topRow[i]);
+            neighbors.put(EntityMovements.UP, topRow == null ? null : topRow[i]);
             neighbors.put(EntityMovements.LEFT, i - 1 < 0 ? null : neutralRow[i - 1]);
             neighbors.put(EntityMovements.RIGHT, i + 1 >= columns ? null : neutralRow[i + 1]);
-            neighbors.put(EntityMovements.BOTTOM, bottomRow == null ? null : bottomRow[i]);
+            neighbors.put(EntityMovements.DOWN, bottomRow == null ? null : bottomRow[i]);
                        
             // Assign the mappings where we reference the neutral-neutral tile as the key
             _neighbors.put(neutralRow[i], neighbors);

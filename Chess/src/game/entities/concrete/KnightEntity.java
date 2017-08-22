@@ -46,17 +46,17 @@ class KnightEntity extends AbstractChessEntity {
     
     @Override public List<EntityMovements[]> getMovements() {
         return new ArrayList<EntityMovements[]>() {{
-            add(new EntityMovements[] { EntityMovements.TOP, EntityMovements.LEFT, EntityMovements.LEFT});
-            add(new EntityMovements[] { EntityMovements.TOP, EntityMovements.RIGHT, EntityMovements.RIGHT});           
+            add(new EntityMovements[] { EntityMovements.UP, EntityMovements.LEFT, EntityMovements.LEFT});
+            add(new EntityMovements[] { EntityMovements.UP, EntityMovements.RIGHT, EntityMovements.RIGHT});           
 
-            add(new EntityMovements[] { EntityMovements.BOTTOM, EntityMovements.LEFT, EntityMovements.LEFT});
-            add(new EntityMovements[] { EntityMovements.BOTTOM, EntityMovements.RIGHT, EntityMovements.RIGHT});
+            add(new EntityMovements[] { EntityMovements.DOWN, EntityMovements.LEFT, EntityMovements.LEFT});
+            add(new EntityMovements[] { EntityMovements.DOWN, EntityMovements.RIGHT, EntityMovements.RIGHT});
             
-            add(new EntityMovements[] { EntityMovements.LEFT, EntityMovements.TOP, EntityMovements.TOP});
-            add(new EntityMovements[] { EntityMovements.RIGHT, EntityMovements.TOP, EntityMovements.TOP});
+            add(new EntityMovements[] { EntityMovements.LEFT, EntityMovements.UP, EntityMovements.UP});
+            add(new EntityMovements[] { EntityMovements.RIGHT, EntityMovements.UP, EntityMovements.UP});
             
-            add(new EntityMovements[] { EntityMovements.LEFT, EntityMovements.BOTTOM, EntityMovements.BOTTOM});
-            add(new EntityMovements[] { EntityMovements.RIGHT, EntityMovements.BOTTOM, EntityMovements.BOTTOM});
+            add(new EntityMovements[] { EntityMovements.LEFT, EntityMovements.DOWN, EntityMovements.DOWN});
+            add(new EntityMovements[] { EntityMovements.RIGHT, EntityMovements.DOWN, EntityMovements.DOWN});
         }};
     }
 

@@ -38,7 +38,7 @@ import engine.core.factories.ModelFactory;
 import engine.core.mvc.controller.BaseController;
 import engine.utils.io.logging.Tracelog;
 import game.components.BoardComponent;
-import game.components.MovementComponent.PlayerMovements;
+import game.components.MovementComponent.PlayerActions;
 import game.entities.concrete.AbstractChessEntity;
 import game.events.EntityEvent;
 import generated.DataLookup;
@@ -258,7 +258,7 @@ public final class BoardController extends BaseController {
 				TileModel tile = event.getSource();
 				
 				// Get the list of current movements for the previously selected tile
-				PlayerMovements currentMovement = tile.getMovementComposition().getBoardMovement(_previouslySelectedTile);
+				PlayerActions currentMovement = tile.getMovementComposition().getBoardMovement(_previouslySelectedTile);
 				
 				// Set a flag to indicate if the operation being done below was successful
 				boolean moveSuccessful = false;

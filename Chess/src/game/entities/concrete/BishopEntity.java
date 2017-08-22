@@ -46,10 +46,10 @@ class BishopEntity extends AbstractChessEntity {
 
     @Override public List<EntityMovements[]> getMovements() {
         return new ArrayList<EntityMovements[]>() {{
-            add(new EntityMovements[] { EntityMovements.TOP, EntityMovements.LEFT});
-            add(new EntityMovements[] { EntityMovements.TOP, EntityMovements.RIGHT });
-            add(new EntityMovements[] { EntityMovements.BOTTOM, EntityMovements.LEFT });
-            add(new EntityMovements[] { EntityMovements.BOTTOM, EntityMovements.RIGHT });
+            add(new EntityMovements[] { EntityMovements.UP, EntityMovements.LEFT});
+            add(new EntityMovements[] { EntityMovements.UP, EntityMovements.RIGHT });
+            add(new EntityMovements[] { EntityMovements.DOWN, EntityMovements.LEFT });
+            add(new EntityMovements[] { EntityMovements.DOWN, EntityMovements.RIGHT });
         }};
     }
 

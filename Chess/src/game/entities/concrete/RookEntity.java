@@ -46,8 +46,8 @@ class RookEntity extends AbstractChessEntity {
 
     @Override public List<EntityMovements[]> getMovements() {
         return new ArrayList<EntityMovements[]>() {{
-            add(new EntityMovements[] { EntityMovements.TOP});
-            add(new EntityMovements[] { EntityMovements.BOTTOM});
+            add(new EntityMovements[] { EntityMovements.UP});
+            add(new EntityMovements[] { EntityMovements.DOWN});
             add(new EntityMovements[] { EntityMovements.LEFT});
             add(new EntityMovements[] { EntityMovements.RIGHT});
         }};

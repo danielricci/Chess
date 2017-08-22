@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 
 import engine.core.mvc.model.BaseModel;
 import engine.utils.io.logging.Tracelog;
+import game.components.MovementComponent.PlayerDirection;
 import game.entities.concrete.AbstractChessEntity;
 import generated.DataLookup;
 import generated.DataLookup.DataLayerName;
@@ -49,7 +50,16 @@ public class PlayerModel extends BaseModel {
 	 * @author Daniel Ricci <thedanny09@gmail.com>
 	 *
 	 */
-	public enum PlayerTeam { WHITE, BLACK }
+	public enum PlayerTeam { 
+		WHITE(PlayerDirection.FORWARD), 
+		BLACK(PlayerDirection.BACKWARD);
+		
+		public final PlayerDirection direction;
+		
+		PlayerTeam(PlayerDirection direction) {
+			this.direction = direction;
+		}
+	}
 	
 	/**
 	 * The team that this player is associated
@@ -74,6 +84,7 @@ public class PlayerModel extends BaseModel {
 	 * @param generatePlayerEntities indicates if the chess pieces should be generated using the preset values or done manually
 	 */
 	public PlayerModel(PlayerTeam team, List<Enum> dataValues, boolean generatePlayerEntities) {
+		
 		_team = team;
 		_dataValues = new ArrayList(dataValues);
 		

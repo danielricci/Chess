@@ -46,15 +46,15 @@ class QueenEntity extends AbstractChessEntity {
 
     @Override public List<EntityMovements[]> getMovements() {
         return new ArrayList<EntityMovements[]>() {{
-            add(new EntityMovements[] { EntityMovements.TOP });
-            add(new EntityMovements[] { EntityMovements.BOTTOM });
+            add(new EntityMovements[] { EntityMovements.UP });
+            add(new EntityMovements[] { EntityMovements.DOWN });
             add(new EntityMovements[] { EntityMovements.LEFT });
             add(new EntityMovements[] { EntityMovements.RIGHT });
             
-            add(new EntityMovements[] { EntityMovements.TOP, EntityMovements.LEFT});
-            add(new EntityMovements[] { EntityMovements.TOP, EntityMovements.RIGHT });
-            add(new EntityMovements[] { EntityMovements.BOTTOM, EntityMovements.LEFT });
-            add(new EntityMovements[] { EntityMovements.BOTTOM, EntityMovements.RIGHT });
+            add(new EntityMovements[] { EntityMovements.UP, EntityMovements.LEFT});
+            add(new EntityMovements[] { EntityMovements.UP, EntityMovements.RIGHT });
+            add(new EntityMovements[] { EntityMovements.DOWN, EntityMovements.LEFT });
+            add(new EntityMovements[] { EntityMovements.DOWN, EntityMovements.RIGHT });
         }};
     }
 

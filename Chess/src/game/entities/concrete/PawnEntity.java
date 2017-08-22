@@ -48,11 +48,11 @@ class PawnEntity extends AbstractChessEntity {
         return new ArrayList<EntityMovements[]>() {{
             
             // This is the unit movement that all pawns support
-            add(new EntityMovements[] { EntityMovements.TOP });
+            add(new EntityMovements[] { EntityMovements.UP });
             
             // If this pawn has not moved yet, then expose the double unit movement
             if(!hasMovedOnce()) {
-                add(new EntityMovements[] { EntityMovements.TOP, EntityMovements.TOP });    
+                add(new EntityMovements[] { EntityMovements.UP, EntityMovements.UP });    
             }
         }};
     }
@@ -60,8 +60,8 @@ class PawnEntity extends AbstractChessEntity {
     @Override public List<EntityMovements[]> getCapturableBoardMovements() {
         return new ArrayList<EntityMovements[]>() {{
             // This is the unit movement that all pawns support
-            add(new EntityMovements[] { EntityMovements.TOP, EntityMovements.RIGHT  });
-            add(new EntityMovements[] { EntityMovements.TOP, EntityMovements.LEFT  });
+            add(new EntityMovements[] { EntityMovements.UP, EntityMovements.RIGHT  });
+            add(new EntityMovements[] { EntityMovements.UP, EntityMovements.LEFT  });
         }};
     }
     

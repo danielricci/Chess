@@ -51,7 +51,7 @@ public class MovementComponent {
     /**
      * Represents the available movement positions
      * 
-     * @author Daniel Ricci <thedanny09@gmail.com>
+     * @author Daniel Ricci {@literal <thedanny09@gmail.com>}
      *
      */
     public enum EntityMovements {
@@ -66,20 +66,62 @@ public class MovementComponent {
         /**
          * Movement is done towards the top
          */
-        TOP,
+        UP,
         /**
          * Movement is done towards the bottom
          */
-        BOTTOM,
+        DOWN,
     }
     
     /**
-     * The list of available board movements
+  	 * Represents the movement orientations of a chess piece
+  	 * 
+     * @author Daniel Ricci {@literal <thedanny09@gmail.com>}
+     *
+     */
+    public enum PlayerDirection {
+    	/**
+    	 * With respect to the current display, the player is moving in the upwards direction
+    	 */
+    	FORWARD,
+    	/**
+    	 * With respect to the current display, the player is moving in the backward direction
+    	 */
+    	BACKWARD;
+    	
+    	/**
+    	 * Normalizes the movement to that of the specified direction
+    	 * 
+    	 * @param direction The direction of the entity
+    	 * @param movement The movement of the entity
+    	 * 
+    	 * @return The normalized movement
+    	 */
+    	public static EntityMovements getNormalizedMovement(PlayerDirection direction, EntityMovements movement) {
+    		switch(direction) {
+	    		case BACKWARD: {
+	    			switch(movement) {
+		    			case LEFT: 	return EntityMovements.RIGHT;
+		    			case RIGHT: return EntityMovements.LEFT;
+		    			case UP:	return EntityMovements.DOWN;
+		    			case DOWN: 	return EntityMovements.UP;
+		    			default:	return movement;
+	    			}
+	    		}
+	    		default: { 
+	    			return movement;
+	    		}
+    		}
+    	}
+    }
+        
+    /**
+     * The list of available player actions
      * 
      * @author Daniel Ricci {@literal <thedanny09@gmail.com>}
      *
      */
-    public enum PlayerMovements {
+    public enum PlayerActions {
         /**
          * An invalid move
          */
@@ -115,7 +157,7 @@ public class MovementComponent {
     	 * 
     	 * @param isMoveFinal if the movement is a 'finishing move' where the player is done their turn
     	 */
-    	PlayerMovements(boolean isMoveFinal) {
+    	PlayerActions(boolean isMoveFinal) {
     		this.isMoveFinal = isMoveFinal;
     	}
     }
@@ -141,38 +183,38 @@ public class MovementComponent {
      * 
      * @return The board movement that is being done
      */
-    public PlayerMovements getBoardMovement(TileModel previouslySelectedTile) {
+    public PlayerActions getBoardMovement(TileModel previouslySelectedTile) {
         
         // If the tile belongs to the current player playing
         if(isTileCurrentPlayer(_tile)) {
             // If there is no currently selected tile
             if(previouslySelectedTile == null) {
-                return PlayerMovements.MOVE_1_SELECT;
+                return PlayerActions.MOVE_1_SELECT;
             }
             // If the currently selected tile was selected again
             else if(Objects.equals(previouslySelectedTile, _tile)) {
-                return PlayerMovements.MOVE_2_UNSELECT;
+                return PlayerActions.MOVE_2_UNSELECT;
             }
             // If the currently selected is also mine (then both selected and this one are mine)
             else if(isTileCurrentPlayer(previouslySelectedTile)){
-                return PlayerMovements.MOVE_2_SELECT;
+                return PlayerActions.MOVE_2_SELECT;
             }
         }
         // If the tile has no team then it is an empty tile
         else if(getTileTeam(_tile) == null) {
         	if(previouslySelectedTile != null && isTileCurrentPlayer(previouslySelectedTile)) {
-        		return PlayerMovements.MOVE_2_EMPTY;
+        		return PlayerActions.MOVE_2_EMPTY;
         	}
         }
         // If the tile occupied by the opposing team
         else if(isTileEnemyPlayer(_tile)) {
             // If the previously selected tile exists
             if(previouslySelectedTile != null && isTileCurrentPlayer(previouslySelectedTile)) {
-            	return PlayerMovements.MOVE_2_CAPTURE;
+            	return PlayerActions.MOVE_2_CAPTURE;
             }
         }
         
-        return PlayerMovements.INVALID;
+        return PlayerActions.INVALID;
     }
     
     /**
@@ -207,7 +249,7 @@ public class MovementComponent {
      *
      * @return The team associated to the tile model if any
      */
-    public static PlayerTeam getTileTeam(TileModel model) {
+    private static PlayerTeam getTileTeam(TileModel model) {
         AbstractChessEntity entity = model.getEntity();
         return entity != null ? entity.getTeam() : null;
     }  
