@@ -114,6 +114,15 @@ public final class PlayerController extends BaseController {
 	}
 	
 	/**
+	 * Gets the player that is currently playing 
+	 * 
+	 * @return The current player that is playing
+	 */
+	public PlayerModel getCurrentPlayer() {
+		return _playerTurnQueue.peek();
+	}
+	
+	/**
 	 * @return The team of the player currently playing
 	 */
 	public PlayerTeam getCurrentPlayerTeam() {
