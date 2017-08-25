@@ -86,6 +86,10 @@ public final class PromotionController extends BaseController {
 		}
 	}
 	
+	public void setSelectedEntity() {
+	
+	}
+	
 	/**
 	 * Promotes the specified chess piece to the specified chess piece
 	 * 

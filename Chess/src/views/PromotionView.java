@@ -47,6 +47,7 @@ import engine.core.mvc.view.DialogView;
 import engine.external.SpringUtilities;
 import engine.utils.io.logging.Tracelog;
 import game.entities.concrete.AbstractChessEntity;
+import views.controls.PromotionButton;
 
 /**
  * 
@@ -65,10 +66,10 @@ public class PromotionView extends DialogView {
 	 * The list of buttons representing the options to choose for promotion
 	 */
 	private List<JButton> _promotionOptions = new ArrayList() {{
-		add(new JButton());
-		add(new JButton());
-		add(new JButton());
-		add(new JButton());
+		add(new PromotionButton());
+		add(new PromotionButton());
+		add(new PromotionButton());
+		add(new PromotionButton());
 	}};
 	
 	/**
@@ -103,14 +104,37 @@ public class PromotionView extends DialogView {
 	
 	@Override public void initializeComponents() {
 		
+		
+		
 		// Add the buttons into the specified panel
 		for(JButton button : _promotionOptions) {
 			_chessPiecesPanel.add(button);
 			button.setBorder(new LineBorder(Color.BLACK));
 			button.addMouseListener(new MouseAdapter() {
+				
+				private final Color ORIGINAL_COLOR = button.getBackground();
+				private final Color SELECTED_COLOR = Color.red;
+				
 				@Override public void mouseReleased(MouseEvent e) {
-					e.getComponent().setBackground(Color.red);
-					e.getComponent().setForeground(Color.red);
+					
+					// Get the button that was just selected
+					JButton myButton = (JButton) e.getComponent();
+					
+					// Clear the button selection
+					for(JButton buttonOption : _promotionOptions) {
+						if(!buttonOption.equals(myButton)) {
+							buttonOption.setBackground(ORIGINAL_COLOR);	
+						}
+					}
+					
+					// Set the background the clicked button accordingly
+					button.setBackground(button.getBackground() == SELECTED_COLOR ? ORIGINAL_COLOR : SELECTED_COLOR);
+					
+					getViewProperties().getEntity(PromotionController.class).setSelectedEntity(myButton.getIcon());
+					
+					
+					// required for OSX to paint the selection properly
+					button.setOpaque(true);
 				}
 			});
 		}
