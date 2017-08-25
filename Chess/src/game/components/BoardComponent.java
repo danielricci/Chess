@@ -135,7 +135,7 @@ public class BoardComponent {
 	        	for(EntityMovements movement : movementPath) {
 	        		
 	        		// Normalize the movement w.r.t the player of the entity
-	        		movement = PlayerDirection.getNormalizedMovement(entity.getTeam().direction, movement);
+	        		movement = PlayerDirection.getNormalizedMovement(entity.getTeam().DIRECTION, movement);
 	        		
 	        		// Get the movements of the tile from our position
 	        		traverser = _neighbors.get(traverser).get(movement);
@@ -248,6 +248,23 @@ public class BoardComponent {
         
         // return the list of neighbors
         return allNeighbors;
+    }
+    
+    /**
+     * Indicates if the specified tile contains an entity that has the ability to move forward
+     * 
+     * @param tileModel The tile model in question
+     * 
+     * @return TRUE if the specified tile contains an entity that has the ability to move forward
+     */
+    public boolean canMoveForward(TileModel tileModel) {
+    	
+    	AbstractChessEntity entity = tileModel.getEntity();
+    	if(entity != null) {
+    		return _neighbors.get(tileModel).get(PlayerDirection.getNormalizedMovement(entity.getTeam().DIRECTION, EntityMovements.UP)) != null;	
+    	}
+    	
+    	return false;
     }
     
     /**

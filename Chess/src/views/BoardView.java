@@ -63,11 +63,10 @@ public class BoardView extends PanelView {
 	 * Constructs a new instance of this type
 	 */
 	public BoardView() {
-		
-		BoardController controller = AbstractSignalFactory.getFactory(ControllerFactory.class).get(BoardController.class, true, this);
-		
 		// Set the controller associated to this view
-		getViewProperties().setListener(controller);	
+		getViewProperties().setListener(
+			AbstractSignalFactory.getFactory(ControllerFactory.class).get(BoardController.class, true, this)
+		);	
 		
 		// Set the layout manager
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));

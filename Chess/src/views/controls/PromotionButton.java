@@ -29,16 +29,33 @@ import javax.swing.JButton;
 import game.entities.concrete.AbstractChessEntity;
 
 /**
+ * A button class with the capability of caching data related to the abstract chess entity
  * 
- *
  * @author Daniel Ricci {@literal <thedanny09@gmail.com>}
  *
  */
 public class PromotionButton extends JButton {
 	
-	public final AbstractChessEntity entity;
+	/**
+	 * The abstract chess entity associated to this button
+	 */
+	private AbstractChessEntity _entity;
+
+	/**
+	 * Sets the chess entity
+	 * 
+	 * @param entity The chess entity to set
+	 */
+	public void setChessEntity(AbstractChessEntity entity) {
+		_entity = entity;
+	}
 	
-	public PromotionButton(AbstractChessEntity entity) {
-		this.entity = entity;
+	/**
+	 * Gets the chess entity
+	 * 
+	 * @return The chess entity of this button
+	 */
+	public AbstractChessEntity getChessEntity() {
+		return _entity;
 	}
 }

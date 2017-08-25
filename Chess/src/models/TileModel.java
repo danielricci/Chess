@@ -148,7 +148,7 @@ public class TileModel extends BaseModel {
 	/**
 	 * @return The movement composition of this tile model
 	 */
-	public MovementComponent getMovementComposition() {
+	public MovementComponent getMovementComponent() {
 	    return _movementComposition;
 	}
 	

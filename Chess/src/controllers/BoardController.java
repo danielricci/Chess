@@ -35,6 +35,7 @@ import engine.communication.internal.signal.arguments.ModelEventArgs;
 import engine.core.factories.AbstractFactory;
 import engine.core.factories.ControllerFactory;
 import engine.core.factories.ModelFactory;
+import engine.core.factories.ViewFactory;
 import engine.core.mvc.controller.BaseController;
 import engine.utils.io.logging.Tracelog;
 import game.components.BoardComponent;
@@ -47,6 +48,7 @@ import models.PlayerModel.PlayerTeam;
 import models.TileModel;
 import views.BoardView;
 import views.BoardViewTester;
+import views.PromotionView;
 
 /**
  * This controller is in charge of the overall board game.  As far as tiles are concerned, they
@@ -258,7 +260,7 @@ public final class BoardController extends BaseController {
 				TileModel tile = event.getSource();
 				
 				// Get the list of current movements for the previously selected tile
-				PlayerActions currentMovement = tile.getMovementComposition().getBoardMovement(_previouslySelectedTile);
+				PlayerActions currentMovement = tile.getMovementComponent().getBoardMovement(_previouslySelectedTile);
 				
 				// Set a flag to indicate if the operation being done below was successful
 				boolean moveSuccessful = false;
@@ -401,7 +403,12 @@ public final class BoardController extends BaseController {
 				
 				// If there is no previous tile selected and 
 				if(moveSuccessful && currentMovement.isMoveFinal) {
-				    
+					if(tile.getEntity().isPromotable() && !_boardComposition.canMoveForward(tile)) {
+						PromotionView view = AbstractFactory.getFactory(ViewFactory.class).get(PromotionView.class, true);
+						view.getViewProperties().getEntity(PromotionController.class).setTile(tile);
+						view.render();
+					}
+					
 				    // Indicate that the tile has moved at least once
 				    tile.getEntity().setHasMoved(true);
 				    

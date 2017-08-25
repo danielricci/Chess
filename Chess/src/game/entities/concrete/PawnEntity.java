@@ -72,4 +72,8 @@ class PawnEntity extends AbstractChessEntity {
     @Override public boolean isMovementCapturable() {
         return false;
     }
+    
+    @Override public boolean isPromotable() {
+    	return true;
+    }
 }

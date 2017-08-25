@@ -54,10 +54,10 @@ public class PlayerModel extends BaseModel {
 		WHITE(PlayerDirection.FORWARD), 
 		BLACK(PlayerDirection.BACKWARD);
 		
-		public final PlayerDirection direction;
+		public final PlayerDirection DIRECTION;
 		
 		PlayerTeam(PlayerDirection direction) {
-			this.direction = direction;
+			this.DIRECTION = direction;
 		}
 	}
 	

@@ -43,6 +43,14 @@ public interface IChessEntity {
      * @return The list of movements
      */
     public List<EntityMovements[]> getMovements();
+
+    /**
+     * Indicates if the entity moves in a continuous manner
+     * 
+     * @return TRUE If the movement of this entity is continuous
+     */
+    public boolean isMovementContinuous();
+    
     
     /**
      * Gets the list of board movements with results in captures
@@ -51,14 +59,9 @@ public interface IChessEntity {
      * 
      * @return All the capturable board movements of this chess entity
      */
-    public List<EntityMovements[]> getCapturableBoardMovements();
-    
-    /**
-     * Indicates if the entity moves in a continuous manner
-     * 
-     * @return TRUE If the movement of this entity is continuous
-     */
-    public boolean isMovementContinuous();
+    default public List<EntityMovements[]> getCapturableBoardMovements() {
+    	return getMovements();
+    }
     
     /**
      * Indicates if the moves performed by the entity are also used 
@@ -66,5 +69,16 @@ public interface IChessEntity {
      * 
      * @return TRUE if the movements performed by this piece results in a capture
      */
-    public boolean isMovementCapturable();
+    default public boolean isMovementCapturable() {
+    	return true;
+    }
+    
+    /**
+     * Indicates if the chess entity can be promoted
+     * 
+     * @return If the chess piece can be promoted
+     */
+    default public boolean isPromotable() {
+    	return false;
+    }
 }

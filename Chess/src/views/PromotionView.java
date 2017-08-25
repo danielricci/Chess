@@ -25,18 +25,20 @@
 package views;
 
 import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
+import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
 
 import application.Application;
@@ -45,7 +47,6 @@ import engine.core.factories.AbstractSignalFactory;
 import engine.core.factories.ControllerFactory;
 import engine.core.mvc.view.DialogView;
 import engine.external.SpringUtilities;
-import engine.utils.io.logging.Tracelog;
 import game.entities.concrete.AbstractChessEntity;
 import views.controls.PromotionButton;
 
@@ -57,15 +58,30 @@ import views.controls.PromotionButton;
 public class PromotionView extends DialogView {
 		
 	/**
-	 * This panel holds the list of buttons that can be selected for the promotion
-	 * of a pawn
+	 * The original background color of the tile
+	 * 
+	 */
+	private final Color ORIGINAL_COLOR = new JButton().getBackground();
+	
+	/**
+	 * The selection background color of the tile
+	 */
+	private final Color SELECTED_COLOR = Color.LIGHT_GRAY;
+	
+	/**
+	 * This panel holds the list of buttons that can be selected for the promotion of a pawn
 	 */
 	private JPanel _chessPiecesPanel = new JPanel(new SpringLayout());
-		
+	
+	/**
+	 * The OK Button
+	 */
+	private final JButton _okButton = new JButton("OK");
+	
 	/**
 	 * The list of buttons representing the options to choose for promotion
 	 */
-	private List<JButton> _promotionOptions = new ArrayList() {{
+	private List<PromotionButton> _promotionOptions = new ArrayList() {{
 		add(new PromotionButton());
 		add(new PromotionButton());
 		add(new PromotionButton());
@@ -79,6 +95,9 @@ public class PromotionView extends DialogView {
 	 */
 	public PromotionView() {
 		super(Application.instance(), "Promotion", 200, 200);
+		
+		// Make it so that you cannot close the dialog
+		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		
 		// Set the controller for this setup
 		getViewProperties().setListener(
@@ -102,36 +121,59 @@ public class PromotionView extends DialogView {
 		setLocationRelativeTo(null);
 	}
 	
+	/**
+	 * Removes the selection color of all the buttons in the list
+	 */
+	private void resetButtonSelectionState() {
+		// Clear the button selection
+		for(PromotionButton buttonOption : _promotionOptions) {
+			buttonOption.setBackground(ORIGINAL_COLOR);	
+		}
+	}
+	
 	@Override public void initializeComponents() {
 		
-		
-		
 		// Add the buttons into the specified panel
-		for(JButton button : _promotionOptions) {
+		for(PromotionButton button : _promotionOptions) {
 			_chessPiecesPanel.add(button);
 			button.setBorder(new LineBorder(Color.BLACK));
+		}
+		
+		JPanel actionsPanel = new JPanel();
+		actionsPanel.add(_okButton);
+		_okButton.setEnabled(false);
+		
+		// Add the panel to the view
+		add(_chessPiecesPanel);
+		add(actionsPanel);
+		
+		// Turn the panel into the specified grid
+		SpringUtilities.makeCompactGrid(_chessPiecesPanel, 2, 2, 0, 0, 0, 0);
+	}
+
+	@Override public void initializeComponentBindings() {
+		
+		// Go through each button and add a binding to handle the mouse events
+		for(PromotionButton button : _promotionOptions) {
+			
 			button.addMouseListener(new MouseAdapter() {
-				
-				private final Color ORIGINAL_COLOR = button.getBackground();
-				private final Color SELECTED_COLOR = Color.red;
 				
 				@Override public void mouseReleased(MouseEvent e) {
 					
 					// Get the button that was just selected
-					JButton myButton = (JButton) e.getComponent();
+					PromotionButton myButton = (PromotionButton) e.getComponent();
 					
-					// Clear the button selection
-					for(JButton buttonOption : _promotionOptions) {
-						if(!buttonOption.equals(myButton)) {
-							buttonOption.setBackground(ORIGINAL_COLOR);	
-						}
-					}
+					// Reset the button list state
+					resetButtonSelectionState();
 					
-					// Set the background the clicked button accordingly
-					button.setBackground(button.getBackground() == SELECTED_COLOR ? ORIGINAL_COLOR : SELECTED_COLOR);
+					// Set the background color
+					button.setBackground(SELECTED_COLOR);
 					
-					getViewProperties().getEntity(PromotionController.class).setSelectedEntity(myButton.getIcon());
+					// Call the controller and notify it that this entity was just selected
+					getViewProperties().getEntity(PromotionController.class).setSelectedEntity(myButton.getChessEntity());
 					
+					// Enable the OK button
+					_okButton.setEnabled(true);
 					
 					// required for OSX to paint the selection properly
 					button.setOpaque(true);
@@ -139,37 +181,39 @@ public class PromotionView extends DialogView {
 			});
 		}
 		
-		// Add the panel to the view
-		add(_chessPiecesPanel);
-		
-		// Turn the panel into the specified grid
-		SpringUtilities.makeCompactGrid(_chessPiecesPanel, 2, 2, 0, 0, 0, 0);
-	}
-
-	@Override public void initializeComponentBindings() {
+		/**
+		 * Bindings for the OK button
+		 */
+		_okButton.addActionListener(new ActionListener() {
+			@Override public void actionPerformed(ActionEvent e) {
+				getViewProperties().getEntity(PromotionController.class).applyPromotion();
+				
+				// Set the dialog result
+				setDialogResult(JOptionPane.OK_OPTION);
+				
+				// Reset the button list state
+				resetButtonSelectionState();
+				
+				// Put the button back into a disabled state
+				_okButton.setEnabled(false);
+				
+				// Hide the dialog
+				setVisible(false);
+			}
+		});
 	}
 	
 	@Override public void render() {
-	
-		// Render in the middle of the screen
-		Dimension screenSize = getToolkit().getScreenSize();
-		setLocation(
-			(int)screenSize.getWidth() - getWidth(), 
-			(int)screenSize.getHeight() - getHeight()
-		);
 		
 		// Update the list of pieces w.r.t the current player
 		getViewProperties().getEntity(PromotionController.class).updatePromotedPieces();
 		
 		// Render the pieces by updating the icons within our buttons
 		List<AbstractChessEntity> entities = getViewProperties().getEntity(PromotionController.class).getPromotionList();
-		if(entities.size() == _promotionOptions.size()) {
-			for(int i = 0; i < _promotionOptions.size(); ++i) {
-				_promotionOptions.get(i).setIcon(new ImageIcon(entities.get(i).getRenderableContent()));
-			}
-		}
-		else {
-			Tracelog.log(Level.SEVERE, true, "Cannot render list, there is a mismatch in size!");
+		for(int i = 0; i < _promotionOptions.size(); ++i) {
+			PromotionButton button = _promotionOptions.get(i);
+			button.setIcon(new ImageIcon(entities.get(i).getRenderableContent()));
+			button.setChessEntity(entities.get(i));
 		}
 		
 		// Make the UI fit its contents
@@ -177,5 +221,6 @@ public class PromotionView extends DialogView {
 		
 		// Show the content on screen
 		super.render();
+		
 	}
 }

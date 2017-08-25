@@ -35,6 +35,7 @@ import engine.utils.io.logging.Tracelog;
 import game.entities.concrete.AbstractChessEntity;
 import generated.DataLookup.DataLayerName;
 import models.PlayerModel;
+import models.TileModel;
 import views.PromotionView;
 
 /**
@@ -53,6 +54,11 @@ public final class PromotionController extends BaseController {
 	private AbstractChessEntity _selectedEntity;
 	
 	/**
+	 * The tile where the promotion will take place
+	 */
+	private TileModel _tile;
+	
+	/**
 	 * The player that is performing the promotion
 	 */
 	private PlayerModel _player;
@@ -61,22 +67,34 @@ public final class PromotionController extends BaseController {
 	 * Constructs a new instance of this class type
 	 *
 	 * @param viewClass The view to instantiate this controller with
+	 * @param entityToPromote The entity to promote
 	 * 
 	 */
 	public PromotionController(PromotionView viewClass) {
 		super(viewClass);
-
-		// Add the list of entities that can be used for the promotion
-		_promotionList.add(AbstractChessEntity.createEntity(DataLayerName.BISHOP));
-		_promotionList.add(AbstractChessEntity.createEntity(DataLayerName.KNIGHT));
-		_promotionList.add(AbstractChessEntity.createEntity(DataLayerName.QUEEN));
-		_promotionList.add(AbstractChessEntity.createEntity(DataLayerName.ROOK));		
+	}
+	
+	/**
+	 * Sets the entity to be promoted
+	 * 
+	 * @param The tile where the promotion will take place
+	 */
+	public void setTile(TileModel tile) {
+		_tile = tile;
 	}
 	
 	/**
 	 * Updates the promoted pieces
 	 */
 	public void updatePromotedPieces() {
+
+		// Add the list of entities that can be used for the promotion
+		_promotionList.clear();
+		_promotionList.add(AbstractChessEntity.createEntity(DataLayerName.BISHOP));
+		_promotionList.add(AbstractChessEntity.createEntity(DataLayerName.KNIGHT));
+		_promotionList.add(AbstractChessEntity.createEntity(DataLayerName.QUEEN));
+		_promotionList.add(AbstractChessEntity.createEntity(DataLayerName.ROOK));	
+
 		// Set the player
 		PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class);
 		_player = playerController.getCurrentPlayer();
@@ -86,22 +104,40 @@ public final class PromotionController extends BaseController {
 		}
 	}
 	
-	public void setSelectedEntity() {
-	
+	/**
+	 * Sets the currently selected chess entity for the promotion
+	 * 
+	 * @param selectedEntity The selected chess entity for the promotion
+	 */
+	public void setSelectedEntity(AbstractChessEntity selectedEntity) {
+		_selectedEntity = selectedEntity;	
 	}
 	
 	/**
-	 * Promotes the specified chess piece to the specified chess piece
-	 * 
-	 * @param from The piece being promoted
-	 * @param to The piece to use as promotion
+	 * Applies the promotion based on the selected chess entity
 	 */
-	public void promote(AbstractChessEntity from, AbstractChessEntity to) {
-		if(from.getTeam() == _player.getTeam() && _promotionList.contains(to)) {
-			System.out.print("PROMOTING");
+	public void applyPromotion() {
+		
+		// If the selected entity and tile are both valid
+		if(_selectedEntity != null && _tile != null && _tile.getEntity() != null && _tile.getEntity().isPromotable()) {
+			
+			// Get the player controller
+			PlayerController controller = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class);
+			
+			// Get the player of the tile that is on the tile in question
+			PlayerModel player = controller.getPlayer(_tile.getEntity().getTeam());
+			
+			// Remove the entity that the player owns
+			player.removeEntity(_tile.getEntity());
+			
+			// Replace the entity on the tile with the selected entity
+			_tile.setEntity(_selectedEntity);
+			
+			// Perform a cleanup so that this controller doesn't hold reference needlessly
+			flush();
 		}
 		else {
-			Tracelog.log(Level.SEVERE, true, "Could not promote the specified chess piece between of a mismatch");
+			Tracelog.log(Level.SEVERE, true, "Cannot promote the specified entity");
 		}
 	}
 
@@ -113,5 +149,15 @@ public final class PromotionController extends BaseController {
 	 */
 	public List<AbstractChessEntity> getPromotionList() {
 		return _promotionList;
+	}
+	
+	@Override public boolean flush() {
+		
+		_promotionList.clear();
+		_selectedEntity = null;
+		_player = null;
+		_tile = null;
+		
+		return super.flush() && true;
 	}
 }
