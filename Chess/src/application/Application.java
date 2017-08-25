@@ -47,7 +47,6 @@ import menu.ExitItem;
 import menu.NeighboursItem;
 import menu.NewGameDebugItem;
 import menu.NewGameItem;
-import menu.PromotionWindowItem;
 import resources.Resources;
 import resources.Resources.ResourceKeys;
 
@@ -138,7 +137,6 @@ public final class Application extends AbstractApplication {
 			.AddMenu(Resources.instance().getLocalizedString(ResourceKeys.Debug))
 				.AddMenuItem(NewGameDebugItem.class)
 				.AddSeparator()
-				.AddMenuItem(PromotionWindowItem.class)
 				.AddMenuItem(DebuggerWindowItem.class)
 				.AddSeparator()
 				.AddMenuItem(NeighboursItem.class);
