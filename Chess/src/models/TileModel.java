@@ -30,9 +30,8 @@ import engine.communication.internal.signal.ISignalListener;
 import engine.communication.internal.signal.ISignalReceiver;
 import engine.core.mvc.model.BaseModel;
 import game.components.MovementComponent;
-import game.components.MovementComponent.EntityMovements;
 import game.entities.concrete.AbstractChessEntity;
-import game.events.EntityEvent;
+import game.events.EntityEventArgs;
 
 /**
  * The model representation of a tile 
@@ -61,13 +60,6 @@ public class TileModel extends BaseModel {
 	 * The entity associated to the tile model
 	 */
 	private AbstractChessEntity _entity;
-	
-	/**
-	 * The currently set active entity movement on this tile
-	 * 
-	 * Note: This tile should represent an endpoint of a particular movement path
-	 */
-	private EntityMovements _activeEntityMovement;
 	
 	/**
      * Property indicating this tile is highlighted
@@ -153,11 +145,7 @@ public class TileModel extends BaseModel {
 	 * @param entity The entity to associate to this tile model
 	 */
 	public void setEntity(AbstractChessEntity entity) {
-	    
-	    if(entity != null) {
-	        _activeEntityMovement = entity.get
-	    }
-	    
+	
 		_entity = entity;
 		
 		// If the entity is being cleared then remove also it's highlight
@@ -179,35 +167,17 @@ public class TileModel extends BaseModel {
     	setOperation(EVENT_SELECTION_CHANGED);
     	doneUpdating();
     }
-    
-    /**
-     * Sets the active entity movement for this tile
-     * 
-     * @param activeEntityMovement The active entity movement
-     */
-    public void setActiveEntityMovement(EntityMovements activeEntityMovement) {
-        _activeEntityMovement = activeEntityMovement;
-    }
-    
-    /**
-     * Gets the currently set active entity movement for this tile
-     * 
-     * @return The currently set active entity movement for this tile
-     */
-    public EntityMovements getActiveEntityMovement() {
-        return _activeEntityMovement;
-    }
 
     @Override public void registerSignalListeners() {
 		super.registerSignalListeners();
 		
-		registerSignalListener(TileModel.EVENT_ENTITY_CHANGED, new ISignalReceiver<EntityEvent<AbstractChessEntity>>() {
-			@Override public void signalReceived(EntityEvent<AbstractChessEntity> event) {
+		registerSignalListener(TileModel.EVENT_ENTITY_CHANGED, new ISignalReceiver<EntityEventArgs<AbstractChessEntity>>() {
+			@Override public void signalReceived(EntityEventArgs<AbstractChessEntity> event) {
 				setEntity(event.entity);
 			}
 		});
-		registerSignalListener(TileModel.EVENT_HIGHLIGHT_CHANGED, new ISignalReceiver<EntityEvent<AbstractChessEntity>>() {
-			@Override public void signalReceived(EntityEvent<AbstractChessEntity> event) {
+		registerSignalListener(TileModel.EVENT_HIGHLIGHT_CHANGED, new ISignalReceiver<EntityEventArgs<AbstractChessEntity>>() {
+			@Override public void signalReceived(EntityEventArgs<AbstractChessEntity> event) {
 				setHighlighted(event.isHighlighted);
 			}
 		});

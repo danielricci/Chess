@@ -43,7 +43,7 @@ import game.components.BoardComponent;
 import game.components.MovementComponent.EntityMovements;
 import game.components.MovementComponent.PlayerActions;
 import game.entities.concrete.AbstractChessEntity;
-import game.events.EntityEvent;
+import game.events.EntityEventArgs;
 import generated.DataLookup;
 import models.PlayerModel;
 import models.PlayerModel.PlayerTeam;
@@ -148,7 +148,7 @@ public final class BoardController extends BaseController {
 		// Send a signal to all tile models to clear their entity
 		AbstractFactory.getFactory(ModelFactory.class).multicastSignal(
 			TileModel.class, 
-			new EntityEvent(this, TileModel.EVENT_ENTITY_CHANGED, null)
+			new EntityEventArgs(this, TileModel.EVENT_ENTITY_CHANGED, null)
 		);
 		
 		// Clear the previously selected tile if any
@@ -238,7 +238,7 @@ public final class BoardController extends BaseController {
     	
     	// Create the entity event, however simply clear the highlighting, we still want to 
     	// keep the board pieces on the board
-    	EntityEvent event = new EntityEvent(this, TileModel.EVENT_HIGHLIGHT_CHANGED, null);
+    	EntityEventArgs event = new EntityEventArgs(this, TileModel.EVENT_HIGHLIGHT_CHANGED, null);
     	event.isHighlighted = false;
     	
     	// Send a message to all the tile models to stop highlighting themselves
@@ -275,7 +275,7 @@ public final class BoardController extends BaseController {
 				TileModel tile = event.getSource();
 
                 // Create the entity event to be sent out.  
-                EntityEvent entityEvent = new EntityEvent(event.getSource(), event.getOperationName(), tile.getEntity());
+                EntityEventArgs entityEventArgs = new EntityEventArgs(event.getSource(), event.getOperationName(), tile.getEntity());
 				
 				// Get the list of current movements for the previously selected tile
 				PlayerActions currentMovement = tile.getMovementComponent().getBoardMovement(_previouslySelectedTile);
@@ -390,7 +390,7 @@ public final class BoardController extends BaseController {
 	                    }
 						
 						// Set the entity movements for the specified tile
-						entityEvent.movements = availablePositions.get(tile);
+						entityEventArgs.movements = availablePositions.get(tile);
 
 						// The move is over so indicate that everything went well and clean
 						// up the variables
@@ -436,11 +436,11 @@ public final class BoardController extends BaseController {
 				    tile.getEntity().setHasMoved(true);
 
 				    // Set the player action of the event to be sent out
-					entityEvent.playerAction = currentMovement;
+					entityEventArgs.playerAction = currentMovement;
 					
                     // Get the player controller and send the entity event to it
                     PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true);
-				    playerController.update(entityEvent);
+				    playerController.update(entityEventArgs);
 					
 					// Switch to the next player in turn
 					playerController.nextPlayer();

@@ -243,6 +243,28 @@ public class MovementComponent {
     }
     
     /**
+     * Compares two movements for equality
+     * 
+     * @param movement1 The first movement
+     * @param movement2 The second movement
+     * 
+     * @return If both movements are equal
+     */
+    public static boolean compareMovements(EntityMovements[] movement1, EntityMovements[] movement2) {
+    	if(movement1.length == movement2.length) {
+    		for(int i = 0; i < movement1.length; ++i) {
+    			if(movement1[i] != movement2[i]) {
+    				return false;
+    			}
+    		}
+    		
+    		return true;
+    	}
+    	
+    	return false;
+    }
+    
+    /**
      * Gets the team associated to the specified tile model
      * 
      * @param model The tile model

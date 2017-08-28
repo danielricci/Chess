@@ -36,7 +36,7 @@ import game.entities.concrete.AbstractChessEntity;
  * @author Daniel Ricci {@literal <thedanny09@gmail.com>}
  *
  */
-public class EntityEvent<T extends ISignalListener> extends SignalEventArgs<T> {
+public class EntityEventArgs<T extends ISignalListener> extends SignalEventArgs<T> {
 
 	/**
 	 * The chess entity for this event
@@ -65,7 +65,7 @@ public class EntityEvent<T extends ISignalListener> extends SignalEventArgs<T> {
 	 * @param operationName The name of the operation being performed
 	 * @param entity The entity
 	 */
-	public EntityEvent(T sender, String operationName, AbstractChessEntity entity) {
+	public EntityEventArgs(T sender, String operationName, AbstractChessEntity entity) {
 		super(sender, operationName);
 		this.entity = entity;
 	}

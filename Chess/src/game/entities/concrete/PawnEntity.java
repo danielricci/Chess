@@ -27,9 +27,10 @@ package game.entities.concrete;
 import java.util.ArrayList;
 import java.util.List;
 
-import engine.communication.internal.signal.arguments.ModelEventArgs;
 import engine.communication.internal.signal.arguments.SignalEventArgs;
+import game.components.MovementComponent;
 import game.components.MovementComponent.EntityMovements;
+import game.events.EntityEventArgs;
 import generated.DataLookup.DataLayerName;
 import models.TileModel;
 
@@ -40,7 +41,10 @@ import models.TileModel;
  */
 class PawnEntity extends AbstractChessEntity {
     
-    private boolean someoneCanEnPassentMe;
+	/**
+	 * Flag indicating if this pawn is exposed to an en-passent move
+	 */
+    private boolean _canReceiveEnPassent;
 
     /**
      * Constructs a new instance of this class type
@@ -86,17 +90,17 @@ class PawnEntity extends AbstractChessEntity {
         super.update(signalEvent);
         System.out.println("PawnEntity::update");
         
-        if(signalEvent instanceof ModelEventArgs) {
-            ModelEventArgs<TileModel> modelEventArgs = (ModelEventArgs) signalEvent;
-            if(modelEventArgs.getSource().getEntity() == this) {
-                if(someoneCanEnPassentMe) {
-                    System.out.println("Haha, they thought they could catch me!");
-                    someoneCanEnPassentMe = false;
-                }
-                else if(getMovements().contains(modelEventArgs.movementResult)) {
-                    someoneCanEnPassentMe = true;
-                    System.out.println("Oh no, someone can En Passent me");
-                }
+        if(signalEvent instanceof EntityEventArgs) {
+            EntityEventArgs<TileModel> modelEventArgs = (EntityEventArgs) signalEvent;
+
+            // Remove the en-passent flag, the chance is lost
+            if(_canReceiveEnPassent) {
+                _canReceiveEnPassent = false;
+            }
+        	// TODO Make this cleaner, seriously do it.
+            else if(modelEventArgs.getSource().getEntity() == this && MovementComponent.compareMovements(modelEventArgs.movements, new EntityMovements[] { EntityMovements.UP, EntityMovements.UP })) {
+            	// Indicate that this pawn can receive en-passent
+                _canReceiveEnPassent = true;
             }
         }
     }
