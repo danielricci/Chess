@@ -113,6 +113,26 @@ public class MovementComponent {
 	    		}
     		}
     	}
+    	
+    	/**
+    	 * Normalizes the movements to that of the specified direction
+    	 * 
+    	 * @param direction The direction of the entity
+    	 * @param movements The movements of the entity
+    	 * 
+    	 * @return The normalized movements
+    	 */
+    	public static EntityMovements[] getNormalizedMovement(PlayerDirection direction, EntityMovements[] movements) {
+    		
+    		EntityMovements[] movementList = new EntityMovements[movements.length];
+    		for(EntityMovements movement : movements) {
+    			for(int i = 0; i < movementList.length; ++i) {
+    				movementList[i] = getNormalizedMovement(direction, movement);
+    			}
+    		}
+    		
+    		return movementList;
+	 	}
     }
         
     /**

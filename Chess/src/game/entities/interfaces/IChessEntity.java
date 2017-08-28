@@ -81,4 +81,25 @@ public interface IChessEntity {
     default public boolean isPromotable() {
     	return false;
     }
+    
+    /**
+     * Indicates if the chess entity can perform an en-passent move
+     * as one of its possible moves
+     * 
+     * Note: This method does not mean you can actually do the move, but simply
+     * indicates if the chess is geared for doing the en-passent move
+     */
+    default public boolean isEnPassent() {
+    	return false;
+    }
+    
+    /**
+     * Indicates if the chess entity can be captured
+     * with an en-passent move
+     * 
+     * @return TRUE if the chess entity can be captured with en-passent
+     */
+    default public boolean isEnPassentCapturable() {
+    	return false;
+    }
 }

@@ -74,6 +74,14 @@ class PawnEntity extends AbstractChessEntity {
         }};
     }
     
+    @Override public boolean isEnPassent() {
+    	return true;
+    }
+    
+    @Override public boolean isEnPassentCapturable() {
+    	return _canReceiveEnPassent;
+    }
+    
     @Override public boolean isMovementContinuous() {
         return false;
     }

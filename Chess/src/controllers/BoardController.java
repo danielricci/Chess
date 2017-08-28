@@ -284,18 +284,25 @@ public final class BoardController extends BaseController {
 				// TODO Remove this, there needs to be a much better way of handling this
 				boolean moveSuccessful = false;
 				
+				// TODO - this needs to go into movement component
+				if(_previouslySelectedTile != tile && _boardComposition.getEnPassentBoardPositions(_previouslySelectedTile).keySet().contains(tile)) {
+					currentMovement = PlayerActions.MOVE_2_CAPTURE;
+				}
+				
 				switch(currentMovement) {
 				case INVALID:
 					tile.setSelected(false);
 					break;
-				case MOVE_1_SELECT:
+				case MOVE_1_SELECT: {
 				    
 				    // Set the previously selected tile from what was just selected
 				    _previouslySelectedTile = tile;
                     Tracelog.log(Level.INFO, true, _previouslySelectedTile.toString() + " is now selected");
                     
+				    Map<TileModel, EntityMovements[]> availablePositions = _boardComposition.getBoardPositions(_previouslySelectedTile);
+                    
                     // Go through each path and mark the tiles as highlighted
-                    for(Map.Entry<TileModel, EntityMovements[]> kvp : _boardComposition.getBoardPositions(tile).entrySet()) {
+                    for(Map.Entry<TileModel, EntityMovements[]> kvp : availablePositions.entrySet()) {
                 		kvp.getKey().setHighlighted(true);
                     }
                     
@@ -303,6 +310,7 @@ public final class BoardController extends BaseController {
                     moveSuccessful = true;
 				    
 					break;
+				}
 				case MOVE_2_SELECT:
 					
 					_previouslySelectedTile.setSelected(false);
@@ -329,22 +337,34 @@ public final class BoardController extends BaseController {
 				    
 				    // Get the list of available board positions of the previously selected tile
 				    Map<TileModel, EntityMovements[]> availablePositions = _boardComposition.getBoardPositions(_previouslySelectedTile);
+				    Map<TileModel, EntityMovements[]> enPassent = _boardComposition.getEnPassentBoardPositions(_previouslySelectedTile);
 				    
 				    // If our capture occurs on one of these positions
 				    // Note: It is assumed here that because we identify as a capture move
 				    //       that the said position contains the entity in question to be captured
                     if(availablePositions.keySet().contains(tile)) {
-                 
+                    	
+						// Set the entity movements for the specified tile
+						entityEventArgs.movements = availablePositions.get(tile);
+                    	
                         // Get the entities of the player and the enemy
                         AbstractChessEntity playerEntity = _previouslySelectedTile.getEntity();
                         AbstractChessEntity enemyEntity = tile.getEntity();
+                 
+                        TileModel enemyTile = tile;
+                        
+                        // BUG HERE, FIX THIS
+                    	if(enPassent.keySet().contains(tile)) {
+                    		enemyTile = _boardComposition.getEnPassentEnemy(_previouslySelectedTile);
+                    		enemyEntity = enemyTile.getEntity();
+                    	}
                         
                         // Remove the entity from the previous tile
                         _previouslySelectedTile.setEntity(null);
                         
                         // Remove the enemy entity from it's current tile
                         // and remove it from the player
-                        tile.setEntity(playerEntity);
+                        enemyTile.setEntity(playerEntity);
                         PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true); 
                         playerController.getPlayer(enemyEntity.getTeam()).removeEntity(enemyEntity);
                         

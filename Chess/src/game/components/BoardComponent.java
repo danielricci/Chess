@@ -96,6 +96,11 @@ public class BoardComponent {
         
         Map<TileModel, EntityMovements[]> allMoves = new HashMap();
         
+        // Attempt to get the en-passent moves of the specified tile
+        for(Map.Entry<TileModel, EntityMovements[]> kvp : getEnPassentBoardPositions(tileModel).entrySet()) {
+			allMoves.putIfAbsent(kvp.getKey(), kvp.getValue());
+		}
+        
         // If tile model does not has a chess entity then
         // there are no moves to get
         AbstractChessEntity entity = tileModel.getEntity();
@@ -158,7 +163,6 @@ public class BoardComponent {
 	        		tiles.add(traverser);
 	        	}
 	        	
-	        	// If there is nothing to add then stop regardless of any other conditions
 	        	if(tiles.isEmpty()) {
 	        		break;
 	        	}
@@ -184,6 +188,7 @@ public class BoardComponent {
 
 	        	// Add the last tile into our list of valid tiles
 	        	allMoves.put(destinationTile, movementPath);
+
 	        	
 	        	// If the tile has an enemy player on it then stop here
 	        	// If the tile is not continuous then we do not need to 
@@ -196,6 +201,54 @@ public class BoardComponent {
         }
             
         return allMoves;
+    }
+    
+    /**
+     * Gets the En-Passent movements of the specified tile
+     * 
+     * @param source The tile to get the moves from
+     * 
+     * @return The mappings of available moves for the specified tile
+     */
+    public Map<TileModel, EntityMovements[]> getEnPassentBoardPositions(TileModel source) {
+    	Map<TileModel, EntityMovements[]> movements = new HashMap();
+    	
+    	// Verify if the passed in source is a valid tile for performing an en-passent move
+    	if(source == null || source.getEntity() == null || !source.getEntity().isEnPassent()) {
+    		return movements;
+    	}
+    	
+    	AbstractChessEntity entity = source.getEntity();
+    	
+    	// Left En-Passent
+    	EntityMovements enPassentLeft = PlayerDirection.getNormalizedMovement(entity.getTeam().DIRECTION, EntityMovements.LEFT);
+    	TileModel capturableEnPassentLeft = _neighbors.get(source).get(enPassentLeft);
+    	if(capturableEnPassentLeft != null && MovementComponent.isTileEnemyPlayer(capturableEnPassentLeft) && capturableEnPassentLeft.getEntity().isEnPassentCapturable()) {
+    		
+    		EntityMovements enPassentBackwards = PlayerDirection.getNormalizedMovement(capturableEnPassentLeft.getEntity().getTeam().DIRECTION, EntityMovements.DOWN);
+			TileModel capturableEnPassentPosition = _neighbors.get(capturableEnPassentLeft).get(enPassentBackwards); 
+    		
+			movements.put(
+    			capturableEnPassentPosition,
+				PlayerDirection.getNormalizedMovement(entity.getTeam().DIRECTION, new EntityMovements[] { EntityMovements.UP, EntityMovements.LEFT })
+			);
+    	}
+    	
+    	// Right En-Passent
+    	EntityMovements enPassentRight = PlayerDirection.getNormalizedMovement(entity.getTeam().DIRECTION, EntityMovements.RIGHT);
+    	TileModel capturableEnPassentRight = _neighbors.get(source).get(enPassentRight);
+    	if(capturableEnPassentRight != null && MovementComponent.isTileEnemyPlayer(capturableEnPassentRight) && capturableEnPassentRight.getEntity().isEnPassentCapturable()) {
+    		
+    		EntityMovements enPassentBackwards = PlayerDirection.getNormalizedMovement(capturableEnPassentRight.getEntity().getTeam().DIRECTION, EntityMovements.DOWN);
+			TileModel capturableEnPassentPosition = _neighbors.get(capturableEnPassentRight).get(enPassentBackwards); 
+    		
+			movements.put(
+    			capturableEnPassentPosition,
+				PlayerDirection.getNormalizedMovement(entity.getTeam().DIRECTION, new EntityMovements[] { EntityMovements.UP, EntityMovements.RIGHT })
+			);
+    	}
+
+    	return movements;
     }
     
     /**
@@ -317,4 +370,20 @@ public class BoardComponent {
             _neighbors.put(neutralRow[i], neighbors);
         }
     }
+
+	/**
+	 * Gets the enemy tile associated to the specified tile
+	 * 
+	 * @param tile The tile of the entity doing the en-passent
+	 * 
+	 * @return The enemy tile
+	 */
+	public TileModel getEnPassentEnemy(TileModel tile) {
+		for(Map.Entry<TileModel, EntityMovements[]> kvp : getEnPassentBoardPositions(tile).entrySet()) {
+			if(kvp.getKey().equals(tile)) {
+				return _neighbors.get(tile).get(kvp.getValue()[0]);
+			}
+		}
+		return null;
+	}
 }
