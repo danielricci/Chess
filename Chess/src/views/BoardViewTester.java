@@ -86,7 +86,7 @@ public class BoardViewTester extends BoardView {
 						}
 						
 						// If the game is running then go no futher
-						if(AbstractFactory.getFactory(ControllerFactory.class).get(BoardController.class).IsGameRunning()) {
+						if(AbstractFactory.getFactory(ControllerFactory.class).get(BoardController.class).isGameRunning()) {
 							return;
 						}
 						

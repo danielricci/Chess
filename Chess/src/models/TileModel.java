@@ -30,6 +30,7 @@ import engine.communication.internal.signal.ISignalListener;
 import engine.communication.internal.signal.ISignalReceiver;
 import engine.core.mvc.model.BaseModel;
 import game.components.MovementComponent;
+import game.components.MovementComponent.EntityMovements;
 import game.entities.concrete.AbstractChessEntity;
 import game.events.EntityEvent;
 
@@ -62,6 +63,18 @@ public class TileModel extends BaseModel {
 	private AbstractChessEntity _entity;
 	
 	/**
+	 * The currently set active entity movement on this tile
+	 * 
+	 * Note: This tile should represent an endpoint of a particular movement path
+	 */
+	private EntityMovements _activeEntityMovement;
+	
+	/**
+     * Property indicating this tile is highlighted
+     */
+    private boolean _highlighted;
+
+    /**
 	 * The movement composition of this tile model
 	 */
 	private final MovementComponent _movementComposition = new MovementComponent(this);
@@ -71,11 +84,6 @@ public class TileModel extends BaseModel {
 	 */
 	private boolean _selected;
 
-	/**
-	 * Property indicating this tile is highlighted
-	 */
-    private boolean _highlighted;
-	
 	/**
 	 * Constructs a new instance of this class type
 	 */
@@ -93,28 +101,33 @@ public class TileModel extends BaseModel {
 	}
 
 	/**
-	 * Sets the selected state of this model
-	 * 
-	 * @param selected If the tile model should be selected
-	 */
-	public void setSelected(boolean selected) {
-		_selected = selected;
-		setOperation(EVENT_SELECTION_CHANGED);
-		doneUpdating();
-	}
-	
-	/**
-	 * Sets the highlight state of this model
-	 * 
-	 * @param highlighted If the tile model should be highlighted
-	 */
-	public void setHighlighted(boolean highlighted) {
-	    _highlighted = highlighted;
-        setOperation(EVENT_HIGHLIGHT_CHANGED);
-        doneUpdating();
-	}
-		
-	/**
+     * Gets the entity associated to this tile model
+     * 
+     * @return The entity associated to this tile model
+     */
+    public AbstractChessEntity getEntity() {
+    	return _entity;
+    }
+
+    /**
+     * Gets if the tile model is in a highlighted state
+     * 
+     * @return If the tile model is highlighted
+     */
+    public boolean getIsHighlighted() {
+        return _highlighted;
+    }
+
+    /**
+     * Gets the movement component of this tile
+     * 
+     * @return The movement composition of this tile model
+     */
+    public MovementComponent getMovementComponent() {
+        return _movementComposition;
+    }
+
+    /**
 	 * Gets if the tile model is in a selected state
 	 * 
 	 * @return If the tile model is selected
@@ -124,21 +137,32 @@ public class TileModel extends BaseModel {
 	}
 	
 	/**
-	 * Gets if the tile model is in a highlighted state
-	 * 
-	 * @return If the tile model is highlighted
-	 */
-	public boolean getIsHighlighted() {
-	    return _highlighted;
-	}
-	
-	/**
+     * Sets the highlight state of this model
+     * 
+     * @param highlighted If the tile model should be highlighted
+     */
+    public void setHighlighted(boolean highlighted) {
+        _highlighted = highlighted;
+        setOperation(EVENT_HIGHLIGHT_CHANGED);
+        doneUpdating();
+    }
+
+    /**
 	 * Sets the entity of this tile model
 	 * 
 	 * @param entity The entity to associate to this tile model
 	 */
 	public void setEntity(AbstractChessEntity entity) {
+	    
+	    if(entity != null) {
+	        _activeEntityMovement = entity.get
+	    }
+	    
 		_entity = entity;
+		
+		// If the entity is being cleared then remove also it's highlight
+		// TODO investigate not calling doneUpdating, but simply calling setHighlighted
+		// and  letting it take care of the rest, this will avoid a needless update call
 		if(_entity == null) {
 			setHighlighted(false);
 		}
@@ -146,26 +170,35 @@ public class TileModel extends BaseModel {
 	}
 	
 	/**
-	 * @return The movement composition of this tile model
-	 */
-	public MovementComponent getMovementComponent() {
-	    return _movementComposition;
-	}
-	
-	/**
-	 * Gets the entity associated to this tile model
-	 * 
-	 * @return The entity associated to this tile model
-	 */
-	public AbstractChessEntity getEntity() {
-		return _entity;
-	}
-	
-	public void reset() {
-		
-	}
-	
-	@Override public void registerSignalListeners() {
+     * Sets the selected state of this model
+     * 
+     * @param selected If the tile model should be selected
+     */
+    public void setSelected(boolean selected) {
+    	_selected = selected;
+    	setOperation(EVENT_SELECTION_CHANGED);
+    	doneUpdating();
+    }
+    
+    /**
+     * Sets the active entity movement for this tile
+     * 
+     * @param activeEntityMovement The active entity movement
+     */
+    public void setActiveEntityMovement(EntityMovements activeEntityMovement) {
+        _activeEntityMovement = activeEntityMovement;
+    }
+    
+    /**
+     * Gets the currently set active entity movement for this tile
+     * 
+     * @return The currently set active entity movement for this tile
+     */
+    public EntityMovements getActiveEntityMovement() {
+        return _activeEntityMovement;
+    }
+
+    @Override public void registerSignalListeners() {
 		super.registerSignalListeners();
 		
 		registerSignalListener(TileModel.EVENT_ENTITY_CHANGED, new ISignalReceiver<EntityEvent<AbstractChessEntity>>() {

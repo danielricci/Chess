@@ -27,6 +27,7 @@ package controllers;
 import java.awt.Dimension;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 import engine.api.IModel;
@@ -39,6 +40,7 @@ import engine.core.factories.ViewFactory;
 import engine.core.mvc.controller.BaseController;
 import engine.utils.io.logging.Tracelog;
 import game.components.BoardComponent;
+import game.components.MovementComponent.EntityMovements;
 import game.components.MovementComponent.PlayerActions;
 import game.entities.concrete.AbstractChessEntity;
 import game.events.EntityEvent;
@@ -65,14 +67,14 @@ import views.PromotionView;
 public final class BoardController extends BaseController {
 
     /**
+     * The board component of the board game 
+     */
+    private final BoardComponent _boardComposition;
+    
+    /**
      * The dimensions of the board game
      */
     private final Dimension _dimensions = new Dimension(8, 8);
-    
-    /**
-     * The board component of the board game 
-     */
-    private final BoardComponent _boardComposition = new BoardComponent(_dimensions);
     
 	/**
 	 * This flag indicates if the game is running
@@ -95,6 +97,9 @@ public final class BoardController extends BaseController {
 		
 		super(view);
 	    
+		// Instantiate the board component
+		_boardComposition = new BoardComponent(_dimensions);
+		
 	    // Register the signal listeners, we don't want to wait until rendering is done for this to occur
 		// because this class will miss important events before hand
 		registerSignalListeners();	
@@ -117,6 +122,9 @@ public final class BoardController extends BaseController {
 	public BoardController(BoardViewTester view) {
 
 		super(view);
+
+	      // Instantiate the board component
+        _boardComposition = new BoardComponent(_dimensions);
 		
 		// Register the signal listeners, we don't want to wait until rendering is done for this to occur
 		// because this class will miss important events before hand
@@ -133,27 +141,14 @@ public final class BoardController extends BaseController {
 	}
 	
 	/**
-	 * @return The previously selected tile
-	 */
-	public TileModel getPreviouslySelectedTile() {
-		return _previouslySelectedTile;
-	}
-	
-	/**
-	 * @return If the game is running
-	 */
-	public boolean IsGameRunning() {
-		return _isGameRunning;
-	}
-	
-	/**
 	 *	Clears the board of all chess pieces
 	 */
 	public void clearBoard() {
 		
-		// Send a signal to all tile models and set their 
+		// Send a signal to all tile models to clear their entity
 		AbstractFactory.getFactory(ModelFactory.class).multicastSignal(
-			TileModel.class, new EntityEvent(this, TileModel.EVENT_ENTITY_CHANGED, null, false)
+			TileModel.class, 
+			new EntityEvent(this, TileModel.EVENT_ENTITY_CHANGED, null)
 		);
 		
 		// Clear the previously selected tile if any
@@ -190,35 +185,6 @@ public final class BoardController extends BaseController {
 	}
 	
 	/**
-	 * Starts the board game
-	 */
-	public void startGame() {
-		_isGameRunning = true;
-		Tracelog.log(Level.INFO, true, "The game is now running");
-		
-		PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true); 
-		playerController.queuePlayers();
-	}
-	
-	/**
-	 * Stops the board game
-	 */
-	public void stopGame() {
-		_isGameRunning = false;
-		Tracelog.log(Level.INFO, true, "The game is now stopped");
-		
-		// Send a message to all the tile models to stop highlighting themselves
-		AbstractFactory.getFactory(ModelFactory.class).multicastSignal(
-			TileModel.class, new EntityEvent(this, TileModel.EVENT_HIGHLIGHT_CHANGED, null, false)
-		);
-		
-		// If there is a previously set tile then remove it's selection 
-		if(_previouslySelectedTile != null) {
-			_previouslySelectedTile.setSelected(false);
-		}
-	}
-		
-	/**
 	 * Gets all the neighbors associated to the particular model
 	 * 
 	 * @param tileModel The tile model to use as a search for neighbors around it
@@ -238,7 +204,56 @@ public final class BoardController extends BaseController {
 		return _dimensions;
 	}
 		
-	@Override public void registerSignalListeners() {
+	/**
+     * @return The previously selected tile
+     */
+    public TileModel getPreviouslySelectedTile() {
+    	return _previouslySelectedTile;
+    }
+
+    /**
+     * @return If the game is running
+     */
+    public boolean isGameRunning() {
+    	return _isGameRunning;
+    }
+
+    /**
+     * Starts the board game
+     */
+    public void startGame() {
+    	_isGameRunning = true;
+    	Tracelog.log(Level.INFO, true, "The game is now running");
+    	
+    	PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true); 
+    	playerController.queuePlayers();
+    }
+
+    /**
+     * Stops the board game
+     */
+    public void stopGame() {
+    	_isGameRunning = false;
+    	Tracelog.log(Level.INFO, true, "The game is now stopped");
+    	
+    	// Create the entity event, however simply clear the highlighting, we still want to 
+    	// keep the board pieces on the board
+    	EntityEvent event = new EntityEvent(this, TileModel.EVENT_HIGHLIGHT_CHANGED, null);
+    	event.isHighlighted = false;
+    	
+    	// Send a message to all the tile models to stop highlighting themselves
+    	AbstractFactory.getFactory(ModelFactory.class).multicastSignal(
+    		TileModel.class, event
+    	);
+    	
+    	// If there is a previously set tile then remove it's selection 
+    	if(_previouslySelectedTile != null) {
+    		_previouslySelectedTile.setSelected(false);
+    		_previouslySelectedTile = null;
+    	}
+    }
+
+    @Override public void registerSignalListeners() {
 		
 		// Register to when this controller is added as a listener
 		registerSignalListener(IModel.EVENT_LISTENER_ADDED, new ISignalReceiver<ModelEventArgs<TileModel>>() {
@@ -258,11 +273,15 @@ public final class BoardController extends BaseController {
 				
 				// Get the tile model that fired the event
 				TileModel tile = event.getSource();
+
+                // Create the entity event to be sent out.  
+                EntityEvent entityEvent = new EntityEvent(event.getSource(), event.getOperationName(), tile.getEntity());
 				
 				// Get the list of current movements for the previously selected tile
 				PlayerActions currentMovement = tile.getMovementComponent().getBoardMovement(_previouslySelectedTile);
 				
-				// Set a flag to indicate if the operation being done below was successful
+                // Set a flag to indicate if the operation being done below was successful
+				// TODO Remove this, there needs to be a much better way of handling this
 				boolean moveSuccessful = false;
 				
 				switch(currentMovement) {
@@ -270,12 +289,14 @@ public final class BoardController extends BaseController {
 					tile.setSelected(false);
 					break;
 				case MOVE_1_SELECT:
+				    
+				    // Set the previously selected tile from what was just selected
 				    _previouslySelectedTile = tile;
                     Tracelog.log(Level.INFO, true, _previouslySelectedTile.toString() + " is now selected");
                     
                     // Go through each path and mark the tiles as highlighted
-                    for(TileModel moveableTile : _boardComposition.getBoardPositions(tile)) {
-                		moveableTile.setHighlighted(true);
+                    for(Map.Entry<TileModel, EntityMovements[]> kvp : _boardComposition.getBoardPositions(tile).entrySet()) {
+                		kvp.getKey().setHighlighted(true);
                     }
                     
                     // Indicate that this movement was successful in its operation
@@ -288,13 +309,13 @@ public final class BoardController extends BaseController {
 					Tracelog.log(Level.INFO, true, _previouslySelectedTile.toString() + " is now deselected");
 					
 					// Go through each path and mark the tiles as not highlighted
-                    for(TileModel moveableTile : _boardComposition.getBoardPositions(_previouslySelectedTile)) {
-                		moveableTile.setHighlighted(false);
+                    for(Map.Entry<TileModel, EntityMovements[]> kvp : _boardComposition.getBoardPositions(_previouslySelectedTile).entrySet()) {
+                		kvp.getKey().setHighlighted(false);
                     }
                 	
                     // Go through each path and mark the tiles as highlighted
-                    for(TileModel moveableTile : _boardComposition.getBoardPositions(tile)) {
-                		moveableTile.setHighlighted(true);
+                    for(Map.Entry<TileModel, EntityMovements[]> kvp : _boardComposition.getBoardPositions(tile).entrySet()) {
+                		kvp.getKey().setHighlighted(true);
                     }
 					_previouslySelectedTile = tile;
 
@@ -307,12 +328,12 @@ public final class BoardController extends BaseController {
 				case MOVE_2_CAPTURE: {
 				    
 				    // Get the list of available board positions of the previously selected tile
-				    List<TileModel> availablePositions = _boardComposition.getBoardPositions(_previouslySelectedTile);
+				    Map<TileModel, EntityMovements[]> availablePositions = _boardComposition.getBoardPositions(_previouslySelectedTile);
 				    
 				    // If our capture occurs on one of these positions
 				    // Note: It is assumed here that because we identify as a capture move
 				    //       that the said position contains the entity in question to be captured
-                    if(availablePositions.contains(tile)) {
+                    if(availablePositions.keySet().contains(tile)) {
                  
                         // Get the entities of the player and the enemy
                         AbstractChessEntity playerEntity = _previouslySelectedTile.getEntity();
@@ -328,8 +349,8 @@ public final class BoardController extends BaseController {
                         playerController.getPlayer(enemyEntity.getTeam()).removeEntity(enemyEntity);
                         
                         // Go through the list of positions available and remove their highlight guides
-                        for(TileModel moveableTile : availablePositions) {
-                            moveableTile.setHighlighted(false);
+                        for(Map.Entry<TileModel, EntityMovements[]> kvp : availablePositions.entrySet()) {
+                            kvp.getKey().setHighlighted(false);
                         }
                         
                         // Remove the selection from tiles selected in this operation
@@ -347,10 +368,10 @@ public final class BoardController extends BaseController {
 				case MOVE_2_EMPTY: {
 				
 				    // Get the list of available positions from the previously selected tile
-					List<TileModel> availablePositions = _boardComposition.getBoardPositions(_previouslySelectedTile);
+					Map<TileModel, EntityMovements[]> availablePositions = _boardComposition.getBoardPositions(_previouslySelectedTile);
 					
 					// If the tile that was selected is an available position
-					if(availablePositions.contains(tile)) {
+					if(availablePositions.keySet().contains(tile)) {
 					    
 					    // Get the previously selected entity and remove the piece
 					    // from that tile and place it at the new, empty tile location
@@ -364,9 +385,12 @@ public final class BoardController extends BaseController {
 						tile.setSelected(false);
 						
                         // Go through the list of positions available and remove their highlight guides
-						for(TileModel moveableTile : availablePositions) {
-						    moveableTile.setHighlighted(false);
+						for(Map.Entry<TileModel, EntityMovements[]> kvp : availablePositions.entrySet()) {
+						    kvp.getKey().setHighlighted(false);
 	                    }
+						
+						// Set the entity movements for the specified tile
+						entityEvent.movements = availablePositions.get(tile);
 
 						// The move is over so indicate that everything went well and clean
 						// up the variables
@@ -387,8 +411,8 @@ public final class BoardController extends BaseController {
 					Tracelog.log(Level.INFO, true, _previouslySelectedTile.toString() + " is now deselected");
 					
 					// Go through each path and mark the tiles as highlighted
-                    for(TileModel moveableTile : _boardComposition.getBoardPositions(tile)) {
-                		moveableTile.setHighlighted(false);
+                    for(Map.Entry<TileModel, EntityMovements[]> kvp : _boardComposition.getBoardPositions(tile).entrySet()) {
+                		kvp.getKey().setHighlighted(false);
                     }
 					_previouslySelectedTile = null;
 					
@@ -401,7 +425,6 @@ public final class BoardController extends BaseController {
 				// Log the movement event that just occurred
 				Tracelog.log(Level.INFO, true, currentMovement.toString());
 				
-				// If there is no previous tile selected and 
 				if(moveSuccessful && currentMovement.isMoveFinal) {
 					if(tile.getEntity().isPromotable() && !_boardComposition.canMoveForward(tile)) {
 						PromotionView view = AbstractFactory.getFactory(ViewFactory.class).get(PromotionView.class, true);
@@ -411,9 +434,15 @@ public final class BoardController extends BaseController {
 					
 				    // Indicate that the tile has moved at least once
 				    tile.getEntity().setHasMoved(true);
-				    
-					// Get the player controller
-					PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true); 
+
+				    // Set the player action of the event to be sent out
+					entityEvent.playerAction = currentMovement;
+					
+                    // Get the player controller and send the entity event to it
+                    PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true);
+				    playerController.update(entityEvent);
+					
+					// Switch to the next player in turn
 					playerController.nextPlayer();
 				}
 				

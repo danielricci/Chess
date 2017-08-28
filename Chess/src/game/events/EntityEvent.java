@@ -26,10 +26,12 @@ package game.events;
 
 import engine.communication.internal.signal.ISignalListener;
 import engine.communication.internal.signal.arguments.SignalEventArgs;
+import game.components.MovementComponent.EntityMovements;
+import game.components.MovementComponent.PlayerActions;
 import game.entities.concrete.AbstractChessEntity;
 
 /**
- * This event handles the storage of entities based on an event that has occured
+ * This event handles the storage of entities based on an event that has occurred
  * 
  * @author Daniel Ricci {@literal <thedanny09@gmail.com>}
  *
@@ -44,7 +46,17 @@ public class EntityEvent<T extends ISignalListener> extends SignalEventArgs<T> {
 	/**
 	 * Indicates if the entity is to be highlighted
 	 */
-	public final boolean isHighlighted;
+	public boolean isHighlighted;
+	
+	/**
+	 * The player action that has occurred 
+	 */
+	public PlayerActions playerAction;
+
+	/**
+	 * The entity movements that has occurred based on this event existing
+	 */
+    public EntityMovements[] movements;
 	
 	/**
 	 * Constructs a new instance of this class type
@@ -53,9 +65,8 @@ public class EntityEvent<T extends ISignalListener> extends SignalEventArgs<T> {
 	 * @param operationName The name of the operation being performed
 	 * @param entity The entity
 	 */
-	public EntityEvent(T sender, String operationName, AbstractChessEntity entity, boolean isHighlighted) {
+	public EntityEvent(T sender, String operationName, AbstractChessEntity entity) {
 		super(sender, operationName);
 		this.entity = entity;
-		this.isHighlighted = isHighlighted;
 	}
 }

@@ -92,12 +92,10 @@ public class BoardComponent {
      * 
      * @return The list of tiles to move towards
      */
-    public List<TileModel> getBoardPositions(TileModel tileModel) {
+    public Map<TileModel, EntityMovements[]> getBoardPositions(TileModel tileModel) {
         
-    	// The list of all movements. The end position within each sub-list is the 
-    	// final destination
-        List<TileModel> allMoves = new ArrayList();
-
+        Map<TileModel, EntityMovements[]> allMoves = new HashMap();
+        
         // If tile model does not has a chess entity then
         // there are no moves to get
         AbstractChessEntity entity = tileModel.getEntity();
@@ -185,7 +183,7 @@ public class BoardComponent {
 	        	}
 
 	        	// Add the last tile into our list of valid tiles
-	        	allMoves.add(destinationTile);
+	        	allMoves.put(destinationTile, movementPath);
 	        	
 	        	// If the tile has an enemy player on it then stop here
 	        	// If the tile is not continuous then we do not need to 

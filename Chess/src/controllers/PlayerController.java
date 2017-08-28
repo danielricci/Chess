@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.logging.Level;
 
+import engine.communication.internal.signal.arguments.SignalEventArgs;
 import engine.core.mvc.controller.BaseController;
 import engine.utils.io.logging.Tracelog;
 import game.entities.concrete.AbstractChessEntity;
@@ -177,5 +178,12 @@ public final class PlayerController extends BaseController {
 		for(PlayerModel player : _playerTurnQueue) {
 			Tracelog.log(Level.INFO, true, "Adding " + player.toString() + " to the queue");
 		}
+	}
+	
+	@Override public void update(SignalEventArgs signalEvent) {
+	    super.update(signalEvent);
+	    for(PlayerModel player : _playerTurnQueue) {
+	        player.update(signalEvent);
+	    }
 	}
 }

@@ -27,8 +27,11 @@ package game.entities.concrete;
 import java.util.ArrayList;
 import java.util.List;
 
+import engine.communication.internal.signal.arguments.ModelEventArgs;
+import engine.communication.internal.signal.arguments.SignalEventArgs;
 import game.components.MovementComponent.EntityMovements;
 import generated.DataLookup.DataLayerName;
+import models.TileModel;
 
 /**
  * This class represents a pawn in the chess game
@@ -37,6 +40,8 @@ import generated.DataLookup.DataLayerName;
  */
 class PawnEntity extends AbstractChessEntity {
     
+    private boolean someoneCanEnPassentMe;
+
     /**
      * Constructs a new instance of this class type
      */
@@ -75,5 +80,24 @@ class PawnEntity extends AbstractChessEntity {
     
     @Override public boolean isPromotable() {
     	return true;
+    }
+    
+    @Override public void update(SignalEventArgs signalEvent) {
+        super.update(signalEvent);
+        System.out.println("PawnEntity::update");
+        
+        if(signalEvent instanceof ModelEventArgs) {
+            ModelEventArgs<TileModel> modelEventArgs = (ModelEventArgs) signalEvent;
+            if(modelEventArgs.getSource().getEntity() == this) {
+                if(someoneCanEnPassentMe) {
+                    System.out.println("Haha, they thought they could catch me!");
+                    someoneCanEnPassentMe = false;
+                }
+                else if(getMovements().contains(modelEventArgs.movementResult)) {
+                    someoneCanEnPassentMe = true;
+                    System.out.println("Oh no, someone can En Passent me");
+                }
+            }
+        }
     }
 }

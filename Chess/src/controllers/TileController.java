@@ -96,7 +96,7 @@ public final class TileController extends BaseController {
 		BoardController boardController = AbstractFactory.getFactory(ControllerFactory.class).get(BoardController.class);
 		
 		// Make sure that the game is running before continuing
-		if(!boardController.IsGameRunning()) {
+		if(!boardController.isGameRunning()) {
 			return;
 		}
 		

@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
+import engine.communication.internal.signal.arguments.SignalEventArgs;
 import engine.core.mvc.model.BaseModel;
 import engine.utils.io.logging.Tracelog;
 import game.components.MovementComponent.PlayerDirection;
@@ -39,7 +40,7 @@ import generated.DataLookup.DataLayerName;
 /**
  * Player class for the game 
  * 
- * @author Daniel Ricci <thedanny09@gmail.com>
+ * @author Daniel Ricci {@literal <thedanny09@gmail.com>}
  *
  */
 public class PlayerModel extends BaseModel {
@@ -47,24 +48,32 @@ public class PlayerModel extends BaseModel {
 	/**
 	 * The enumeration of teams available to all players 
 	 * 
-	 * @author Daniel Ricci <thedanny09@gmail.com>
+	 * @author Daniel Ricci {@literal <thedanny09@gmail.com>}
 	 *
 	 */
 	public enum PlayerTeam { 
-		WHITE(PlayerDirection.FORWARD), 
+	    
+	    /**
+	     * WHITE Team
+	     */
+		WHITE(PlayerDirection.FORWARD),
+		/**
+		 * BLACK Team
+		 */
 		BLACK(PlayerDirection.BACKWARD);
-		
+	    /**
+	     * The player direction
+	     */
 		public final PlayerDirection DIRECTION;
-		
+		/**
+		 * Constructs a new instance of this class type
+		 * 
+		 * @param direction The direction
+		 */
 		PlayerTeam(PlayerDirection direction) {
 			this.DIRECTION = direction;
 		}
 	}
-	
-	/**
-	 * The team that this player is associated
-	 */
-	private final PlayerTeam _team;
 	
 	/**
 	 * The data values associated to the player
@@ -77,6 +86,11 @@ public class PlayerModel extends BaseModel {
 	private final List<AbstractChessEntity> _entities = new ArrayList();
 	
 	/**
+     * The team that this player is associated
+     */
+    private final PlayerTeam _team;
+
+    /**
 	 * Constructs a new instance of this class type
 	 * 
 	 * @param team The team of the player
@@ -118,9 +132,16 @@ public class PlayerModel extends BaseModel {
 	}
 	
 	/**
-	 * Create a method with the specified entity name
+     * Clears all the entities from the player
+     */
+    public void clearEntities() {
+    	_entities.clear();
+    }
+
+    /**
+	 * Create a method with the specified layer name
 	 * 
-	 * @param entityName The name of the entity
+	 * @param layerName The name of the layer
 	 * 
 	 * @return The newly created entity
 	 */
@@ -146,9 +167,18 @@ public class PlayerModel extends BaseModel {
 	}
 	
 	/**
-	 * Gets the list of entities associated to the specified type
+     * Gets the data values associated to the player 
+     * 
+     * @return The data values associated to the player
+     */
+    public List<Enum> getDataValues() {
+    	return _dataValues;
+    }
+
+    /**
+	 * Gets the list of entities associated to the specified layer name
 	 * 
-	 * @param entityClass The entity type
+	 * @param entityClass The name of the layer
 	 * 
 	 * @return A list of entities
 	 */
@@ -156,15 +186,6 @@ public class PlayerModel extends BaseModel {
 		return (List<T>) _entities.stream().filter(z -> z.getDataLayerName() == layerName).collect(Collectors.toList());
 	}
 	
-	/**
-	 * Gets the data values associated to the player 
-	 * 
-	 * @return The data values associated to the player
-	 */
-	public List<Enum> getDataValues() {
-		return _dataValues;
-	}
-
 	/**
 	 * gets the team associated to the player 
 	 * 
@@ -183,15 +204,17 @@ public class PlayerModel extends BaseModel {
 		_entities.remove(entity);
 	}
 	
-	/**
-	 * Clears all the entities from the player
-	 */
-	public void clearEntities() {
-		_entities.clear();
-	}
-	
 	@Override public String toString() {
 		return _team.toString();
 	}
-
+	
+	@Override public void update(SignalEventArgs signalEvent) {
+	    super.update(signalEvent);
+	    
+	    // Go through the list of chess entities that this player owns
+	    // and send out the update signal
+	    for(AbstractChessEntity entity : _entities) {
+	        entity.update(signalEvent);
+	    }
+	}
 }

@@ -59,6 +59,60 @@ public abstract class AbstractChessEntity extends AbstractEntity implements IChe
 	}
 	
 	/**
+     * Creates an instance of a chess entity with respect to the provided data layer name
+     * 
+     * @param dataLayerName The data layer name lookup
+     * 
+     * @return A chess entity
+     */
+    public static AbstractChessEntity createEntity(DataLayerName dataLayerName) {
+        switch(dataLayerName) {
+        case BISHOP:
+            return new BishopEntity();
+        case KING:
+            return new KingEntity();
+        case KNIGHT:
+            return new KnightEntity();
+        case PAWN:
+            return new PawnEntity();
+        case QUEEN:
+            return new QueenEntity();
+        case ROOK:
+            return new RookEntity();
+        default:
+            return null;	    
+        }
+    }
+
+    /**
+     * Sets the specified player to this entity
+     * 
+     * @param player The player to set to this entity
+     */
+    public void setPlayer(PlayerModel player) {
+    	if(player != _player) {
+    		_player = player;
+    		
+    		List<String> names = getDataNames();
+    		for(String name : names) {
+    			if(player.getDataValues().stream().anyMatch(z -> z.toString().equalsIgnoreCase(name))) {
+    				setActiveData(name);
+    				break;
+    			}
+    		}
+    	}
+    }
+
+    /**
+     * Gets the data layer name of this entity
+     * 
+     * @return The data layer name from the data lookup table
+     */
+    public final DataLayerName getDataLayerName() {
+        return DataLayerName.valueOf(getLayerName());
+    }
+
+    /**
 	 * @return The team of the player associated to this chess entity 
 	 */
 	public final PlayerTeam getTeam() {
@@ -66,34 +120,6 @@ public abstract class AbstractChessEntity extends AbstractEntity implements IChe
 	}
 
 	/**
-	 * Gets the data layer name of this entity
-	 * 
-	 * @return The data layer name from the data lookup table
-	 */
-	public final DataLayerName getDataLayerName() {
-	    return DataLayerName.valueOf(getLayerName());
-	}
-	
-	/**
-	 * Sets the specified player to this entity
-	 * 
-	 * @param player The player to set to this entity
-	 */
-	public void setPlayer(PlayerModel player) {
-		if(player != _player) {
-			_player = player;
-			
-			List<String> names = getDataNames();
-			for(String name : names) {
-				if(player.getDataValues().stream().anyMatch(z -> z.toString().equalsIgnoreCase(name))) {
-					setActiveData(name);
-					break;
-				}
-			}
-		}
-	}
-	
-    /**
      * Gets if the chess entity has moved at least once
      * 
      * @return If the chess entity has moved at least once
@@ -114,30 +140,4 @@ public abstract class AbstractChessEntity extends AbstractEntity implements IChe
             _hasMovedOnce = hasMovedOnce;    
         }
     }
-    
-	/**
-	 * Creates an instance of a chess entity with respect to the provided data layer name
-	 * 
-	 * @param dataLayerName The data layer name lookup
-	 * 
-	 * @return A chess entity
-	 */
-	public static AbstractChessEntity createEntity(DataLayerName dataLayerName) {
-	    switch(dataLayerName) {
-        case BISHOP:
-            return new BishopEntity();
-        case KING:
-            return new KingEntity();
-        case KNIGHT:
-            return new KnightEntity();
-        case PAWN:
-            return new PawnEntity();
-        case QUEEN:
-            return new QueenEntity();
-        case ROOK:
-            return new RookEntity();
-        default:
-            return null;	    
-	    }
-	}
 }
