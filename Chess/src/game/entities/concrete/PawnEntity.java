@@ -69,8 +69,8 @@ class PawnEntity extends AbstractChessEntity {
     @Override public List<EntityMovements[]> getCapturableBoardMovements() {
         return new ArrayList<EntityMovements[]>() {{
             // This is the unit movement that all pawns support
-            add(new EntityMovements[] { EntityMovements.UP, EntityMovements.RIGHT  });
-            add(new EntityMovements[] { EntityMovements.UP, EntityMovements.LEFT  });
+            add(new EntityMovements[] { EntityMovements.RIGHT, EntityMovements.UP });
+            add(new EntityMovements[] { EntityMovements.LEFT, EntityMovements.UP });
         }};
     }
     
@@ -96,7 +96,6 @@ class PawnEntity extends AbstractChessEntity {
     
     @Override public void update(SignalEventArgs signalEvent) {
         super.update(signalEvent);
-        System.out.println("PawnEntity::update");
         
         if(signalEvent instanceof EntityEventArgs) {
             EntityEventArgs<TileModel> modelEventArgs = (EntityEventArgs) signalEvent;

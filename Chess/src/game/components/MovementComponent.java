@@ -271,6 +271,9 @@ public class MovementComponent {
      * @return If both movements are equal
      */
     public static boolean compareMovements(EntityMovements[] movement1, EntityMovements[] movement2) {
+    	if(movement1 == null || movement2 == null) {
+    		return false;
+    	}
     	if(movement1.length == movement2.length) {
     		for(int i = 0; i < movement1.length; ++i) {
     			if(movement1[i] != movement2[i]) {

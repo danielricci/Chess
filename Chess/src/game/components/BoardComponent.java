@@ -380,8 +380,9 @@ public class BoardComponent {
 	 */
 	public TileModel getEnPassentEnemy(TileModel tile) {
 		for(Map.Entry<TileModel, EntityMovements[]> kvp : getEnPassentBoardPositions(tile).entrySet()) {
-			if(kvp.getKey().equals(tile)) {
-				return _neighbors.get(tile).get(kvp.getValue()[0]);
+			TileModel enemy = _neighbors.get(kvp.getKey()).get(PlayerDirection.getNormalizedMovement(tile.getEntity().getTeam().DIRECTION, EntityMovements.DOWN));
+			if(enemy.getEntity() != null && enemy.getEntity().isEnPassentCapturable()) {
+				return enemy;
 			}
 		}
 		return null;

@@ -40,6 +40,10 @@ import game.events.EntityEventArgs;
  *
  */
 public class TileModel extends BaseModel {
+
+	private static int _counter = 0;
+	
+	private final int _count = ++_counter;
 	
 	/**
 	 * Signal indicating that this model's entity has changed
@@ -164,6 +168,9 @@ public class TileModel extends BaseModel {
      */
     public void setSelected(boolean selected) {
     	_selected = selected;
+    	if(!_selected && _highlighted) {
+    		setHighlighted(false);
+    	}
     	setOperation(EVENT_SELECTION_CHANGED);
     	doneUpdating();
     }
@@ -182,4 +189,8 @@ public class TileModel extends BaseModel {
 			}
 		});
 	}
+    
+    @Override public String toString() {
+    	return _count + "";
+    }
 }
