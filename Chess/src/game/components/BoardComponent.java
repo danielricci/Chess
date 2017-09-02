@@ -32,9 +32,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import controllers.PlayerController;
+import engine.core.factories.AbstractFactory;
+import engine.core.factories.ControllerFactory;
 import game.components.MovementComponent.EntityMovements;
 import game.components.MovementComponent.PlayerDirection;
 import game.entities.concrete.AbstractChessEntity;
+import generated.DataLookup.DataLayerName;
+import models.PlayerModel;
+import models.PlayerModel.PlayerTeam;
 import models.TileModel;
 
 /**
@@ -386,5 +392,36 @@ public class BoardComponent {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Gets the list of tiles that are checking against the specified player
+	 * 
+	 * @param player The player to look for checked tiles against
+	 * 
+	 * @return The list of checked tiles
+	 */
+	public List<TileModel> getCheckedPositions(PlayerModel player) {
+		List<TileModel> checkedPositions = new ArrayList();
+		
+		// Get the opposing player so we can get its possible moves w.r.t the king
+		// of the current player playing
+		PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true);
+		PlayerModel enemyPlayer = playerController.getPlayer(player.getTeam() == PlayerTeam.BLACK ? PlayerTeam.WHITE : PlayerTeam.BLACK);
+			
+		// The reason for iterating over all kings is because in the debug
+		// view it is possible that the debug scenario for whatever reason
+		// 
+		for(AbstractChessEntity king : player.getEntities(DataLayerName.KING)) {
+			
+			// How to get the tile model associated to the chess entity?
+			
+			
+			for(AbstractChessEntity enemyEntity : enemyPlayer.getEntities()) {
+				getBoardPositions(enemyEntity)
+			}
+		}
+		
+		return checkedPositions;
 	}
 }

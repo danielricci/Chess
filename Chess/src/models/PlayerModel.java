@@ -145,6 +145,7 @@ public class PlayerModel extends BaseModel {
 	 * 
 	 * @return The newly created entity
 	 */
+    // TODO - this shouldnt be in a model, it should be in the controller
 	public AbstractChessEntity createEntity(DataLayerName layerName) {
 	    
 	    // Create the chess entity based on the layer name
@@ -174,6 +175,15 @@ public class PlayerModel extends BaseModel {
     public List<Enum> getDataValues() {
     	return _dataValues;
     }
+    
+    /**
+	 * Gets the list of entities associated to this player
+	 * 
+	 * @return A list of entities
+	 */
+	public List<AbstractChessEntity> getEntities() {
+		return _entities;
+	}
 
     /**
 	 * Gets the list of entities associated to the specified layer name
