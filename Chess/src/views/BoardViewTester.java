@@ -90,10 +90,9 @@ public class BoardViewTester extends BoardView {
 							return;
 						}
 						
-						// If the tile already has an entity then do not create a new one on it
 						TileController tileController = view.getViewProperties().getEntity(TileController.class);
-						
 						if(SwingUtilities.isLeftMouseButton(event)) {
+						    // If the tile already has an entity then do not create a new one on it
 							if(!tileController.hasEntity()) {
 								// Get a reference to the new entity based on the options selected in the debugger
 								AbstractChessEntity entity = AbstractFactory

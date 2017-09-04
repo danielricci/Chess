@@ -38,7 +38,6 @@ import engine.core.factories.ControllerFactory;
 import game.components.MovementComponent.EntityMovements;
 import game.components.MovementComponent.PlayerDirection;
 import game.entities.concrete.AbstractChessEntity;
-import generated.DataLookup.DataLayerName;
 import models.PlayerModel;
 import models.PlayerModel.PlayerTeam;
 import models.TileModel;
@@ -92,12 +91,85 @@ public class BoardComponent {
     }
     
     /**
+     * Indicates if the specified tile contains an entity that has the ability to move forward
+     * 
+     * @param tileModel The tile model in question
+     * 
+     * @return TRUE if the specified tile contains an entity that has the ability to move forward
+     */
+    public boolean canMoveForward(TileModel tileModel) {
+    	
+    	AbstractChessEntity entity = tileModel.getEntity();
+    	if(entity != null) {
+    		return _neighbors.get(tileModel).get(PlayerDirection.getNormalizedMovement(entity.getPlayer().getTeam().DIRECTION, EntityMovements.UP)) != null;	
+    	}
+    	
+    	return false;
+    }
+
+    /**
+     * Links together the passed in rows
+     *  
+     * @param top The top row
+     * @param neutral the neutral row
+     * @param bottom The bottom row
+     */
+    private void linkTiles(TileModel[] topRow, TileModel[] neutralRow, TileModel[] bottomRow) {
+        for(int i = 0, columns = _dimensions.width; i < columns; ++i) {
+            
+            // Represents the structural view of a particular tile
+            Map<EntityMovements, TileModel> neighbors = new HashMap<EntityMovements, TileModel>();
+                    
+            // Populate the neighbors structure with the movement elements
+            // Note: Diagonals can be fetched using these primitives
+            neighbors.put(EntityMovements.UP, topRow == null ? null : topRow[i]);
+            neighbors.put(EntityMovements.LEFT, i - 1 < 0 ? null : neutralRow[i - 1]);
+            neighbors.put(EntityMovements.RIGHT, i + 1 >= columns ? null : neutralRow[i + 1]);
+            neighbors.put(EntityMovements.DOWN, bottomRow == null ? null : bottomRow[i]);
+                       
+            // Assign the mappings where we reference the neutral-neutral tile as the key
+            _neighbors.put(neutralRow[i], neighbors);
+        }
+    }
+
+    /**
+     * Logically attaches the list of tiles together by sub-dividing the list of tiles.
+     * Note: Order matters in cases such as this, which is why insertion order was important
+     *       when I chose the data structure for the neighbors map 
+     */
+    private void generateLogicalTileLinks() {
+                
+        // Get the array representation of our tile models.
+        // Note: This is done because it is easier to get a subset of an array
+        //       and because the neighbor data structure tracks the insertion 
+        //       order at runtime which is what is important here.
+        TileModel[] tiles = _neighbors.keySet().toArray(new TileModel[0]);
+                
+        // For every row that exists within our setup model
+        for(int i = 0, rows = _dimensions.height, columns = _dimensions.width; i < rows; ++i) {
+            
+            // Link the tile rows together
+            linkTiles(
+                // Previous row
+                i - 1 >= 0 ? Arrays.copyOfRange(tiles, (i - 1) * columns, ((i - 1) * columns) + columns) : null,
+                // Current Row
+                Arrays.copyOfRange(tiles, i * columns, (i * columns) + columns),
+                // Next Row
+                i + 1 >= 0 ? Arrays.copyOfRange(tiles, (i + 1) * columns, ((i + 1) * columns) + columns) : null
+            );
+        }
+    }
+
+    /**
      * Gets the list of board positions that the specified tile can move on
+     * 
+     * Note: This is done with respect to conditions of the current player that is playing
      * 
      * @param tileModel The tile model being played
      * 
      * @return The list of tiles to move towards
      */
+    // TODO - this method depends on the current player, fix that?
     public Map<TileModel, EntityMovements[]> getBoardPositions(TileModel tileModel) {
         
         Map<TileModel, EntityMovements[]> allMoves = new HashMap();
@@ -144,7 +216,7 @@ public class BoardComponent {
 	        	for(EntityMovements movement : movementPath) {
 	        		
 	        		// Normalize the movement w.r.t the player of the entity
-	        		movement = PlayerDirection.getNormalizedMovement(entity.getTeam().DIRECTION, movement);
+	        		movement = PlayerDirection.getNormalizedMovement(entity.getPlayer().getTeam().DIRECTION, movement);
 	        		
 	        		// Get the movements of the tile from our position
 	        		traverser = _neighbors.get(traverser).get(movement);
@@ -186,13 +258,8 @@ public class BoardComponent {
 	            if(!isMovementCapturable && !MovementComponent.isTileEnemyPlayer(destinationTile) && capturableMovements.contains(movementPath)) {
 	        		break;
 	        	}
-	        	
-	        	// if the end tile is ourselves then do not consider it and stop
-	        	if(MovementComponent.isTileCurrentPlayer(destinationTile)) {
-	        		break;
-	        	}
 
-	        	// Add the last tile into our list of valid tiles
+	            // Add the last tile into our list of valid tiles
 	        	allMoves.put(destinationTile, movementPath);
 
 	        	
@@ -209,6 +276,51 @@ public class BoardComponent {
         return allMoves;
     }
     
+    /**
+     * Gets the list of checked positions of the enemy of the specified player
+     * 
+     * @param player The player
+     *  
+     * @return The list of checked positions
+     */
+    public List<TileModel> getCheckedPositions(PlayerModel player) {
+        
+        // The list of enemy owned tiles that are checked by the specified player
+        List<TileModel> checkedEntities = new ArrayList();
+        
+        // Get a reference to the enemy of the specified player
+    	PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true);
+    	PlayerModel enemyPlayer = playerController.getPlayer(player.getTeam() == PlayerTeam.BLACK ? PlayerTeam.WHITE : PlayerTeam.BLACK);
+
+    	// Get the list of checkable entities owned by the enemy player
+    	List<AbstractChessEntity> checkableEntities = enemyPlayer.getCheckableEntities();
+    	
+    	// Go through the list of player owned entities and see if any of them can
+    	// move to the checkable entity of the enemy
+    	for(AbstractChessEntity playerEntity : player.getEntities()) {
+    	    for(Map.Entry<TileModel, EntityMovements[]> movement : getBoardPositions(playerEntity.getTile()).entrySet()) {
+                if(checkableEntities.contains(movement.getKey().getEntity())) {
+                    checkedEntities.add(movement.getKey());
+                }
+            }
+    	}
+    	
+    	// return the list of entities
+    	return checkedEntities;
+    }
+    
+    /**
+     * Indicates if the specified move by the specified player would result in the player being checked
+     *  
+     * @param from The starting move
+     * @param to The ending move
+     * 
+     * @return If the specified move would result in a check
+     */
+    public boolean isMoveChecked(PlayerModel player, TileModel from, TileModel to) {
+        return false;
+    }
+
     /**
      * Gets the En-Passent movements of the specified tile
      * 
@@ -227,36 +339,53 @@ public class BoardComponent {
     	AbstractChessEntity entity = source.getEntity();
     	
     	// Left En-Passent
-    	EntityMovements enPassentLeft = PlayerDirection.getNormalizedMovement(entity.getTeam().DIRECTION, EntityMovements.LEFT);
+    	EntityMovements enPassentLeft = PlayerDirection.getNormalizedMovement(entity.getPlayer().getTeam().DIRECTION, EntityMovements.LEFT);
     	TileModel capturableEnPassentLeft = _neighbors.get(source).get(enPassentLeft);
     	if(capturableEnPassentLeft != null && MovementComponent.isTileEnemyPlayer(capturableEnPassentLeft) && capturableEnPassentLeft.getEntity().isEnPassentCapturable()) {
     		
-    		EntityMovements enPassentBackwards = PlayerDirection.getNormalizedMovement(capturableEnPassentLeft.getEntity().getTeam().DIRECTION, EntityMovements.DOWN);
+    		EntityMovements enPassentBackwards = PlayerDirection.getNormalizedMovement(capturableEnPassentLeft.getEntity().getPlayer().getTeam().DIRECTION, EntityMovements.DOWN);
 			TileModel capturableEnPassentPosition = _neighbors.get(capturableEnPassentLeft).get(enPassentBackwards); 
     		
 			movements.put(
     			capturableEnPassentPosition,
-				PlayerDirection.getNormalizedMovement(entity.getTeam().DIRECTION, new EntityMovements[] { EntityMovements.UP, EntityMovements.LEFT })
+				PlayerDirection.getNormalizedMovement(entity.getPlayer().getTeam().DIRECTION, new EntityMovements[] { EntityMovements.UP, EntityMovements.LEFT })
 			);
     	}
     	
     	// Right En-Passent
-    	EntityMovements enPassentRight = PlayerDirection.getNormalizedMovement(entity.getTeam().DIRECTION, EntityMovements.RIGHT);
+    	EntityMovements enPassentRight = PlayerDirection.getNormalizedMovement(entity.getPlayer().getTeam().DIRECTION, EntityMovements.RIGHT);
     	TileModel capturableEnPassentRight = _neighbors.get(source).get(enPassentRight);
     	if(capturableEnPassentRight != null && MovementComponent.isTileEnemyPlayer(capturableEnPassentRight) && capturableEnPassentRight.getEntity().isEnPassentCapturable()) {
     		
-    		EntityMovements enPassentBackwards = PlayerDirection.getNormalizedMovement(capturableEnPassentRight.getEntity().getTeam().DIRECTION, EntityMovements.DOWN);
+    		EntityMovements enPassentBackwards = PlayerDirection.getNormalizedMovement(capturableEnPassentRight.getEntity().getPlayer().getTeam().DIRECTION, EntityMovements.DOWN);
 			TileModel capturableEnPassentPosition = _neighbors.get(capturableEnPassentRight).get(enPassentBackwards); 
     		
 			movements.put(
     			capturableEnPassentPosition,
-				PlayerDirection.getNormalizedMovement(entity.getTeam().DIRECTION, new EntityMovements[] { EntityMovements.UP, EntityMovements.RIGHT })
+				PlayerDirection.getNormalizedMovement(entity.getPlayer().getTeam().DIRECTION, new EntityMovements[] { EntityMovements.UP, EntityMovements.RIGHT })
 			);
     	}
 
     	return movements;
     }
     
+    /**
+     * Gets the enemy tile associated to the specified tile
+     * 
+     * @param tile The tile of the entity doing the en-passent
+     * 
+     * @return The enemy tile
+     */
+    public TileModel getEnPassentEnemy(TileModel tile) {
+    	for(Map.Entry<TileModel, EntityMovements[]> kvp : getEnPassentBoardPositions(tile).entrySet()) {
+    		TileModel enemy = _neighbors.get(kvp.getKey()).get(PlayerDirection.getNormalizedMovement(tile.getEntity().getPlayer().getTeam().DIRECTION, EntityMovements.DOWN));
+    		if(enemy.getEntity() != null && enemy.getEntity().isEnPassentCapturable()) {
+    			return enemy;
+    		}
+    	}
+    	return null;
+    }
+
     /**
      * Gets all the neighbors associated to the particular model
      * 
@@ -306,122 +435,4 @@ public class BoardComponent {
         // return the list of neighbors
         return allNeighbors;
     }
-    
-    /**
-     * Indicates if the specified tile contains an entity that has the ability to move forward
-     * 
-     * @param tileModel The tile model in question
-     * 
-     * @return TRUE if the specified tile contains an entity that has the ability to move forward
-     */
-    public boolean canMoveForward(TileModel tileModel) {
-    	
-    	AbstractChessEntity entity = tileModel.getEntity();
-    	if(entity != null) {
-    		return _neighbors.get(tileModel).get(PlayerDirection.getNormalizedMovement(entity.getTeam().DIRECTION, EntityMovements.UP)) != null;	
-    	}
-    	
-    	return false;
-    }
-    
-    /**
-     * Logically attaches the list of tiles together by sub-dividing the list of tiles.
-     * Note: Order matters in cases such as this, which is why insertion order was important
-     *       when I chose the data structure for the neighbors map 
-     */
-    private void generateLogicalTileLinks() {
-                
-        // Get the array representation of our tile models.
-        // Note: This is done because it is easier to get a subset of an array
-        //       and because the neighbor data structure tracks the insertion 
-        //       order at runtime which is what is important here.
-        TileModel[] tiles = _neighbors.keySet().toArray(new TileModel[0]);
-                
-        // For every row that exists within our setup model
-        for(int i = 0, rows = _dimensions.height, columns = _dimensions.width; i < rows; ++i) {
-            
-            // Link the tile rows together
-            linkTiles(
-                // Previous row
-                i - 1 >= 0 ? Arrays.copyOfRange(tiles, (i - 1) * columns, ((i - 1) * columns) + columns) : null,
-                // Current Row
-                Arrays.copyOfRange(tiles, i * columns, (i * columns) + columns),
-                // Next Row
-                i + 1 >= 0 ? Arrays.copyOfRange(tiles, (i + 1) * columns, ((i + 1) * columns) + columns) : null
-            );
-        }
-    }
-    
-    /**
-     * Links together the passed in rows
-     *  
-     * @param top The top row
-     * @param neutral the neutral row
-     * @param bottom The bottom row
-     */
-    private void linkTiles(TileModel[] topRow, TileModel[] neutralRow, TileModel[] bottomRow) {
-        for(int i = 0, columns = _dimensions.width; i < columns; ++i) {
-            
-            // Represents the structural view of a particular tile
-            Map<EntityMovements, TileModel> neighbors = new HashMap<EntityMovements, TileModel>();
-                    
-            // Populate the neighbors structure with the movement elements
-            // Note: Diagonals can be fetched using these primites
-            neighbors.put(EntityMovements.UP, topRow == null ? null : topRow[i]);
-            neighbors.put(EntityMovements.LEFT, i - 1 < 0 ? null : neutralRow[i - 1]);
-            neighbors.put(EntityMovements.RIGHT, i + 1 >= columns ? null : neutralRow[i + 1]);
-            neighbors.put(EntityMovements.DOWN, bottomRow == null ? null : bottomRow[i]);
-                       
-            // Assign the mappings where we reference the neutral-neutral tile as the key
-            _neighbors.put(neutralRow[i], neighbors);
-        }
-    }
-
-	/**
-	 * Gets the enemy tile associated to the specified tile
-	 * 
-	 * @param tile The tile of the entity doing the en-passent
-	 * 
-	 * @return The enemy tile
-	 */
-	public TileModel getEnPassentEnemy(TileModel tile) {
-		for(Map.Entry<TileModel, EntityMovements[]> kvp : getEnPassentBoardPositions(tile).entrySet()) {
-			TileModel enemy = _neighbors.get(kvp.getKey()).get(PlayerDirection.getNormalizedMovement(tile.getEntity().getTeam().DIRECTION, EntityMovements.DOWN));
-			if(enemy.getEntity() != null && enemy.getEntity().isEnPassentCapturable()) {
-				return enemy;
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Gets the list of tiles that are checking against the specified player
-	 * 
-	 * @param player The player to look for checked tiles against
-	 * 
-	 * @return The list of checked tiles
-	 */
-	public List<TileModel> getCheckedPositions(PlayerModel player) {
-		List<TileModel> checkedPositions = new ArrayList();
-		
-		// Get the opposing player so we can get its possible moves w.r.t the king
-		// of the current player playing
-		PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true);
-		PlayerModel enemyPlayer = playerController.getPlayer(player.getTeam() == PlayerTeam.BLACK ? PlayerTeam.WHITE : PlayerTeam.BLACK);
-			
-		// The reason for iterating over all kings is because in the debug
-		// view it is possible that the debug scenario for whatever reason
-		// 
-		for(AbstractChessEntity king : player.getEntities(DataLayerName.KING)) {
-			
-			// How to get the tile model associated to the chess entity?
-			
-			
-			for(AbstractChessEntity enemyEntity : enemyPlayer.getEntities()) {
-				getBoardPositions(enemyEntity)
-			}
-		}
-		
-		return checkedPositions;
-	}
 }

@@ -40,9 +40,10 @@ import game.events.EntityEventArgs;
  *
  */
 public class TileModel extends BaseModel {
-
+    
+    // TODO remove
 	private static int _counter = 0;
-	
+    // TODO remove
 	private final int _count = ++_counter;
 	
 	/**
@@ -150,7 +151,17 @@ public class TileModel extends BaseModel {
 	 */
 	public void setEntity(AbstractChessEntity entity) {
 	
+	    // Clear the tile reference from the previous entity
+	    if(_entity != null) {
+	        _entity.setTile(null);
+	    }
 		
+	    // Set the tile reference to the new entity passed in
+	    if(entity != null) {
+	        entity.setTile(this);
+	    }
+	    
+	    // Assign the entity reference
 		_entity = entity;
 		
 		// If the entity is being cleared then remove also it's highlight
@@ -190,7 +201,8 @@ public class TileModel extends BaseModel {
 			}
 		});
 	}
-    
+ 
+    // TODO remove
     @Override public String toString() {
     	return _count + "";
     }

@@ -89,7 +89,7 @@ public class PlayerModel extends BaseModel {
      * The team that this player is associated
      */
     private final PlayerTeam _team;
-
+   
     /**
 	 * Constructs a new instance of this class type
 	 * 
@@ -149,17 +149,14 @@ public class PlayerModel extends BaseModel {
 	public AbstractChessEntity createEntity(DataLayerName layerName) {
 	    
 	    // Create the chess entity based on the layer name
-		AbstractChessEntity entity = AbstractChessEntity.createEntity(layerName);
+		AbstractChessEntity entity = AbstractChessEntity.createEntity(layerName, this);
 		
 		// If there was an invalid entry then log it
 		if(entity == null) {
 		    Tracelog.log(Level.SEVERE, true, "Invalid chess entity specified");
 		    return null;
 		}
-		
-		// Set the entity to this player
-		entity.setPlayer(this);
-		
+				
 		// Add the entity into the list of entities for this player
 		_entities.add(entity);
 		
@@ -183,6 +180,15 @@ public class PlayerModel extends BaseModel {
 	 */
 	public List<AbstractChessEntity> getEntities() {
 		return _entities;
+	}
+	
+	/**
+	 * Gets the list of checkable entities held by this player
+	 * 
+	 * @return The list of checkable entities
+	 */
+	public List<AbstractChessEntity> getCheckableEntities() {
+	    return getEntities().stream().filter(z -> z.isCheckable()).collect(Collectors.toList());
 	}
 
     /**
@@ -214,7 +220,7 @@ public class PlayerModel extends BaseModel {
 		_entities.remove(entity);
 	}
 	
-	@Override public String toString() {
+    @Override public String toString() {
 		return _team.toString();
 	}
 	
