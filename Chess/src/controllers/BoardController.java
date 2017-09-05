@@ -26,7 +26,6 @@ package controllers;
 
 import java.awt.Dimension;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -301,30 +300,22 @@ public final class BoardController extends BaseController {
 					    // Get the list of positions that can be moved to
 					    Map<TileModel, EntityMovements[]> availablePositions = _boardComposition.getBoardPositions(_previouslySelectedTile);
 					    
-					    PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true);
+					    //PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true);
 					    
-					    // Go through the list of moves and scrub the ones that would result in my being in check
-					    for(Iterator<Map.Entry<TileModel, EntityMovements[]>> it = availablePositions.entrySet().iterator(); it.hasNext(); ) {
-					        Map.Entry<TileModel, EntityMovements[]> entry = it.next();
-					        if(_boardComposition.isMoveChecked(playerController.getCurrentPlayer(), _previouslySelectedTile, entry.getKey())) {
-					            it.remove();
-                            }
-					    }
-
-					    
-					    
-					    
-					    
-					    // Get the list of checked 
-	                    List<TileModel> checkedPositions = _boardComposition.getCheckedPositions(playerController.getPlayer(playerController.getCurrentPlayerTeam() == PlayerTeam.BLACK ? PlayerTeam.WHITE : PlayerTeam.BLACK));
-	                    
+//					    // Go through the list of moves and scrub the ones that would result in my being in check
+//					    for(Iterator<Map.Entry<TileModel, EntityMovements[]>> it = availablePositions.entrySet().iterator(); it.hasNext(); ) {
+//					        Map.Entry<TileModel, EntityMovements[]> entry = it.next();
+//					        if(_boardComposition.isMoveChecked(playerController.getCurrentPlayer(), _previouslySelectedTile, entry.getKey())) {
+//					            it.remove();
+//                            }
+//					    }
 
 					    
 					    // Set the previously selected tile from what was just selected
 					    _previouslySelectedTile = currentlySelectedTile;
 
 	                    // Go through each path and mark the tiles as highlighted
-					    _boardComposition.getBoardPositions(_previouslySelectedTile).entrySet().stream().forEach(z -> z.getKey().setHighlighted(true));
+					    availablePositions.entrySet().stream().forEach(z -> z.getKey().setHighlighted(true));
 					    
 					    isSuccessful = true;
 					    
@@ -467,7 +458,7 @@ public final class BoardController extends BaseController {
 				    playerController.update(entityEventArgs);
 
 				    // Get the list of checked position in check by the specified player
-				    List<TileModel> checkedPositions = _boardComposition.getCheckedPositions(playerController.getCurrentPlayer());
+				    List<TileModel> checkedPositions = _boardComposition.getCheckedPositions(playerController.getNextPlayer());
 				    if(!checkedPositions.isEmpty()) {
 				        checkedPositions.forEach(z -> z.getEntity().setChecked(true));
 				        checkedPositions.forEach(z -> z.refresh());
