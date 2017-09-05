@@ -296,34 +296,22 @@ public final class BoardController extends BaseController {
 						currentlySelectedTile.setSelected(false);
 						break;
 					case MOVE_1_SELECT: {
-					    
+					   
+						 // Set the previously selected tile from what was just selected
+					    _previouslySelectedTile = currentlySelectedTile;
+						
 					    // Get the list of positions that can be moved to
 					    Map<TileModel, EntityMovements[]> availablePositions = _boardComposition.getBoardPositions(_previouslySelectedTile);
-					    
-					    //PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true);
-					    
-//					    // Go through the list of moves and scrub the ones that would result in my being in check
-//					    for(Iterator<Map.Entry<TileModel, EntityMovements[]>> it = availablePositions.entrySet().iterator(); it.hasNext(); ) {
-//					        Map.Entry<TileModel, EntityMovements[]> entry = it.next();
-//					        if(_boardComposition.isMoveChecked(playerController.getCurrentPlayer(), _previouslySelectedTile, entry.getKey())) {
-//					            it.remove();
-//                            }
-//					    }
-
-					    
-					    // Set the previously selected tile from what was just selected
-					    _previouslySelectedTile = currentlySelectedTile;
-
-	                    // Go through each path and mark the tiles as highlighted
+					   
+					   	// Go through each path and mark the tiles as highlighted
 					    availablePositions.entrySet().stream().forEach(z -> z.getKey().setHighlighted(true));
 					    
+					    // TODO - make issuccessful true by default and just set it to false in the one place
 					    isSuccessful = true;
 					    
 					    break;
 					}
 					case MOVE_2_SELECT: {
-				    	// Remove the selection from what was previously selected
-					    // TODO should this be done by the tile controller instead?
 						_previouslySelectedTile.setSelected(false);
 
 						// Remove the highlighted tiles from the previous selection, and highlight the
