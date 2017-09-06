@@ -51,6 +51,7 @@ public interface IChessEntity {
      */
     public boolean isMovementContinuous();
     
+    
     /**
      * Gets the list of board movements with results in captures
      * 

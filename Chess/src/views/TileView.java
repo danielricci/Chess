@@ -29,8 +29,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
 import javax.swing.border.Border;
 
 import controllers.TileController;
@@ -49,8 +47,6 @@ import models.TileModel;
  */
 public class TileView extends PanelView {
 	
-    private JLabel _counter = new JLabel();
-    
 	/**
 	 * This flag when set to true with perform a neighbor highlight on
 	 * this tile when you mouse over it
@@ -71,12 +67,7 @@ public class TileView extends PanelView {
      * The color used when a tile is considered selected 
      */
     private static final Color SELECTED_COLOR = Color.LIGHT_GRAY;
-	
-    /**
-     * The color used when a tile is in check
-     */
-    private static final Color CHECKED_COLOR = Color.RED;
-    
+		
 	/**
 	 * The default background color of this tile
 	 */
@@ -108,9 +99,6 @@ public class TileView extends PanelView {
 	 */
 	public TileView(Color tileColor) {
 		
-	    setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-	    
-	    
 		// Set the controller associated to this view
 		getViewProperties().setListener(AbstractSignalFactory
 			.getFactory(ControllerFactory.class)
@@ -131,10 +119,8 @@ public class TileView extends PanelView {
 		DEFAULT_BORDER_STYLE = BorderFactory.createLineBorder(DEFAULT_BACKGROUND_COLOR, 2);
 		setBorder(DEFAULT_BORDER_STYLE);
 	}
-		
+	
 	@Override public void initializeComponents() {
-	    _counter.setForeground(Color.red);
-	    add(_counter);
 	}
 
 	@Override public void initializeComponentBindings() {
@@ -198,8 +184,7 @@ public class TileView extends PanelView {
 	}
 	
 	@Override public void update(SignalEventArgs signalEvent) {
-	    
-	    // TODO - remove later
+		
 		System.out.println("TileView::update");
 		
 		// Call the super implementation
@@ -210,16 +195,10 @@ public class TileView extends PanelView {
 			
 			// Get the tile model of the source
 			TileModel tileModel = (TileModel) signalEvent.getSource();
-
-			_counter.setText(tileModel.toString());
 			
-			// If the tile is in check then set the background accordingly
-	        if(tileModel.getEntity() != null && tileModel.getEntity().getIsChecked()) {
-	            this.setBackground(CHECKED_COLOR);
-            }
 			// If the tile model is in a selected state then update the 
 			// background accordingly
-	        else if(tileModel.getIsSelected() || tileModel.getIsHighlighted()) {				
+			if(tileModel.getIsSelected() || tileModel.getIsHighlighted()) {				
 				// Set the background, and then set the border
 				// because we want it to be selected
 			    this.setBackground(SELECTED_COLOR);

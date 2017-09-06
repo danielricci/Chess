@@ -26,7 +26,6 @@ package controllers;
 
 import java.awt.Dimension;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -179,7 +178,7 @@ public final class BoardController extends BaseController {
 		
 		// Clear the entity from the player
 		PlayerController player = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class);
-		player.getPlayer(entity.getPlayer().getTeam()).removeEntity(entity);
+		player.getPlayer(entity.getTeam()).removeEntity(entity);
 		
 		// Clear the previously selected tile if any
 		_previouslySelectedTile = null;
@@ -298,28 +297,6 @@ public final class BoardController extends BaseController {
 						break;
 					case MOVE_1_SELECT: {
 					    
-					    // Get the list of positions that can be moved to
-					    Map<TileModel, EntityMovements[]> availablePositions = _boardComposition.getBoardPositions(_previouslySelectedTile);
-					    
-					    PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true);
-					    
-					    // Go through the list of moves and scrub the ones that would result in my being in check
-					    for(Iterator<Map.Entry<TileModel, EntityMovements[]>> it = availablePositions.entrySet().iterator(); it.hasNext(); ) {
-					        Map.Entry<TileModel, EntityMovements[]> entry = it.next();
-					        if(_boardComposition.isMoveChecked(playerController.getCurrentPlayer(), _previouslySelectedTile, entry.getKey())) {
-					            it.remove();
-                            }
-					    }
-
-					    
-					    
-					    
-					    
-					    // Get the list of checked 
-	                    List<TileModel> checkedPositions = _boardComposition.getCheckedPositions(playerController.getPlayer(playerController.getCurrentPlayerTeam() == PlayerTeam.BLACK ? PlayerTeam.WHITE : PlayerTeam.BLACK));
-	                    
-
-					    
 					    // Set the previously selected tile from what was just selected
 					    _previouslySelectedTile = currentlySelectedTile;
 
@@ -332,7 +309,6 @@ public final class BoardController extends BaseController {
 					}
 					case MOVE_2_SELECT: {
 				    	// Remove the selection from what was previously selected
-					    // TODO should this be done by the tile controller instead?
 						_previouslySelectedTile.setSelected(false);
 
 						// Remove the highlighted tiles from the previous selection, and highlight the
@@ -360,11 +336,11 @@ public final class BoardController extends BaseController {
 					    	PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true);
 					    	if(isEnPassentCapture) {
 					    		TileModel enemyTile = _boardComposition.getEnPassentEnemy(_previouslySelectedTile);
-					    		playerController.getPlayer(enemyTile.getEntity().getPlayer().getTeam()).removeEntity(enemyTile.getEntity());
+					    		playerController.getPlayer(enemyTile.getEntity().getTeam()).removeEntity(enemyTile.getEntity());
 					    		enemyTile.setEntity(null);
 					    	}
 					    	else {
-					    		playerController.getPlayer(currentlySelectedTile.getEntity().getPlayer().getTeam()).removeEntity(currentlySelectedTile.getEntity());	
+					    		playerController.getPlayer(currentlySelectedTile.getEntity().getTeam()).removeEntity(currentlySelectedTile.getEntity());	
 					    	}
 					    	
 					        // Replace the entity in the currently selected tile with the one from
@@ -410,17 +386,14 @@ public final class BoardController extends BaseController {
 							_previouslySelectedTile.setSelected(false);
 							currentlySelectedTile.setSelected(false);
 							
-							// Get a reference to the entity that is moving
-							AbstractChessEntity entity = _previouslySelectedTile.getEntity();
-
-	                        // The move is over so indicate that everything went well and clean up the variables
-							// Note: You must clear before setting, else the clear will override what was done previously
-                            _previouslySelectedTile.setEntity(null);
-                            _previouslySelectedTile = null;
-                            
-                            // Set the entity into the newly selected tile
-							currentlySelectedTile.setEntity(entity);
+							// Remove the entity from the previously selected tile and put it 
+							// in the newly selected tile
+							currentlySelectedTile.setEntity(_previouslySelectedTile.getEntity());
 												
+							// The move is over so indicate that everything went well and clean up the variables
+							_previouslySelectedTile.setEntity(null);
+							_previouslySelectedTile = null;
+							
 							isSuccessful = true;
 					    }
 					    else {
@@ -462,19 +435,19 @@ public final class BoardController extends BaseController {
 					    currentlySelectedTile.getEntity().setHasMoved(true);						
 					}
 					
-                    // Send an update event to all the entities of the players
+                    // Send an update event to all the entities and then
+					// switch players
                     PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true);
 				    playerController.update(entityEventArgs);
-
-				    // Get the list of checked position in check by the specified player
-				    List<TileModel> checkedPositions = _boardComposition.getCheckedPositions(playerController.getCurrentPlayer());
-				    if(!checkedPositions.isEmpty()) {
-				        checkedPositions.forEach(z -> z.getEntity().setChecked(true));
-				        checkedPositions.forEach(z -> z.refresh());
+					playerController.nextPlayer();
+					
+					// Check if there any checked positions on the current player
+				    if(!_boardComposition.getCheckedPositions().isEmpty()) {
+			    		
+					}
+				    else {
+				    	
 				    }
-				    
-				    // Switch to the next player waiting to play
-                    playerController.nextPlayer();
 				}
 				
 				// Register back this listener

@@ -88,16 +88,20 @@ public final class PromotionController extends BaseController {
 	 */
 	public void updatePromotedPieces() {
 
-	    // Get the current player that is playing
-	    PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class);
-        _player = playerController.getCurrentPlayer();
-	    
 		// Add the list of entities that can be used for the promotion
 		_promotionList.clear();
-		_promotionList.add(AbstractChessEntity.createEntity(DataLayerName.BISHOP, _player));
-		_promotionList.add(AbstractChessEntity.createEntity(DataLayerName.KNIGHT, _player));
-		_promotionList.add(AbstractChessEntity.createEntity(DataLayerName.QUEEN, _player));
-		_promotionList.add(AbstractChessEntity.createEntity(DataLayerName.ROOK, _player));	
+		_promotionList.add(AbstractChessEntity.createEntity(DataLayerName.BISHOP));
+		_promotionList.add(AbstractChessEntity.createEntity(DataLayerName.KNIGHT));
+		_promotionList.add(AbstractChessEntity.createEntity(DataLayerName.QUEEN));
+		_promotionList.add(AbstractChessEntity.createEntity(DataLayerName.ROOK));	
+
+		// Set the player
+		PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class);
+		_player = playerController.getCurrentPlayer();
+		
+		for(AbstractChessEntity entity : _promotionList) {
+			entity.setPlayer(_player);
+		}
 	}
 	
 	/**
@@ -121,7 +125,7 @@ public final class PromotionController extends BaseController {
 			PlayerController controller = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class);
 			
 			// Get the player of the tile that is on the tile in question
-			PlayerModel player = controller.getPlayer(_tile.getEntity().getPlayer().getTeam());
+			PlayerModel player = controller.getPlayer(_tile.getEntity().getTeam());
 			
 			// Remove the entity that the player owns
 			player.removeEntity(_tile.getEntity());

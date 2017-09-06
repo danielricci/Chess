@@ -256,7 +256,6 @@ public class MovementComponent {
      * 
      * @return If the tile belongs to an opposing player
      */
-    // TODO this should take in a second param for the player team to compare against, it should not assume current player team
     public static boolean isTileEnemyPlayer(TileModel tile) {
         PlayerTeam team = getTileTeam(tile);
         PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class);
@@ -297,6 +296,6 @@ public class MovementComponent {
      */
     private static PlayerTeam getTileTeam(TileModel model) {
         AbstractChessEntity entity = model.getEntity();
-        return entity != null ? entity.getPlayer().getTeam() : null;
+        return entity != null ? entity.getTeam() : null;
     }  
 }

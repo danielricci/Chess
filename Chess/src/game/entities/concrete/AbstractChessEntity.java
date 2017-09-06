@@ -30,7 +30,7 @@ import game.core.AbstractEntity;
 import game.entities.interfaces.IChessEntity;
 import generated.DataLookup.DataLayerName;
 import models.PlayerModel;
-import models.TileModel;
+import models.PlayerModel.PlayerTeam;
 
 /**
  * This class represents the abstract functionality of a chess piece in the game
@@ -39,20 +39,10 @@ import models.TileModel;
  */
 public abstract class AbstractChessEntity extends AbstractEntity implements IChessEntity {
     
-    /**
-     * Gets the checked state of this entity
-     */
-    private boolean _isChecked;
-    
 	/**
 	 * The player that owns this entity
 	 */
 	private PlayerModel _player;
-	
-	/**
-	 * The tile model that the chess entity is associated to
-	 */
-	private TileModel _tileModel;
 	
     /**
      * Indicates if the pawn has moved at least once
@@ -72,40 +62,26 @@ public abstract class AbstractChessEntity extends AbstractEntity implements IChe
      * Creates an instance of a chess entity with respect to the provided data layer name
      * 
      * @param dataLayerName The data layer name lookup
-     * @param player The player to associated to the chess entity
      * 
      * @return A chess entity
      */
-    public static AbstractChessEntity createEntity(DataLayerName dataLayerName, PlayerModel player) {
-        
-        AbstractChessEntity entity = null;
-        
+    public static AbstractChessEntity createEntity(DataLayerName dataLayerName) {
         switch(dataLayerName) {
         case BISHOP:
-            entity = new BishopEntity();
-            break;
+            return new BishopEntity();
         case KING:
-            entity = new KingEntity();
-            break;
+            return new KingEntity();
         case KNIGHT:
-            entity = new KnightEntity();
-            break;
+            return new KnightEntity();
         case PAWN:
-            entity = new PawnEntity();
-            break;
+            return new PawnEntity();
         case QUEEN:
-            entity = new QueenEntity();
-            break;
+            return new QueenEntity();
         case ROOK:
-            entity = new RookEntity();
-            break;
+            return new RookEntity();
+        default:
+            return null;	    
         }
-        
-        if(entity != null) {
-            entity.setPlayer(player);
-        }
-        
-        return entity;
     }
 
     /**
@@ -126,24 +102,6 @@ public abstract class AbstractChessEntity extends AbstractEntity implements IChe
     		}
     	}
     }
-    
-    /**
-     * Sets the tile model to associate to this chess entity
-     * 
-     * @param tileModel The tile model
-     */
-    public final void setTile(TileModel tileModel) {
-        _tileModel = tileModel;
-    }
-    
-    /**
-     * Gets the tile model associated to this chess entity
-     * 
-     * @return The tile model
-     */
-    public final TileModel getTile() {
-        return _tileModel;
-    }
 
     /**
      * Gets the data layer name of this entity
@@ -157,10 +115,9 @@ public abstract class AbstractChessEntity extends AbstractEntity implements IChe
     /**
 	 * @return The team of the player associated to this chess entity 
 	 */
-	public final PlayerModel getPlayer() {
-		return _player;
+	public final PlayerTeam getTeam() {
+		return _player.getTeam();
 	}
-	
 
 	/**
      * Gets if the chess entity has moved at least once
@@ -182,35 +139,5 @@ public abstract class AbstractChessEntity extends AbstractEntity implements IChe
         if(!_hasMovedOnce) {
             _hasMovedOnce = hasMovedOnce;    
         }
-    }
-    
-    /**
-     * Sets the checked state of this entity
-     * 
-     * Note: If this entity is not checkable then it will not matter if you
-     *       set the checked state
-     * 
-     * @param isChecked The checked state
-     */
-    public final void setChecked(boolean isChecked) {
-        _isChecked = isChecked;
-    }
-    
-    /**
-     * Gets the checked state of this entity
-     * 
-     * @return The checked state of this entity
-     */
-    public final boolean getIsChecked() {
-        return isCheckable() && _isChecked;
-    }
-    
-    /**
-     * Indicates if this entity is a checkable entity
-     * 
-     * @return If the entity is checkable
-     */
-    public boolean isCheckable() {
-        return this instanceof KingEntity;
     }
 }

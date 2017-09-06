@@ -55,7 +55,7 @@ public final class PlayerController extends BaseController {
 	 * The player queue of the game
 	 */
 	private final Queue<PlayerModel> _playerTurnQueue = new LinkedList();
-		
+	
 	/**
 	 * Constructs a new instance of this class type
 	 */
@@ -179,7 +179,7 @@ public final class PlayerController extends BaseController {
 			Tracelog.log(Level.INFO, true, "Adding " + player.toString() + " to the queue");
 		}
 	}
-
+	
 	@Override public void update(SignalEventArgs signalEvent) {
 	    super.update(signalEvent);
 	    for(PlayerModel player : _playerTurnQueue) {
