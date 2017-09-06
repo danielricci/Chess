@@ -47,6 +47,7 @@ import menu.ExitItem;
 import menu.NeighboursItem;
 import menu.NewGameDebugItem;
 import menu.NewGameItem;
+import menu.TileIdentifierItem;
 import resources.Resources;
 import resources.Resources.ResourceKeys;
 
@@ -139,6 +140,7 @@ public final class Application extends AbstractApplication {
 				.AddSeparator()
 				.AddMenuItem(DebuggerWindowItem.class)
 				.AddSeparator()
+				.AddMenuItem(TileIdentifierItem.class)
 				.AddMenuItem(NeighboursItem.class);
 	}
 	

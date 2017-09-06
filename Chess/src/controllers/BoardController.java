@@ -289,7 +289,8 @@ public final class BoardController extends BaseController {
 					currentMovement = PlayerActions.MOVE_2_CAPTURE;
 				}
 				
-				boolean isSuccessful = false;
+				// This flag holds if the operation being done was successful
+				boolean isSuccessful = true;
 				
 				switch(currentMovement) {
 					case INVALID:
@@ -302,8 +303,6 @@ public final class BoardController extends BaseController {
 
 	                    // Go through each path and mark the tiles as highlighted
 					    _boardComposition.getBoardPositions(_previouslySelectedTile).entrySet().stream().forEach(z -> z.getKey().setHighlighted(true));
-					    
-					    isSuccessful = true;
 					    
 					    break;
 					}
@@ -318,8 +317,6 @@ public final class BoardController extends BaseController {
 				        
 				        // Set the previously selected tile to be what was just selected
 				        _previouslySelectedTile = currentlySelectedTile;
-				        
-				        isSuccessful = true; 
 						
 	                	break;
 					}
@@ -358,8 +355,6 @@ public final class BoardController extends BaseController {
 					        currentlySelectedTile.setSelected(false);
 					        _previouslySelectedTile.setSelected(false);
 					        _previouslySelectedTile = null;
-					        
-					        isSuccessful = true;
 				        }
 				        else {
 				        	currentlySelectedTile.setSelected(false);
@@ -393,8 +388,6 @@ public final class BoardController extends BaseController {
 							// The move is over so indicate that everything went well and clean up the variables
 							_previouslySelectedTile.setEntity(null);
 							_previouslySelectedTile = null;
-							
-							isSuccessful = true;
 					    }
 					    else {
 					    	currentlySelectedTile.setSelected(false);
@@ -411,9 +404,6 @@ public final class BoardController extends BaseController {
 
 	                    // Go through each path and mark the tiles as highlighted
 	                    _boardComposition.getBoardPositions(currentlySelectedTile).entrySet().stream().forEach(z -> z.getKey().setHighlighted(false));
-
-	                    // Remove the selection from the previous tile
-						isSuccessful = true;
 						
 						break;
 					}

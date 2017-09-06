@@ -29,6 +29,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 import javax.swing.border.Border;
 
 import controllers.TileController;
@@ -48,8 +50,17 @@ import models.TileModel;
 public class TileView extends PanelView {
 	
 	/**
-	 * This flag when set to true with perform a neighbor highlight on
-	 * this tile when you mouse over it
+	 * The global identifier counter for all tiles 
+	 */
+	private static int _identifierCounter = 0;
+	
+	/**
+	 * The local identifier count for this tile
+	 */
+	private final JLabel _identifierTextField = new JLabel(++_identifierCounter + "");
+	
+	/**
+	 * This flag when set to true with perform a neighbor highlight on this tile when you mouse over it
 	 */
 	private boolean _highlightNeighbors;
 	
@@ -78,7 +89,6 @@ public class TileView extends PanelView {
 	 */
 	private Color _currentBackgroundColor;
     
-    
 	/**
 	 * Normal border style of this view
 	 */
@@ -95,9 +105,21 @@ public class TileView extends PanelView {
 	public static final String EVENT_HIDE_NEIGHBORS = "EVENT_HIDE_NEIGHBORS";
 		
 	/**
+	 * Event associated to showing the identifier of this tile
+	 */
+	public static final String EVENT_SHOW_IDENTIFIER = "EVENT_SHOW_IDENTIFIER";
+	
+	/**
+	 * Event associated to hiding the identifier of this tile
+	 */
+	public static final String EVENT_HIDE_IDENTIFIER = "EVENT_HIDE_IDENTIFIER";
+	
+	/**
 	 * Constructs a new instance of this class type
 	 */
 	public TileView(Color tileColor) {
+		
+		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		
 		// Set the controller associated to this view
 		getViewProperties().setListener(AbstractSignalFactory
@@ -121,6 +143,9 @@ public class TileView extends PanelView {
 	}
 	
 	@Override public void initializeComponents() {
+		_identifierTextField.setVisible(false);
+		_identifierTextField.setForeground(Color.RED);
+		add(_identifierTextField);
 	}
 
 	@Override public void initializeComponentBindings() {
@@ -151,14 +176,11 @@ public class TileView extends PanelView {
 	}
 	
 	@Override public void registerSignalListeners() {
-		// Register the event for showing neighbors
 		registerSignalListener(EVENT_SHOW_NEIGHBORS, new ISignalReceiver<SignalEventArgs>() {
 			@Override public void signalReceived(SignalEventArgs event) {
 				_highlightNeighbors = true;
 			}			
 		});
-		
-		// Register the event for hiding neighbors
 		registerSignalListener(EVENT_HIDE_NEIGHBORS, new ISignalReceiver<SignalEventArgs>() {
 			@Override public void signalReceived(SignalEventArgs event) {
 				_highlightNeighbors = false;
@@ -166,6 +188,19 @@ public class TileView extends PanelView {
 				// Force the tile to hide its debug selection in case the mouse is already highlighting
 				// some of the tiles
 				getViewProperties().getEntity(TileController.class).showTileNeighborsDebug(false);
+			}			
+		});
+		registerSignalListener(EVENT_SHOW_IDENTIFIER, new ISignalReceiver<SignalEventArgs>() {
+			@Override public void signalReceived(SignalEventArgs event) {
+				getViewProperties().setRedraw(true);
+				_identifierTextField.setVisible(true);
+				
+			}			
+		});
+		registerSignalListener(EVENT_HIDE_IDENTIFIER, new ISignalReceiver<SignalEventArgs>() {
+			@Override public void signalReceived(SignalEventArgs event) {
+				getViewProperties().setRedraw(true);
+				_identifierTextField.setVisible(false);
 			}			
 		});
 	}
