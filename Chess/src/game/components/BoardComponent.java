@@ -32,10 +32,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import controllers.PlayerController;
+import engine.core.factories.AbstractFactory;
+import engine.core.factories.ControllerFactory;
 import game.components.MovementComponent.EntityMovements;
 import game.components.MovementComponent.PlayerDirection;
 import game.entities.concrete.AbstractChessEntity;
 import models.PlayerModel;
+import models.PlayerModel.PlayerTeam;
 import models.TileModel;
 
 /**
@@ -175,7 +179,8 @@ public class BoardComponent {
 			allMoves.putIfAbsent(kvp.getKey(), kvp.getValue());
 		}
         
-        // If tile model does not has a chess entity then there are no moves to get
+        // If tile model does not has a chess entity then
+        // there are no moves to get
         AbstractChessEntity entity = tileModel.getEntity();
         if(entity == null) {
             return allMoves;
@@ -272,22 +277,23 @@ public class BoardComponent {
     }
     
     /**
-     * Gets the list of checked positions of the specified player
+     * Gets the list of checked positions of the enemy of the specified player
      * 
-     * @param player The player to check for checked positions
+     * @param player The player
      *  
      * @return The list of checked positions
      */
     public List<TileModel> getCheckedPositions(PlayerModel player) {
         
-    	
-    	//change this so that it looks at the player checked positions that is passed in
-    	
         // The list of enemy owned tiles that are checked by the specified player
         List<TileModel> checkedEntities = new ArrayList();
         
+        // Get a reference to the enemy of the specified player
+    	PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true);
+    	PlayerModel enemyPlayer = playerController.getPlayer(player.getTeam() == PlayerTeam.BLACK ? PlayerTeam.WHITE : PlayerTeam.BLACK);
+
     	// Get the list of checkable entities owned by the enemy player
-    	List<AbstractChessEntity> checkableEntities = player.getCheckableEntities();
+    	List<AbstractChessEntity> checkableEntities = enemyPlayer.getCheckableEntities();
     	
     	// Go through the list of player owned entities and see if any of them can
     	// move to the checkable entity of the enemy
@@ -303,25 +309,15 @@ public class BoardComponent {
     	return checkedEntities;
     }
     
-    
+    /**
+     * Indicates if the specified move by the specified player would result in the player being checked
+     *  
+     * @param from The starting move
+     * @param to The ending move
+     * 
+     * @return If the specified move would result in a check
+     */
     public boolean isMoveChecked(PlayerModel player, TileModel from, TileModel to) {
-    	
-    	AbstractChessEntity tempEntityFrom = from.getEntity();
-    	AbstractChessEntity tempEntityTo = to.getEntity();
-    	
-    	from.setSuppressUpdates(true);
-    	to.setSuppressUpdates(true);
-    	to.setEntity(from.getEntity());
-    	from.setEntity(null);
-    	
-    	// Check for any checked positions
-    	List<TileModel> checkedPositions = getCheckedPositions(player);
-
-    	from.setEntity(tempEntityFrom);
-    	to.setEntity(tempEntityTo);
-    	from.setSuppressUpdates(false);
-    	to.setSuppressUpdates(false);
-    	
         return false;
     }
 

@@ -170,7 +170,6 @@ public class TileModel extends BaseModel {
 		if(_entity == null) {
 			setHighlighted(false);
 		}
-		
 		doneUpdating();
 	}
 	
