@@ -150,7 +150,6 @@ public class TileModel extends BaseModel {
 	 */
 	public void setEntity(AbstractChessEntity entity) {
 	
-		
 		_entity = entity;
 		
 		// If the entity is being cleared then remove also it's highlight

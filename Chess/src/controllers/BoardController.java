@@ -420,34 +420,26 @@ public final class BoardController extends BaseController {
 				}
 				
 				if(isSuccessful && currentMovement.isMoveFinal) {
-
-				    // Set the player action of the event to be sent out
-					entityEventArgs.playerAction = currentMovement;
-					
+				
 					// If the tile has reached the end of the board then display the promotion view
 					if(currentlySelectedTile.getEntity().isPromotable() && !_boardComposition.canMoveForward(currentlySelectedTile)) {
 						PromotionView view = AbstractFactory.getFactory(ViewFactory.class).get(PromotionView.class, true);
 						view.getViewProperties().getEntity(PromotionController.class).setTile(currentlySelectedTile);
 						view.render();
 					}
-					else {
-					    // Indicate that the tile has moved at least once
-					    currentlySelectedTile.getEntity().setHasMoved(true);						
-					}
 					
-                    // Send an update event to all the entities and then
-					// switch players
+				    // Indicate that the tile has moved at least once
+				    currentlySelectedTile.getEntity().setHasMoved(true);
+
+				    // Set the player action of the event to be sent out
+					entityEventArgs.playerAction = currentMovement;
+					
+                    // Get the player controller and send the entity event to it
                     PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true);
 				    playerController.update(entityEventArgs);
-					playerController.nextPlayer();
 					
-					// Check if there any checked positions on the current player
-				    if(!_boardComposition.getCheckedPositions().isEmpty()) {
-			    		
-					}
-				    else {
-				    	
-				    }
+					// Switch to the next player in turn
+					playerController.nextPlayer();
 				}
 				
 				// Register back this listener
