@@ -215,6 +215,9 @@ public final class Application extends AbstractApplication {
 		// Repaint everything to apply the changes made
 		repaint();
 		
+		// Refresh the menu system
+		MenuBuilder.reset(getJMenuBar());
+		
 		return true;
 	}
 	

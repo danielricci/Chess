@@ -52,9 +52,13 @@ public class NeighboursItem extends MenuItem {
 	 * @param parent The parent representing this item
 	 */
 	public NeighboursItem(JComponent parent) {
-		
 		// Create the menu item
 		super(new JCheckBoxMenuItem(Resources.instance().getLocalizedString(ResourceKeys.NeighborTiles)), parent);
+	}
+	
+	@Override protected void onReset() {
+		super.onReset();
+		super.get(JCheckBoxMenuItem.class).setSelected(false);
 	}
 	
 	@Override public void onExecute(ActionEvent actionEvent) {

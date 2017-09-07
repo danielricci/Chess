@@ -50,9 +50,13 @@ public class TileIdentifierItem extends MenuItem {
 	 * @param parent The parent representing this item
 	 */
 	public TileIdentifierItem(JComponent parent) {
-		
 		// Create the menu item
 		super(new JCheckBoxMenuItem("Show Tile Identifier"), parent);
+	}
+	
+	@Override protected void onReset() {
+		super.onReset();
+		super.get(JCheckBoxMenuItem.class).setSelected(false);
 	}
 	
 	@Override public void onExecute(ActionEvent actionEvent) {
