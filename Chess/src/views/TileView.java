@@ -142,6 +142,12 @@ public class TileView extends PanelView {
 		setBorder(DEFAULT_BORDER_STYLE);
 	}
 	
+	@Override public boolean flush() {
+		boolean done = super.flush();
+		_identifierCounter = 0;
+		return done;
+	}
+	
 	@Override public void initializeComponents() {
 		_identifierTextField.setVisible(false);
 		_identifierTextField.setForeground(Color.RED);
