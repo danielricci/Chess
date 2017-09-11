@@ -32,9 +32,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import controllers.PlayerController;
+import engine.core.factories.AbstractFactory;
+import engine.core.factories.ControllerFactory;
 import game.components.MovementComponent.EntityMovements;
 import game.components.MovementComponent.PlayerDirection;
 import game.entities.concrete.AbstractChessEntity;
+import models.PlayerModel;
+import models.PlayerModel.PlayerTeam;
 import models.TileModel;
 
 /**
@@ -85,6 +90,22 @@ public class BoardComponent {
         }
     }
     
+    public Map<TileModel, EntityMovements[]> getBoardPositions(TileModel tileModel) {
+
+        Map<TileModel, EntityMovements[]> availablePositions = getBoardPositionsImpl(tileModel);
+        
+        // Go through the list of moves and scrub the ones that would result in my being in check
+//        PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true);
+//        for(Iterator<Map.Entry<TileModel, EntityMovements[]>> it = availablePositions.entrySet().iterator(); it.hasNext();) {
+//            Map.Entry<TileModel, EntityMovements[]> entry = it.next();
+//            if(isMoveChecked(playerController.getCurrentPlayer(), tileModel, entry.getKey())) {
+//                it.remove();
+//            }
+//        }
+        
+        return availablePositions;
+    }
+    
     /**
      * Gets the list of board positions that the specified tile can move on
      * 
@@ -92,7 +113,7 @@ public class BoardComponent {
      * 
      * @return The list of tiles to move towards
      */
-    public Map<TileModel, EntityMovements[]> getBoardPositions(TileModel tileModel) {
+    private Map<TileModel, EntityMovements[]> getBoardPositionsImpl(TileModel tileModel) {
         
         Map<TileModel, EntityMovements[]> allMoves = new HashMap();
         
@@ -182,7 +203,7 @@ public class BoardComponent {
 	        	}
 	        	
 	        	// if the end tile is ourselves then do not consider it and stop
-	        	if(MovementComponent.isTileCurrentPlayer(destinationTile)) {
+	        	if(destinationTile.getEntity() != null && destinationTile.getEntity().getTeam().equals(entity.getTeam())) {
 	        		break;
 	        	}
 
@@ -204,6 +225,75 @@ public class BoardComponent {
     }
     
     /**
+     * Gets the list of checked positions of the specified player
+     * 
+     * @param player The player to check for checked positions
+     *  
+     * @return The list of checked positions
+     */
+    public List<TileModel> getCheckedPositions(PlayerModel player) {
+        
+        PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true);
+        PlayerModel enemy = playerController.getPlayer(player.getTeam() == PlayerTeam.BLACK ? PlayerTeam.WHITE : PlayerTeam.BLACK);  
+        
+        // The list of enemy owned tiles that are checked by the specified player
+        List<TileModel> checkedEntities = new ArrayList();
+        
+        // Get the list of checkable entities owned by the enemy player
+        List<AbstractChessEntity> checkableEntities = player.getCheckableEntities();
+        
+        for(AbstractChessEntity enemyEntity : enemy.getEntities()) {
+            for(Map.Entry<TileModel, EntityMovements[]> movement : getBoardPositionsImpl(enemyEntity.getTile()).entrySet()) {
+                if(checkableEntities.contains(movement.getKey().getEntity())) {
+                    checkedEntities.add(movement.getKey());
+                }
+            }
+        }
+        
+        return checkedEntities;
+    }
+    
+    /**
+     * Verifies if a movement from the specified tile to the specified tile
+     * will result in a check of the specified player
+     * 
+     * @param player The player
+     * @param from The starting tile position
+     * @param to The end tile position
+     * 
+     * @return If the move would result in a check of the specified player
+     */
+    private boolean isMoveChecked(PlayerModel player, TileModel from, TileModel to) {
+        
+        // Hold temporary references to both entities of the tiles
+        AbstractChessEntity tempEntityFrom = from.getEntity();
+        AbstractChessEntity tempEntityTo = to.getEntity();
+        
+        // Suppress the update events for both tiles
+        from.setSuppressUpdates(true);
+        to.setSuppressUpdates(true);
+        
+        // Perform the logical steps of a movement
+        to.setEntity(from.getEntity());
+        from.setEntity(null);
+        
+        // Check if the player is now in check
+        List<TileModel> checkedPositions = getCheckedPositions(player);
+        
+        // Put back the entities into their tiles
+        from.setEntity(tempEntityFrom);
+        to.setEntity(tempEntityTo);
+        
+        // Remove the suppressed flags from both tiles
+        from.setSuppressUpdates(false);
+        to.setSuppressUpdates(false);
+        
+        // Indicate if there were any checked positions found
+        return !checkedPositions.isEmpty();
+    }
+    
+    
+    /**
      * Gets the En-Passent movements of the specified tile
      * 
      * @param source The tile to get the moves from
@@ -217,11 +307,12 @@ public class BoardComponent {
     	if(source == null || source.getEntity() == null || !source.getEntity().isEnPassent()) {
     		return movements;
     	}
-    	
+ 
     	AbstractChessEntity entity = source.getEntity();
+    	PlayerDirection direction = entity.getTeam().DIRECTION;
     	
     	// Left En-Passent
-    	EntityMovements enPassentLeft = PlayerDirection.getNormalizedMovement(entity.getTeam().DIRECTION, EntityMovements.LEFT);
+    	EntityMovements enPassentLeft = PlayerDirection.getNormalizedMovement(direction, EntityMovements.LEFT);
     	TileModel capturableEnPassentLeft = _neighbors.get(source).get(enPassentLeft);
     	if(capturableEnPassentLeft != null && MovementComponent.isTileEnemyPlayer(capturableEnPassentLeft) && capturableEnPassentLeft.getEntity().isEnPassentCapturable()) {
     		
@@ -230,12 +321,12 @@ public class BoardComponent {
     		
 			movements.put(
     			capturableEnPassentPosition,
-				PlayerDirection.getNormalizedMovement(entity.getTeam().DIRECTION, new EntityMovements[] { EntityMovements.UP, EntityMovements.LEFT })
+				PlayerDirection.getNormalizedMovement(direction, new EntityMovements[] { EntityMovements.UP, EntityMovements.LEFT })
 			);
     	}
     	
     	// Right En-Passent
-    	EntityMovements enPassentRight = PlayerDirection.getNormalizedMovement(entity.getTeam().DIRECTION, EntityMovements.RIGHT);
+    	EntityMovements enPassentRight = PlayerDirection.getNormalizedMovement(direction, EntityMovements.RIGHT);
     	TileModel capturableEnPassentRight = _neighbors.get(source).get(enPassentRight);
     	if(capturableEnPassentRight != null && MovementComponent.isTileEnemyPlayer(capturableEnPassentRight) && capturableEnPassentRight.getEntity().isEnPassentCapturable()) {
     		
@@ -244,7 +335,7 @@ public class BoardComponent {
     		
 			movements.put(
     			capturableEnPassentPosition,
-				PlayerDirection.getNormalizedMovement(entity.getTeam().DIRECTION, new EntityMovements[] { EntityMovements.UP, EntityMovements.RIGHT })
+				PlayerDirection.getNormalizedMovement(direction, new EntityMovements[] { EntityMovements.UP, EntityMovements.RIGHT })
 			);
     	}
 

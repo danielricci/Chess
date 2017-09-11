@@ -150,16 +150,30 @@ public class TileModel extends BaseModel {
 	 */
 	public void setEntity(AbstractChessEntity entity) {
 	
-		_entity = entity;
-		
-		// If the entity is being cleared then remove also it's highlight
-		// TODO investigate not calling doneUpdating, but simply calling setHighlighted
-		// and  letting it take care of the rest, this will avoid a needless update call
-		if(_entity == null) {
-			setHighlighted(false);
-		}
-		doneUpdating();
+	    // Clear the tile reference from the previous entity
+        if(_entity != null) {
+            _entity.setTile(null);
+        }
+        
+        // Set the tile reference to the new entity passed in
+        if(entity != null) {
+            entity.setTile(this);
+        }
+        
+        // Assign the entity reference
+        _entity = entity;
+        
+        // If the entity is being cleared then remove also it's highlight
+        // TODO investigate not calling doneUpdating, but simply calling setHighlighted
+        // and  letting it take care of the rest, this will avoid a needless update call
+        if(_entity == null) {
+            setHighlighted(false);
+        }
+        
+        doneUpdating();
 	}
+	
+	
 	
 	/**
      * Sets the selected state of this model

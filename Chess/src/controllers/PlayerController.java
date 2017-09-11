@@ -99,20 +99,22 @@ public final class PlayerController extends BaseController {
 	}
 	
 	/**
-	 * Finishes the current players turn and gives the turn to the next player
+	 * Gets the next player that is waiting to play
+	 * 
+	 * @return The next player
 	 */
-	public void nextPlayer() {
-		// Swap the players
-	    PlayerModel player = _playerTurnQueue.poll();
-		_playerTurnQueue.add(player);
-		
-		// Log player turn swapping taking place
-		Tracelog.log(
-	        Level.INFO, 
-	        true, 
-	        String.format("Player %s has stopped playing and it is now %s's turn", player.toString(), _playerTurnQueue.peek().toString())
-        );
+	public PlayerModel getNextPlayer() {
+	    return _playerTurnQueue.stream().filter(z -> z != getCurrentPlayer()).findFirst().get();
 	}
+
+	/**
+	 * Gets the list of players playing the game
+	 * 
+	 * @return The list of players
+	 */
+    public List<PlayerModel> getPlayers() {
+        return _players;
+    }
 	
 	/**
 	 * Gets the player that is currently playing 
@@ -164,6 +166,22 @@ public final class PlayerController extends BaseController {
 	}
 
 	/**
+     * Finishes the current players turn and gives the turn to the next player
+     */
+    public void nextPlayer() {
+    	// Swap the players
+        PlayerModel player = _playerTurnQueue.poll();
+    	_playerTurnQueue.add(player);
+    	
+    	// Log player turn swapping taking place
+    	Tracelog.log(
+            Level.INFO, 
+            true, 
+            String.format("Player %s has stopped playing and it is now %s's turn", player.toString(), _playerTurnQueue.peek().toString())
+        );
+    }
+
+    /**
 	 * Queue's the list of players in the game
 	 */
 	public void queuePlayers() {

@@ -61,4 +61,8 @@ class KingEntity extends AbstractChessEntity {
     @Override public boolean isMovementContinuous() {
         return false;
     }
+    
+    @Override public boolean getIsCheckable() {
+        return true;
+    }
 }

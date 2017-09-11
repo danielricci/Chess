@@ -26,12 +26,10 @@ package models;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import engine.communication.internal.signal.arguments.SignalEventArgs;
 import engine.core.mvc.model.BaseModel;
-import engine.utils.io.logging.Tracelog;
 import game.components.MovementComponent.PlayerDirection;
 import game.entities.concrete.AbstractChessEntity;
 import generated.DataLookup;
@@ -150,12 +148,6 @@ public class PlayerModel extends BaseModel {
 	    // Create the chess entity based on the layer name
 		AbstractChessEntity entity = AbstractChessEntity.createEntity(layerName);
 		
-		// If there was an invalid entry then log it
-		if(entity == null) {
-		    Tracelog.log(Level.SEVERE, true, "Invalid chess entity specified");
-		    return null;
-		}
-		
 		// Set the entity to this player
 		entity.setPlayer(this);
 		
@@ -167,6 +159,15 @@ public class PlayerModel extends BaseModel {
 	}
 	
 	/**
+     * Gets the list of checkable entities held by this player
+     * 
+     * @return The list of checkable entities
+     */
+    public List<AbstractChessEntity> getCheckableEntities() {
+        return getEntities().stream().filter(z -> z.getIsCheckable()).collect(Collectors.toList());
+    }
+	
+	/**
      * Gets the data values associated to the player 
      * 
      * @return The data values associated to the player
@@ -175,6 +176,15 @@ public class PlayerModel extends BaseModel {
     	return _dataValues;
     }
 
+    /**
+     * Gets the list of entities associated to the player
+     * 
+     * @return The entities associated to the player
+     */
+    public List<AbstractChessEntity> getEntities() {
+        return _entities;
+    }
+    
     /**
 	 * Gets the list of entities associated to the specified layer name
 	 * 

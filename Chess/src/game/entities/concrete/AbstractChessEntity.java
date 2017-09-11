@@ -31,6 +31,7 @@ import game.entities.interfaces.IChessEntity;
 import generated.DataLookup.DataLayerName;
 import models.PlayerModel;
 import models.PlayerModel.PlayerTeam;
+import models.TileModel;
 
 /**
  * This class represents the abstract functionality of a chess piece in the game
@@ -39,10 +40,20 @@ import models.PlayerModel.PlayerTeam;
  */
 public abstract class AbstractChessEntity extends AbstractEntity implements IChessEntity {
     
+    /**
+     * Gets the checked state of this entity
+     */
+    private boolean _isChecked;
+    
 	/**
 	 * The player that owns this entity
 	 */
 	private PlayerModel _player;
+	
+	/**
+     * The tile model that the chess entity is associated to
+     */
+    private TileModel _tileModel;
 	
     /**
      * Indicates if the pawn has moved at least once
@@ -104,6 +115,24 @@ public abstract class AbstractChessEntity extends AbstractEntity implements IChe
     }
 
     /**
+     * Sets the tile model to associate to this chess entity
+     * 
+     * @param tileModel The tile model
+     */
+    public final void setTile(TileModel tileModel) {
+        _tileModel = tileModel;
+    }
+    
+    /**
+     * Gets the tile model associated to this chess entity
+     * 
+     * @return The tile model
+     */
+    public final TileModel getTile() {
+        return _tileModel;
+    }
+    
+    /**
      * Gets the data layer name of this entity
      * 
      * @return The data layer name from the data lookup table
@@ -139,5 +168,39 @@ public abstract class AbstractChessEntity extends AbstractEntity implements IChe
         if(!_hasMovedOnce) {
             _hasMovedOnce = hasMovedOnce;    
         }
+    }
+    
+    /**
+     * Sets the checked state of this entity
+     * 
+     * Note: If this entity is not checkable then it will not matter if you
+     *       set the checked state
+     * 
+     * @param isChecked The checked state
+     */
+    public final void setChecked(boolean isChecked) {
+        _isChecked = isChecked;
+    }
+    
+    /**
+     * Gets the checked state of this entity
+     * 
+     * @return The checked state of this entity
+     */
+    public final boolean getIsChecked() {
+        return getIsCheckable() && _isChecked;
+    }
+    
+    /**
+     * Gets if the specified chess entity is a checkable entity
+     * 
+     * @return TRUE if the chess entity can be put into check
+     */
+    public boolean getIsCheckable() {
+        return false;
+    }
+    
+    @Override public void refresh() {
+        _tileModel.refresh();
     }
 }

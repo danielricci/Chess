@@ -79,6 +79,11 @@ public class TileView extends PanelView {
      */
     private static final Color SELECTED_COLOR = Color.LIGHT_GRAY;
 		
+    /**
+     * The color used when a tile is in check
+     */
+    private static final Color CHECKED_COLOR = Color.RED;
+    
 	/**
 	 * The default background color of this tile
 	 */
@@ -237,9 +242,13 @@ public class TileView extends PanelView {
 			// Get the tile model of the source
 			TileModel tileModel = (TileModel) signalEvent.getSource();
 			
-			// If the tile model is in a selected state then update the 
-			// background accordingly
-			if(tileModel.getIsSelected() || tileModel.getIsHighlighted()) {				
+			// If the tile is in check then set the background accordingly
+            if(tileModel.getEntity() != null && tileModel.getEntity().getIsChecked()) {
+                this.setBackground(CHECKED_COLOR);
+            }
+            // If the tile model is in a selected state then update the 
+            // background accordingly
+            else if(tileModel.getIsSelected() || tileModel.getIsHighlighted()) {		
 				// Set the background, and then set the border
 				// because we want it to be selected
 			    this.setBackground(SELECTED_COLOR);
