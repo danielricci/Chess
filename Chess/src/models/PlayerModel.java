@@ -214,6 +214,17 @@ public class PlayerModel extends BaseModel {
 		_entities.remove(entity);
 	}
 	
+	/**
+	 * Adds the specified entity to the player
+	 * 
+	 * @param entity The entity to add
+	 */
+	public void addEntity(AbstractChessEntity entity) {
+		if(entity != null && !_entities.contains(entity)) {
+			_entities.add(entity);	
+		}
+	}
+	
 	@Override public String toString() {
 		return _team.toString();
 	}

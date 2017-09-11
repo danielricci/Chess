@@ -197,6 +197,31 @@ public class MovementComponent {
     }
     
     /**
+	 * Compares two movements for equality
+	 * 
+	 * @param movement1 The first movement
+	 * @param movement2 The second movement
+	 * 
+	 * @return If both movements are equal
+	 */
+	public static boolean compareMovements(EntityMovements[] movement1, EntityMovements[] movement2) {
+		if(movement1 == null || movement2 == null) {
+			return false;
+		}
+		if(movement1.length == movement2.length) {
+			for(int i = 0; i < movement1.length; ++i) {
+				if(movement1[i] != movement2[i]) {
+					return false;
+				}
+			}
+			
+			return true;
+		}
+		
+		return false;
+	}
+
+	/**
      * Gets the current board movement based on the specified tile
      * 
      * @param newlySelectedTile The previously selected tile (the one first clicked)
@@ -238,13 +263,25 @@ public class MovementComponent {
     }
     
     /**
+	 * Gets the team associated to the specified tile model
+	 * 
+	 * @param model The tile model
+	 *
+	 * @return The team associated to the tile model if any
+	 */
+	private PlayerTeam getTileTeam(TileModel model) {
+	    AbstractChessEntity entity = model.getEntity();
+	    return entity != null ? entity.getTeam() : null;
+	}
+
+	/**
      * Indicates if the specified tile belongs to the person currently playing
      * 
      * @param tile The tile
      * 
      * @return If the tile is that of the person currently playing
      */
-    public static boolean isTileCurrentPlayer(TileModel tile) {
+    private boolean isTileCurrentPlayer(TileModel tile) {
         PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class);
         return playerController.getCurrentPlayerTeam() == getTileTeam(tile);
     }
@@ -256,46 +293,9 @@ public class MovementComponent {
      * 
      * @return If the tile belongs to an opposing player
      */
-    public static boolean isTileEnemyPlayer(TileModel tile) {
+    private boolean isTileEnemyPlayer(TileModel tile) {
         PlayerTeam team = getTileTeam(tile);
         PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class);
         return team != null && team != playerController.getCurrentPlayerTeam();
-    }
-    
-    /**
-     * Compares two movements for equality
-     * 
-     * @param movement1 The first movement
-     * @param movement2 The second movement
-     * 
-     * @return If both movements are equal
-     */
-    public static boolean compareMovements(EntityMovements[] movement1, EntityMovements[] movement2) {
-    	if(movement1 == null || movement2 == null) {
-    		return false;
-    	}
-    	if(movement1.length == movement2.length) {
-    		for(int i = 0; i < movement1.length; ++i) {
-    			if(movement1[i] != movement2[i]) {
-    				return false;
-    			}
-    		}
-    		
-    		return true;
-    	}
-    	
-    	return false;
-    }
-    
-    /**
-     * Gets the team associated to the specified tile model
-     * 
-     * @param model The tile model
-     *
-     * @return The team associated to the tile model if any
-     */
-    private static PlayerTeam getTileTeam(TileModel model) {
-        AbstractChessEntity entity = model.getEntity();
-        return entity != null ? entity.getTeam() : null;
     }  
 }
