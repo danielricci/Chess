@@ -278,7 +278,7 @@ public class BoardComponent {
 	        		// and we are trying to use a regular movement then this is not legal.  
 	        		// As an example, without this code a pawn could do a capture on it's two move
 	        		// movement, or it could hop over another enemy pawn
-	        		if(!isMovementCapturable && traverser.getEntity() != null && !entity.getTeam().equals(traverser.getEntity().getTeam()) && !capturableMovements.contains(movementPath)) {
+	        		if(!isMovementCapturable && traverser.getEntity() != null && !capturableMovements.contains(movementPath)) {
 	        			tiles.clear();
 	        			break;
 	        		}
@@ -301,7 +301,7 @@ public class BoardComponent {
 	        	// Note: This line of code looks a little similar to the one above in the second for-each, however
 	        	// they both do completely different things however they are both related to differences of 
 	        	// how a piece moves and captures
-	            if(!isMovementCapturable && destinationTile.getEntity() != null && destinationTile.getEntity().getTeam().equals(entity.getTeam()) && capturableMovements.contains(movementPath)) {
+	            if(!isMovementCapturable && (destinationTile.getEntity() == null || destinationTile.getEntity().getTeam().equals(entity.getTeam())) && capturableMovements.contains(movementPath)) {
 	        		break;
 	        	}
 	        	
@@ -390,7 +390,7 @@ public class BoardComponent {
 		// Right En-Passent
 		EntityMovements enPassentRight = PlayerDirection.getNormalizedMovement(direction, EntityMovements.RIGHT);
 		TileModel capturableEnPassentRight = _neighbors.get(source).get(enPassentRight);
-		if(capturableEnPassentRight != null && capturableEnPassentLeft.getEntity() != null && !capturableEnPassentLeft.getEntity().getTeam().equals(source.getEntity().getTeam()) && capturableEnPassentRight.getEntity().isEnPassentCapturable()) {
+		if(capturableEnPassentRight != null && capturableEnPassentRight.getEntity() != null && !capturableEnPassentRight.getEntity().getTeam().equals(source.getEntity().getTeam()) && capturableEnPassentRight.getEntity().isEnPassentCapturable()) {
 			
 			EntityMovements enPassentBackwards = PlayerDirection.getNormalizedMovement(capturableEnPassentRight.getEntity().getTeam().DIRECTION, EntityMovements.DOWN);
 			TileModel capturableEnPassentPosition = _neighbors.get(capturableEnPassentRight).get(enPassentBackwards); 
