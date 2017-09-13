@@ -76,6 +76,8 @@ public class BoardViewTester extends BoardView {
 					(col + row) % 2 == 0 ? TileView.EVEN_FILES_COLOR : TileView.ODD_FILES_COLOR
 				);
 				
+				view.setPreferredSize(new Dimension(64, 64));
+				
 				view.addMouseListener(new MouseAdapter() {
 					@Override public void mouseReleased(MouseEvent event) {
 						

@@ -99,6 +99,7 @@ public class BoardView extends PanelView {
 					false,
 					(col + row) % 2 == 0 ? TileView.EVEN_FILES_COLOR : TileView.ODD_FILES_COLOR
 				);
+				view.setPreferredSize(new Dimension(64, 64));
 				
 				// If we are on the first or last row on the board, inject the proper chess pieces
 				if(row == 0 || row == dimensionsX - 1) {

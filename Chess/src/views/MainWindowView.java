@@ -24,26 +24,40 @@
 
 package views;
 
-import java.awt.BorderLayout;
+import java.awt.GridBagLayout;
 import java.util.logging.Level;
 
 import engine.api.IView;
 import engine.core.factories.AbstractSignalFactory;
 import engine.core.factories.ViewFactory;
-import engine.core.mvc.view.PanelView;
+import engine.core.mvc.view.NavigationPanel;
 import engine.utils.io.logging.Tracelog;
 import game.structure.GameMode;
 
-public class MainWindowView extends PanelView {
+/**
+ * The main window view of the application
+ *
+ * @author {@literal Daniel Ricci <thedanny09@gmail.com>}
+ *
+ */
+public class MainWindowView extends NavigationPanel {
 	
+	/**
+	 * The game mode of the game
+	 */
 	private final GameMode _gameMode;
 	
+	/**
+	 * Constructs a new instance of this class type
+	 * 
+	 * @param gameMode The game mode to set the game to
+	 */
 	public MainWindowView(GameMode gameMode) {
 		_gameMode = gameMode;
+		this.setLayout(new GridBagLayout());
 	}
 	
 	@Override public void initializeComponents() {
-		setLayout(new BorderLayout());
 	}
 
 	@Override public void initializeComponentBindings() {

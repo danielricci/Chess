@@ -65,7 +65,7 @@ public final class Application extends AbstractApplication {
 	public Application() {
 
 		// Set the application dimensions
-		Dimension applicationDimensions = new Dimension(512, 512);
+		Dimension applicationDimensions = new Dimension(600, 600);
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		
 		// Set the size of application
@@ -154,7 +154,6 @@ public final class Application extends AbstractApplication {
 	}
 
 	@Override protected void setWindowedInstanceMenu() {
-		
 		// Populate the file menu and its entries
 		PopulateFileMenu();
 		
