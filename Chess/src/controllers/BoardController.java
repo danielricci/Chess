@@ -69,7 +69,7 @@ public final class BoardController extends BaseController {
     /**
      * The board component of the board game 
      */
-    private final BoardComponent _boardComposition;
+    private final BoardComponent _boardComponent;
     
     /**
      * The dimensions of the board game
@@ -98,7 +98,7 @@ public final class BoardController extends BaseController {
 		super(view);
 	    
 		// Instantiate the board component
-		_boardComposition = new BoardComponent(_dimensions);
+		_boardComponent = new BoardComponent(_dimensions);
 		
 	    // Register the signal listeners, we don't want to wait until rendering is done for this to occur
 		// because this class will miss important events before hand
@@ -124,7 +124,7 @@ public final class BoardController extends BaseController {
 		super(view);
 
 	      // Instantiate the board component
-        _boardComposition = new BoardComponent(_dimensions);
+        _boardComponent = new BoardComponent(_dimensions);
 		
 		// Register the signal listeners, we don't want to wait until rendering is done for this to occur
 		// because this class will miss important events before hand
@@ -192,7 +192,7 @@ public final class BoardController extends BaseController {
 	 * @return The list of tile models that neighbor the passed in tile model
 	 */
 	public List<TileModel> getAllNeighbors(TileModel tileModel) {
-		return _boardComposition.getAllNeighbors(tileModel);
+		return _boardComponent.getAllNeighbors(tileModel);
 	}
 	
 	/**
@@ -235,7 +235,9 @@ public final class BoardController extends BaseController {
     public void stopGame() {
     	_isGameRunning = false;
     	Tracelog.log(Level.INFO, true, "The game is now stopped");
-    	
+    }
+    
+    public void clearBoardHighlights() {
     	// Create the entity event, however simply clear the highlighting, we still want to 
     	// keep the board pieces on the board
     	EntityEventArgs event = new EntityEventArgs(this, TileModel.EVENT_HIGHLIGHT_CHANGED, null);
@@ -259,7 +261,7 @@ public final class BoardController extends BaseController {
 		registerSignalListener(IModel.EVENT_LISTENER_ADDED, new ISignalReceiver<ModelEventArgs<TileModel>>() {
 			@Override public void signalReceived(ModelEventArgs<TileModel> event) {
 			    // Add the received entity to the board movement blueprint
-				_boardComposition.addTileEntity(event.getSource());
+				_boardComponent.addTileEntity(event.getSource());
 			}
 		});
 	
@@ -285,7 +287,7 @@ public final class BoardController extends BaseController {
 				PlayerActions currentMovement = currentlySelectedTile.getMovementComponent().getBoardMovement(_previouslySelectedTile);
 				
 				// TODO - this needs to go into movement component
-				if(_previouslySelectedTile != currentlySelectedTile && _boardComposition.getEnPassentBoardPositions(_previouslySelectedTile).keySet().contains(currentlySelectedTile)) {
+				if(_previouslySelectedTile != currentlySelectedTile && _boardComponent.getEnPassentBoardPositions(_previouslySelectedTile).keySet().contains(currentlySelectedTile)) {
 					currentMovement = PlayerActions.MOVE_2_CAPTURE;
 				}
 				
@@ -302,7 +304,7 @@ public final class BoardController extends BaseController {
                         _previouslySelectedTile = currentlySelectedTile;
 					    
 					    // Get the list of positions that can be moved to
-                        Map<TileModel, EntityMovements[]> availablePositions = _boardComposition.getBoardPositions(_previouslySelectedTile);
+                        Map<TileModel, EntityMovements[]> availablePositions = _boardComponent.getBoardPositions(_previouslySelectedTile);
                        
                         // Go through each path and mark the tiles as highlighted
                         availablePositions.entrySet().stream().forEach(z -> z.getKey().setHighlighted(true));
@@ -315,8 +317,8 @@ public final class BoardController extends BaseController {
 
 						// Remove the highlighted tiles from the previous selection, and highlight the
 						// new selection based on what was currently selected
-						_boardComposition.getBoardPositions(_previouslySelectedTile).entrySet().stream().forEach(z -> z.getKey().setHighlighted(false));
-				        _boardComposition.getBoardPositions(currentlySelectedTile).entrySet().stream().forEach(z -> z.getKey().setHighlighted(true));
+						_boardComponent.getBoardPositions(_previouslySelectedTile).entrySet().stream().forEach(z -> z.getKey().setHighlighted(false));
+				        _boardComponent.getBoardPositions(currentlySelectedTile).entrySet().stream().forEach(z -> z.getKey().setHighlighted(true));
 				        
 				        // Set the previously selected tile to be what was just selected
 				        _previouslySelectedTile = currentlySelectedTile;
@@ -326,16 +328,16 @@ public final class BoardController extends BaseController {
 					case MOVE_2_CAPTURE: {
 						// Get the list of available board positions of the previously selected tile
 						// and if the currently selected tile is a valid position then proceed
-					    Map<TileModel, EntityMovements[]> availablePositions = _boardComposition.getBoardPositions(_previouslySelectedTile);
+					    Map<TileModel, EntityMovements[]> availablePositions = _boardComponent.getBoardPositions(_previouslySelectedTile);
 				        if(availablePositions.containsKey(currentlySelectedTile)) {
 					    
 					    	// This flag indicates if the capture being performed is an en-passent capture
-					    	boolean isEnPassentCapture = _boardComposition.getEnPassentBoardPositions(_previouslySelectedTile).keySet().contains(currentlySelectedTile);
+					    	boolean isEnPassentCapture = _boardComponent.getEnPassentBoardPositions(_previouslySelectedTile).keySet().contains(currentlySelectedTile);
 					
 					    	// Remove the entity being captured from the enemy player
 					    	PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true);
 					    	if(isEnPassentCapture) {
-					    		TileModel enemyTile = _boardComposition.getEnPassentEnemy(_previouslySelectedTile);
+					    		TileModel enemyTile = _boardComponent.getEnPassentEnemy(_previouslySelectedTile);
 					    		playerController.getPlayer(enemyTile.getEntity().getTeam()).removeEntity(enemyTile.getEntity());
 					    		enemyTile.setEntity(null);
 					    	}
@@ -373,7 +375,7 @@ public final class BoardController extends BaseController {
 						
 						// Get the list of available board positions of the previously selected tile
 						// and if the currently selected tile is a valid position then proceed
-					    Map<TileModel, EntityMovements[]> availablePositions = _boardComposition.getBoardPositions(_previouslySelectedTile);
+					    Map<TileModel, EntityMovements[]> availablePositions = _boardComponent.getBoardPositions(_previouslySelectedTile);
 					    if(availablePositions.containsKey(currentlySelectedTile)) {
 
 					    	// Record the movement that occurred
@@ -406,7 +408,7 @@ public final class BoardController extends BaseController {
 	                    _previouslySelectedTile = null;
 
 	                    // Go through each path and mark the tiles as highlighted
-	                    _boardComposition.getBoardPositions(currentlySelectedTile).entrySet().stream().forEach(z -> z.getKey().setHighlighted(false));
+	                    _boardComponent.getBoardPositions(currentlySelectedTile).entrySet().stream().forEach(z -> z.getKey().setHighlighted(false));
 						
 						break;
 					}
@@ -415,7 +417,7 @@ public final class BoardController extends BaseController {
 				if(isSuccessful && currentMovement.isMoveFinal) {
 				
 					// If the tile has reached the end of the board then display the promotion view
-					if(currentlySelectedTile.getEntity().isPromotable() && !_boardComposition.canMoveForward(currentlySelectedTile)) {
+					if(currentlySelectedTile.getEntity().isPromotable() && !_boardComponent.canMoveForward(currentlySelectedTile)) {
 						PromotionView view = AbstractFactory.getFactory(ViewFactory.class).get(PromotionView.class, true);
 						view.getViewProperties().getEntity(PromotionController.class).setTile(currentlySelectedTile);
 						view.render();
@@ -433,9 +435,13 @@ public final class BoardController extends BaseController {
 					
                     // Update the list of checked entities for the enemy player
                     for(PlayerModel player : playerController.getPlayers()) {
-                        List<TileModel> checkedPositions = _boardComposition.getCheckedPositions(player);
+                        List<TileModel> checkedPositions = _boardComponent.getCheckedPositions(player);
                         for(AbstractChessEntity entity : player.getCheckableEntities()) {
                             entity.setChecked(checkedPositions.stream().anyMatch(z -> entity.equals(z.getEntity())));
+                            if(entity.getIsChecked() && _boardComponent.getBoardPositions(entity.getTile()).isEmpty()) {
+                            	entity.setCheckMate(true);
+                            	stopGame();
+                            }
                             entity.refresh();
                         }
                     }

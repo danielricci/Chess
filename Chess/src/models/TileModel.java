@@ -41,7 +41,7 @@ import game.events.EntityEventArgs;
  */
 public class TileModel extends BaseModel {
 
-	private static int _counter = 0;
+	public static int _counter = 0;
 	
 	private final int _count = ++_counter;
 	

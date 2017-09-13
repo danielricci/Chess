@@ -41,9 +41,14 @@ import models.TileModel;
 public abstract class AbstractChessEntity extends AbstractEntity implements IChessEntity {
     
     /**
-     * Gets the checked state of this entity
+     * The checked state of this entity
      */
     private boolean _isChecked;
+    
+    /**
+     * The check mate state of this entity
+     */
+    private boolean _isCheckMated;
     
 	/**
 	 * The player that owns this entity
@@ -180,6 +185,27 @@ public abstract class AbstractChessEntity extends AbstractEntity implements IChe
      */
     public final void setChecked(boolean isChecked) {
         _isChecked = isChecked;
+    }
+    
+    /**
+     * Sets the check mate state of this entity
+     *
+     * Note: If this entity is not checkable then it will not matter if you
+     *       set the checked state
+     * 
+     * @param isCheckMate The check mate state
+     */
+    public final void setCheckMate(boolean isCheckMate) {
+    	_isCheckMated = isCheckMate;
+    }
+    
+    /**
+     * Gets the check mate state of this entity
+     * 
+     * @return The check mate state of this entity
+     */
+    public final boolean getIsCheckMate() {
+    	return getIsCheckable() && _isCheckMated;
     }
     
     /**

@@ -30,6 +30,7 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.border.Border;
 
@@ -38,8 +39,11 @@ import engine.communication.internal.signal.ISignalReceiver;
 import engine.communication.internal.signal.arguments.SignalEventArgs;
 import engine.core.factories.AbstractSignalFactory;
 import engine.core.factories.ControllerFactory;
+import engine.core.graphics.RawData;
 import engine.core.mvc.view.PanelView;
 import models.TileModel;
+import resources.Resources;
+import resources.Resources.ResourceKeys;
 
 /**
  * This view represents the visual contents of a single tile in this game
@@ -50,14 +54,9 @@ import models.TileModel;
 public class TileView extends PanelView {
 	
 	/**
-	 * The global identifier counter for all tiles 
-	 */
-	private static int _identifierCounter = 0;
-	
-	/**
 	 * The local identifier count for this tile
 	 */
-	private final JLabel _identifierTextField = new JLabel(++_identifierCounter + "");
+	private final JLabel _identifierTextField = new JLabel();
 	
 	/**
 	 * This flag when set to true with perform a neighbor highlight on this tile when you mouse over it
@@ -149,7 +148,7 @@ public class TileView extends PanelView {
 	
 	@Override public boolean flush() {
 		boolean done = super.flush();
-		_identifierCounter = 0;
+		--TileModel._counter;
 		return done;
 	}
 	
@@ -242,6 +241,8 @@ public class TileView extends PanelView {
 			// Get the tile model of the source
 			TileModel tileModel = (TileModel) signalEvent.getSource();
 			
+			_identifierTextField.setText(tileModel.toString());
+			
 			// If the tile is in check then set the background accordingly
             if(tileModel.getEntity() != null && tileModel.getEntity().getIsChecked()) {
                 this.setBackground(CHECKED_COLOR);
@@ -258,11 +259,16 @@ public class TileView extends PanelView {
 			    this.setBackground(DEFAULT_BACKGROUND_COLOR);			    
 			}
 			
-			// Add any renderable content
-			addRenderableContent(tileModel.getEntity());
-		}
+			if(tileModel.getEntity() != null) {
+				addRenderableContent(tileModel.getEntity());
+				if(tileModel.getEntity().getIsCheckMate()) {
+					this.setBackground(DEFAULT_BACKGROUND_COLOR);
+					addRenderableContent(new RawData(new ImageIcon(Resources.instance().getLocalizedString(ResourceKeys.CheckMate)).getImage()));	
+				}
+			}
 		
-		// Repaint the view
-		repaint();
+			// Repaint the view
+			repaint();
+		}
 	}
 }

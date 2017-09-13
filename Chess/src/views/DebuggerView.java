@@ -161,6 +161,7 @@ public class DebuggerView extends DialogView {
 				
 				// Stop the game
 				controller.stopGame();
+				controller.clearBoardHighlights();
 			}
 		});
 		_clearButton.addActionListener(new ActionListener() {

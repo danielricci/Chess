@@ -201,7 +201,7 @@ public class BoardComponent {
         PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true);
         for(Iterator<Map.Entry<TileModel, EntityMovements[]>> it = availablePositions.entrySet().iterator(); it.hasNext();) {
             Map.Entry<TileModel, EntityMovements[]> entry = it.next();
-            if(isMoveChecked(playerController.getCurrentPlayer(), tileModel, entry.getKey())) {
+            if(isMoveChecked(playerController.getPlayer(tileModel.getEntity().getTeam()), tileModel, entry.getKey())) {
                 it.remove();
             }
         }

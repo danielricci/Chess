@@ -35,6 +35,7 @@ public final class Resources extends Localization<Resources.ResourceKeys> {
 	
 	public enum ResourceKeys {
 		
+		CheckMate("checkmate_x"),
 		Debug("debug"),
 		GameIcon("game_icon"),
 		NeighborTiles("neighbor_tiles"),
