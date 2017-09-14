@@ -64,8 +64,7 @@ public interface IChessEntity {
     }
     
     /**
-     * Indicates if the moves performed by the entity are also used 
-     * to capture opponent pieces
+     * Indicates if the moves performed by the entity are also used to capture opponent pieces
      * 
      * @return TRUE if the movements performed by this piece results in a capture
      */
@@ -83,23 +82,48 @@ public interface IChessEntity {
     }
     
     /**
-     * Indicates if the chess entity can perform an en-passent move
-     * as one of its possible moves
+     * Indicates if the chess entity can perform an en-passent move as one of its possible moves
      * 
      * Note: This method does not mean you can actually do the move, but simply
-     * indicates if the chess is geared for doing the en-passent move
+     * indicates if the chess entity is geared for doing the en-passent move
      */
     default public boolean isEnPassent() {
     	return false;
     }
     
     /**
-     * Indicates if the chess entity can be captured
-     * with an en-passent move
+     * Indicates if the chess entity can be captured with an en-passent move
      * 
      * @return TRUE if the chess entity can be captured with en-passent
      */
     default public boolean isEnPassentCapturable() {
+    	return false;
+    }
+    
+    /**
+     * Gets if the chess entity is a checkable entity
+     * 
+     * @return TRUE if the chess entity can be put into check
+     */
+    default public boolean getIsCheckable() {
+        return false;
+    }
+    
+    /**
+     * Gets if the chess entity can perform the start of the castling move
+     * 
+     * @return TRUE if the chess piece can start the castling move
+     */
+    default public boolean getIsCastlableFrom() {
+    	return false;
+    }
+   
+    /**
+     * Gets if the chess entity can perform the end of the castling move
+     * 
+     * @return TRUE if the chess piece can start the castling move
+     */
+    default public boolean getIsCastlableTo() {
     	return false;
     }
 }

@@ -56,4 +56,8 @@ class RookEntity extends AbstractChessEntity {
     @Override public boolean isMovementContinuous() {
         return true;
     }
+    
+    @Override public boolean getIsCastlableTo() {
+    	return !hasMovedOnce();
+    };
 }

@@ -217,15 +217,6 @@ public abstract class AbstractChessEntity extends AbstractEntity implements IChe
         return getIsCheckable() && _isChecked;
     }
     
-    /**
-     * Gets if the specified chess entity is a checkable entity
-     * 
-     * @return TRUE if the chess entity can be put into check
-     */
-    public boolean getIsCheckable() {
-        return false;
-    }
-    
     @Override public void refresh() {
         _tileModel.refresh();
     }
