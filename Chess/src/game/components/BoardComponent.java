@@ -195,10 +195,13 @@ public class BoardComponent {
 	 */
 	public Map<TileModel, EntityMovements[]> getBoardPositions(TileModel tileModel) {
 
-        Map<TileModel, EntityMovements[]> availablePositions = getBoardPositionsImpl(tileModel);
+		// Get a reference to the player controller
+		PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true);
         
+		// Get the list of positions that can be moved to
+        Map<TileModel, EntityMovements[]> availablePositions = getBoardPositionsImpl(tileModel);
+     
         // Go through the list of moves and scrub the ones that would result in my being in check
-        PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true);
         for(Iterator<Map.Entry<TileModel, EntityMovements[]>> it = availablePositions.entrySet().iterator(); it.hasNext();) {
             Map.Entry<TileModel, EntityMovements[]> entry = it.next();
             if(isMoveChecked(playerController.getPlayer(tileModel.getEntity().getTeam()), tileModel, entry.getKey())) {
@@ -206,9 +209,62 @@ public class BoardComponent {
             }
         }
         
+        // If the current tile has an entity and it can be used to castle
+        if(tileModel.getEntity() != null && tileModel.getEntity().getIsCastlableFromCandidate()) {
+        	
+        	// Get the list of castle candidates that can be castled to
+        	List<AbstractChessEntity> candidates = playerController.getPlayer(tileModel.getEntity().getTeam()).getCastlableToCandidates();
+        	
+        	// Get the left-most rook castle candidate
+        	TileModel leftCandidate = getCastlableToEntity(tileModel, EntityMovements.LEFT, candidates);
+        	if(leftCandidate != null) {
+        		availablePositions.put(
+    				_neighbors.get(_neighbors.get(tileModel).get(EntityMovements.LEFT)).get(EntityMovements.LEFT),
+    				new EntityMovements[] {EntityMovements.LEFT, EntityMovements.LEFT}
+    			);
+        	}
+        	
+        	// Get the right-most rook castle candidate
+        	TileModel rightCandidate = getCastlableToEntity(tileModel, EntityMovements.RIGHT, candidates);
+        	if(rightCandidate != null) {
+        		availablePositions.put(
+    				_neighbors.get(_neighbors.get(tileModel).get(EntityMovements.RIGHT)).get(EntityMovements.RIGHT),
+    				new EntityMovements[] {EntityMovements.RIGHT, EntityMovements.RIGHT}
+    			);
+        	}
+        }
+        
+        // Return back the list of available positions
         return availablePositions;
     }
-    
+	
+	private TileModel getCastlableToEntity(TileModel from, EntityMovements movement, List<AbstractChessEntity> candidates) {
+		
+		// This represents the number of movements that the king needs
+		// to ensure that there is no check
+		int kingPositions = 0;
+
+		TileModel temp = from;
+		while((temp = _neighbors.get(temp).get(movement)) != null) {
+			
+			// If the first two moves would put you in check then
+			// a valid castling cannot be performed
+			if(++kingPositions <= 2 && isMoveChecked(from.getEntity().getPlayer(), from, temp)) {
+				return null;
+			}
+			// If the entity exists make sure it is one of our candidates
+			else if(temp.getEntity() != null) {
+				if(candidates.contains(temp.getEntity()) && temp.getEntity().getIsCastlableToCandidate()) {
+					break;
+				}
+				else {
+					return null;	
+				}
+			}
+		}
+		return temp;
+	}
+	
     /**
      * Gets the list of board positions that the specified tile can move on
      * 

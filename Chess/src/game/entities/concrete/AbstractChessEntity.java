@@ -39,7 +39,7 @@ import models.TileModel;
  * @author Daniel Ricci {@literal <thedanny09@gmail.com>}
  */
 public abstract class AbstractChessEntity extends AbstractEntity implements IChessEntity {
-    
+    	
     /**
      * The checked state of this entity
      */
@@ -151,6 +151,15 @@ public abstract class AbstractChessEntity extends AbstractEntity implements IChe
 	 */
 	public final PlayerTeam getTeam() {
 		return _player.getTeam();
+	}
+	
+	/**
+	 * Returns the player associated to this chess entity
+	 * 
+	 * @return The player associated to this chess entity
+	 */
+	public final PlayerModel getPlayer() {
+		return _player;
 	}
 
 	/**

@@ -24,6 +24,7 @@
 
 package game.entities.interfaces;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import game.components.MovementComponent.EntityMovements;
@@ -50,8 +51,7 @@ public interface IChessEntity {
      * @return TRUE If the movement of this entity is continuous
      */
     public boolean isMovementContinuous();
-    
-    
+        
     /**
      * Gets the list of board movements with results in captures
      * 
@@ -61,6 +61,15 @@ public interface IChessEntity {
      */
     default public List<EntityMovements[]> getCapturableBoardMovements() {
     	return getMovements();
+    }
+    
+    /**
+     * Gets the list of movements ass
+     * 
+     * @return
+     */
+    default public List<EntityMovements[]> getCastlingBoardMovements() {
+    	return new ArrayList<EntityMovements[]>();
     }
     
     /**
@@ -114,7 +123,7 @@ public interface IChessEntity {
      * 
      * @return TRUE if the chess piece can start the castling move
      */
-    default public boolean getIsCastlableFrom() {
+    default public boolean getIsCastlableFromCandidate() {
     	return false;
     }
    
@@ -123,7 +132,7 @@ public interface IChessEntity {
      * 
      * @return TRUE if the chess piece can start the castling move
      */
-    default public boolean getIsCastlableTo() {
+    default public boolean getIsCastlableToCandidate() {
     	return false;
     }
 }

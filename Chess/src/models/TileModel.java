@@ -173,8 +173,6 @@ public class TileModel extends BaseModel {
         doneUpdating();
 	}
 	
-	
-	
 	/**
      * Sets the selected state of this model
      * 

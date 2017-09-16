@@ -57,7 +57,14 @@ class KingEntity extends AbstractChessEntity {
             add(new EntityMovements[] { EntityMovements.DOWN, EntityMovements.RIGHT });
         }};
     }
-
+    
+    @Override public List<EntityMovements[]> getCastlingBoardMovements() {
+    	 return new ArrayList<EntityMovements[]>() {{
+         	add(new EntityMovements[] { EntityMovements.LEFT, EntityMovements.LEFT });
+         	add(new EntityMovements[] { EntityMovements.RIGHT, EntityMovements.RIGHT });
+         }};
+    }
+    
     @Override public boolean isMovementContinuous() {
         return false;
     }
@@ -66,7 +73,7 @@ class KingEntity extends AbstractChessEntity {
         return true;
     }
     
-    @Override public boolean getIsCastlableFrom() {
+    @Override public boolean getIsCastlableFromCandidate() {
     	return !hasMovedOnce();
     }
 }

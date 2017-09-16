@@ -166,6 +166,15 @@ public class PlayerModel extends BaseModel {
     public List<AbstractChessEntity> getCheckableEntities() {
         return getEntities().stream().filter(z -> z.getIsCheckable()).collect(Collectors.toList());
     }
+    
+    /**
+     * Gets the list of castlable entities that can be castled to
+     * 
+     * @return The list of castleable entities
+     */
+    public List<AbstractChessEntity> getCastlableToCandidates() {
+        return getEntities().stream().filter(z -> z.getIsCastlableToCandidate()).collect(Collectors.toList());
+    }
 	
 	/**
      * Gets the data values associated to the player 

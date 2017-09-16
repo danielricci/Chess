@@ -52,12 +52,19 @@ class RookEntity extends AbstractChessEntity {
             add(new EntityMovements[] { EntityMovements.RIGHT});
         }};
     }
+    
+    @Override public List<EntityMovements[]> getCastlingBoardMovements() {
+    	return new ArrayList<EntityMovements[]>() {{
+        	add(new EntityMovements[] { EntityMovements.LEFT, EntityMovements.LEFT });
+        	add(new EntityMovements[] { EntityMovements.RIGHT, EntityMovements.RIGHT, EntityMovements.RIGHT});
+        }};
+    }
 
     @Override public boolean isMovementContinuous() {
         return true;
     }
     
-    @Override public boolean getIsCastlableTo() {
+    @Override public boolean getIsCastlableToCandidate() {
     	return !hasMovedOnce();
     };
 }
