@@ -100,13 +100,7 @@ public class MovementComponent {
     	public static EntityMovements getNormalizedMovement(PlayerDirection direction, EntityMovements movement) {
     		switch(direction) {
 	    		case BACKWARD: {
-	    			switch(movement) {
-		    			case LEFT: 	return EntityMovements.RIGHT;
-		    			case RIGHT: return EntityMovements.LEFT;
-		    			case UP:	return EntityMovements.DOWN;
-		    			case DOWN: 	return EntityMovements.UP;
-		    			default:	return movement;
-	    			}
+	    		    return invert(movement);
 	    		}
 	    		default: { 
 	    			return movement;
@@ -202,7 +196,7 @@ public class MovementComponent {
 	 * @param movement1 The first movement
 	 * @param movement2 The second movement
 	 * 
-	 * @return If both movements are equal
+	 * @return TRUE If both movements are equal, FALSE otherwise
 	 */
 	public static boolean compareMovements(EntityMovements[] movement1, EntityMovements[] movement2) {
 		if(movement1 == null || movement2 == null) {
@@ -297,5 +291,29 @@ public class MovementComponent {
         PlayerTeam team = getTileTeam(tile);
         PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class);
         return team != null && team != playerController.getCurrentPlayerTeam();
+    }
+
+    /**
+     * Helper method that inverts the specified movement.
+     * 
+     * Note: This method does not care about player direction
+     * 
+     * @param movement The movement to invert
+     * 
+     * @return The inverted movement specified
+     */
+    public static EntityMovements invert(EntityMovements movement) {
+        switch(movement) {
+        case DOWN:
+            return EntityMovements.UP;
+        case LEFT:
+            return EntityMovements.RIGHT;
+        case RIGHT:
+            return EntityMovements.LEFT;
+        case UP:
+            return EntityMovements.DOWN;
+        default:
+            return null;
+        }
     }  
 }

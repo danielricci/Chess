@@ -40,6 +40,7 @@ import engine.core.factories.ViewFactory;
 import engine.core.mvc.controller.BaseController;
 import engine.utils.io.logging.Tracelog;
 import game.components.BoardComponent;
+import game.components.MovementComponent;
 import game.components.MovementComponent.EntityMovements;
 import game.components.MovementComponent.PlayerActions;
 import game.entities.concrete.AbstractChessEntity;
@@ -305,21 +306,22 @@ public final class BoardController extends BaseController {
 					    
 					    // Get the list of positions that can be moved to
                         Map<TileModel, EntityMovements[]> availablePositions = _boardComponent.getBoardPositions(_previouslySelectedTile);
-                       
+                        
                         // Go through each path and mark the tiles as highlighted
                         availablePositions.entrySet().stream().forEach(z -> z.getKey().setHighlighted(true));
 					    
 					    break;
 					}
 					case MOVE_2_SELECT: {
-				    	// Remove the selection from what was previously selected
-						_previouslySelectedTile.setSelected(false);
-
+				    	
 						// Remove the highlighted tiles from the previous selection, and highlight the
 						// new selection based on what was currently selected
 						_boardComponent.getBoardPositions(_previouslySelectedTile).entrySet().stream().forEach(z -> z.getKey().setHighlighted(false));
-				        _boardComponent.getBoardPositions(currentlySelectedTile).entrySet().stream().forEach(z -> z.getKey().setHighlighted(true));
-				        
+						_boardComponent.getBoardPositions(currentlySelectedTile).entrySet().stream().forEach(z -> z.getKey().setHighlighted(true));
+
+	                      // Remove the selection from what was previously selected
+                        _previouslySelectedTile.setSelected(false);
+						
 				        // Set the previously selected tile to be what was just selected
 				        _previouslySelectedTile = currentlySelectedTile;
 						
@@ -380,6 +382,17 @@ public final class BoardController extends BaseController {
 
 					    	// Record the movement that occurred
 					    	entityEventArgs.movements = availablePositions.get(currentlySelectedTile);
+
+					    	// Verify if the movement is a castling movement
+					    	boolean isCastleMovement = false;
+					    	if(_previouslySelectedTile.getEntity().getIsCastlableFromCandidate()) {
+    	                        for(EntityMovements[] movement : _previouslySelectedTile.getEntity().getCastlingBoardMovements()) {
+    	                            if(MovementComponent.compareMovements(movement, entityEventArgs.movements)) {
+    	                                isCastleMovement = true;
+    	                                break;
+    	                            }
+    	                        }
+					    	}
 					    	
 							// Go through the list of positions available and remove their highlight guides						
 							availablePositions.entrySet().stream().forEach(z -> z.getKey().setHighlighted(false));
@@ -393,6 +406,16 @@ public final class BoardController extends BaseController {
                             _previouslySelectedTile.setEntity(null);
                             _previouslySelectedTile = null;
                             currentlySelectedTile.setEntity(entity);
+                            
+                            // If the move to be performed is a castling move, then we also need
+                            // to get the rook associated to the move that is being performed.
+                            //
+                            // IE: When the king moves to the left then it must be the left-most item, else the right-most
+                            if(isCastleMovement) {
+                                // Transfer the previous entity to the new location
+                                TileModel castleTile = _boardComponent.getCastlableToEntity(currentlySelectedTile, entityEventArgs.movements[0]);
+                                _boardComponent.setCastlableMovement(currentlySelectedTile, castleTile, entityEventArgs.movements[0]);                                
+                            }
 					    }
 					    else {
 					    	currentlySelectedTile.setSelected(false);

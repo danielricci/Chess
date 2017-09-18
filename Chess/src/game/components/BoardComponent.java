@@ -212,20 +212,17 @@ public class BoardComponent {
         // If the current tile has an entity and it can be used to castle
         if(tileModel.getEntity() != null && tileModel.getEntity().getIsCastlableFromCandidate()) {
         	
-        	// Get the list of castle candidates that can be castled to
-        	List<AbstractChessEntity> candidates = playerController.getPlayer(tileModel.getEntity().getTeam()).getCastlableToCandidates();
-        	
         	// Get the left-most rook castle candidate
-        	TileModel leftCandidate = getCastlableToEntity(tileModel, EntityMovements.LEFT, candidates);
+        	TileModel leftCandidate = getCastlableToEntity(tileModel, EntityMovements.LEFT);
         	if(leftCandidate != null) {
-        		availablePositions.put(
+        	    availablePositions.put(
     				_neighbors.get(_neighbors.get(tileModel).get(EntityMovements.LEFT)).get(EntityMovements.LEFT),
     				new EntityMovements[] {EntityMovements.LEFT, EntityMovements.LEFT}
     			);
         	}
         	
         	// Get the right-most rook castle candidate
-        	TileModel rightCandidate = getCastlableToEntity(tileModel, EntityMovements.RIGHT, candidates);
+        	TileModel rightCandidate = getCastlableToEntity(tileModel, EntityMovements.RIGHT);
         	if(rightCandidate != null) {
         		availablePositions.put(
     				_neighbors.get(_neighbors.get(tileModel).get(EntityMovements.RIGHT)).get(EntityMovements.RIGHT),
@@ -238,9 +235,21 @@ public class BoardComponent {
         return availablePositions;
     }
 	
-	private TileModel getCastlableToEntity(TileModel from, EntityMovements movement, List<AbstractChessEntity> candidates) {
+	/**
+	 * Gets the castlable to entity in the specified movement direction
+	 * 
+	 * @param from The from tile
+	 * @param movement The direction to move in
+	 * 
+	 * @return The tile that can be castled with if any
+	 */
+	public TileModel getCastlableToEntity(TileModel from, EntityMovements movement) {
 		
-		// This represents the number of movements that the king needs
+	    // Get the list of castle candidates that can be castled to
+	    PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true);
+        List<AbstractChessEntity> candidates = playerController.getPlayer(from.getEntity().getTeam()).getCastlableToCandidates();
+	    
+        // This represents the number of movements that the king needs
 		// to ensure that there is no check
 		int kingPositions = 0;
 
@@ -254,7 +263,7 @@ public class BoardComponent {
 			}
 			// If the entity exists make sure it is one of our candidates
 			else if(temp.getEntity() != null) {
-				if(candidates.contains(temp.getEntity()) && temp.getEntity().getIsCastlableToCandidate()) {
+				if(candidates.contains(temp.getEntity()) && temp.getEntity().getIsCastlableToCandidate() && _neighbors.get(temp).get(movement) == null) {
 					break;
 				}
 				else {
@@ -263,6 +272,25 @@ public class BoardComponent {
 			}
 		}
 		return temp;
+	}
+	
+	/**
+	 * Sets the new position of the castlable entity
+	 * 
+	 * @param from
+	 * @param to
+	 * @param fromMovement
+	 */
+	public void setCastlableMovement(TileModel from, TileModel to, EntityMovements fromMovement) {
+
+	    if(fromMovement == EntityMovements.LEFT || fromMovement == EntityMovements.RIGHT) {
+
+	        AbstractChessEntity castleEntity = to.getEntity();
+            to.setEntity(null);
+
+            TileModel newCastleLocation = _neighbors.get(from).get(MovementComponent.invert(fromMovement));
+            newCastleLocation.setEntity(castleEntity);
+	    }
 	}
 	
     /**
