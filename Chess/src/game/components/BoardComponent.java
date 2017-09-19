@@ -277,18 +277,18 @@ public class BoardComponent {
 	/**
 	 * Sets the new position of the castlable entity
 	 * 
-	 * @param from
-	 * @param to
-	 * @param fromMovement
+	 * @param fromPosition The position of where the from would be AFTER it has been updated
+	 * @param castableTo The position of the entity that the king will castle with
+	 * @param fromMovement The movement that resulted in the from position from arriving at its updated location
 	 */
-	public void setCastlableMovement(TileModel from, TileModel to, EntityMovements fromMovement) {
+	public void setCastlableMovement(TileModel fromPosition, TileModel castleableTo, EntityMovements fromMovement) {
 
 	    if(fromMovement == EntityMovements.LEFT || fromMovement == EntityMovements.RIGHT) {
 
-	        AbstractChessEntity castleEntity = to.getEntity();
-            to.setEntity(null);
+	        AbstractChessEntity castleEntity = castleableTo.getEntity();
+	        castleableTo.setEntity(null);
 
-            TileModel newCastleLocation = _neighbors.get(from).get(MovementComponent.invert(fromMovement));
+            TileModel newCastleLocation = _neighbors.get(fromPosition).get(MovementComponent.invert(fromMovement));
             newCastleLocation.setEntity(castleEntity);
 	    }
 	}

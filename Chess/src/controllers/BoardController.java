@@ -407,12 +407,12 @@ public final class BoardController extends BaseController {
 					    	entityEventArgs.movements = availablePositions.get(currentlySelectedTile);
 
 					    	// Verify if the movement is a castling movement
-					    	boolean isCastleMovement = false;
 					    	if(_previouslySelectedTile.getEntity().getIsCastlableFromCandidate()) {
     	                        for(EntityMovements[] movement : _previouslySelectedTile.getEntity().getCastlingBoardMovements()) {
     	                            if(MovementComponent.compareMovements(movement, entityEventArgs.movements)) {
-    	                                isCastleMovement = true;
-    	                                break;
+    	                                // Transfer the previous entity to the new location
+    	                                TileModel castleTile = _boardComponent.getCastlableToEntity(_previouslySelectedTile, entityEventArgs.movements[0]);
+    	                                _boardComponent.setCastlableMovement(currentlySelectedTile, castleTile, entityEventArgs.movements[0]);                                    	                            	
     	                            }
     	                        }
 					    	}
@@ -429,16 +429,6 @@ public final class BoardController extends BaseController {
                             _previouslySelectedTile.setEntity(null);
                             _previouslySelectedTile = null;
                             currentlySelectedTile.setEntity(entity);
-                            
-                            // If the move to be performed is a castling move, then we also need
-                            // to get the rook associated to the move that is being performed.
-                            //
-                            // IE: When the king moves to the left then it must be the left-most item, else the right-most
-                            if(isCastleMovement) {
-                                // Transfer the previous entity to the new location
-                                TileModel castleTile = _boardComponent.getCastlableToEntity(currentlySelectedTile, entityEventArgs.movements[0]);
-                                _boardComponent.setCastlableMovement(currentlySelectedTile, castleTile, entityEventArgs.movements[0]);                                
-                            }
 					    }
 					    else {
 					    	currentlySelectedTile.setSelected(false);
