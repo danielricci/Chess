@@ -38,7 +38,7 @@ import engine.core.menu.types.MenuItem;
 import game.structure.GameMode;
 import resources.Resources;
 import resources.Resources.ResourceKeys;
-import views.MainWindowView;
+import views.MainView;
 
 public class NewGameItem extends MenuItem {
 
@@ -58,7 +58,7 @@ public class NewGameItem extends MenuItem {
 		ViewFactory factory = AbstractSignalFactory.getFactory(ViewFactory.class);
 		
 		// Get a reference to the main window to start application
-		MainWindowView view = factory.get(MainWindowView.class, true, GameMode.GAME); 
+		MainView view = factory.get(MainView.class, true, GameMode.GAME); 
 			
 		// Add the view to the application
 		Application.instance().add(view);

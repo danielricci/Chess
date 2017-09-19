@@ -33,8 +33,8 @@ import engine.core.factories.AbstractFactory;
 import engine.core.factories.AbstractSignalFactory;
 import engine.core.factories.ViewFactory;
 import engine.core.menu.types.MenuItem;
-import views.BoardViewTester;
 import views.DebuggerView;
+import views.DebuggerSettingsView;
 
 /**
  * The properties menu item
@@ -54,13 +54,13 @@ public class DebuggerWindowItem extends MenuItem {
 	}
 	
 	@Override public void onExecute(ActionEvent actionEvent) {
-		DebuggerView debugger = AbstractSignalFactory.getFactory(ViewFactory.class).get(DebuggerView.class, true);
+		DebuggerSettingsView debugger = AbstractSignalFactory.getFactory(ViewFactory.class).get(DebuggerSettingsView.class, true);
 		if(debugger != null) {
 			debugger.render();
 		}
 	}
 	
 	@Override public boolean enabled() {
-		return AbstractSignalFactory.isRunning() && AbstractFactory.getFactory(ViewFactory.class).get(BoardViewTester.class) != null;
+		return AbstractSignalFactory.isRunning() && AbstractFactory.getFactory(ViewFactory.class).get(DebuggerView.class) != null;
 	}
 }

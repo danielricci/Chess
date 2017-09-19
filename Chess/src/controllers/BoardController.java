@@ -50,7 +50,7 @@ import models.PlayerModel;
 import models.PlayerModel.PlayerTeam;
 import models.TileModel;
 import views.BoardView;
-import views.BoardViewTester;
+import views.DebuggerView;
 import views.PromotionView;
 
 /**
@@ -81,6 +81,11 @@ public final class BoardController extends BaseController {
 	 * This flag indicates if the game is running
 	 */
 	private boolean _isGameRunning;
+	
+	/**
+	 * This flag indicates if the game is in inspection mode
+	 */
+	private boolean _isGameInspecting;
 	
 	/**
 	 * The tile model associated to the previously selected tile
@@ -120,7 +125,7 @@ public final class BoardController extends BaseController {
 	 *
 	 * @param view The view to link with this controller
 	 */
-	public BoardController(BoardViewTester view) {
+	public BoardController(DebuggerView view) {
 
 		super(view);
 
@@ -218,7 +223,7 @@ public final class BoardController extends BaseController {
     public boolean isGameRunning() {
     	return _isGameRunning;
     }
-
+    
     /**
      * Starts the board game
      */
@@ -255,6 +260,24 @@ public final class BoardController extends BaseController {
     		_previouslySelectedTile = null;
     	}
     }
+    
+	/**
+	 * Sets the inspecting state of the debugger
+	 *
+	 * @param selected The state of the inspector
+	 */
+	public void setIsInspecting(boolean isGameInspecting) {
+		_isGameInspecting = isGameInspecting;
+	}
+	
+	/**
+	 * Gets if the game is in inspection state
+	 *
+	 * @return TRUE if the game is in inspection mode
+	 */
+	public boolean getIsInspecting() {
+		return !isGameRunning() && _isGameInspecting;
+	}	
 
     @Override public void registerSignalListeners() {
 		

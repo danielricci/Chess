@@ -31,7 +31,7 @@ import generated.DataLookup;
 import generated.DataLookup.DataLayerName;
 import models.PlayerModel;
 import models.PlayerModel.PlayerTeam;
-import views.DebuggerView;
+import views.DebuggerSettingsView;
 
 /**
  * The chess pieces debugger controller
@@ -56,7 +56,7 @@ public final class DebuggerController extends BaseController {
 	 * 
 	 * @param view The view associated to this controller
 	 */
-	public DebuggerController(DebuggerView view) {
+	public DebuggerController(DebuggerSettingsView view) {
 		super(view);
 		
 		// TODO - Is there a way to make this more kosher?

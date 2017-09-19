@@ -36,8 +36,8 @@ import engine.core.menu.types.MenuItem;
 import game.structure.GameMode;
 import resources.Resources;
 import resources.Resources.ResourceKeys;
-import views.DebuggerView;
-import views.MainWindowView;
+import views.DebuggerSettingsView;
+import views.MainView;
 
 /**
  * The new game menu item for the debugger
@@ -67,7 +67,7 @@ public class NewGameDebugItem extends MenuItem {
 		ViewFactory factory = AbstractSignalFactory.getFactory(ViewFactory.class);
 		
 		// Get a reference to the main window to start application
-		MainWindowView view = factory.get(MainWindowView.class, true, GameMode.DEBUG); 
+		MainView view = factory.get(MainView.class, true, GameMode.DEBUG); 
 			
 		// Add the view to the application
 		Application.instance().add(view);
@@ -75,7 +75,7 @@ public class NewGameDebugItem extends MenuItem {
 		// Render the specified view
 		view.render();
 		
-		DebuggerView debugger = AbstractSignalFactory.getFactory(ViewFactory.class).get(DebuggerView.class, true);
+		DebuggerSettingsView debugger = AbstractSignalFactory.getFactory(ViewFactory.class).get(DebuggerSettingsView.class, true);
 		if(debugger != null) {
 			debugger.render();
 		}

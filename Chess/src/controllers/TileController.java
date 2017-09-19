@@ -111,4 +111,17 @@ public final class TileController extends BaseController {
 	public boolean hasEntity() {
 		return _tile.getEntity() != null;
 	}
+	
+	@Override public String toString() {
+		StringBuilder builder = new StringBuilder();
+		if(_tile != null) {
+			builder.append("::============Tile Controller State============::\n");
+			builder.append("Identifier:\t" + _tile.toString() + "\n");
+			builder.append("Selected:\t" + (_tile.getIsSelected() ? "Yes" : "No") + "\n");
+			builder.append("Highlighted:\t" + (_tile.getIsHighlighted() ? "Yes" : "No") + "\n");
+		}
+		
+		return builder.toString();
+		
+	}
 }

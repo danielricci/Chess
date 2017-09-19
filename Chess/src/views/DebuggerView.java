@@ -25,162 +25,118 @@
 package views;
 
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.GridBagConstraints;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
-import application.Application;
 import controllers.BoardController;
 import controllers.DebuggerController;
+import controllers.PlayerController;
+import controllers.TileController;
 import engine.core.factories.AbstractFactory;
 import engine.core.factories.AbstractSignalFactory;
 import engine.core.factories.ControllerFactory;
-import engine.core.mvc.view.DialogView;
-import generated.DataLookup.DataLayerName;
-import models.PlayerModel.PlayerTeam;
+import engine.core.factories.ViewFactory;
+import game.entities.concrete.AbstractChessEntity;
 
 /**
- * The view associated to the chess debugger
+ * The board view for testing the game, it uses similar functionality to that of our board view
  * 
- * @author {@literal Daniel Ricci <thedanny09@gmail.com>}
+ * @author Daniel Ricci <thedanny09@gmail.com>
  */
-public class DebuggerView extends DialogView {
+public class DebuggerView extends BoardView {
 	
-	/**
-	 * The list of pieces to select from on the UI
-	 */
-	private JComboBox<DataLayerName> _piecesList = new JComboBox();
-	
-	/**
-	 * The list of players to select from on the UI
-	 */
-	private JComboBox<PlayerTeam> _teamList = new JComboBox();
-	
-	/**
-	 * The start button that starts the debugging session
-	 */
-	private JButton _startButton = new JButton("Start");
-	
-	/**
-	 * The stop button that stops the debugging session
-	 */
-	private JButton _stopButton = new JButton("Stop");
-	
-	/**
-	 * The clear button that clears the board
-	 */
-	private JButton _clearButton = new JButton("Clear");
-	
-	/**
-	 * Constructs a new instance of this class type
-	 */
-	public DebuggerView() {
-		super(Application.instance(), "Debugger Window", 200, 300);
-		
-		// Prevent the properties window from being resized
-		this.setResizable(false);
-		
-		// Sets this view to always be on top
-		setAlwaysOnTop(true);
-		
-		// Specify the controller of this dialog
-		getViewProperties().setListener(AbstractSignalFactory.getFactory(ControllerFactory.class).get(DebuggerController.class, true, this));
-		
-		// Set the layout manager of this dialog to be a grid-like layout
-		getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+	public DebuggerView()
+	{
 	}
 	
 	@Override public void initializeComponents() {
 		
-		// Populate the models held by the controller into the combo boxes.
-		// Note: This needs to happen before setting the maximum size of each box
-		//       or the vertical spacing will not be done properly
-		DebuggerController controller = getViewProperties().getEntity(DebuggerController.class);
+		// Set the constraints of views 
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 1.0;
+		gbc.weighty = 1.0;
 		
-		// Teams label and the list of teams
-		JPanel teamsPanel = new JPanel();
-		JLabel teamsLabel = new JLabel("Teams");
-		teamsPanel.add(teamsLabel);
-		teamsPanel.add(_teamList);
-		_teamList.setModel(controller.getTeamsModel());
-		getContentPane().add(teamsPanel);
-		teamsPanel.setMaximumSize(teamsPanel.getPreferredSize());
+		// Get the board dimensions
+		BoardController boardController = getViewProperties().getEntity(BoardController.class);
+		Dimension boardDimensions = boardController.getBoardDimensions();
 		
-		// Pieces label and the list of pieces
-		JPanel piecesPanel = new JPanel();
-		JLabel piecesLabel = new JLabel("Pieces");
-		piecesPanel.add(piecesLabel);
-		piecesPanel.add(_piecesList);
-		_piecesList.setModel(controller.getPiecesModel());
-		getContentPane().add(piecesPanel);
-		piecesPanel.setMaximumSize(piecesPanel.getPreferredSize());
+		// Create the board view structure, row by row
+		for(int row = 0, dimensionsX = boardDimensions.width; row < dimensionsX; ++row) {
+						
+			// Create a row
+			for(int col =  0, dimensionsY = boardDimensions.height; col < dimensionsY; ++col) {		
+
+				// Create a tile and add it to our board
+				TileView view = AbstractSignalFactory.getFactory(ViewFactory.class).get(
+					TileView.class, 
+					false,
+					(col + row) % 2 == 0 ? TileView.EVEN_FILES_COLOR : TileView.ODD_FILES_COLOR
+				);
+				
+				view.setPreferredSize(new Dimension(64, 64));
+				
+				view.addMouseListener(new MouseAdapter() {
+					@Override public void mouseReleased(MouseEvent event) {
+						
+						// If the debugger window is not visible then do not go any further.
+						DebuggerController debuggerController = AbstractFactory.getFactory(ControllerFactory.class).get(DebuggerController.class);
+						if(debuggerController == null || !debuggerController.getControllerProperties().isViewVisible()) {
+							return;
+						}
+						
+						// If the game is running then go no further
+						if(AbstractFactory.getFactory(ControllerFactory.class).get(BoardController.class).isGameRunning()) {
+							return;
+						}
+						
+						// If the tile already has an entity then do not create a new one on it
+						TileController tileController = view.getViewProperties().getEntity(TileController.class);
+						
+						if(SwingUtilities.isLeftMouseButton(event)) {
+							
+							// If the board is in inspector mode then perform an inspection of the tile 
+							if(boardController.getIsInspecting()) {
+								System.out.println(tileController.toString());
+							}
+							else if(!tileController.hasEntity()) {
+								// Get a reference to the new entity based on the options selected in the debugger
+								AbstractChessEntity entity = AbstractFactory
+										.getFactory(ControllerFactory.class)
+										.get(PlayerController.class)
+										.createEntity(debuggerController.getSelectedTeamDebug(), debuggerController.getSelectedPieceDebug());
+								
+								// If we got back a valid entity then add it
+								if(entity != null) {
+									tileController.setChessEntity(entity);
+								}
+							}
+						}
+						else if(SwingUtilities.isRightMouseButton(event)) {
+							tileController.setChessEntity(null);
+						}
+					}
+				});
+				
+				// Make sure that dimensions are properly mapped
+				gbc.gridx = col;
+				gbc.gridy = row;
+				_gamePanel.add(view, gbc);
+				
+				// render the view
+				view.render();
+			}			
+		}
 		
-		// Action buttons and other related actions
-		// for controlling the debugging scene
-		JPanel actionPanel = new JPanel();
-		actionPanel.add(_startButton);
-		actionPanel.add(_stopButton);
-		actionPanel.add(_clearButton);
-		getContentPane().add(actionPanel);
-		
-		// Set the states of the action buttons
-		_startButton.setEnabled(true);
-		_stopButton.setEnabled(false);
-		_clearButton.setEnabled(true);
+		// Add the game panel to this view
+		add(_gamePanel);
 	}
 	
 	@Override public void initializeComponentBindings() {
-		
-		// Start the game
-		BoardController controller = AbstractFactory.getFactory(ControllerFactory.class).get(BoardController.class);
-		
-		_startButton.addActionListener(new ActionListener() {
-			@Override public void actionPerformed(ActionEvent event) {
-				_startButton.setEnabled(false);
-				_piecesList.setEnabled(false);
-				_teamList.setEnabled(false);
-				_stopButton.setEnabled(true);
-				_clearButton.setEnabled(false);
-				
-				// Start the game
-				controller.startGame();
-			}
-		});
-		_stopButton.addActionListener(new ActionListener() {
-			@Override public void actionPerformed(ActionEvent event) {
-				_startButton.setEnabled(true);
-				_piecesList.setEnabled(true);
-				_teamList.setEnabled(true);
-				_stopButton.setEnabled(false);
-				_clearButton.setEnabled(true);
-				
-				// Stop the game
-				controller.stopGame();
-				controller.clearBoardHighlights();
-			}
-		});
-		_clearButton.addActionListener(new ActionListener() {
-			@Override public void actionPerformed(ActionEvent event) {
-				// Clear the board
-				controller.clearBoard();
-			}
-		});
-
-	}
-	
-	@Override public void render() {
-		super.render();
-
-		// Positions this dialog at the middle-right of the application
-		Dimension screenSize = getToolkit().getScreenSize();
-		setLocation((int)(screenSize.getWidth() - getWidth()), (int)((screenSize.getHeight() - getHeight()) / 2));
-
-		// Request focus on the window
-		requestFocus();
+		// override this method to avoid our super class from
+		// starting the game earlier than we want it to
 	}
 }

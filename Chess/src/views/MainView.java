@@ -40,7 +40,7 @@ import game.structure.GameMode;
  * @author {@literal Daniel Ricci <thedanny09@gmail.com>}
  *
  */
-public class MainWindowView extends NavigationPanel {
+public class MainView extends NavigationPanel {
 	
 	/**
 	 * The game mode of the game
@@ -52,7 +52,7 @@ public class MainWindowView extends NavigationPanel {
 	 * 
 	 * @param gameMode The game mode to set the game to
 	 */
-	public MainWindowView(GameMode gameMode) {
+	public MainView(GameMode gameMode) {
 		_gameMode = gameMode;
 		this.setLayout(new GridBagLayout());
 	}
@@ -72,7 +72,7 @@ public class MainWindowView extends NavigationPanel {
 			boardView = viewFactory.get(BoardView.class, true);
 		}
 		else if(_gameMode == GameMode.DEBUG){
-			boardView = viewFactory.get(BoardViewTester.class, true);
+			boardView = viewFactory.get(DebuggerView.class, true);
 		}
 			
 		if(boardView != null) {
