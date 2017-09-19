@@ -83,7 +83,11 @@ public final class TileController extends BaseController {
 	 * @param entity The chess entity to add
 	 */
 	// TODO - can we make this private and remove the view dependency
-	public void setChessEntity(AbstractChessEntity entity) {
+	public void setChessEntity(AbstractChessEntity entity) {		
+		if(entity == null && _tile.getEntity() != null) {
+			PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class);
+    		playerController.getPlayer(_tile.getEntity().getTeam()).removeEntity(_tile.getEntity());
+		}
 		_tile.setEntity(entity);
 	}
 
@@ -119,6 +123,14 @@ public final class TileController extends BaseController {
 			builder.append("Identifier:\t" + _tile.toString() + "\n");
 			builder.append("Selected:\t" + (_tile.getIsSelected() ? "Yes" : "No") + "\n");
 			builder.append("Highlighted:\t" + (_tile.getIsHighlighted() ? "Yes" : "No") + "\n");
+			if(_tile.getEntity() != null) {
+				builder.append("Team:\t\t" + (_tile.getEntity().getTeam().toString()) + "\n");
+				builder.append("LayerName:\t" + _tile.getEntity().getDataLayerName().toString() + "\n");
+				builder.append("Is Promotable:\t" + (_tile.getEntity().isPromotable() ? "Yes" : "No") + "\n");
+				builder.append("Has Moved Once:\t" + (_tile.getEntity().hasMovedOnce() ? "Yes" : "No") + "\n");
+				builder.append("Checked:\t" + (_tile.getEntity().getIsChecked() ? "Yes" : "No") + "\n");
+				builder.append("Checked Mated:\t" + (_tile.getEntity().getIsCheckMate() ? "Yes" : "No") + "\n");
+			}
 		}
 		
 		return builder.toString();
