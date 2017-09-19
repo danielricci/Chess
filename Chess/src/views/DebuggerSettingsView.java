@@ -76,9 +76,26 @@ public class DebuggerSettingsView extends DialogView {
 	 * The clear button that clears the board
 	 */
 	private JButton _clearButton = new JButton("Clear");
+
+	/**
+	 * The memory+ button takes a snapshot of the current configuration and
+	 * replicates that whenever you click on the MR button
+	 */
+	private JButton _memoryAdd = new JButton("M+");
+
+	/**
+	 * The memory recall will put the board back to its last saved state 
+	 */
+	private JButton _memoryRecall = new JButton("MR");
 	
 	/**
-	 * The inspector checkbox
+	 * The memory clear button will clear the saved state of the board
+	 */
+	private JButton _memoryClear = new JButton("MC");
+	
+	/**
+	 * The inspector checkbox that will allow you to debug the contents of
+	 * a selected tile
 	 */
 	private JCheckBox _inspector = new JCheckBox();
 	
