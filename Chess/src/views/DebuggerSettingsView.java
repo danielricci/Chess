@@ -103,7 +103,7 @@ public class DebuggerSettingsView extends DialogView {
 	 * Constructs a new instance of this class type
 	 */
 	public DebuggerSettingsView() {
-		super(Application.instance(), "Debugger Window", 200, 300);
+		super(Application.instance(), "Debugger Window", 300, 300);
 		
 		// Prevent the properties window from being resized
 		this.setResizable(false);
@@ -143,16 +143,21 @@ public class DebuggerSettingsView extends DialogView {
 		getContentPane().add(piecesPanel);
 		piecesPanel.setMaximumSize(piecesPanel.getPreferredSize());
 		
+		// Memory panel for saving the board state
+		JPanel memoryPanel = new JPanel();
+		memoryPanel.add(_memoryAdd);
+		memoryPanel.add(_memoryRecall);
+		memoryPanel.add(_memoryClear);
+		getContentPane().add(memoryPanel);
+		
 		// Pieces label and the list of pieces
 		JPanel inspectorPanel = new JPanel();
 		JLabel inspectorLabel = new JLabel("Inspector");
 		inspectorPanel.add(inspectorLabel);
 		inspectorPanel.add(_inspector);
 		getContentPane().add(inspectorPanel);
-		//piecesPanel.setMaximumSize(inspectorPanel.getPreferredSize());
 		
-		// Action buttons and other related actions
-		// for controlling the debugging scene
+		// Action buttons and other related actions for controlling the debugging scene
 		JPanel actionPanel = new JPanel();
 		actionPanel.add(_startButton);
 		actionPanel.add(_stopButton);
@@ -178,6 +183,9 @@ public class DebuggerSettingsView extends DialogView {
 				_stopButton.setEnabled(true);
 				_clearButton.setEnabled(false);
 				_inspector.setEnabled(false);
+				_memoryAdd.setEnabled(false);
+				_memoryClear.setEnabled(false);
+				_memoryRecall.setEnabled(false);
 				
 				// Start the game
 				controller.startGame();
@@ -191,6 +199,9 @@ public class DebuggerSettingsView extends DialogView {
 				_stopButton.setEnabled(false);
 				_clearButton.setEnabled(true);
 				_inspector.setEnabled(true);
+				_memoryAdd.setEnabled(true);
+				_memoryClear.setEnabled(true);
+				_memoryRecall.setEnabled(true);
 				
 				// Stop the game
 				controller.stopGame();
