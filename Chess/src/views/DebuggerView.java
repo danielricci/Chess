@@ -32,7 +32,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.SwingUtilities;
 
 import controllers.BoardController;
-import controllers.DebuggerController;
+import controllers.DebuggerSettingsController;
 import controllers.PlayerController;
 import controllers.TileController;
 import engine.core.factories.AbstractFactory;
@@ -83,7 +83,7 @@ public class DebuggerView extends BoardView {
 					@Override public void mouseReleased(MouseEvent event) {
 						
 						// If the debugger window is not visible then do not go any further.
-						DebuggerController debuggerController = AbstractFactory.getFactory(ControllerFactory.class).get(DebuggerController.class);
+						DebuggerSettingsController debuggerController = AbstractFactory.getFactory(ControllerFactory.class).get(DebuggerSettingsController.class);
 						if(debuggerController == null || !debuggerController.getControllerProperties().isViewVisible()) {
 							return;
 						}
@@ -107,7 +107,7 @@ public class DebuggerView extends BoardView {
 								AbstractChessEntity entity = AbstractFactory
 										.getFactory(ControllerFactory.class)
 										.get(PlayerController.class)
-										.createEntity(debuggerController.getSelectedTeamDebug(), debuggerController.getSelectedPieceDebug());
+										.createEntity(debuggerController.getSelectedTeamItem(), debuggerController.getSelectedEntityItem());
 								
 								// If we got back a valid entity then add it
 								if(entity != null) {

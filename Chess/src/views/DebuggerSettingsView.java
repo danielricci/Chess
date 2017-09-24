@@ -37,7 +37,7 @@ import javax.swing.JPanel;
 
 import application.Application;
 import controllers.BoardController;
-import controllers.DebuggerController;
+import controllers.DebuggerSettingsController;
 import engine.core.factories.AbstractFactory;
 import engine.core.factories.AbstractSignalFactory;
 import engine.core.factories.ControllerFactory;
@@ -78,24 +78,27 @@ public class DebuggerSettingsView extends DialogView {
 	private JButton _clearButton = new JButton("Clear");
 
 	/**
-	 * The memory+ button takes a snapshot of the current configuration and
-	 * replicates that whenever you click on the MR button
+	 * The memory store button takes a snapshot of the board configuration
 	 */
-	private JButton _memoryAdd = new JButton("M+");
+	private JButton _memoryStore = new JButton("Mem Store");
 
 	/**
 	 * The memory recall will put the board back to its last saved state 
 	 */
-	private JButton _memoryRecall = new JButton("MR");
+	private JButton _memoryRecall = new JButton("Mem Recall");
 	
 	/**
 	 * The memory clear button will clear the saved state of the board
 	 */
-	private JButton _memoryClear = new JButton("MC");
+	private JButton _memoryClear = new JButton("Mem Clear");
 	
 	/**
-	 * The inspector checkbox that will allow you to debug the contents of
-	 * a selected tile
+     * The memory print button will print the contents that are in memory to the console
+     */
+    private JButton _memoryPrint = new JButton("Mem Print");
+	
+	/**
+	 * The inspector that will allow you to debug the contents of a tile
 	 */
 	private JCheckBox _inspector = new JCheckBox();
 	
@@ -112,7 +115,7 @@ public class DebuggerSettingsView extends DialogView {
 		setAlwaysOnTop(true);
 		
 		// Specify the controller of this dialog
-		getViewProperties().setListener(AbstractSignalFactory.getFactory(ControllerFactory.class).get(DebuggerController.class, true, this));
+		getViewProperties().setListener(AbstractSignalFactory.getFactory(ControllerFactory.class).get(DebuggerSettingsController.class, true, this));
 		
 		// Set the layout manager of this dialog to be a grid-like layout
 		getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
@@ -123,14 +126,14 @@ public class DebuggerSettingsView extends DialogView {
 		// Populate the models held by the controller into the combo boxes.
 		// Note: This needs to happen before setting the maximum size of each box
 		//       or the vertical spacing will not be done properly
-		DebuggerController controller = getViewProperties().getEntity(DebuggerController.class);
+		DebuggerSettingsController controller = getViewProperties().getEntity(DebuggerSettingsController.class);
 		
 		// Teams label and the list of teams
 		JPanel teamsPanel = new JPanel();
 		JLabel teamsLabel = new JLabel("Teams");
 		teamsPanel.add(teamsLabel);
 		teamsPanel.add(_teamList);
-		_teamList.setModel(controller.getTeamsModel());
+		_teamList.setModel(controller.getTeamCollection());
 		getContentPane().add(teamsPanel);
 		teamsPanel.setMaximumSize(teamsPanel.getPreferredSize());
 		
@@ -139,15 +142,16 @@ public class DebuggerSettingsView extends DialogView {
 		JLabel piecesLabel = new JLabel("Pieces");
 		piecesPanel.add(piecesLabel);
 		piecesPanel.add(_piecesList);
-		_piecesList.setModel(controller.getPiecesModel());
+		_piecesList.setModel(controller.getEntityCollection());
 		getContentPane().add(piecesPanel);
 		piecesPanel.setMaximumSize(piecesPanel.getPreferredSize());
 		
 		// Memory panel for saving the board state
 		JPanel memoryPanel = new JPanel();
-		memoryPanel.add(_memoryAdd);
+		memoryPanel.add(_memoryStore);
 		memoryPanel.add(_memoryRecall);
 		memoryPanel.add(_memoryClear);
+		memoryPanel.add(_memoryPrint);
 		getContentPane().add(memoryPanel);
 		
 		// Pieces label and the list of pieces
@@ -172,9 +176,9 @@ public class DebuggerSettingsView extends DialogView {
 	
 	@Override public void initializeComponentBindings() {
 		
-		// Start the game
-		BoardController controller = AbstractFactory.getFactory(ControllerFactory.class).get(BoardController.class);
-		
+		BoardController boardController = AbstractFactory.getFactory(ControllerFactory.class).get(BoardController.class);
+        DebuggerSettingsController debuggerSettingsController = getViewProperties().getEntity(DebuggerSettingsController.class);
+
 		_startButton.addActionListener(new ActionListener() {
 			@Override public void actionPerformed(ActionEvent event) {
 				_startButton.setEnabled(false);
@@ -183,12 +187,12 @@ public class DebuggerSettingsView extends DialogView {
 				_stopButton.setEnabled(true);
 				_clearButton.setEnabled(false);
 				_inspector.setEnabled(false);
-				_memoryAdd.setEnabled(false);
+				_memoryStore.setEnabled(false);
 				_memoryClear.setEnabled(false);
 				_memoryRecall.setEnabled(false);
 				
 				// Start the game
-				controller.startGame();
+				boardController.startGame();
 			}
 		});
 		_stopButton.addActionListener(new ActionListener() {
@@ -199,26 +203,54 @@ public class DebuggerSettingsView extends DialogView {
 				_stopButton.setEnabled(false);
 				_clearButton.setEnabled(true);
 				_inspector.setEnabled(true);
-				_memoryAdd.setEnabled(true);
+				_memoryStore.setEnabled(true);
 				_memoryClear.setEnabled(true);
 				_memoryRecall.setEnabled(true);
 				
 				// Stop the game
-				controller.stopGame();
-				controller.clearBoardHighlights();
+				boardController.stopGame();
+				boardController.clearBoardHighlights();
 			}
 		});
 		_clearButton.addActionListener(new ActionListener() {
 			@Override public void actionPerformed(ActionEvent event) {
 				// Clear the board
-				controller.clearBoard();
+				boardController.clearBoard();
 			}
 		});
 		_inspector.addActionListener(new ActionListener() {			
 			@Override public void actionPerformed(ActionEvent e) {
-				controller.setIsInspecting(_inspector.isSelected());				
+				boardController.setIsInspecting(_inspector.isSelected());				
 			}
 		});
+		_memoryStore.addActionListener(new ActionListener() {
+            @Override public void actionPerformed(ActionEvent e) {
+                // add to the memory
+                debuggerSettingsController.memoryStore();
+            }
+        });
+        _memoryRecall.addActionListener(new ActionListener() {
+            @Override public void actionPerformed(ActionEvent e) {
+                // Clear the board
+                boardController.clearBoard();
+
+                // Recall the memory
+                debuggerSettingsController.memoryRecall();
+            }
+        });
+		_memoryClear.addActionListener(new ActionListener() {
+            @Override public void actionPerformed(ActionEvent e) {
+                // Recall the memory
+                debuggerSettingsController.memoryClear();
+            }
+        });
+		_memoryPrint.addActionListener(new ActionListener() {
+            @Override public void actionPerformed(ActionEvent e) {
+                // Print the contents that are in memory
+                System.out.println(debuggerSettingsController.toString());
+            }
+        });
+		
 	}
 	
 	@Override public void render() {
