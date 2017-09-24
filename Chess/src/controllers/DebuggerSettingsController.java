@@ -125,11 +125,20 @@ public final class DebuggerSettingsController extends BaseController {
     /**
 	 * Performs a memory recall of the current memory structure
 	 */
-	public void memoryRecall() {
-	    
+	public void memoryRecall() {    
 	    // Clear the board of its contents
         BoardController boardController = AbstractFactory.getFactory(ControllerFactory.class).get(BoardController.class);
         boardController.clearBoard();
+
+        // Get the player controller
+        PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class);
+
+        for(Map.Entry<PlayerTeam, Map<AbstractChessEntity, TileModel>> entry1 : _memory.entrySet()) {
+            for(Map.Entry<AbstractChessEntity, TileModel> entry2 : entry1.getValue().entrySet()) {            	
+            	entry2.getValue().setEntity(entry2.getKey());
+            	playerController.getPlayer(entry1.getKey()).addEntity(entry2.getKey());
+            }
+        }
 	}
 
     /**
@@ -159,6 +168,10 @@ public final class DebuggerSettingsController extends BaseController {
         }
     }
     
+	@Override public void unregisterSignalListeners() {
+		super.unregisterSignalListeners();
+		memoryClear();
+	}
     
     @Override public String toString() {
     
