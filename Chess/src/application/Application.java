@@ -58,7 +58,7 @@ import resources.Resources.ResourceKeys;
  *
  */
 public final class Application extends AbstractApplication {
-	
+		
 	/**
 	 * Constructs a new instance of this class
 	 */
@@ -106,7 +106,17 @@ public final class Application extends AbstractApplication {
         	EventQueue.invokeLater(new Runnable() {
         		@Override public void run() {
         			try {
-        				Application.initialize(Application.class);
+        				
+        				// Get the debug mode state based on the arguments passed into the application
+        				boolean debugMode = false;
+        				for(String arg : args) {
+        					if(arg.trim().equalsIgnoreCase("-debug")) {
+        						debugMode = true;
+        						break;
+        					}
+						}
+        				
+        				Application.initialize(Application.class, debugMode);
         				Application.instance().setVisible(true);
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -157,8 +167,10 @@ public final class Application extends AbstractApplication {
 		// Populate the file menu and its entries
 		PopulateFileMenu();
 		
-		// Populate the debug menu and its entries
-		PopulateDebugMenu();
+		if(isDebug()) {
+			// Populate the debug menu and its entries
+			PopulateDebugMenu();
+		}
 		
 		// Populate the help menu and its entries
 		PopulateHelpMenu();
