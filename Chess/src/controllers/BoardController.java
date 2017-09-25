@@ -478,9 +478,9 @@ public final class BoardController extends BaseController {
 					
                     // Update the list of checked entities for the enemy player
                     for(PlayerModel player : playerController.getPlayers()) {
-                    	List<TileModel> checkedPositions = _boardComponent.getCheckedPositions(player);
-                    	
+
                     	// Check if there is a checkmate
+                    	List<TileModel> checkedPositions = _boardComponent.getCheckedPositions(player);
                         for(AbstractChessEntity entity : player.getCheckableEntities()) {
                             entity.setChecked(checkedPositions.stream().anyMatch(z -> entity.equals(z.getEntity())));
                             if(entity.getIsChecked() && _boardComponent.getBoardPositions(entity.getTile()).isEmpty()) {
