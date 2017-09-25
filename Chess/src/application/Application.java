@@ -30,6 +30,7 @@ import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -134,7 +135,7 @@ public final class Application extends AbstractApplication {
 	 */
 	private void PopulateFileMenu() {
 		MenuBuilder.start(getJMenuBar())
-			.AddMenu("File")
+			.AddMenu(Resources.instance().getLocalizedString(ResourceKeys.File))
 				.AddMenuItem(NewGameItem.class)
 			.AddSeparator()
 				.AddMenuItem(ExitItem.class);
@@ -159,7 +160,7 @@ public final class Application extends AbstractApplication {
 	 */
 	private void PopulateHelpMenu() {
 		MenuBuilder.start(getJMenuBar())
-			.AddMenu("Help")
+			.AddMenu(Resources.instance().getLocalizedString(ResourceKeys.Help))
 				.AddMenuItem(AboutItem.class);
 	}
 
@@ -237,9 +238,9 @@ public final class Application extends AbstractApplication {
 		EngineProperties.instance().setProperty(Property.DATA_PATH_SHEET, "/generated/tilemap.png");
 		EngineProperties.instance().setProperty(Property.ENGINE_OUTPUT, "true");
 		
-//		EngineProperties.instance().setProperty(
-//			Property.LOG_DIRECTORY, 
-//			System.getProperty("user.home") + File.separator + "desktop" + File.separator
-//		);
+		EngineProperties.instance().setProperty(
+			Property.LOG_DIRECTORY, 
+			System.getProperty("user.home") + File.separator + "desktop" + File.separator
+		);
 	}
 }

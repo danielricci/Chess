@@ -32,11 +32,13 @@ import javax.swing.JMenuItem;
 
 import application.Application;
 import engine.core.menu.types.MenuItem;
+import resources.Resources;
+import resources.Resources.ResourceKeys;
 
 public class ExitItem extends MenuItem {
 	
 	public ExitItem(JComponent parent) {
-		super(new JMenuItem("Exit"), parent);
+		super(new JMenuItem(Resources.instance().getLocalizedString(ResourceKeys.Exit)), parent);
 	}
 	
 	@Override public void onExecute(ActionEvent actionEvent) {

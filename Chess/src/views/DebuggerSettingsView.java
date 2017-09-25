@@ -44,6 +44,8 @@ import engine.core.factories.ControllerFactory;
 import engine.core.mvc.view.DialogView;
 import generated.DataLookup.DataLayerName;
 import models.PlayerModel.PlayerTeam;
+import resources.Resources;
+import resources.Resources.ResourceKeys;
 
 /**
  * The view associated to the chess debugger
@@ -65,37 +67,37 @@ public class DebuggerSettingsView extends DialogView {
 	/**
 	 * The start button that starts the debugging session
 	 */
-	private JButton _startButton = new JButton("Start");
+	private JButton _startButton = new JButton(Resources.instance().getLocalizedString(ResourceKeys.Start));
 	
 	/**
 	 * The stop button that stops the debugging session
 	 */
-	private JButton _stopButton = new JButton("Stop");
+	private JButton _stopButton = new JButton(Resources.instance().getLocalizedString(ResourceKeys.Stop));
 	
 	/**
 	 * The clear button that clears the board
 	 */
-	private JButton _clearButton = new JButton("Clear");
+	private JButton _clearButton = new JButton(Resources.instance().getLocalizedString(ResourceKeys.Clear));
 
 	/**
 	 * The memory store button takes a snapshot of the board configuration
 	 */
-	private JButton _memoryStore = new JButton("Mem Store");
+	private JButton _memoryStore = new JButton(Resources.instance().getLocalizedString(ResourceKeys.MemStore));
 
 	/**
 	 * The memory recall will put the board back to its last saved state 
 	 */
-	private JButton _memoryRecall = new JButton("Mem Recall");
+	private JButton _memoryRecall = new JButton(Resources.instance().getLocalizedString(ResourceKeys.MemRecall));
 	
 	/**
 	 * The memory clear button will clear the saved state of the board
 	 */
-	private JButton _memoryClear = new JButton("Mem Clear");
+	private JButton _memoryClear = new JButton(Resources.instance().getLocalizedString(ResourceKeys.MemClear));
 	
 	/**
      * The memory print button will print the contents that are in memory to the console
      */
-    private JButton _memoryPrint = new JButton("Mem Print");
+    private JButton _memoryPrint = new JButton(Resources.instance().getLocalizedString(ResourceKeys.MemPrint));
 	
 	/**
 	 * The inspector that will allow you to debug the contents of a tile
@@ -106,7 +108,7 @@ public class DebuggerSettingsView extends DialogView {
 	 * Constructs a new instance of this class type
 	 */
 	public DebuggerSettingsView() {
-		super(Application.instance(), "Debugger Window", 300, 300);
+		super(Application.instance(), Resources.instance().getLocalizedString(ResourceKeys.DebugWindow), 300, 300);
 		
 		// Prevent the properties window from being resized
 		this.setResizable(false);
@@ -130,7 +132,7 @@ public class DebuggerSettingsView extends DialogView {
 		
 		// Teams label and the list of teams
 		JPanel teamsPanel = new JPanel();
-		JLabel teamsLabel = new JLabel("Teams");
+		JLabel teamsLabel = new JLabel(Resources.instance().getLocalizedString(ResourceKeys.Teams));
 		teamsPanel.add(teamsLabel);
 		teamsPanel.add(_teamList);
 		_teamList.setModel(controller.getTeamCollection());
@@ -139,7 +141,7 @@ public class DebuggerSettingsView extends DialogView {
 		
 		// Pieces label and the list of pieces
 		JPanel piecesPanel = new JPanel();
-		JLabel piecesLabel = new JLabel("Pieces");
+		JLabel piecesLabel = new JLabel(Resources.instance().getLocalizedString(ResourceKeys.Pieces));
 		piecesPanel.add(piecesLabel);
 		piecesPanel.add(_piecesList);
 		_piecesList.setModel(controller.getEntityCollection());
@@ -156,7 +158,7 @@ public class DebuggerSettingsView extends DialogView {
 		
 		// Pieces label and the list of pieces
 		JPanel inspectorPanel = new JPanel();
-		JLabel inspectorLabel = new JLabel("Inspector");
+		JLabel inspectorLabel = new JLabel(Resources.instance().getLocalizedString(ResourceKeys.Inspector));
 		inspectorPanel.add(inspectorLabel);
 		inspectorPanel.add(_inspector);
 		getContentPane().add(inspectorPanel);

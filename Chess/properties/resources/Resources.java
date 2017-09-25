@@ -34,13 +34,29 @@ public final class Resources extends Localization<Resources.ResourceKeys> {
 	}
 	
 	public enum ResourceKeys {
-		
+		About("about"),
+		AboutMessage("about_message"),
 		CheckMate("checkmate_x"),
+		Clear("clear"),
 		Debug("debug"),
+		DebugWindow("debug_window"),
+		Exit("exit"),
+		File("file"),
 		GameIcon("game_icon"),
+		Help("help"),
+		Inspector("inspector"),
+		MemClear("mem_clear"),
+		MemPrint("mem_print"),
+		MemRecall("mem_recall"),
+		MemStore("mem_store"),
 		NeighborTiles("neighbor_tiles"),
 		NewGame("new_game"),
 		NewGameDebug("new_game_debug"),
+		Pieces("pieces"),
+		Start("start"),
+		Stop("stop"),
+		Teams("teams"),
+		TileIdentifier("tile_identifier"),
 		Title("title"),
 		Quit("quit"),
 		QuitMessage("quit_question");

@@ -34,6 +34,8 @@ import engine.core.factories.AbstractFactory;
 import engine.core.factories.AbstractSignalFactory;
 import engine.core.factories.ViewFactory;
 import engine.core.menu.types.MenuItem;
+import resources.Resources;
+import resources.Resources.ResourceKeys;
 import views.TileView;
 
 /**
@@ -51,7 +53,7 @@ public class TileIdentifierItem extends MenuItem {
 	 */
 	public TileIdentifierItem(JComponent parent) {
 		// Create the menu item
-		super(new JCheckBoxMenuItem("Show Tile Identifier"), parent);
+		super(new JCheckBoxMenuItem(Resources.instance().getLocalizedString(ResourceKeys.TileIdentifier)), parent);
 	}
 	
 	@Override protected void onReset() {

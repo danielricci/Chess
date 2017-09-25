@@ -32,10 +32,12 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import controllers.PlayerController;
 import engine.core.factories.AbstractFactory;
 import engine.core.factories.ControllerFactory;
+import engine.utils.io.logging.Tracelog;
 import game.components.MovementComponent.EntityMovements;
 import game.components.MovementComponent.PlayerDirection;
 import game.entities.concrete.AbstractChessEntity;
@@ -81,8 +83,7 @@ public class BoardComponent {
     public void addTileEntity(TileModel tileModel) {
         // If what are trying to insert has already been inserted then something went wrong
         if(_neighbors.putIfAbsent(tileModel, null) != null) {
-            System.out.println("Error: Tile model already exists in the list... cannot add this one in");
-            System.out.println(java.util.Arrays.toString((new Throwable()).getStackTrace()));
+            Tracelog.log(Level.SEVERE, true, "Error: Tile model already exists in the list... cannot add this one in");
         }
     
         // If we have enough neighboring elements, then its time to link them together
@@ -578,7 +579,7 @@ public class BoardComponent {
             Map<EntityMovements, TileModel> neighbors = new HashMap<EntityMovements, TileModel>();
                     
             // Populate the neighbors structure with the movement elements
-            // Note: Diagonals can be fetched using these primites
+            // Note: Diagonals can be fetched using these primitives
             neighbors.put(EntityMovements.UP, topRow == null ? null : topRow[i]);
             neighbors.put(EntityMovements.LEFT, i - 1 < 0 ? null : neutralRow[i - 1]);
             neighbors.put(EntityMovements.RIGHT, i + 1 >= columns ? null : neutralRow[i + 1]);

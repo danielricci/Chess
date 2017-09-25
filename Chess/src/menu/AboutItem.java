@@ -32,18 +32,20 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import engine.core.menu.types.MenuItem;
+import resources.Resources;
+import resources.Resources.ResourceKeys;
 
 public class AboutItem extends MenuItem {
 
 	public AboutItem(JComponent parent) {
-		super(new JMenuItem("About"), parent);
+		super(new JMenuItem(Resources.instance().getLocalizedString(ResourceKeys.About)), parent);
 	}
 	
 	@Override public void onExecute(ActionEvent actionEvent) {
 		JOptionPane.showMessageDialog(
 			null,
 			"https:/github.com/danielricci/Chess",
-			"About Chess",
+			Resources.instance().getLocalizedString(ResourceKeys.AboutMessage),
 			JOptionPane.INFORMATION_MESSAGE
 		);
 	}

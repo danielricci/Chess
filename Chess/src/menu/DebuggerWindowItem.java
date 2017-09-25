@@ -33,8 +33,10 @@ import engine.core.factories.AbstractFactory;
 import engine.core.factories.AbstractSignalFactory;
 import engine.core.factories.ViewFactory;
 import engine.core.menu.types.MenuItem;
-import views.DebuggerView;
+import resources.Resources;
+import resources.Resources.ResourceKeys;
 import views.DebuggerSettingsView;
+import views.DebuggerView;
 
 /**
  * The properties menu item
@@ -50,7 +52,7 @@ public class DebuggerWindowItem extends MenuItem {
 	 * @param parent The parent component to this menu entity
 	 */
 	public DebuggerWindowItem(JComponent parent) {
-		super(new JMenuItem("Debugger Window"), parent);
+		super(new JMenuItem(Resources.instance().getLocalizedString(ResourceKeys.DebugWindow)), parent);
 	}
 	
 	@Override public void onExecute(ActionEvent actionEvent) {

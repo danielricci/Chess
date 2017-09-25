@@ -77,6 +77,6 @@ public class NeighboursItem extends MenuItem {
 	}
 	
 	@Override public boolean enabled() {
-		return AbstractSignalFactory.isRunning();// && AbstractFactory.getFactory(ViewFactory.class).get(BoardViewTester.class) != null;
+		return AbstractSignalFactory.isRunning();
 	}
 }
