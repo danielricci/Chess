@@ -489,6 +489,16 @@ public final class BoardController extends BaseController {
                             }
                             entity.refresh();
                         }
+                        
+		                // Go through the list of checkable entities, and if they aren't
+		                // in a checkable state, ensure that they aren't in a stalemate state
+		                for(AbstractChessEntity entity : player.getCheckableEntities()) {
+		                	if(!_boardComponent.getBoardPositionsImpl(entity.getTile()).isEmpty() && _boardComponent.getBoardPositions(entity.getTile()).isEmpty()) {
+		                    	entity.setCheckMate(true);
+		                    	stopGame();
+		                    	entity.refresh();
+		                	}
+		                }
                     }
                     
 					// Switch to the next player in turn
