@@ -52,6 +52,15 @@ class PawnEntity extends AbstractChessEntity {
     public PawnEntity() {
         super(DataLayerName.PAWN);
     }
+    
+    /**
+     * Gets the double movement offered by pawns
+     * 
+     * @return The double movement
+     */
+    private EntityMovements[] getDoubleMovement() {
+    	return new EntityMovements[] { EntityMovements.UP, EntityMovements.UP };
+    }
 
     @Override public List<EntityMovements[]> getMovements() {
         return new ArrayList<EntityMovements[]>() {{
@@ -61,7 +70,7 @@ class PawnEntity extends AbstractChessEntity {
             
             // If this pawn has not moved yet, then expose the double unit movement
             if(!hasMovedOnce()) {
-                add(new EntityMovements[] { EntityMovements.UP, EntityMovements.UP });    
+                add(getDoubleMovement());    
             }
         }};
     }
@@ -104,8 +113,7 @@ class PawnEntity extends AbstractChessEntity {
             if(_canReceiveEnPassent) {
                 _canReceiveEnPassent = false;
             }
-        	// TODO Make this cleaner, seriously do it.
-            else if(modelEventArgs.getSource().getEntity() == this && MovementComponent.compareMovements(modelEventArgs.movements, new EntityMovements[] { EntityMovements.UP, EntityMovements.UP })) {
+            else if(modelEventArgs.getSource().getEntity() == this && MovementComponent.compareMovements(modelEventArgs.movements, getDoubleMovement())) {
             	// Indicate that this pawn can receive en-passent
                 _canReceiveEnPassent = true;
             }

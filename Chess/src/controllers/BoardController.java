@@ -308,11 +308,14 @@ public final class BoardController extends BaseController {
         		);
 				
 				// Get the list of current movements for the previously selected tile
-				PlayerActions currentMovement = currentlySelectedTile.getMovementComponent().getBoardMovement(_previouslySelectedTile);
+				PlayerActions currentMovement = PlayerActions.INVALID;
 				
-				// TODO - this needs to go into movement component
+				// Determine if the movement is an en-passent movement, therefore overriding the current movement found
 				if(_previouslySelectedTile != currentlySelectedTile && _boardComponent.getEnPassentBoardPositions(_previouslySelectedTile).keySet().contains(currentlySelectedTile)) {
 					currentMovement = PlayerActions.MOVE_2_CAPTURE;
+				}
+				else {
+					currentMovement = currentlySelectedTile.getMovementComponent().getBoardMovement(_previouslySelectedTile);
 				}
 				
 				// This flag holds if the operation being done was successful

@@ -64,12 +64,10 @@ public final class TileController extends BaseController {
 	}
 	
 	/**
-	 * Sets the tile neighbors to a highlighted state, this is used for debugging
-	 * purposes
+	 * Sets the tile neighbors to a highlighted state, this is used for debugging purposes
 	 * 
 	 * @param highlighted If the neighbors should be in a highlighted state or not
 	 */
-	// TODO - can we make this private and remove the view dependency
 	public void showTileNeighborsDebug(boolean highlighted) {
 		// Go through the list of tile model neighbors
 		for(TileModel tile : AbstractFactory.getFactory(ControllerFactory.class).get(BoardController.class).getAllNeighbors(_tile)) {
@@ -82,7 +80,6 @@ public final class TileController extends BaseController {
 	 * 
 	 * @param entity The chess entity to add
 	 */
-	// TODO - can we make this private and remove the view dependency
 	public void setChessEntity(AbstractChessEntity entity) {		
 		if(entity == null && _tile.getEntity() != null) {
 			PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class);
@@ -109,9 +106,10 @@ public final class TileController extends BaseController {
 	}
 	
 	/**
-	 * @return If a chess entity occupies this tile
+	 * Gets if this tile controller is referencing a tile that holds an entity
+	 * 
+	 * @return TRUE if the tile controller is referencing a tile that holds an entity, FALSE otherwise
 	 */
-	// TODO - can we make this private and remove the view dependency
 	public boolean hasEntity() {
 		return _tile.getEntity() != null;
 	}

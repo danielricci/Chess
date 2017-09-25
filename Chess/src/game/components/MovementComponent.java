@@ -223,7 +223,7 @@ public class MovementComponent {
      * @return The board movement that is being done
      */
     public PlayerActions getBoardMovement(TileModel previouslySelectedTile) {
-        
+
         // If the tile belongs to the current player playing
         if(isTileCurrentPlayer(_tile)) {
             // If there is no currently selected tile
