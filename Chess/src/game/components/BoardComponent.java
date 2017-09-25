@@ -428,12 +428,23 @@ public class BoardComponent {
         // Get the list of checkable entities owned by the enemy player
         List<AbstractChessEntity> checkableEntities = player.getCheckableEntities();
         
+        // Go through the list of enemy entities and see if any of them
+        // can move to a position of that which is in the checkable entities list above
         for(AbstractChessEntity enemyEntity : enemy.getEntities()) {
-            for(Map.Entry<TileModel, EntityMovements[]> movement : getBoardPositionsImpl(enemyEntity.getTile()).entrySet()) {
+        	Map<TileModel, EntityMovements[]> positions = getBoardPositionsImpl(enemyEntity.getTile());
+    		for(Map.Entry<TileModel, EntityMovements[]> movement : positions.entrySet()) {
                 if(checkableEntities.contains(movement.getKey().getEntity())) {
                     checkedEntities.add(movement.getKey());
                 }
-            }
+    		}
+    	}
+        
+        // Go through the list of checkable entities, and if they aren't
+        // in a checkable state, ensure that they aren't in a stalemate state
+        for(AbstractChessEntity entity : checkableEntities) {
+        	if(!checkedEntities.contains(entity.getTile()) && getBoardPositions(entity.getTile()).isEmpty()) {
+        		checkedEntities.add(entity.getTile());
+        	}
         }
         
         return checkedEntities;
