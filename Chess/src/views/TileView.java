@@ -48,7 +48,7 @@ import resources.Resources.ResourceKeys;
 /**
  * This view represents the visual contents of a single tile in this game
  * 
- * @author Daniel Ricci <thedanny09@gmail.com>
+ * @author {@literal Daniel Ricci <thedanny09@gmail.com>}
  *
  */
 public class TileView extends PanelView {
@@ -120,6 +120,8 @@ public class TileView extends PanelView {
 	
 	/**
 	 * Constructs a new instance of this class type
+	 * 
+	 * @param tileColor the color of the tile
 	 */
 	public TileView(Color tileColor) {
 		

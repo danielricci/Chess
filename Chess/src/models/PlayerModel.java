@@ -197,8 +197,8 @@ public class PlayerModel extends BaseModel {
     /**
 	 * Gets the list of entities associated to the specified layer name
 	 * 
-	 * @param entityClass The name of the layer
-	 * 
+	 * @param layerName The name of the layer
+	 * @param <T> AbstractChessEntity type
 	 * @return A list of entities
 	 */
 	public <T extends AbstractChessEntity> List<T> getEntities(DataLayerName layerName) {

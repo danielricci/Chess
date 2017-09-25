@@ -91,6 +91,7 @@ public class TileModel extends BaseModel {
 	 * 
 	 * @param receivers The array of receivers that will listen in on changes
 	 * 					made to this object
+	 * @param <T> ISignalListener type
 	 */
 	public <T extends ISignalListener> TileModel(T... receivers) {
 		super(receivers);

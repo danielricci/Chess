@@ -41,7 +41,7 @@ import views.TileView;
 /**
  * The item for debugging neighboring tiles based
  * 
- * @author Daniel Ricci <thedanny09@gmail.com>
+ * @author {@literal Daniel Ricci <thedanny09@gmail.com>}
  *
  */
 public class NeighboursItem extends MenuItem {

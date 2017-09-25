@@ -64,9 +64,9 @@ public interface IChessEntity {
     }
     
     /**
-     * Gets the list of movements ass
+     * Gets the list of castling board movements
      * 
-     * @return
+     * @return The list of movements associated to performing a castling move
      */
     default public List<EntityMovements[]> getCastlingBoardMovements() {
     	return new ArrayList<EntityMovements[]>();
@@ -95,6 +95,8 @@ public interface IChessEntity {
      * 
      * Note: This method does not mean you can actually do the move, but simply
      * indicates if the chess entity is geared for doing the en-passent move
+     * 
+     * @return TRUE if the entity can perform an en-passent in general, FALSE otherwise
      */
     default public boolean isEnPassent() {
     	return false;

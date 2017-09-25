@@ -279,7 +279,7 @@ public class BoardComponent {
 	 * Sets the new position of the castlable entity
 	 * 
 	 * @param fromPosition The position of where the from would be AFTER it has been updated
-	 * @param castableTo The position of the entity that the king will castle with
+	 * @param castleableTo The position of the entity that the king will castle with
 	 * @param fromMovement The movement that resulted in the from position from arriving at its updated location
 	 */
 	public void setCastlableMovement(TileModel fromPosition, TileModel castleableTo, EntityMovements fromMovement) {
@@ -568,9 +568,9 @@ public class BoardComponent {
 	/**
      * Links together the passed in rows
      *  
-     * @param top The top row
-     * @param neutral the neutral row
-     * @param bottom The bottom row
+     * @param topRow The top row
+     * @param neutralRow the neutral row
+     * @param bottomRow The bottom row
      */
     private void linkTiles(TileModel[] topRow, TileModel[] neutralRow, TileModel[] bottomRow) {
         for(int i = 0, columns = _dimensions.width; i < columns; ++i) {

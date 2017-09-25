@@ -218,7 +218,7 @@ public class MovementComponent {
 	/**
      * Gets the current board movement based on the specified tile
      * 
-     * @param newlySelectedTile The previously selected tile (the one first clicked)
+     * @param previouslySelectedTile The previously selected tile (the one first clicked)
      * 
      * @return The board movement that is being done
      */

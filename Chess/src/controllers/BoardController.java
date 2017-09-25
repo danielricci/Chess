@@ -264,7 +264,7 @@ public final class BoardController extends BaseController {
 	/**
 	 * Sets the inspecting state of the debugger
 	 *
-	 * @param selected The state of the inspector
+	 * @param isGameInspecting The state of the inspector
 	 */
 	public void setIsInspecting(boolean isGameInspecting) {
 		_isGameInspecting = isGameInspecting;

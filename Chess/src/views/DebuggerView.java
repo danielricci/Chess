@@ -44,7 +44,7 @@ import game.entities.concrete.AbstractChessEntity;
 /**
  * The board view for testing the game, it uses similar functionality to that of our board view
  * 
- * @author Daniel Ricci <thedanny09@gmail.com>
+ * @author {@literal Daniel Ricci <thedanny09@gmail.com>}
  */
 public class DebuggerView extends BoardView {
 	

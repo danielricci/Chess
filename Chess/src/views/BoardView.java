@@ -49,7 +49,7 @@ import models.PlayerModel.PlayerTeam;
 /**
  * This view represents the entire board, it holds all the tiles of the board
  * 
- * @author Daniel Ricci <thedanny09@gmail.com>
+ * @author {@literal Daniel Ricci <thedanny09@gmail.com>}
  *
  */
 public class BoardView extends PanelView {

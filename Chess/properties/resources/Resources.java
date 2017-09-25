@@ -26,6 +26,12 @@ package resources;
 
 import engine.utils.globalisation.Localization;
 
+/**
+ * The resources information for localization and globalization
+ *
+ * @author {@literal Daniel Ricci <thedanny09@gmail.com>}
+ *
+ */
 public final class Resources extends Localization<Resources.ResourceKeys> {
 	
 	private static Resources _instance;

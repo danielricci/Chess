@@ -51,6 +51,7 @@ import game.entities.concrete.AbstractChessEntity;
 import views.controls.PromotionButton;
 
 /**
+ * The view for the promotion of a pawn
  * 
  * @author {@literal Daniel Ricci <thedanny09@gmail.com>}
  *
@@ -90,8 +91,6 @@ public class PromotionView extends DialogView {
 	
 	/**
 	 * Constructs a new instance of this class type
-	 * 
-	 * @param owner The owner of the dialog
 	 */
 	public PromotionView() {
 		super(Application.instance(), "Promotion", 200, 200);

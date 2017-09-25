@@ -68,7 +68,7 @@ public abstract class AbstractChessEntity extends AbstractEntity implements IChe
 	/**
 	 * Constructs a new instance of this class type
 	 * 
-	 * @param layerName The name of the layer
+	 * @param dataLayerName The name of the layer
 	 */
 	protected AbstractChessEntity(DataLayerName dataLayerName) {
 		super(dataLayerName.toString());

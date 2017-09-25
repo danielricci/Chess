@@ -67,7 +67,6 @@ public final class PromotionController extends BaseController {
 	 * Constructs a new instance of this class type
 	 *
 	 * @param viewClass The view to instantiate this controller with
-	 * @param entityToPromote The entity to promote
 	 * 
 	 */
 	public PromotionController(PromotionView viewClass) {
@@ -77,7 +76,7 @@ public final class PromotionController extends BaseController {
 	/**
 	 * Sets the entity to be promoted
 	 * 
-	 * @param The tile where the promotion will take place
+	 * @param tile The tile where the promotion will take place
 	 */
 	public void setTile(TileModel tile) {
 		_tile = tile;
