@@ -439,13 +439,13 @@ public class BoardComponent {
     		}
     	}
         
-        // Go through the list of checkable entities, and if they aren't
-        // in a checkable state, ensure that they aren't in a stalemate state
-        for(AbstractChessEntity entity : checkableEntities) {
-        	if(!checkedEntities.contains(entity.getTile()) && getBoardPositions(entity.getTile()).isEmpty()) {
-        		checkedEntities.add(entity.getTile());
-        	}
-        }
+//        // Go through the list of checkable entities, and if they aren't
+//        // in a checkable state, ensure that they aren't in a stalemate state
+//        for(AbstractChessEntity entity : checkableEntities) {
+//        	if(!checkedEntities.contains(entity.getTile()) && getBoardPositions(entity.getTile()).isEmpty()) {
+//        		checkedEntities.add(entity.getTile());
+//        	}
+//        }
         
         return checkedEntities;
     }

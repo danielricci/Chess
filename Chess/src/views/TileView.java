@@ -230,8 +230,6 @@ public class TileView extends PanelView {
 	
 	@Override public void update(SignalEventArgs signalEvent) {
 		
-		System.out.println("TileView::update");
-		
 		// Call the super implementation
 		super.update(signalEvent);
 		
@@ -240,6 +238,8 @@ public class TileView extends PanelView {
 			
 			// Get the tile model of the source
 			TileModel tileModel = (TileModel) signalEvent.getSource();
+			
+			System.out.println("TileView::update::" + tileModel.toString());
 			
 			_identifierTextField.setText(tileModel.toString());
 			
