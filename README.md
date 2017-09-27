@@ -4,7 +4,7 @@
 <img src="https://travis-ci.org/danielricci/chess.svg?branch=master" />
 
 
-### Game Description
+### Description
 Chess is a game played against two player, competing to place their opponents king piece into a position where the king can
 no longer make any more moves.
 
