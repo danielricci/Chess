@@ -476,7 +476,7 @@ public final class BoardController extends BaseController {
                     PlayerController playerController = AbstractFactory.getFactory(ControllerFactory.class).get(PlayerController.class, true);
 				    playerController.update(entityEventArgs);
 					
-                    // Update the list of checked entities for the enemy player
+                    // Update the checked/checkmate/stalemate states of all the players
                     for(PlayerModel player : playerController.getPlayers()) {
 
                     	// Check if there is a checkmate
@@ -490,10 +490,24 @@ public final class BoardController extends BaseController {
                             entity.refresh();
                         }
                         
+                        // Go through the list of entities owned by the player and sum up the number of positions that 
+                        // can be played in total.  Note that these positions do not include any checkable entities
+                        boolean canMoveOtherPieces = player.getEntities().stream().filter(z -> !z.getIsCheckable()).mapToInt(z -> _boardComponent.getBoardPositions(z.getTile()).size()).sum() > 0;
+                        
 		                // Go through the list of checkable entities, and if they aren't
 		                // in a checkable state, ensure that they aren't in a stalemate state
 		                for(AbstractChessEntity entity : player.getCheckableEntities()) {
-		                	if(!_boardComponent.getBoardPositionsImpl(entity.getTile()).isEmpty() && _boardComponent.getBoardPositions(entity.getTile()).isEmpty()) {
+		                	if(
+		                			
+			                	// 1. If there are places where the entity can move
+	                			!_boardComponent.getBoardPositionsImpl(entity.getTile()).isEmpty() &&
+		                		// 2. if the board positions (after filtering) is in fact empty	                			
+	                			_boardComponent.getBoardPositions(entity.getTile()).isEmpty() &&
+			                	// 3. if the player does not have any other pieces that can move	                			
+	                			!canMoveOtherPieces &&
+	                			// 4. if the player did not just perform the move
+	                			playerController.getCurrentPlayer() != player
+                			) {
 		                    	entity.setCheckMate(true);
 		                    	stopGame();
 		                    	entity.refresh();
