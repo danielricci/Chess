@@ -14,6 +14,7 @@ I started developing this game on October 8, 2016, and completed it on September
 Please contact me for any bug/enhancmeent/feature requests: thedanny09 [at] gmail [dot] com.
 
 ### Features
+The following features are the core functionalities that the game will offer.
 - [x] Base Game
 - [x] En-Passent
 - [x] Stalemate
