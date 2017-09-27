@@ -20,8 +20,8 @@ Please contact me for any bug/enhancmeent/feature requests: thedanny09 [at] gmai
 - [x] Castling
 - [x] Customizable Game
 - [ ] Algebraic Notation Support
-- [ ] Player-versus-Player
-- [ ] Player-versus-Computer
+- [ ] Player-versus-Player Online
+- [ ] Player-versus-Computer Offline
 - [ ] Audio Support
 - [ ] Animation Support
 
