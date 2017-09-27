@@ -11,7 +11,7 @@ no longer make any more moves.
 ### Development
 I started developing this game on October 8, 2016, and completed it on September 27, 2017. During this time I also built a game engine from the ground up, along with a tilemap editor.
 
-Please enter any bugs or enhancement requests in the issues tab, or contact me for any questions/comments.
+Please contact me for any bug/enhancmeent/feature requests: thedanny09 [at] gmail [dot] com.
 
 ### Features
 - [x] Base Game
