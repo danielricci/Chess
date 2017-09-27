@@ -19,7 +19,6 @@ The following features are the core functionalities that the game will offer.
 - [x] En-Passent
 - [x] Stalemate
 - [x] Castling
-- [x] Customizable Game
 - [ ] Algebraic Notation Support
 - [ ] Player-versus-Player Online
 - [ ] Player-versus-Computer Offline
