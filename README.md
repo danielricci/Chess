@@ -9,3 +9,4 @@ Chess is a two player board game where each player has to eliminate the opposing
 ### Technology Used
 * [Eclipse IDE] (https://eclipse.org/ide/)
 * [Java]  (https://java.com/en/download/)
+
