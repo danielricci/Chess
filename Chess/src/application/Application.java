@@ -66,7 +66,7 @@ public final class Application extends AbstractApplication {
 	public Application() {
 
 		// Set the application dimensions
-		Dimension applicationDimensions = new Dimension(600, 600);
+		Dimensin applicationDimensions = new Dimension(600, 600);
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		
 		// Set the size of application
