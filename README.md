@@ -11,6 +11,8 @@ Please contact me for any bug/enhancmeent/feature requests: thedanny09 [at] gmai
 ### Features
 The following features are the core functionalities that the game will offer.
 - [x] Base Game
+- [x] Guides
+- [x] Debugger
 - [x] En-Passent
 - [x] Castling
 - [x] Stalemate
