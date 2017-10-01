@@ -498,28 +498,18 @@ public final class BoardController extends BaseController {
                             	// At this point, the king cannot move out of check on its own.  The final verification is
                             	// to see if there exists a move for all other entities, where if played would result
                             	// in the specified king no longer being in check
-                            	for(AbstractChessEntity entity : player.getEntities()) {
+                            	isCheckmated : for(AbstractChessEntity entity : player.getEntities()) {
                         			for(Map.Entry<TileModel, EntityMovements[]> kvp : _boardComponent.getBoardPositions(entity.getTile()).entrySet()) {
-                        				//perform that move
-                            	 		//if the checkable entity has board positions {
-                            	 		//	isCheckMated = false;
-                            	 		//	break to the outer most
-                            	 		//	** if we break out of the loops, then the entity will not be properly refreshed
-                            	 		//}
+                        			    
+                        			    // Check if moving to that location would result in there no longer being a check
+                        			    // If it turns out that there is a move where the entity would not be in check then
+                        			    // we stop here
+                        			    if(!_boardComponent.isMoveChecked(checkableEntity.getPlayer(), entity.getTile(), kvp.getKey())) {
+                        			        isCheckmated = false;
+                        			        break isCheckmated;
+                        			    }
                         			}
                             	}
-                            	/*
-                            	 for every entity that this current player owns {
-                            	 	for every position that you can move on {
-                            	 		perform that move
-                            	 		if the checkable entity has board positions {
-                            	 			isCheckMated = false;
-                            	 			break to the outer most
-                            	 			** if we break out of the loops, then the entity will not be properly refreshed
-                            	 		}
-                            	 	}
-                            	 }
-                            	 */
                             	 
                             	if(isCheckmated) {
                                 	checkableEntity.setCheckMate(true);
@@ -532,26 +522,26 @@ public final class BoardController extends BaseController {
                         
                         // Go through the list of entities owned by the player and sum up the number of positions that 
                         // can be played in total.  Note that these positions do not include any checkable entities
-//                        boolean canMoveOtherPieces = player.getEntities().stream().filter(z -> !z.getIsCheckable()).mapToInt(z -> _boardComponent.getBoardPositions(z.getTile()).size()).sum() > 0;
-//                        
-//		                // Go through the list of checkable entities, and if they aren't
-//		                // in a checkable state, ensure that they aren't in a stalemate state
-//		                for(AbstractChessEntity entity : player.getCheckableEntities()) {
-//		                	if(
-//			                	// 1. If there are places where the entity can move
-//	                			!_boardComponent.getBoardPositionsImpl(entity.getTile()).isEmpty() &&
-//		                		// 2. if the board positions (after filtering) is in fact empty	                			
-//	                			_boardComponent.getBoardPositions(entity.getTile()).isEmpty() &&
-//			                	// 3. if the player does not have any other pieces that can move	                			
-//	                			!canMoveOtherPieces &&
-//	                			// 4. if the player did not just perform the move
-//	                			playerController.getCurrentPlayer() != player
-//                			) {
-//		                    	entity.setCheckMate(true);
-//		                    	stopGame();
-//		                    	entity.refresh();
-//		                	}
-//		                }
+                        boolean canMoveOtherPieces = player.getEntities().stream().filter(z -> !z.getIsCheckable()).mapToInt(z -> _boardComponent.getBoardPositions(z.getTile()).size()).sum() > 0;
+                        
+		                // Go through the list of checkable entities, and if they aren't
+		                // in a checkable state, ensure that they aren't in a stalemate state
+		                for(AbstractChessEntity entity : player.getCheckableEntities()) {
+		                	if(
+			                	// 1. If there are places where the entity can move
+	                			!_boardComponent.getBoardPositionsImpl(entity.getTile()).isEmpty() &&
+		                		// 2. if the board positions (after filtering) is in fact empty	                			
+	                			_boardComponent.getBoardPositions(entity.getTile()).isEmpty() &&
+			                	// 3. if the player does not have any other pieces that can move	                			
+	                			!canMoveOtherPieces &&
+	                			// 4. if the player did not just perform the move
+	                			playerController.getCurrentPlayer() != player
+                			) {
+		                    	entity.setCheckMate(true);
+		                    	stopGame();
+		                    	entity.refresh();
+		                	}
+		                }
                     }
                     
 					// Switch to the next player in turn

@@ -173,7 +173,7 @@ public class PlayerModel extends BaseModel {
      * @return The list of castleable entities
      */
     public List<AbstractChessEntity> getCastlableToCandidates() {
-        return getEntities().stream().filter(z -> z.getIsCastlableToCandidate()).collect(Collectors.toList());
+        return new ArrayList(getEntities().stream().filter(z -> z.getIsCastlableToCandidate()).collect(Collectors.toList()));
     }
 	
 	/**
@@ -191,7 +191,7 @@ public class PlayerModel extends BaseModel {
      * @return The entities associated to the player
      */
     public List<AbstractChessEntity> getEntities() {
-        return _entities;
+        return new ArrayList(_entities);
     }
     
     /**
@@ -202,7 +202,7 @@ public class PlayerModel extends BaseModel {
 	 * @return A list of entities
 	 */
 	public <T extends AbstractChessEntity> List<T> getEntities(DataLayerName layerName) {
-		return (List<T>) _entities.stream().filter(z -> z.getDataLayerName() == layerName).collect(Collectors.toList());
+		return new ArrayList(_entities.stream().filter(z -> z.getDataLayerName() == layerName).collect(Collectors.toList()));
 	}
 	
 	/**

@@ -513,13 +513,13 @@ public class BoardComponent {
 	 * Verifies if a movement from the specified tile to the specified tile
 	 * will result in a check of the specified player
 	 * 
-	 * @param player The player
+	 * @param player The player to verify for being in check
 	 * @param from The starting tile position
 	 * @param to The end tile position
 	 * 
-	 * @return If the move would result in a check of the specified player
+	 * @return TRUE If the move would result in a check of the specified player, FALSE otherwise
 	 */
-	private boolean isMoveChecked(PlayerModel player, TileModel from, TileModel to) {
+	public boolean isMoveChecked(PlayerModel player, TileModel from, TileModel to) {
 	    
 	    // Hold temporary references to both entities of the tiles
 	    AbstractChessEntity tempEntityFrom = from.getEntity();
