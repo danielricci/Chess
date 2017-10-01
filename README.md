@@ -3,10 +3,8 @@
 ### Build Status
 <img src="https://travis-ci.org/danielricci/chess.svg?branch=master" />
 
-
 ### Description
-Chess is a game played against two player, competing to place their opponents king piece into a position where the king can
-no longer make any more moves.
+Chess is a game played against two player, competing to place their opponents king into a checkmate positions, where no further moves on the board can be made.
 
 Please contact me for any bug/enhancmeent/feature requests: thedanny09 [at] gmail [dot] com.
 
@@ -15,7 +13,7 @@ The following features are the core functionalities that the game will offer.
 - [x] Base Game
 - [x] En-Passent
 - [x] Castling
-- [ ] Stalemate
+- [x] Stalemate
 - [ ] Algebraic Notation Support
 - [ ] Player-versus-Player Online
 - [ ] Player-versus-Computer Offline
