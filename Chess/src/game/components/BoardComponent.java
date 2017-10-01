@@ -211,7 +211,7 @@ public class BoardComponent {
         }
         
         // If the current tile has an entity and it can be used to castle
-        if(tileModel.getEntity() != null && tileModel.getEntity().getIsCastlableFromCandidate()) {
+        if(tileModel.getEntity() != null && !tileModel.getEntity().getIsChecked() && tileModel.getEntity().getIsCastlableFromCandidate()) {
         	
         	// Get the left-most rook castle candidate
         	TileModel leftCandidate = getCastlableToEntity(tileModel, EntityMovements.LEFT);
