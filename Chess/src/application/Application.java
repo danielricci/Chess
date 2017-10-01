@@ -34,7 +34,6 @@ import java.io.File;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import engine.core.factories.AbstractSignalFactory;
@@ -186,7 +185,7 @@ public final class Application extends AbstractApplication {
 		setTitle(Resources.instance().getLocalizedString(ResourceKeys.Title));
 		
 		// Set the icon that will at the upper-left of the window
-	    setIconImage(new ImageIcon(Resources.instance().getLocalizedString(ResourceKeys.GameIcon)).getImage());
+	    setIconImage(Resources.instance().getLocalizedData(ResourceKeys.GameIcon));
 	}
 
 	@Override public boolean flush() {

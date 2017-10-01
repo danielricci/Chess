@@ -30,7 +30,6 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.border.Border;
 
@@ -265,7 +264,7 @@ public class TileView extends PanelView {
 				addRenderableContent(tileModel.getEntity());
 				if(tileModel.getEntity().getIsCheckMate()) {
 					this.setBackground(DEFAULT_BACKGROUND_COLOR);
-					addRenderableContent(new RawData(new ImageIcon(Resources.instance().getLocalizedString(ResourceKeys.CheckMate)).getImage()));	
+                    addRenderableContent(new RawData(Resources.instance().getLocalizedData(ResourceKeys.CheckMate)));   
 				}
 			}
 		

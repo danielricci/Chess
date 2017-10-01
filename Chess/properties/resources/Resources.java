@@ -24,7 +24,13 @@
 
 package resources;
 
+import java.awt.Image;
+import java.util.logging.Level;
+
+import javax.imageio.ImageIO;
+
 import engine.utils.globalisation.Localization;
+import engine.utils.io.logging.Tracelog;
 
 /**
  * The resources information for localization and globalization
@@ -84,4 +90,24 @@ public final class Resources extends Localization<Resources.ResourceKeys> {
 		}
 		return _instance;
 	}
+
+    /**
+     * Gets the localized data of the specified key
+     * 
+     * @param key The key to lookup
+     * 
+     * @return The image associated to the key
+     */
+    public Image getLocalizedData(ResourceKeys key) {
+        
+        Image image = null;
+        try {
+            image = ImageIO.read(getClass().getClassLoader().getResourceAsStream(getLocalizedString(key)));
+        }
+        catch(Exception exception) {
+            Tracelog.log(Level.SEVERE, false, exception);
+        }
+        
+        return image;
+    }
 }
