@@ -5,7 +5,6 @@
               directory with the processing instruction <?eclipse.ant.import?>
               as the first entry and export the buildfile again. --><project basedir="." default="build" name="Chess">
     <property environment="env"/>
-    <property name="ECLIPSE_HOME" value="../../../eclipse/jee-neon/eclipse/"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.8"/>
     <property name="source" value="1.8"/>
@@ -13,8 +12,8 @@
     <path id="Chess.classpath">
         <pathelement location="bin"/>
         <path refid="Project and External Dependencies.libraryclasspath"/>
-        <pathelement location="data/generated/tilemap.jar"/>
         <pathelement location="lib/gosling-v1.0-release.jar"/>
+        <pathelement location="data/generated/tilemap.jar"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>
@@ -53,22 +52,8 @@
         </javac>
     </target>
     <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
-    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
-        <copy todir="${ant.library.dir}">
-            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
-        </copy>
-        <unzip dest="${ant.library.dir}">
-            <patternset includes="jdtCompilerAdapter.jar"/>
-            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
-        </unzip>
-    </target>
-    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
-        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
-        <antcall target="build"/>
-    </target>
-    <target name="Chess">
+    <target name="Chess Application Debug">
         <java classname="application.Application" failonerror="true" fork="yes">
-            <arg line="-debug"/>
             <classpath refid="Chess.classpath"/>
         </java>
     </target>
