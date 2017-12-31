@@ -29,9 +29,6 @@ The following features are the core functionalities that the game will offer.
 - [ ] Audio Support
 - [ ] Animation Support
 
-### Contributors
-* [Daniel Ricci] (https://github.com/danielricci)
-
 ### Technology Used
 * [Eclipse IDE] (https://eclipse.org/ide/)
 * [Java]  (https://java.com/en/download/)
