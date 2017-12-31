@@ -35,3 +35,5 @@ The following features are the core functionalities that the game will offer.
 ### Technology Used
 * [Eclipse IDE] (https://eclipse.org/ide/)
 * [Java]  (https://java.com/en/download/)
+* [Gosling Engine]  (https://github.com/danielricci/gosling-engine)
+* [Einstein Assets Editor]  (https://github.com/danielricci/einstein-assets-editor)
