@@ -1,12 +1,19 @@
 # Chess
 
-### Build Status
-<img src="https://travis-ci.org/danielricci/chess.svg?branch=master" />
-
 ### Description
 Chess is a game played against two player, competing to place their opponents king into a checkmate positions, where no further moves on the board can be made.
 
 Please contact me for any bug/enhancmeent/feature requests: thedanny09 [at] gmail [dot] com.
+
+### Build Status
+<img src="https://travis-ci.org/danielricci/chess.svg?branch=master" />
+
+### Releases
+
+<h3>chess-1.0.0-release September 30 2017</h3>
+- This is the initial release of the game
+
+<hr />
 
 ### Features
 The following features are the core functionalities that the game will offer.
