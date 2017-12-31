@@ -3,8 +3,6 @@
 ### Description
 Chess is a game played against two player, competing to place their opponents king into a checkmate positions, where no further moves on the board can be made.
 
-Please contact me for any bug/enhancement/feature requests: thedanny09 [at] gmail [dot] com.
-
 ### Build Status
 <img src="https://travis-ci.org/danielricci/chess.svg?branch=master" />
 
