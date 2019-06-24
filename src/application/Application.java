@@ -182,10 +182,7 @@ public final class Application extends AbstractApplication {
 		Resources.instance().addLocale(ResourceBundle.getBundle("resources/Resources", Locale.CANADA), true);
 		
 		// Set the title
-		setTitle(Resources.instance().getLocalizedString(ResourceKeys.Title));
-		
-		// Set the icon that will at the upper-left of the window
-	    setIconImage(Resources.instance().getLocalizedData(ResourceKeys.GameIcon));
+		setTitle(Resources.instance().getLocalizedString(ResourceKeys.Title));		
 	}
 
 	@Override public boolean flush() {

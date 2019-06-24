@@ -54,7 +54,6 @@ public final class Resources extends Localization<Resources.ResourceKeys> {
 		DebugWindow("debug_window"),
 		Exit("exit"),
 		File("file"),
-		GameIcon("game_icon"),
 		Help("help"),
 		Inspector("inspector"),
 		MemClear("mem_clear"),
