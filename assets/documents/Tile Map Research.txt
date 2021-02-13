@@ -1,0 +1,12 @@
+- From the editor, you should be able to do File > Export
+- A save dialog will open, when the user chooses a name, that will be the name of a folder that will be created
+	- by convention, this folder should be called data, so put that name in the text field by default
+- Within the data folder, the following files will be put in there
+	tilemap.png
+		- This file is a png image of all the tiles atlas'd together
+	blueprints.xml
+		- This is an xml file that describes the tilemap.png
+		- This is the piece of information that will be common among the editor/engine and the game/engine 
+		  in terms of readability
+		- I'm not sure yet how this will be commonly communicated, that i will need to research and prototype
+- The chess game will need to be brought up to date with the current engine

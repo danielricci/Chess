@@ -1,0 +1,47 @@
+:: Board setup
+- 64 squares arranged in an 8x8 grid
+- The colors of the squares alternate and are referred to as 'light' and 'dark'
+- The board starts with a light square at the right-hand end of the rank nearest to each player (The board starts with a light square at the top left)
+- Each player begins the game with 16 pieces
+  - 1x King
+  - 1x Queen
+  - 2x rooks
+  - 2x knights
+  - 2x bishops
+  - 8x pawns
+
+::Player Movement
+- The game pieces are divided into WHITE and BLACK sets
+- The Queen is on the color of its own piece
+- White always moves first
+- Each category of pieces aboves has its own movement profile
+- Rows are called ranks (1 - 8)
+- Columns are called Files (a - h)
+-- should show ranks and files in the first version 
+(see screenshot for ranks and files)
+
+EN-PASSANT FEATURE
+-> En Passant is a special pawn capture, that can occur immediately afer a pawn moves two ranks forward from its starting position and an enemy pawn could have been captured
+
+HISTORY FEATURE
+- What about right clicking on a piece and seeing its history
+- What about a timeline bar slider?
+-- Undo Functionality --
+-> Go Back in Time
+-- Redo Functionality --
+
+CASTLING FEATURE
+Castling happens when there is no piece in between king and rook, you move king two steps to your rook, and your castle to the other side of the king, this can be done on either side.  Furthermore, you cannot castle when you are in check, also you cannot castle through check, and you cannot castle into check, and you cannot castle if you have moved your king or your rook.  So when a rook moves, you cannot castle with it.  You can only ever castle once.
+
+
+Winning Conditions
+- Player wins when it checkmates the opposing teams' king
+- If the player has no legal moves to make then the player loses
+
+-- Chess Debugger --
+- Need a way to better test scenarios, maybe make a Scenario system or an editor where you can place the pieces you want on the board with some pre-defined settings.  This would actually make for a much better testing experience and could even turn into a "make your own chess game"
+
+-- Implement the below --
+:: BoardController records moves
+  - BoardController only knows about the sequence that all the pieces on the board has moved, whereas each piece has its entire history
+:: Each pieces has a history of all the moves it has done

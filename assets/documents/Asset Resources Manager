@@ -1,0 +1,32 @@
+Asset Resources Manager
+
+- The idea here is to be able to read in an asset file that is in the form of XML or some other extension
+- We would eventually need an external tool thats used for creating data assets, or we create an extension
+  to GIMP
+- For now, the xml file is done by hand because we dont have an external tool to manage the generation of this xml.
+----------------------------------------------------------------
+
+GameModel
+|
+|-- PlayerModel
+|-- TileModel
+
+- Many assets can be associated to a game model
+- There needs to be a clean and abstract way to 
+
+engine>managers>AssetsManager.java
+----------------------------
+
+Object
+|-- Image
+	|-- BufferedImage
+		|-- OffScreenImage
+
+Object
+|-- ImageIO
+
+Object
+|-- ImageIcon
+	|-- ImageIconUIResource
+	|-- InvertableImageIcon
+	|-- LazyImageIcon
